@@ -26,8 +26,9 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
+import "../styles/application.css";
 import "../javascript/application";
-import "preline"
+import "preline";
 
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {

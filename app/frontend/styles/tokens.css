@@ -1,0 +1,46 @@
+:root {
+  --color-bg: 255 255 255;
+  --color-fg: 15 23 42;
+  --color-muted: 100 116 139;
+  --color-primary: 15 76 92;
+  --color-primary-hover: 12 62 75;
+  --color-primary-contrast: 255 255 255;
+  --color-accent: 20 184 166;
+  --color-accent-hover: 13 148 136;
+  --color-success: 22 163 74;
+  --color-warning: 245 158 11;
+  --color-danger: 220 38 38;
+  --color-info: 2 132 199;
+  --color-surface: 248 250 252;
+  --shadow-md: 0 4px 12px rgba(2, 6, 23, .08);
+
+  /* Aliases numéricos para mapear no Tailwind v4 sem ciclo */
+  --t-bg: 255 255 255;
+  --t-fg: 15 23 42;
+  --t-muted: 100 116 139;
+  --t-primary: 15 76 92;
+  --t-primary-hover: 12 62 75;
+  --t-primary-contrast: 255 255 255;
+  --t-accent: 20 184 166;
+  --t-accent-hover: 13 148 136;
+  --t-success: 22 163 74;
+  --t-warning: 245 158 11;
+  --t-danger: 220 38 38;
+  --t-info: 2 132 199;
+  --t-surface: 248 250 252;
+}
+
+.dark {
+  --color-bg: 2 6 23;
+  --color-fg: 226 232 240;
+  --color-muted: 148 163 184;
+  --color-surface: 15 23 42;
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, .40);
+
+  --t-bg: 2 6 23;
+  --t-fg: 226 232 240;
+  --t-muted: 148 163 184;
+  --t-surface: 15 23 42;
+}
+
+

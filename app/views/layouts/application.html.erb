@@ -16,12 +16,11 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
-    <%= vite_stylesheet_tag "application.css" %>
+    <%= vite_javascript_tag "entrypoints/application" %>
 
   </head>
 
-  <body>
+  <body class="min-h-screen bg-bg text-fg">
     <% if notice.present? %>
       <div class="m-4 rounded bg-green-600 text-white px-4 py-2"><%= notice %></div>
     <% end %>
