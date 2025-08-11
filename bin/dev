@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if command -v foreman >/dev/null 2>&1; then
+  exec foreman start -f Procfile.dev
+else
+  exec ./bin/rails server "$@"
+fi
