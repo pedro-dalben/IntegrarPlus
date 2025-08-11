@@ -1,0 +1,110 @@
+<%= render Layouts::AdminComponent.new(title: "Catálogo de Componentes") do %>
+  <div class="space-y-8">
+    <section>
+      <h2>Botões</h2>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <button class="btn-primary">Primário</button>
+        <button class="btn-secondary">Secundário</button>
+        <button class="btn-danger">Perigo</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Badges/Chips</h2>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <span class="inline-flex items-center px-2 py-1 rounded-md bg-surface text-muted">Badge</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cards</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mt-2">
+        <div class="card">
+          <div class="flex justify-between items-center mb-2">
+            <h3>Card</h3>
+            <button class="btn-secondary">Action</button>
+          </div>
+          <p>Conteúdo do card</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Inputs</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mt-2">
+        <input type="text" placeholder="Texto" class="w-full" />
+        <input type="email" placeholder="Email" class="w-full" />
+        <input type="password" placeholder="Senha" class="w-full" />
+        <textarea placeholder="Textarea" class="w-full"></textarea>
+      </div>
+    </section>
+
+    <section>
+      <h2>Selects</h2>
+      <div class="grid gap-4 sm:grid-cols-2 mt-2">
+        <select class="w-full"><option>Selecione</option></select>
+        <select class="w-full" multiple><option>Multi</option></select>
+      </div>
+    </section>
+
+    <section>
+      <h2>Controles</h2>
+      <div class="flex items-center gap-4 mt-2">
+        <label class="inline-flex items-center gap-2"><input type="checkbox" /> Checkbox</label>
+        <label class="inline-flex items-center gap-2"><input type="radio" name="r1" /> Radio</label>
+        <label class="inline-flex items-center gap-2"><input type="radio" name="r1" /> Radio</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Alertas</h2>
+      <div class="grid gap-2 mt-2">
+        <div class="p-3 rounded-md bg-success text-white">Sucesso</div>
+        <div class="p-3 rounded-md bg-warning text-white">Aviso</div>
+        <div class="p-3 rounded-md bg-danger text-white">Erro</div>
+        <div class="p-3 rounded-md bg-info text-white">Info</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Modais/Drawers</h2>
+      <button class="btn-secondary">Abrir modal (placeholder)</button>
+      <button class="btn-primary">Abrir drawer (placeholder)</button>
+    </section>
+
+    <section>
+      <h2>Tabelas</h2>
+      <div class="overflow-x-auto mt-2">
+        <table class="w-full text-left">
+          <thead>
+            <tr><th class="py-2">Nome</th><th class="py-2">Email</th><th class="py-2">Ações</th></tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-gray-200 dark:border-neutral-700"><td class="py-2">Fulano</td><td class="py-2">fulano@example.com</td><td class="py-2"><button class="btn-primary">Ver</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Breadcrumbs</h2>
+      <nav aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+          <li><a href="#" class="hover:underline">Home</a></li>
+          <li>/</li>
+          <li><span class="text-muted">Seção</span></li>
+        </ol>
+      </nav>
+    </section>
+
+    <section>
+      <h2>Flash messages</h2>
+      <div class="grid gap-2 mt-2">
+        <div class="p-3 rounded-md bg-success text-white">Operação realizada com sucesso</div>
+        <div class="p-3 rounded-md bg-danger text-white">Erro ao processar</div>
+      </div>
+    </section>
+  </div>
+<% end %>
+
+

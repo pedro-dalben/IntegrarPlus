@@ -36,6 +36,9 @@ gem "jbuilder"
 gem "prawn"
 gem "prawn-table"
 
+# Componentes de view
+gem "view_component", "~> 3.12"
+
 gem "kamal", require: false
 gem "thruster", require: false
 
