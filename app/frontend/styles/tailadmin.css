@@ -131,6 +131,7 @@
 .sidebar {
   @apply fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white px-5 lg:static lg:translate-x-0;
   border-color: rgb(var(--t-fg) / 0.06);
+  background-color: white;
 }
 
 .sidebar.collapsed {

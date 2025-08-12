@@ -31,7 +31,7 @@ module Layouts
     private
 
     def sidebar_classes
-      base_classes = 'sidebar fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white dark:bg-gray-800 px-5 lg:static lg:translate-x-0'
+      base_classes = 'sidebar fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white px-5 lg:static lg:translate-x-0'
       base_classes += @collapsed ? ' collapsed' : ''
       base_classes
     end
@@ -47,7 +47,7 @@ module Layouts
                     }) +
         # Mobile panel
         content_tag(:aside, 
-                    class: 'fixed inset-y-0 left-0 z-50 w-[290px] transform -translate-x-full transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 border-r px-5',
+                    class: 'fixed inset-y-0 left-0 z-50 w-[290px] transform -translate-x-full transition-transform duration-300 ease-in-out bg-white border-r px-5',
                     data: { sidebar_target: 'panel' },
                     style: 'border-color: rgb(var(--t-fg) / 0.06)') do
           content_tag(:div, class: 'flex items-center justify-between pt-8 pb-7') do

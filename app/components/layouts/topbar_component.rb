@@ -39,9 +39,7 @@ module Layouts
                                                   content_tag(:div,
                                                               class: 'hidden sm:block text-gray-500 text-sm truncate') do
                                                     safe_join(render_breadcrumbs_inline)
-                                                  end,
-                                                  content_tag(:div, @title || '',
-                                                              class: 'text-xl md:text-2xl font-semibold tracking-tight truncate')
+                                                  end
                                                 ])
                                     end
                                   ])
@@ -85,9 +83,9 @@ module Layouts
     def user_dropdown
       content_tag(:div, class: 'relative', data: { controller: 'menu' }) do
         content_tag(:button,
-                    class: 'inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5', 
-                    aria: { haspopup: 'menu', expanded: 'false' }, 
-                    data: { 
+                    class: 'inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5',
+                    aria: { haspopup: 'menu', expanded: 'false' },
+                    data: {
                       action: 'click->menu#toggle',
                       menu_target: 'trigger'
                     }) do
