@@ -16,12 +16,24 @@ module Layouts
           safe_join([
                       content_tag(:div, class: 'flex items-center gap-3 min-w-0') do
                         safe_join([
-                                    content_tag(:button,
-                                                class: 'inline-flex items-center justify-center size-9 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 lg:hidden', data: { action: 'click->sidebar#open' }) do
-                                      content_tag(:span, 'Menu',
-                                                  class: 'sr-only') + content_tag(:span, '',
-                                                                                  class: 'size-5 rounded bg-gray-400')
-                                    end,
+                                                        content_tag(:button,
+                                class: 'inline-flex items-center justify-center size-9 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 lg:hidden', 
+                                data: { 
+                                  action: 'click->sidebar#open',
+                                  sidebar_target: 'trigger'
+                                }) do
+                      content_tag(:span, 'Menu', class: 'sr-only') + 
+                      content_tag(:svg, 
+                                  content_tag(:path, '', 
+                                             d: 'M4 6h16M4 12h16M4 18h16',
+                                             stroke: 'currentColor',
+                                             'stroke-width': '2',
+                                             'stroke-linecap': 'round',
+                                             'stroke-linejoin': 'round'),
+                                  class: 'size-5',
+                                  fill: 'none',
+                                  viewBox: '0 0 24 24')
+                    end,
                                     content_tag(:div, class: 'flex items-center gap-3 min-w-0') do
                                       safe_join([
                                                   content_tag(:div,

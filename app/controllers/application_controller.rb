@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   allow_browser versions: :modern
-  
+
   # CSRF protection
   protect_from_forgery with: :exception
 

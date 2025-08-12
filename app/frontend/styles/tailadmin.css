@@ -79,6 +79,68 @@
   color: rgb(var(--t-fg) / 0.70);
 }
 
+/* Menu Items - seguindo padrão TailAdmin */
+.menu-item {
+  @apply relative flex items-center gap-3 px-3 py-2 font-medium rounded-lg text-sm;
+}
+
+.menu-item-active {
+  background-color: var(--color-brand-50);
+  color: var(--color-brand-500);
+}
+
+.menu-item-inactive {
+  @apply text-gray-700 hover:bg-gray-100 hover:text-gray-700;
+}
+
+.menu-item-icon-active {
+  fill: var(--color-brand-500);
+}
+
+.menu-item-icon-inactive {
+  @apply fill-gray-500 group-hover:fill-gray-700;
+}
+
+.menu-item-arrow {
+  @apply absolute top-1/2 right-2.5 -translate-y-1/2;
+}
+
+.menu-item-arrow-active {
+  @apply rotate-180;
+  stroke: var(--color-brand-500);
+}
+
+.menu-item-arrow-inactive {
+  @apply stroke-gray-500 group-hover:stroke-gray-700;
+}
+
+.menu-dropdown-item {
+  @apply text-sm relative flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium;
+}
+
+.menu-dropdown-item-active {
+  background-color: var(--color-brand-50);
+  color: var(--color-brand-500);
+}
+
+.menu-dropdown-item-inactive {
+  @apply text-gray-700 hover:bg-gray-100;
+}
+
+/* Sidebar responsivo */
+.sidebar {
+  @apply fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white px-5 lg:static lg:translate-x-0;
+  border-color: rgb(var(--t-fg) / 0.06);
+}
+
+.sidebar.collapsed {
+  @apply lg:w-[90px];
+}
+
+.sidebar:hover {
+  @apply lg:w-[290px];
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .ta-badge-primary {
@@ -99,6 +161,44 @@
   .ta-badge-error {
     background-color: rgba(239, 68, 68, 0.15);
     color: #ef4444;
+  }
+
+  .menu-item-active {
+    background-color: rgba(var(--color-brand-500), 0.12);
+    color: var(--color-brand-400);
+  }
+
+  .menu-item-inactive {
+    @apply text-gray-300 hover:bg-white/5 hover:text-gray-300;
+  }
+
+  .menu-item-icon-active {
+    fill: var(--color-brand-400);
+  }
+
+  .menu-item-icon-inactive {
+    @apply fill-gray-400 group-hover:fill-gray-300;
+  }
+
+  .menu-item-arrow-active {
+    stroke: var(--color-brand-400);
+  }
+
+  .menu-item-arrow-inactive {
+    @apply stroke-gray-400 group-hover:stroke-gray-300;
+  }
+
+  .menu-dropdown-item-active {
+    background-color: rgba(var(--color-brand-500), 0.12);
+    color: var(--color-brand-400);
+  }
+
+  .menu-dropdown-item-inactive {
+    @apply text-gray-300 hover:bg-white/5;
+  }
+
+  .sidebar {
+    @apply bg-gray-800;
   }
 }
 
