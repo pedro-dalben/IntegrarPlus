@@ -14,6 +14,62 @@
   --color-surface: 248 250 252;
   --shadow-md: 0 4px 12px rgba(2, 6, 23, .08);
 
+  /* TailAdmin Brand Colors */
+  --color-brand-25: #f2f7ff;
+  --color-brand-50: #ecf3ff;
+  --color-brand-100: #dde9ff;
+  --color-brand-200: #c2d6ff;
+  --color-brand-300: #9cb9ff;
+  --color-brand-400: #7592ff;
+  --color-brand-500: #465fff;
+  --color-brand-600: #3641f5;
+  --color-brand-700: #2a31d8;
+  --color-brand-800: #252dae;
+  --color-brand-900: #262e89;
+  --color-brand-950: #161950;
+
+  /* TailAdmin Success Colors */
+  --color-success-25: #f6fef9;
+  --color-success-50: #ecfdf3;
+  --color-success-100: #d1fadf;
+  --color-success-200: #a6f4c5;
+  --color-success-300: #6ee7b7;
+  --color-success-400: #34d399;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+  --color-success-800: #065f46;
+  --color-success-900: #064e3b;
+  --color-success-950: #022c22;
+
+  /* TailAdmin Warning Colors */
+  --color-warning-25: #fffcf5;
+  --color-warning-50: #fefce8;
+  --color-warning-100: #fef9c3;
+  --color-warning-200: #fef08a;
+  --color-warning-300: #fde047;
+  --color-warning-400: #facc15;
+  --color-warning-500: #eab308;
+  --color-warning-600: #ca8a04;
+  --color-warning-700: #a16207;
+  --color-warning-800: #854d0e;
+  --color-warning-900: #713f12;
+  --color-warning-950: #422006;
+
+  /* TailAdmin Error Colors */
+  --color-error-25: #fffbfa;
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  --color-error-950: #450a0a;
+
   /* Aliases numéricos para mapear no Tailwind v4 sem ciclo */
   --t-bg: 255 255 255;
   --t-fg: 15 23 42;

@@ -1,8 +1,8 @@
 <%= render ::Layouts::AdminComponent.new(title: "Dashboard") do |c| %>
   <% c.with_actions do %>
     <div class="flex items-center gap-2">
-      <button class="ta-btn btn-primary">Novo</button>
-      <button class="ta-btn btn-secondary">Exportar</button>
+      <button class="ta-btn ta-btn-primary">Novo</button>
+      <button class="ta-btn ta-btn-secondary">Exportar</button>
     </div>
   <% end %>
 
@@ -23,8 +23,8 @@
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold">Vendas mensais</h3>
         <div class="inline-flex gap-2">
-          <button class="ta-btn btn-secondary">12m</button>
-          <button class="ta-btn btn-secondary">30d</button>
+          <button class="ta-btn ta-btn-secondary">12m</button>
+          <button class="ta-btn ta-btn-secondary">30d</button>
         </div>
       </div>
       <div class="h-72 rounded-lg overflow-hidden">
@@ -50,7 +50,7 @@
   <div class="ta-card p-5 mt-6">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold">Últimos pedidos</h3>
-      <button class="ta-btn btn-secondary">Ver todos</button>
+      <button class="ta-btn ta-btn-secondary">Ver todos</button>
     </div>
     <div class="overflow-x-auto">
       <table class="min-w-full text-sm">

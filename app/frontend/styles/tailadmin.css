@@ -3,12 +3,103 @@
 @source "../../../vendor/tailadmin/src/**/*.html";
 
 /* Port core TailAdmin styles we need as utilities using our tokens */
-.ta-card { @apply rounded-xl border; border-color: rgb(var(--t-fg) / 0.06); background-color: var(--color-surface); }
+
+/* Cards - seguindo padrão TailAdmin */
+.ta-card { 
+  @apply rounded-2xl border bg-white px-4 pb-3 pt-4 dark:bg-white/[0.03] sm:px-6;
+  border-color: rgb(var(--t-fg) / 0.06);
+}
+
+/* Buttons - seguindo padrão TailAdmin */
 .ta-btn { 
-  @apply inline-flex items-center gap-2 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50;
+  @apply inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50;
   background-color: transparent;
   border: 1px solid transparent;
 }
-.ta-input { @apply h-10 rounded-lg border px-3 text-sm; border-color: rgb(var(--t-fg) / 0.12); background-color: var(--color-surface); }
+
+/* Button Primary - padrão TailAdmin */
+.ta-btn-primary {
+  background-color: var(--color-brand-500);
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.ta-btn-primary:hover {
+  background-color: var(--color-brand-600);
+}
+
+/* Button Secondary - padrão TailAdmin */
+.ta-btn-secondary {
+  border-color: rgb(var(--t-fg) / 0.12);
+  background-color: var(--color-surface);
+  color: rgb(var(--t-fg));
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.ta-btn-secondary:hover {
+  background-color: rgb(var(--t-fg) / 0.03);
+}
+
+/* Inputs - seguindo padrão TailAdmin */
+.ta-input { 
+  @apply h-10 rounded-lg border px-3 text-sm transition-colors;
+  border-color: rgb(var(--t-fg) / 0.12); 
+  background-color: var(--color-surface);
+}
+.ta-input:focus {
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 1px var(--color-brand-500);
+}
+
+/* Badges - seguindo padrão TailAdmin */
+.ta-badge {
+  @apply inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-medium;
+}
+
+.ta-badge-primary {
+  background-color: var(--color-brand-50);
+  color: var(--color-brand-500);
+}
+
+.ta-badge-success {
+  background-color: var(--color-success-50, #ecfdf3);
+  color: var(--color-success-600, #16a34a);
+}
+
+.ta-badge-warning {
+  background-color: var(--color-warning-50, #fefce8);
+  color: var(--color-warning-600, #ca8a04);
+}
+
+.ta-badge-error {
+  background-color: var(--color-error-50, #fef2f2);
+  color: var(--color-error-600, #dc2626);
+}
+
+.ta-badge-gray {
+  background-color: rgb(var(--t-fg) / 0.06);
+  color: rgb(var(--t-fg) / 0.70);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .ta-badge-primary {
+    background-color: rgba(var(--color-brand-500), 0.15);
+    color: var(--color-brand-400);
+  }
+  
+  .ta-badge-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+  
+  .ta-badge-warning {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+  }
+  
+  .ta-badge-error {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+}
 
 
