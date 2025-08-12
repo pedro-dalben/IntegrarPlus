@@ -1,0 +1,109 @@
+<!-- Exemplo de uso do controller contract-fields no formulário de Profissional -->
+<div data-controller="contract-fields" 
+     data-contract-fields-contract-types-value="<%= ContractType.all.map { |ct| { id: ct.id, requires_company: ct.requires_company, requires_cnpj: ct.requires_cnpj } }.to_json %>"
+     data-contract-fields-current-type-value="<%= @professional&.contract_type_id %>">
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Campo obrigatório: Tipo de Contratação -->
+    <div class="md:col-span-2">
+      <label for="professional_contract_type_id" class="block text-sm font-medium mb-2">
+        Forma de Contratação *
+      </label>
+      <select id="professional_contract_type_id" 
+              name="professional[contract_type_id]" 
+              class="ta-input w-full"
+              data-action="change->contract-fields#contractTypeChanged"
+              required>
+        <option value="">Selecione uma forma de contratação...</option>
+        <% ContractType.ordered.each do |contract_type| %>
+          <option value="<%= contract_type.id %>" 
+                  <%= 'selected' if @professional&.contract_type_id == contract_type.id %>>
+            <%= contract_type.name %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+
+    <!-- Campo condicional: Nome da Empresa -->
+    <div data-contract-fields-target="companyField" 
+         class="md:col-span-2 transition-opacity duration-200"
+         style="display: none;">
+      <label for="professional_company_name" class="block text-sm font-medium mb-2">
+        Nome da Empresa *
+      </label>
+      <input type="text" 
+             id="professional_company_name" 
+             name="professional[company_name]" 
+             value="<%= @professional&.company_name %>"
+             class="ta-input w-full"
+             placeholder="Digite o nome da empresa contratante">
+      <p class="mt-1 text-sm text-gray-500">
+        Nome da empresa onde você trabalha ou presta serviços
+      </p>
+    </div>
+
+    <!-- Campo condicional: CNPJ -->
+    <div data-contract-fields-target="cnpjField" 
+         class="md:col-span-2 transition-opacity duration-200"
+         style="display: none;">
+      <label for="professional_cnpj" class="block text-sm font-medium mb-2">
+        CNPJ da Empresa *
+      </label>
+      <input type="text" 
+             id="professional_cnpj" 
+             name="professional[cnpj]" 
+             value="<%= @professional&.cnpj %>"
+             class="ta-input w-full"
+             placeholder="00.000.000/0000-00"
+             pattern="[0-9]{2}\.[0-9]{3}\.[0-9]{3}/[0-9]{4}-[0-9]{2}">
+      <p class="mt-1 text-sm text-gray-500">
+        CNPJ da empresa contratante (formato: 00.000.000/0000-00)
+      </p>
+    </div>
+
+    <!-- Outros campos do profissional... -->
+    <div class="md:col-span-2">
+      <label for="professional_name" class="block text-sm font-medium mb-2">
+        Nome Completo *
+      </label>
+      <input type="text" 
+             id="professional_name" 
+             name="professional[name]" 
+             value="<%= @professional&.name %>"
+             class="ta-input w-full"
+             required>
+    </div>
+
+    <div>
+      <label for="professional_email" class="block text-sm font-medium mb-2">
+        E-mail *
+      </label>
+      <input type="email" 
+             id="professional_email" 
+             name="professional[email]" 
+             value="<%= @professional&.email %>"
+             class="ta-input w-full"
+             required>
+    </div>
+
+    <div>
+      <label for="professional_phone" class="block text-sm font-medium mb-2">
+        Telefone
+      </label>
+      <input type="tel" 
+             id="professional_phone" 
+             name="professional[phone]" 
+             value="<%= @professional&.phone %>"
+             class="ta-input w-full"
+             placeholder="(11) 99999-9999">
+    </div>
+  </div>
+
+  <!-- Botões de ação -->
+  <div class="flex justify-end gap-3 mt-6">
+    <%= link_to "Cancelar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
+    <button type="submit" class="ta-btn ta-btn-primary">
+      <%= @professional&.persisted? ? 'Atualizar' : 'Criar' %> Profissional
+    </button>
+  </div>
+</div>
