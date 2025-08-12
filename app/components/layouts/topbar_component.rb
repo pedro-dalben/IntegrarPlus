@@ -94,7 +94,8 @@ module Layouts
           text_block = content_tag(:div, class: 'flex flex-col items-start leading-tight') do
             content_tag(:span, @current_professional&.try(:full_name) || 'Usuário',
                         class: 'text-sm font-semibold text-fg hidden sm:block') +
-              content_tag(:span, @current_professional&.try(:email) || '', class: 'text-xs text-gray-500 hidden lg:block')
+              content_tag(:span, @current_professional&.try(:email) || '',
+                          class: 'text-xs text-gray-500 hidden lg:block')
           end
           avatar + text_block
         end +
