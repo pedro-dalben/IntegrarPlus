@@ -82,6 +82,7 @@
 /* Menu Items - seguindo padrão TailAdmin */
 .menu-item {
   @apply relative flex items-center gap-3 px-3 py-2.5 font-medium rounded-lg text-sm transition-all duration-200;
+  position: relative;
 }
 
 .menu-item-active {
@@ -92,6 +93,10 @@
 .menu-item-inactive {
   @apply text-gray-700 hover:bg-gray-50 hover:text-gray-900;
   color: rgb(55 65 81) !important;
+}
+
+.menu-item-text {
+  @apply flex-1 min-w-0;
 }
 
 .menu-item-icon-active {
@@ -105,7 +110,8 @@
 }
 
 .menu-item-arrow {
-  @apply absolute top-1/2 right-2.5 -translate-y-1/2;
+  @apply flex-shrink-0;
+  margin-left: auto;
 }
 
 .menu-item-arrow-active {
