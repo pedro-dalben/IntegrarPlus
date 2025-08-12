@@ -1,0 +1,36 @@
+<%= render Layouts::AuthComponent.new(title: "Acessar conta") do %>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    <div class="space-y-4">
+      <div>
+        <%= f.label :email, "Email", class: "block text-sm mb-1" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "ta-input w-full" %>
+      </div>
+      <div>
+        <div class="flex items-center justify-between">
+          <%= f.label :password, "Senha", class: "block text-sm mb-1" %>
+          <% if devise_mapping.recoverable? %>
+            <%= link_to "Esqueci minha senha", new_password_path(resource_name), class: "text-sm text-brand-600 hover:underline" %>
+          <% end %>
+        </div>
+        <%= f.password_field :password, autocomplete: "current-password", class: "ta-input w-full" %>
+      </div>
+      <% if devise_mapping.rememberable? %>
+        <label class="inline-flex items-center gap-2 text-sm">
+          <%= f.check_box :remember_me %>
+          <span>Lembrar</span>
+        </label>
+      <% end %>
+      <div>
+        <%= f.submit "Entrar", class: "ta-btn w-full", style: "background-color: var(--color-brand-600); color: white" %>
+      </div>
+    </div>
+  <% end %>
+  <% if devise_mapping.registerable? %>
+    <p class="mt-6 text-center text-sm text-gray-500">
+      Não tem conta?
+      <%= link_to "Criar conta", new_registration_path(resource_name), class: "text-brand-600 hover:underline" %>
+    </p>
+  <% end %>
+<% end %>
+
+
