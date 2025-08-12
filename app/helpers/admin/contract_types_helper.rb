@@ -1,0 +1,2 @@
+module Admin::ContractTypesHelper
+end

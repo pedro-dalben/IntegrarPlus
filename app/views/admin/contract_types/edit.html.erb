@@ -1,0 +1,65 @@
+<%= render ::Layouts::AdminComponent.new(title: "Editar Forma de Contratação") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Voltar", admin_contract_types_path, class: "ta-btn ta-btn-secondary" %>
+  <% end %>
+
+  <div class="ta-card p-4 md:p-5">
+    <%= form_with model: [:admin, @contract_type], local: true, class: "space-y-6" do |form| %>
+      <% if @contract_type.errors.any? %>
+        <div class="ta-alert ta-alert-error">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium">Erro ao salvar forma de contratação</h3>
+              <div class="mt-2 text-sm">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @contract_type.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2">
+          <%= form.label :name, "Nome", class: "block text-sm font-medium mb-2" %>
+          <%= form.text_field :name, class: "ta-input w-full", placeholder: "Ex: CLT, PJ, Autônomo" %>
+          <p class="mt-1 text-sm text-gray-500">Nome único para identificar a forma de contratação</p>
+        </div>
+
+        <div>
+          <div class="flex items-center mb-2">
+            <%= form.check_box :requires_company, class: "ta-checkbox mr-2" %>
+            <%= form.label :requires_company, "Requer Empresa", class: "text-sm font-medium" %>
+          </div>
+          <p class="text-sm text-gray-500">Se marcado, o profissional deverá informar o nome da empresa</p>
+        </div>
+
+        <div>
+          <div class="flex items-center mb-2">
+            <%= form.check_box :requires_cnpj, class: "ta-checkbox mr-2" %>
+            <%= form.label :requires_cnpj, "Requer CNPJ", class: "text-sm font-medium" %>
+          </div>
+          <p class="text-sm text-gray-500">Se marcado, o profissional deverá informar o CNPJ da empresa</p>
+        </div>
+
+        <div class="md:col-span-2">
+          <%= form.label :description, "Descrição", class: "block text-sm font-medium mb-2" %>
+          <%= form.text_area :description, rows: 3, class: "ta-input w-full", placeholder: "Descrição opcional sobre esta forma de contratação" %>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <%= link_to "Cancelar", admin_contract_types_path, class: "ta-btn ta-btn-secondary" %>
+        <%= form.submit "Atualizar Forma de Contratação", class: "ta-btn ta-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

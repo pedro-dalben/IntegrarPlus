@@ -48,9 +48,7 @@ module Layouts
                         safe_join([
                                     content_tag(:div, class: 'relative hidden sm:block') do
                                       content_tag(:span, '',
-                                                  class: 'pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-9 text-gray-400') +
-                                      tag.input(type: :search, placeholder: 'Buscar...', class: 'h-9 rounded-lg border pl-9 pr-3 text-sm',
-                                                style: 'border-color: rgb(var(--t-fg) / 0.12); background: var(--color-surface)')
+                                                  class: 'pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-9 text-gray-400')
                                     end,
                                     user_dropdown
                                   ])

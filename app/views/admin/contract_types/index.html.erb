@@ -1,0 +1,57 @@
+<%= render ::Layouts::AdminComponent.new(title: "Formas de Contratação") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Novo", new_admin_contract_type_path, class: "ta-btn ta-btn-primary" %>
+  <% end %>
+
+  <div class="ta-card p-4 md:p-5">
+    <div class="overflow-x-auto -mx-1">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left text-gray-500 border-b" style="border-color: rgb(var(--t-fg) / 0.06)">
+            <th class="py-2 pr-2 md:pr-4 font-medium">Nome</th>
+            <th class="py-2 pr-2 md:pr-4 font-medium">Requer Empresa</th>
+            <th class="py-2 pr-2 md:pr-4 font-medium">Requer CNPJ</th>
+            <th class="py-2 pr-2 md:pr-4 font-medium">Última atualização</th>
+            <th class="py-2 text-right font-medium">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @contract_types.each do |contract_type| %>
+            <tr class="border-b last:border-b-0" style="border-color: rgb(var(--t-fg) / 0.06)">
+              <td class="py-2 pr-2 md:pr-4 font-medium"><%= contract_type.name %></td>
+              <td class="py-2 pr-2 md:pr-4">
+                <% if contract_type.requires_company? %>
+                  <span class="ta-badge ta-badge-success text-xs">Sim</span>
+                <% else %>
+                  <span class="ta-badge ta-badge-secondary text-xs">Não</span>
+                <% end %>
+              </td>
+              <td class="py-2 pr-2 md:pr-4">
+                <% if contract_type.requires_cnpj? %>
+                  <span class="ta-badge ta-badge-success text-xs">Sim</span>
+                <% else %>
+                  <span class="ta-badge ta-badge-secondary text-xs">Não</span>
+                <% end %>
+              </td>
+              <td class="py-2 pr-2 md:pr-4 text-gray-500">
+                <%= l(contract_type.updated_at, format: :short) %>
+              </td>
+              <td class="py-2 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <%= link_to "Editar", edit_admin_contract_type_path(contract_type), class: "ta-btn ta-btn-secondary text-xs px-3 py-1.5" %>
+                  <%= button_to "Excluir", admin_contract_type_path(contract_type), 
+                      method: :delete, 
+                      class: "ta-btn ta-btn-danger text-xs px-3 py-1.5",
+                      data: { 
+                        confirm: "Tem certeza que deseja excluir esta forma de contratação?",
+                        turbo_confirm: "Tem certeza que deseja excluir esta forma de contratação?"
+                      } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
