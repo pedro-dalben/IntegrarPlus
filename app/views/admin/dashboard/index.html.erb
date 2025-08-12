@@ -27,7 +27,9 @@
           <button class="ta-btn" style="border: 1px solid rgb(var(--t-fg) / 0.12)">30d</button>
         </div>
       </div>
-      <div class="h-72 rounded-lg" style="background: rgb(var(--t-fg) / 0.06)"></div>
+      <div class="h-72 rounded-lg overflow-hidden">
+        <canvas data-controller="chart" data-chart-labels-value='["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]' data-chart-series-value='[120,180,140,200,240,220,260,300,280,340,360,380]'></canvas>
+      </div>
     </div>
     <div class="ta-card p-5">
       <div class="flex items-center justify-between mb-4">

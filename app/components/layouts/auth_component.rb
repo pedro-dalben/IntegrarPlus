@@ -17,5 +17,3 @@ class Layouts::AuthComponent < ViewComponent::Base
     end
   end
 end
-
-

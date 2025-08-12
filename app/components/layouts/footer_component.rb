@@ -15,5 +15,3 @@ class Layouts::FooterComponent < ViewComponent::Base
     end
   end
 end
-
-
