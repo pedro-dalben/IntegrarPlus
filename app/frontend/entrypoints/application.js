@@ -29,6 +29,7 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 import "../styles/application.css";
 import "../javascript/application";
 import "preline";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
