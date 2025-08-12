@@ -11,25 +11,25 @@ module Layouts
     end
 
     def call
-      content_tag(:div, data: { controller: 'sidebar' }) do
+      safe_join([
         safe_join([
-          # Desktop sidebar
-          content_tag(:aside, class: sidebar_classes) do
-        content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header') do
-          link_to('/admin', class: 'flex items-center') do
-            content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
-          end
-        end +
-          content_tag(:div, class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
-            content_tag(:nav, data: { controller: 'sidebar-nav' }) do
-              render_menu_groups
-            end
-                    end
-        end,
-        # Mobile sidebar
-        mobile_sidebar_html
-      ])
-      end
+                    # Desktop sidebar
+                    content_tag(:aside, class: sidebar_classes) do
+                      content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header') do
+                        link_to('/admin', class: 'flex items-center') do
+                          content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
+                        end
+                      end +
+                        content_tag(:div,
+                                    class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
+                          content_tag(:nav, data: { controller: 'sidebar-nav' }) do
+                            render_menu_groups
+                          end
+                        end
+                    end,
+                                         # Mobile sidebar
+                     mobile_sidebar_html
+                   ])
     end
 
     private

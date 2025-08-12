@@ -4,11 +4,19 @@ export default class extends Controller {
   static targets = ["overlay", "panel", "initialFocus", "trigger"]
 
   connect() {
+    console.log('Sidebar controller connected')
+    console.log('Has overlay target:', this.hasOverlayTarget)
+    console.log('Has panel target:', this.hasPanelTarget)
+    console.log('Has trigger targets:', this.hasTriggerTarget)
     this.keyHandler = (e) => { if (e.key === 'Escape') this.close() }
   }
 
   open() {
-    if (!this.hasOverlayTarget || !this.hasPanelTarget) return
+    console.log('Sidebar open called')
+    if (!this.hasOverlayTarget || !this.hasPanelTarget) {
+      console.log('Missing targets - overlay:', this.hasOverlayTarget, 'panel:', this.hasPanelTarget)
+      return
+    }
     document.body.style.overflow = 'hidden'
     this.overlayTarget.classList.remove('hidden')
     this.panelTarget.style.transform = 'translateX(0)'
