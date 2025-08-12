@@ -1,0 +1,24 @@
+<%= render ::Layouts::AuthComponent.new(title: "Recuperar senha") do %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+    <div class="space-y-4">
+      <div class="text-center mb-6">
+        <p class="text-sm text-gray-600">
+          Digite seu email para receber as instruções de recuperação de senha.
+        </p>
+      </div>
+      
+      <div>
+        <%= f.label :email, "Email", class: "block text-sm mb-1" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "ta-input w-full", value: (resource.email if resource.email) %>
+      </div>
+      
+      <div>
+        <%= f.submit "Enviar instruções", class: "ta-btn w-full btn-primary" %>
+      </div>
+      
+      <div class="text-center mt-4">
+        <%= link_to "Voltar ao login", new_session_path(resource_name), class: "text-sm text-brand-600 hover:underline" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
