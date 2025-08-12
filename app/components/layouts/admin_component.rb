@@ -15,33 +15,37 @@ module Layouts
     def call
       content_tag :div, class: 'min-h-screen bg-bg text-fg', data: { controller: 'sidebar' } do
         safe_join([
-                    (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
-                    content_tag(:div, class: 'flex-1 flex flex-col min-w-0 lg:ml-0') do
-                      safe_join([
-                                  render(Layouts::TopbarComponent.new(current_professional: helpers.current_user, title: @title,
-                                                                      breadcrumbs: @breadcrumbs)),
-                                  content_tag(:main, class: 'flex-1 container-app py-6 pt-20 lg:pt-6') do
-                                    safe_join([
-                                                render_flash,
-                                                render_breadcrumbs,
-                                                content_tag(:div, class: 'flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4') do
-                                                  safe_join([
-                                                              content_tag(:h1, @title, class: 'text-2xl sm:text-3xl font-semibold'),
-                                                              (if actions
-                                                                 content_tag(:div, actions,
-                                                                             class: 'flex items-center gap-2')
-                                                               else
-                                                                 ''
-                                                               end)
-                                                            ])
-                                                end,
-                                                content
-                                              ])
-                                  end,
-                                  render(Layouts::FooterComponent.new)
-                                ])
-                    end
-                  ].compact)
+          (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
+          content_tag(:div, class: 'lg:pl-[290px]') do
+            safe_join([
+                        render(Layouts::TopbarComponent.new(current_professional: helpers.current_user, title: @title,
+                                                            breadcrumbs: @breadcrumbs)),
+                        content_tag(:main, class: 'pt-16') do
+                          content_tag(:div, class: 'container-app py-6') do
+                            safe_join([
+                                        render_flash,
+                                        render_breadcrumbs,
+                                        content_tag(:div,
+                                                    class: 'flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4') do
+                                          safe_join([
+                                                      content_tag(:h1, @title,
+                                                                  class: 'text-2xl sm:text-3xl font-semibold'),
+                                                      (if actions
+                                                         content_tag(:div, actions,
+                                                                     class: 'flex items-center gap-2')
+                                                       else
+                                                         ''
+                                                       end)
+                                                    ])
+                                        end,
+                                        content
+                                      ])
+                          end
+                        end,
+                        render(Layouts::FooterComponent.new)
+                      ])
+          end
+        ].compact)
       end
     end
 
@@ -60,11 +64,11 @@ module Layouts
     def render_alert_component(type, message)
       kind = case type.to_s
              when 'notice', 'success' then :success
-             when 'alert', 'error', 'danger' then :danger  
+             when 'alert', 'error', 'danger' then :danger
              when 'warning' then :warning
              else :info
              end
-      
+
       alert_classes = case kind
                       when :success
                         'border border-success-200 bg-success-50 text-success-800 dark:border-success-800/30 dark:bg-success-800/10 dark:text-success-400'
@@ -75,15 +79,15 @@ module Layouts
                       else
                         'border border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800/30 dark:bg-blue-800/10 dark:text-blue-400'
                       end
-      
+
       content_tag(:div, class: "rounded-xl p-4 #{alert_classes}") do
         content_tag(:div, class: 'flex items-start gap-3') do
           safe_join([
-            alert_icon(kind),
-            content_tag(:div, class: 'flex-1') do
-              content_tag(:p, message, class: 'text-sm font-medium')
-            end
-          ])
+                      alert_icon(kind),
+                      content_tag(:div, class: 'flex-1') do
+                        content_tag(:p, message, class: 'text-sm font-medium')
+                      end
+                    ])
         end
       end
     end
@@ -95,7 +99,7 @@ module Layouts
                    when :warning then 'text-yellow-500'
                    else 'text-blue-500'
                    end
-                   
+
       path = case kind
              when :success
                'M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z'
@@ -106,15 +110,15 @@ module Layouts
              else
                'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
              end
-      
+
       content_tag(:div, class: "-mt-0.5 #{icon_color}") do
-        content_tag(:svg, 
-                    content_tag(:path, '', 
-                               d: path, 
-                               stroke: 'currentColor',
-                               'stroke-width': '2',
-                               'stroke-linecap': 'round',
-                               'stroke-linejoin': 'round'),
+        content_tag(:svg,
+                    content_tag(:path, '',
+                                d: path,
+                                stroke: 'currentColor',
+                                'stroke-width': '2',
+                                'stroke-linecap': 'round',
+                                'stroke-linejoin': 'round'),
                     class: 'w-5 h-5',
                     fill: 'none',
                     viewBox: '0 0 24 24')

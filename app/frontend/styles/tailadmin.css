@@ -81,24 +81,27 @@
 
 /* Menu Items - seguindo padrão TailAdmin */
 .menu-item {
-  @apply relative flex items-center gap-3 px-3 py-2 font-medium rounded-lg text-sm;
+  @apply relative flex items-center gap-3 px-3 py-2.5 font-medium rounded-lg text-sm transition-all duration-200;
 }
 
 .menu-item-active {
-  background-color: var(--color-brand-50);
-  color: var(--color-brand-500);
+  background-color: var(--color-brand-500) !important;
+  color: white !important;
 }
 
 .menu-item-inactive {
-  @apply text-gray-700 hover:bg-gray-100 hover:text-gray-700;
+  @apply text-gray-700 hover:bg-gray-50 hover:text-gray-900;
+  color: rgb(55 65 81) !important;
 }
 
 .menu-item-icon-active {
-  fill: var(--color-brand-500);
+  color: white !important;
+  fill: white !important;
 }
 
 .menu-item-icon-inactive {
-  @apply fill-gray-500 group-hover:fill-gray-700;
+  @apply text-gray-500;
+  color: rgb(107 114 128) !important;
 }
 
 .menu-item-arrow {
@@ -129,10 +132,10 @@
 
 /* Sidebar responsivo */
 .sidebar {
-  @apply fixed left-0 top-0 z-30 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white px-5 lg:static lg:translate-x-0;
+  @apply fixed left-0 top-0 z-30 flex h-screen w-[290px] flex-col overflow-y-auto border-r bg-white px-5 lg:translate-x-0;
   border-color: rgb(var(--t-fg) / 0.06);
-  background-color: white;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background-color: white !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .sidebar.collapsed {
@@ -166,6 +169,7 @@
   /* Sidebar mobile adjustments */
   .sidebar {
     @apply transform -translate-x-full transition-transform duration-300 ease-in-out;
+    z-index: 50;
   }
 
   .sidebar.open {
@@ -175,6 +179,12 @@
   /* Header adjustments for mobile */
   header {
     left: 0 !important;
+    padding-left: 0 !important;
+  }
+  
+  /* No padding left in mobile */
+  .lg\:pl-\[290px\] {
+    padding-left: 0 !important;
   }
 }
 
