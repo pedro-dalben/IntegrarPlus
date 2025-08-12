@@ -3,6 +3,7 @@
 module Layouts
   class TopbarComponent < ViewComponent::Base
     def initialize(current_professional: nil, title: nil, breadcrumbs: nil)
+      super()
       @current_professional = current_professional
       @title = title
       @breadcrumbs = breadcrumbs || []
@@ -87,8 +88,11 @@ module Layouts
             safe_join([
                         link_to('Meu Perfil', '#',
                                 class: 'block px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5'),
-                        link_to('Sair', '/users/sign_out', data: { turbo_method: :delete },
-                                                           class: 'block px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5')
+                        button_to('Sair', destroy_user_session_path,
+                                  method: :delete,
+                                  data: { turbo_confirm: 'Tem certeza que deseja sair?' },
+                                  class: 'block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5 border-none bg-transparent',
+                                  form: { class: 'block w-full' })
                       ])
           end
       end
@@ -101,4 +105,3 @@ module Layouts
     end
   end
 end
-
