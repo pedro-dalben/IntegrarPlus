@@ -28,7 +28,8 @@ class Layouts::AdminComponent < ViewComponent::Base
             ])
           end
           safe_join([ sidebar_html, main_html ].compact)
-        end
+        end,
+        render(Layouts::FooterComponent.new)
       ])
     end
   end
