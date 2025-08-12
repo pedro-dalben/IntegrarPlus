@@ -36,18 +36,18 @@ module Layouts
       base_classes
     end
 
-    def mobile_sidebar_html
-      content_tag(:div, class: 'lg:hidden', data: { controller: 'sidebar' }) do
+        def mobile_sidebar_html
+      content_tag(:div, class: 'lg:hidden') do
         # Overlay
-        content_tag(:div, '', 
-                    class: 'fixed inset-0 z-40 bg-black/50 hidden', 
-                    data: { 
-                      sidebar_target: 'overlay', 
-                      action: 'click->sidebar#close' 
+        content_tag(:div, '',
+                    class: 'fixed inset-0 z-40 bg-black/50 hidden',
+                    data: {
+                      sidebar_target: 'overlay',
+                      action: 'click->sidebar#close'
                     }) +
         # Mobile panel
         content_tag(:aside, 
-                    class: 'fixed inset-y-0 left-0 z-50 w-[290px] transform -translate-x-full transition-transform duration-300 ease-in-out bg-white border-r px-5',
+                    class: 'fixed inset-y-0 left-0 z-50 w-[290px] transform -translate-x-full transition-transform duration-300 ease-in-out bg-white border-r px-5 shadow-xl',
                     data: { sidebar_target: 'panel' },
                     style: 'border-color: rgb(var(--t-fg) / 0.06)') do
           content_tag(:div, class: 'flex items-center justify-between pt-8 pb-7') do

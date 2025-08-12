@@ -13,14 +13,14 @@ module Layouts
     end
 
     def call
-      content_tag :div, class: 'min-h-screen bg-bg text-fg flex' do
+      content_tag :div, class: 'min-h-screen bg-bg text-fg', data: { controller: 'sidebar' } do
         safe_join([
                     (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
-                    content_tag(:div, class: 'flex-1 flex flex-col min-w-0') do
+                    content_tag(:div, class: 'flex-1 flex flex-col min-w-0 lg:ml-0') do
                       safe_join([
                                   render(Layouts::TopbarComponent.new(current_professional: helpers.current_user, title: @title,
                                                                       breadcrumbs: @breadcrumbs)),
-                                  content_tag(:main, class: 'flex-1 container-app py-6') do
+                                  content_tag(:main, class: 'flex-1 container-app py-6 pt-20 lg:pt-6') do
                                     safe_join([
                                                 render_flash,
                                                 render_breadcrumbs,

@@ -10,7 +10,7 @@ module Layouts
     end
 
     def call
-      content_tag :header, class: 'sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b',
+      content_tag :header, class: 'fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b lg:left-[290px]',
                            style: 'border-color: rgb(var(--t-fg) / 0.06)' do
         content_tag :div, class: 'container-app h-16 flex items-center gap-3 justify-between' do
           safe_join([
