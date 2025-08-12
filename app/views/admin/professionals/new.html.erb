@@ -1,0 +1,235 @@
+<%= render ::Layouts::AdminComponent.new(title: "Novo Profissional") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Voltar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
+  <% end %>
+
+  <div class="space-y-6">
+    <%= form_with model: [:admin, @professional], local: true, class: "space-y-6" do |form| %>
+      <% if @professional.errors.any? %>
+        <div class="ta-alert ta-alert-error" data-controller="flash">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium">Erro ao salvar profissional</h3>
+              <div class="mt-2 text-sm">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @professional.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Dados Pessoais -->
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Dados Pessoais</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="md:col-span-2">
+            <%= form.label :full_name, "Nome Completo *", class: "block text-sm font-medium mb-2" %>
+            <%= form.text_field :full_name, class: "ta-input w-full", required: true %>
+          </div>
+
+          <div>
+            <%= form.label :birth_date, "Data de Nascimento", class: "block text-sm font-medium mb-2" %>
+            <%= form.text_field :birth_date, 
+                class: "ta-input w-full",
+                data: { 
+                  controller: "datepicker",
+                  datepicker_format_value: "d/m/Y",
+                  datepicker_allow_input_value: true
+                } %>
+          </div>
+
+          <div>
+            <%= form.label :cpf, "CPF *", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="mask" data-mask-type-value="cpf">
+              <%= form.text_field :cpf, 
+                  class: "ta-input w-full", 
+                  required: true,
+                  data: { mask_target: "input" } %>
+            </div>
+          </div>
+
+          <div>
+            <%= form.label :phone, "Telefone", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="mask" data-mask-type-value="phone">
+              <%= form.text_field :phone, 
+                  class: "ta-input w-full",
+                  data: { mask_target: "input" } %>
+            </div>
+          </div>
+
+          <div>
+            <%= form.label :email, "E-mail *", class: "block text-sm font-medium mb-2" %>
+            <%= form.email_field :email, class: "ta-input w-full", required: true %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acesso e Status -->
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Acesso e Status</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div class="flex items-center mb-2">
+              <%= form.check_box :active, class: "ta-checkbox mr-2" %>
+              <%= form.label :active, "Ativo", class: "text-sm font-medium" %>
+            </div>
+            <p class="text-sm text-gray-500">Profissionais inativos não conseguem fazer login</p>
+          </div>
+
+          <div>
+            <%= form.label :password, "Senha", class: "block text-sm font-medium mb-2" %>
+            <%= form.password_field :password, class: "ta-input w-full" %>
+            <p class="text-sm text-gray-500">Deixe em branco para manter a senha atual</p>
+          </div>
+
+          <div>
+            <%= form.label :password_confirmation, "Confirmar Senha", class: "block text-sm font-medium mb-2" %>
+            <%= form.password_field :password_confirmation, class: "ta-input w-full" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vínculos e Carga -->
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Vínculos e Carga</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :contract_type_id, "Forma de Contratação", class: "block text-sm font-medium mb-2" %>
+            <%= form.select :contract_type_id, 
+                @contract_types.map { |ct| [ct.name, ct.id] }, 
+                { prompt: "Selecione uma forma de contratação..." }, 
+                { class: "ta-input w-full" } %>
+          </div>
+
+          <div>
+            <%= form.label :hired_on, "Data de Contratação", class: "block text-sm font-medium mb-2" %>
+            <%= form.text_field :hired_on, 
+                class: "ta-input w-full",
+                data: { 
+                  controller: "datepicker",
+                  datepicker_format_value: "d/m/Y",
+                  datepicker_allow_input_value: true
+                } %>
+          </div>
+
+          <div>
+            <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="time-hhmm">
+              <%= form.text_field :workload_hhmm, 
+                  value: @professional.workload_hhmm,
+                  class: "ta-input w-full",
+                  placeholder: "40:00",
+                  data: { time_hhmm_target: "input" } %>
+              <%= form.hidden_field :workload_minutes, 
+                  value: @professional.workload_minutes,
+                  data: { time_hhmm_target: "hidden" } %>
+            </div>
+            <p class="text-sm text-gray-500">Ex: 40:00 para 40 horas semanais</p>
+          </div>
+
+          <div>
+            <%= form.label :council_code, "Código do Conselho", class: "block text-sm font-medium mb-2" %>
+            <%= form.text_field :council_code, class: "ta-input w-full" %>
+          </div>
+
+          <!-- Campos condicionais -->
+          <div data-controller="contract-fields" 
+               data-contract-fields-contract-types-value="<%= @contract_types.map { |ct| { id: ct.id, requires_company: ct.requires_company, requires_cnpj: ct.requires_cnpj } }.to_json %>"
+               data-contract-fields-current-type-value="<%= @professional.contract_type_id %>">
+            
+            <div data-contract-fields-target="companyField" class="md:col-span-2" style="display: none;">
+              <%= form.label :company_name, "Nome da Empresa", class: "block text-sm font-medium mb-2" %>
+              <%= form.text_field :company_name, class: "ta-input w-full" %>
+            </div>
+
+            <div data-contract-fields-target="cnpjField" class="md:col-span-2" style="display: none;">
+              <%= form.label :cnpj, "CNPJ", class: "block text-sm font-medium mb-2" %>
+              <div data-controller="mask" data-mask-type-value="cnpj">
+                <%= form.text_field :cnpj, 
+                    class: "ta-input w-full",
+                    data: { mask_target: "input" } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Permissões e Competências -->
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Permissões e Competências</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :group_ids, "Grupos", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="tom-select">
+              <%= form.select :group_ids, 
+                  @groups.map { |g| [g.name, g.id] }, 
+                  { prompt: "Selecione os grupos..." }, 
+                  { 
+                    class: "ta-input w-full",
+                    multiple: true,
+                    data: { 
+                      tom_select_target: "select",
+                      placeholder: "Selecione os grupos..."
+                    }
+                  } %>
+            </div>
+          </div>
+
+          <div>
+            <%= form.label :speciality_ids, "Especialidades", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="tom-select dependent-specializations" 
+                 data-dependent-specializations-endpoint-value="/admin/specializations.json">
+              <%= form.select :speciality_ids, 
+                  @specialities.map { |s| [s.name, s.id] }, 
+                  { prompt: "Selecione as especialidades..." }, 
+                  { 
+                    class: "ta-input w-full",
+                    multiple: true,
+                    data: { 
+                      tom_select_target: "select",
+                      dependent_specializations_target: "specialitySelect",
+                      action: "change->dependent-specializations#specialityChanged",
+                      placeholder: "Selecione as especialidades..."
+                    }
+                  } %>
+            </div>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= form.label :specialization_ids, "Especializações", class: "block text-sm font-medium mb-2" %>
+            <div data-controller="tom-select dependent-specializations">
+              <%= form.select :specialization_ids, 
+                  [], 
+                  { prompt: "Selecione as especializações..." }, 
+                  { 
+                    class: "ta-input w-full",
+                    multiple: true,
+                    data: { 
+                      tom_select_target: "select",
+                      dependent_specializations_target: "specializationSelect",
+                      placeholder: "Selecione as especializações..."
+                    }
+                  } %>
+            </div>
+            <p class="text-sm text-gray-500">Especializações disponíveis baseadas nas especialidades selecionadas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex justify-end gap-3">
+        <%= link_to "Cancelar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
+        <%= form.submit "Criar Profissional", class: "ta-btn ta-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

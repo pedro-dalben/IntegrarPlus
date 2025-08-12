@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_214746) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_220230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,6 +89,46 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_214746) do
     t.index ["key"], name: "index_permissions_on_key", unique: true
   end
 
+  create_table "professional_specialities", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.bigint "speciality_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["professional_id", "speciality_id"], name: "index_professional_specialities_unique", unique: true
+    t.index ["professional_id"], name: "index_professional_specialities_on_professional_id"
+    t.index ["speciality_id"], name: "index_professional_specialities_on_speciality_id"
+  end
+
+  create_table "professional_specializations", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.bigint "specialization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["professional_id", "specialization_id"], name: "index_professional_specializations_unique", unique: true
+    t.index ["professional_id"], name: "index_professional_specializations_on_professional_id"
+    t.index ["specialization_id"], name: "index_professional_specializations_on_specialization_id"
+  end
+
+  create_table "professionals", force: :cascade do |t|
+    t.string "full_name", null: false
+    t.date "birth_date"
+    t.string "cpf", null: false
+    t.string "phone"
+    t.string "email", null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "contract_type_id"
+    t.date "hired_on"
+    t.integer "workload_minutes", default: 0, null: false
+    t.string "council_code"
+    t.string "company_name"
+    t.string "cnpj"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_type_id"], name: "index_professionals_on_contract_type_id"
+    t.index ["cpf"], name: "index_professionals_on_cpf", unique: true
+    t.index ["email"], name: "index_professionals_on_email", unique: true
+  end
+
   create_table "specialities", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -144,5 +184,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_214746) do
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
+  add_foreign_key "professional_specialities", "professionals"
+  add_foreign_key "professional_specialities", "specialities"
+  add_foreign_key "professional_specializations", "professionals"
+  add_foreign_key "professional_specializations", "specializations"
+  add_foreign_key "professionals", "contract_types"
   add_foreign_key "specializations", "specialities"
 end

@@ -73,3 +73,16 @@ specialities_data.each do |speciality_data|
     Specialization.find_or_create_by!(name: spec_name, speciality: speciality)
   end
 end
+
+# Grupos padrão
+groups = [
+  'Administradores',
+  'Coordenadores',
+  'Profissionais',
+  'Estagiários',
+  'Voluntários'
+]
+
+groups.each do |group_name|
+  Group.find_or_create_by!(name: group_name)
+end

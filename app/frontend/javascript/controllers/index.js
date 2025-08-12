@@ -11,6 +11,12 @@ import AccordionController from "./accordion_controller"
 import ContractFieldsController from "./contract_fields_controller"
 import TomSelectController from "./tom_select_controller"
 import DependentSpecializationsController from "./dependent_specializations_controller"
+import MaskController from "./mask_controller"
+import TimeHhmmController from "./time_hhmm_controller"
+import FlashController from "./flash_controller"
+import SearchController from "./search_controller"
+import RowController from "./row_controller"
+import DropdownController from "./dropdown_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
 application.register("chart", ChartController)
@@ -19,3 +25,9 @@ application.register("accordion", AccordionController)
 application.register("contract-fields", ContractFieldsController)
 application.register("tom-select", TomSelectController)
 application.register("dependent-specializations", DependentSpecializationsController)
+application.register("mask", MaskController)
+application.register("time-hhmm", TimeHhmmController)
+application.register("flash", FlashController)
+application.register("search", SearchController)
+application.register("row", RowController)
+application.register("dropdown", DropdownController)

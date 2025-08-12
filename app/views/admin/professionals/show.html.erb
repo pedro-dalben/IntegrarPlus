@@ -1,0 +1,163 @@
+<%= render ::Layouts::AdminComponent.new(title: @professional.full_name) do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Voltar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
+    <%= link_to "Editar", edit_admin_professional_path(@professional), class: "ta-btn ta-btn-primary" %>
+  <% end %>
+
+  <div class="space-y-6">
+    <!-- Dados Principais -->
+    <div class="ta-card p-4 md:p-5">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center">
+          <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
+            <span class="text-xl font-medium text-gray-600">
+              <%= @professional.full_name.split(' ').map(&:first).join('').upcase[0..1] %>
+            </span>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold"><%= @professional.full_name %></h2>
+            <p class="text-gray-600"><%= @professional.email %></p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <% if @professional.active? %>
+            <span class="ta-badge ta-badge-success">Ativo</span>
+          <% else %>
+            <span class="ta-badge ta-badge-danger">Inativo</span>
+          <% end %>
+          <% if @professional.confirmed_at? %>
+            <span class="ta-badge ta-badge-primary">Confirmado</span>
+          <% else %>
+            <span class="ta-badge ta-badge-warning">Pendente</span>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">CPF</h3>
+          <p class="text-sm"><%= @professional.cpf %></p>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Telefone</h3>
+          <p class="text-sm"><%= @professional.phone || "Não informado" %></p>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Data de Nascimento</h3>
+          <p class="text-sm"><%= @professional.birth_date&.strftime("%d/%m/%Y") || "Não informada" %></p>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Forma de Contratação</h3>
+          <p class="text-sm"><%= @professional.contract_type&.name || "Não informada" %></p>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Data de Contratação</h3>
+          <p class="text-sm"><%= @professional.hired_on&.strftime("%d/%m/%Y") || "Não informada" %></p>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Carga Horária</h3>
+          <p class="text-sm"><%= @professional.workload_hhmm %> (<%= @professional.workload_minutes %> minutos)</p>
+        </div>
+        <% if @professional.contract_type&.requires_company? %>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-1">Empresa</h3>
+            <p class="text-sm"><%= @professional.company_name || "Não informada" %></p>
+          </div>
+        <% end %>
+        <% if @professional.contract_type&.requires_cnpj? %>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-1">CNPJ</h3>
+            <p class="text-sm"><%= @professional.cnpj || "Não informado" %></p>
+          </div>
+        <% end %>
+        <div>
+          <h3 class="text-sm font-medium text-gray-500 mb-1">Código do Conselho</h3>
+          <p class="text-sm"><%= @professional.council_code || "Não informado" %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grupos -->
+    <% if @professional.groups.any? %>
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Grupos</h3>
+        <div class="flex flex-wrap gap-2">
+          <% @professional.groups.each do |group| %>
+            <span class="ta-badge ta-badge-secondary"><%= group.name %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Especialidades -->
+    <% if @professional.specialities.any? %>
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Especialidades</h3>
+        <div class="flex flex-wrap gap-2">
+          <% @professional.specialities.each do |speciality| %>
+            <span class="ta-badge ta-badge-primary"><%= speciality.name %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Especializações -->
+    <% if @professional.specializations.any? %>
+      <div class="ta-card p-4 md:p-5">
+        <h3 class="text-lg font-semibold mb-4">Especializações</h3>
+        <div class="flex flex-wrap gap-2">
+          <% @professional.specializations.each do |specialization| %>
+            <span class="ta-badge ta-badge-info">
+              <%= specialization.name %> (<%= specialization.speciality.name %>)
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Ações Administrativas -->
+    <div class="ta-card p-4 md:p-5">
+      <h3 class="text-lg font-semibold mb-4">Ações Administrativas</h3>
+      <div class="flex flex-wrap gap-3">
+        <% unless @professional.confirmed_at? %>
+          <%= button_to "Reenviar confirmação", 
+              resend_confirmation_admin_professional_path(@professional),
+              method: :post,
+              class: "ta-btn ta-btn-secondary",
+              data: { confirm: "Reenviar e-mail de confirmação?" } %>
+        <% end %>
+        
+        <%= button_to "Resetar senha", 
+            send_reset_password_admin_professional_path(@professional),
+            method: :post,
+            class: "ta-btn ta-btn-secondary",
+            data: { confirm: "Enviar e-mail de reset de senha?" } %>
+        
+        <% unless @professional.confirmed_at? %>
+          <%= button_to "Forçar confirmação", 
+              force_confirm_admin_professional_path(@professional),
+              method: :post,
+              class: "ta-btn ta-btn-warning",
+              data: { confirm: "Confirmar profissional manualmente?" } %>
+        <% end %>
+        
+        <%= button_to "Excluir profissional", 
+            admin_professional_path(@professional),
+            method: :delete,
+            class: "ta-btn ta-btn-danger",
+            data: { confirm: "Tem certeza que deseja excluir este profissional?" } %>
+      </div>
+    </div>
+
+    <!-- Logs/Atividades (placeholder) -->
+    <div class="ta-card p-4 md:p-5">
+      <h3 class="text-lg font-semibold mb-4">Atividades Recentes</h3>
+      <div class="text-center py-8 text-gray-500">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="mt-2">Logs de atividades serão implementados em breve</p>
+      </div>
+    </div>
+  </div>
+<% end %>

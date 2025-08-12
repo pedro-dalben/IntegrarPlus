@@ -24,6 +24,13 @@ Rails.application.routes.draw do
   get 'styleguide' => 'styleguide#index'
 
   namespace :admin do
+    resources :professionals do
+      member do
+        post :resend_confirmation
+        post :send_reset_password
+        post :force_confirm
+      end
+    end
     resources :specialities
     resources :specializations
     resources :contract_types
