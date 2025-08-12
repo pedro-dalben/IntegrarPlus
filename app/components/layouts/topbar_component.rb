@@ -91,15 +91,15 @@ module Layouts
                     }) do
           avatar = content_tag(:div, initials_for(@current_professional&.try(:full_name)) || 'US',
                                class: 'h-8 w-8 rounded-full grid place-content-center bg-brand-50 text-brand-600 text-sm font-medium relative')
-          text_block = content_tag(:div, class: 'hidden lg:flex flex-col items-start leading-tight') do
+          text_block = content_tag(:div, class: 'flex flex-col items-start leading-tight') do
             content_tag(:span, @current_professional&.try(:full_name) || 'Usuário',
-                        class: 'text-sm font-semibold text-fg') +
-              content_tag(:span, @current_professional&.try(:email) || '', class: 'text-xs text-gray-500')
+                        class: 'text-sm font-semibold text-fg hidden sm:block') +
+              content_tag(:span, @current_professional&.try(:email) || '', class: 'text-xs text-gray-500 hidden lg:block')
           end
           avatar + text_block
         end +
           content_tag(:div,
-                      class: 'absolute right-0 mt-2 w-56 rounded-xl border bg-white dark:bg-gray-800 shadow-xl hidden', data: { menu_target: 'panel' }, style: 'border-color: rgb(var(--t-fg) / 0.06)') do
+                      class: 'absolute right-0 mt-2 w-56 rounded-xl border bg-white shadow-xl hidden z-50', data: { menu_target: 'panel' }, style: 'border-color: rgb(var(--t-fg) / 0.06); background-color: white;') do
             safe_join([
                         link_to('Meu Perfil', '#',
                                 class: 'block px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5'),
