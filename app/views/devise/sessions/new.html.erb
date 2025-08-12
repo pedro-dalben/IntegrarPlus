@@ -1,4 +1,4 @@
-<%= render Layouts::AuthComponent.new(title: "Acessar conta") do %>
+<%= render ::Layouts::AuthComponent.new(title: "Acesse sua conta") do %>
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
     <div class="space-y-4">
       <div>
@@ -17,19 +17,13 @@
       <% if devise_mapping.rememberable? %>
         <label class="inline-flex items-center gap-2 text-sm">
           <%= f.check_box :remember_me %>
-          <span>Lembrar</span>
+          <span>Lembrar de mim</span>
         </label>
       <% end %>
       <div>
-        <%= f.submit "Entrar", class: "ta-btn w-full", style: "background-color: var(--color-brand-600); color: white" %>
+        <%= f.submit "Entrar", class: "ta-btn w-full btn-primary" %>
       </div>
     </div>
-  <% end %>
-  <% if devise_mapping.registerable? %>
-    <p class="mt-6 text-center text-sm text-gray-500">
-      Não tem conta?
-      <%= link_to "Criar conta", new_registration_path(resource_name), class: "text-brand-600 hover:underline" %>
-    </p>
   <% end %>
 <% end %>
 

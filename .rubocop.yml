@@ -11,6 +11,10 @@ AllCops:
 Layout/LineLength:
   Max: 120
 
+require:
+  - rubocop-rails
+  - rubocop-performance
+
 Rails:
   Enabled: true
 

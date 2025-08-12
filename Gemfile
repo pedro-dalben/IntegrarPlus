@@ -1,63 +1,70 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-gem "rails", "~> 8.0.2"
-gem "pg", ">= 1.1"
-gem "puma", ">= 5.0"
-gem "propshaft"
-gem "dotenv-rails"
-gem "bootsnap", require: false
+source 'https://rubygems.org'
 
-gem "vite_rails"
+gem 'bootsnap', require: false
+gem 'dotenv-rails'
+gem 'pg', '>= 1.1'
+gem 'propshaft'
+gem 'puma', '>= 5.0'
+gem 'rails', '~> 8.0.2'
 
-gem "turbo-rails"
-gem "stimulus-rails"
+gem 'vite_rails'
 
-gem "devise", "~> 4.9"
-gem "pundit"
+gem 'stimulus-rails'
+gem 'turbo-rails'
 
-gem "meilisearch-rails"
+gem 'devise', '~> 4.9'
+gem 'pundit'
 
-gem "solid_queue"
-gem "solid_cache"
-gem "solid_cable"
+gem 'meilisearch-rails'
 
-gem "sidekiq"
+gem 'solid_cable'
+gem 'solid_cache'
+gem 'solid_queue'
 
-gem "httparty", "~> 0.23.1"
-gem "faraday", "~> 2.13"
+gem 'sidekiq'
 
-gem "image_processing", "~> 1.13"
-gem "paper_trail"
+gem 'faraday', '~> 2.13'
+gem 'httparty', '~> 0.23.1'
 
-gem "simple_form"
-gem "simple_form-tailwind"
-gem "jbuilder"
+gem 'image_processing', '~> 1.13'
+gem 'paper_trail'
 
-gem "prawn"
-gem "prawn-table"
+gem 'jbuilder'
+gem 'simple_form'
+gem 'simple_form-tailwind'
+
+gem 'prawn'
+gem 'prawn-table'
 
 # Componentes de view
-gem "view_component", "~> 3.12"
+gem 'view_component', '~> 3.12'
 
-gem "kamal", require: false
-gem "thruster", require: false
+gem 'kamal', require: false
+gem 'thruster', require: false
 
 group :development do
-  gem "web-console"
-  gem "hotwire-spark"
-  gem "foreman", "~> 0.88.1"
+  gem 'foreman', '~> 0.88.1'
+  gem 'hotwire-spark'
+  gem 'web-console'
 end
 
 group :development, :test do
-  gem "debug", require: "debug/prelude"
-  gem "brakeman", require: false
-  gem "rubocop-rails-omakase", require: false
-  gem "rspec-rails", "~> 7.0"
+  gem 'brakeman', require: false
+  gem 'debug', require: 'debug/prelude'
+  gem 'rspec-rails', '~> 7.0'
+  gem 'rubocop-rails-omakase', require: false
 end
 
 group :test do
-  gem "capybara"
-  gem "selenium-webdriver"
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
-gem "tzinfo-data", platforms: %i[windows jruby]
+gem 'tzinfo-data', platforms: %i[windows jruby]
+
+gem 'rubocop', '~> 1.79', group: :development
+gem 'rubocop-performance', '~> 1.25', group: :development
+gem 'rubocop-rails', '~> 2.33', group: :development
+gem 'standardrb', '~> 1.0', group: :development

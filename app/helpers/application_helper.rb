@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
-  def permit?(permission_key)
+  def permit?(_permission_key)
     true
   end
 end

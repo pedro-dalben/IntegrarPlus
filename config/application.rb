@@ -1,6 +1,8 @@
-require_relative "boot"
+# frozen_string_literal: true
 
-require "rails/all"
+require_relative 'boot'
+
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,8 +11,8 @@ Bundler.require(*Rails.groups)
 module IntegrarPlus
   class Application < Rails::Application
     config.load_defaults 8.0
-    config.time_zone = "America/Sao_Paulo"
-    config.i18n.default_locale = :"pt-BR"
+    config.time_zone = 'America/Sao_Paulo'
+    config.i18n.default_locale = :'pt-BR'
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
@@ -26,7 +28,7 @@ module IntegrarPlus
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    config.eager_load_paths << Rails.root.join("app/components")
-    config.autoload_paths << Rails.root.join("app/components")
+    config.eager_load_paths << Rails.root.join('app/components')
+    config.autoload_paths << Rails.root.join('app/components')
   end
 end

@@ -1,5 +1,8 @@
-class Ui::ButtonComponent < ViewComponent::Base
-  def initialize(label: nil, href: nil, variant: :primary, size: :md, icon: nil, icon_right: false, disabled: false, data: {})
+# frozen_string_literal: true
+module Ui
+  class ButtonComponent < ViewComponent::Base
+  def initialize(label: nil, href: nil, variant: :primary, size: :md, icon: nil, icon_right: false, disabled: false, 
+data: {})
     @label = label
     @href = href
     @variant = variant.to_sym
@@ -11,8 +14,8 @@ class Ui::ButtonComponent < ViewComponent::Base
   end
 
   def call
-    content = safe_join([ icon_html, label_html ].compact)
-    content = safe_join([ label_html, icon_html ].compact) if @icon_right
+    content = safe_join([icon_html, label_html].compact)
+    content = safe_join([label_html, icon_html].compact) if @icon_right
     if @href.present? && !@disabled
       link_to @href, class: classes, data: @data do
         content
@@ -44,22 +47,22 @@ class Ui::ButtonComponent < ViewComponent::Base
   def variant_classes
     case @variant
     when :secondary
-      "border text-fg" + inline_border + inline_bg_surface
+      "border text-fg#{inline_border}#{inline_bg_surface}"
     when :outline
-      "border text-brand-600" + inline_border_brand + " bg-transparent"
+      "border text-brand-600#{inline_border_brand} bg-transparent"
     when :ghost
       "text-brand-600 hover:bg-brand-50"
     when :danger
-      "text-white" + inline_bg("--color-error-600")
+      "text-white#{inline_bg("--color-error-600")}"
     when :link
       "text-brand-600 hover:underline px-0 py-0"
     else
-      "text-white" + inline_bg("--color-brand-600")
+      "text-white#{inline_bg("--color-brand-600")}"
     end
   end
 
   def inline_bg(var)
-    " " + %(style="background-color: var(#{var});")
+    " style="background-color: var(#{var});""
   end
 
   def inline_bg_surface
@@ -67,20 +70,23 @@ class Ui::ButtonComponent < ViewComponent::Base
   end
 
   def inline_border
-    %( ) + %(style="border-color: rgb(var(--t-fg) / 0.12)")
+    " style=\"border-color: rgb(var(--t-fg) / 0.12)\""
   end
 
   def inline_border_brand
-    %( ) + %(style="border-color: var(--color-brand-600)")
+    " style=\"border-color: var(--color-brand-600)\""
   end
 
   def icon_html
     return nil if @icon.blank?
-    content_tag(:i, "", class: [ "bi", @icon ].join(" "))
+
+    content_tag(:i, "", class: ["bi", @icon].join(" "))
   end
 
   def label_html
-    return content unless @label.present?
+    return content if @label.blank?
+
     content_tag(:span, @label)
+  end
   end
 end
