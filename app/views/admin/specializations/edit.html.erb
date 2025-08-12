@@ -1,0 +1,53 @@
+<%= render ::Layouts::AdminComponent.new(title: "Editar Especialização") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Voltar", admin_specializations_path, class: "ta-btn ta-btn-secondary" %>
+  <% end %>
+
+  <div class="ta-card p-4 md:p-5">
+    <%= form_with model: [:admin, @specialization], local: true, class: "space-y-6" do |form| %>
+      <% if @specialization.errors.any? %>
+        <div class="ta-alert ta-alert-error">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium">Erro ao salvar especialização</h3>
+              <div class="mt-2 text-sm">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @specialization.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :name, "Nome", class: "block text-sm font-medium mb-2" %>
+          <%= form.text_field :name, class: "ta-input w-full", placeholder: "Ex: Linguagem, ABA, Integração Sensorial" %>
+          <p class="mt-1 text-sm text-gray-500">Nome único para identificar a especialização</p>
+        </div>
+
+        <div>
+          <%= form.label :speciality_id, "Especialidade", class: "block text-sm font-medium mb-2" %>
+          <%= form.select :speciality_id, 
+              @specialities.map { |s| [s.name, s.id] }, 
+              { prompt: "Selecione uma especialidade..." }, 
+              { class: "ta-input w-full", required: true } %>
+          <p class="mt-1 text-sm text-gray-500">Especialidade à qual esta especialização pertence</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <%= link_to "Cancelar", admin_specializations_path, class: "ta-btn ta-btn-secondary" %>
+        <%= form.submit "Atualizar Especialização", class: "ta-btn ta-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

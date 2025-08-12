@@ -1,0 +1,45 @@
+<%= render ::Layouts::AdminComponent.new(title: "Especialidades") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to "Novo", new_admin_speciality_path, class: "ta-btn ta-btn-primary" %>
+  <% end %>
+
+  <div class="ta-card p-4 md:p-5">
+    <div class="overflow-x-auto -mx-1">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left text-gray-500 border-b" style="border-color: rgb(var(--t-fg) / 0.06)">
+            <th class="py-2 pr-2 md:pr-4 font-medium">Nome</th>
+            <th class="py-2 pr-2 md:pr-4 font-medium">Qtd. Especializações</th>
+            <th class="py-2 pr-2 md:pr-4 font-medium">Última atualização</th>
+            <th class="py-2 text-right font-medium">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @specialities.each do |speciality| %>
+            <tr class="border-b last:border-b-0" style="border-color: rgb(var(--t-fg) / 0.06)">
+              <td class="py-2 pr-2 md:pr-4 font-medium"><%= speciality.name %></td>
+              <td class="py-2 pr-2 md:pr-4">
+                <span class="ta-badge ta-badge-secondary text-xs"><%= speciality.specializations.count %></span>
+              </td>
+              <td class="py-2 pr-2 md:pr-4 text-gray-500">
+                <%= l(speciality.updated_at, format: :short) %>
+              </td>
+              <td class="py-2 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <%= link_to "Editar", edit_admin_speciality_path(speciality), class: "ta-btn ta-btn-secondary text-xs px-3 py-1.5" %>
+                  <%= button_to "Excluir", admin_speciality_path(speciality), 
+                      method: :delete, 
+                      class: "ta-btn ta-btn-danger text-xs px-3 py-1.5",
+                      data: { 
+                        confirm: "Tem certeza que deseja excluir esta especialidade?",
+                        turbo_confirm: "Tem certeza que deseja excluir esta especialidade?"
+                      } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

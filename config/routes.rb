@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   get 'styleguide' => 'styleguide#index'
 
   namespace :admin do
+    resources :specialities
+    resources :specializations
     resources :contract_types
     get '/', to: 'dashboard#index'
     get '/ui', to: 'ui#index'

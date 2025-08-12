@@ -1,0 +1,131 @@
+<!-- Exemplo de uso dos controllers tom-select e dependent-specializations no formulário de Profissional -->
+<div data-controller="tom-select dependent-specializations" 
+     data-dependent-specializations-endpoint-value="/admin/specializations.json">
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Campo obrigatório: Especialidades -->
+    <div class="md:col-span-2">
+      <label for="professional_speciality_ids" class="block text-sm font-medium mb-2">
+        Especialidades *
+      </label>
+      <select id="professional_speciality_ids" 
+              name="professional[speciality_ids][]" 
+              class="ta-input w-full"
+              data-tom-select-target="select"
+              data-dependent-specializations-target="specialitySelect"
+              data-action="change->dependent-specializations#specialityChanged"
+              data-placeholder="Selecione as especialidades..."
+              multiple
+              required>
+        <option value="">Selecione as especialidades...</option>
+        <% Speciality.ordered.each do |speciality| %>
+          <option value="<%= speciality.id %>" 
+                  <%= 'selected' if @professional&.speciality_ids&.include?(speciality.id) %>>
+            <%= speciality.name %>
+          </option>
+        <% end %>
+      </select>
+      <p class="mt-1 text-sm text-gray-500">
+        Selecione uma ou mais especialidades do profissional
+      </p>
+    </div>
+
+    <!-- Campo dependente: Especializações -->
+    <div class="md:col-span-2">
+      <label for="professional_specialization_ids" class="block text-sm font-medium mb-2">
+        Especializações
+      </label>
+      <select id="professional_specialization_ids" 
+              name="professional[specialization_ids][]" 
+              class="ta-input w-full"
+              data-tom-select-target="select"
+              data-dependent-specializations-target="specializationSelect"
+              data-placeholder="Selecione as especializações..."
+              multiple>
+        <option value="">Selecione as especializações...</option>
+        <!-- Opções serão carregadas dinamicamente via JavaScript -->
+      </select>
+      <p class="mt-1 text-sm text-gray-500">
+        Especializações disponíveis baseadas nas especialidades selecionadas
+      </p>
+    </div>
+
+    <!-- Outros campos do profissional... -->
+    <div class="md:col-span-2">
+      <label for="professional_name" class="block text-sm font-medium mb-2">
+        Nome Completo *
+      </label>
+      <input type="text" 
+             id="professional_name" 
+             name="professional[name]" 
+             value="<%= @professional&.name %>"
+             class="ta-input w-full"
+             required>
+    </div>
+
+    <div>
+      <label for="professional_email" class="block text-sm font-medium mb-2">
+        E-mail *
+      </label>
+      <input type="email" 
+             id="professional_email" 
+             name="professional[email]" 
+             value="<%= @professional&.email %>"
+             class="ta-input w-full"
+             required>
+    </div>
+
+    <div>
+      <label for="professional_phone" class="block text-sm font-medium mb-2">
+        Telefone
+      </label>
+      <input type="tel" 
+             id="professional_phone" 
+             name="professional[phone]" 
+             value="<%= @professional&.phone %>"
+             class="ta-input w-full"
+             placeholder="(11) 99999-9999">
+    </div>
+
+    <!-- Campo de Tipo de Contratação (do módulo anterior) -->
+    <div class="md:col-span-2">
+      <label for="professional_contract_type_id" class="block text-sm font-medium mb-2">
+        Forma de Contratação *
+      </label>
+      <select id="professional_contract_type_id" 
+              name="professional[contract_type_id]" 
+              class="ta-input w-full"
+              required>
+        <option value="">Selecione uma forma de contratação...</option>
+        <% ContractType.ordered.each do |contract_type| %>
+          <option value="<%= contract_type.id %>" 
+                  <%= 'selected' if @professional&.contract_type_id == contract_type.id %>>
+            <%= contract_type.name %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+
+  <!-- Botões de ação -->
+  <div class="flex justify-end gap-3 mt-6">
+    <%= link_to "Cancelar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
+    <button type="submit" class="ta-btn ta-btn-primary">
+      <%= @professional&.persisted? ? 'Atualizar' : 'Criar' %> Profissional
+    </button>
+  </div>
+</div>
+
+<!-- Script para inicializar com dados existentes (se editando) -->
+<% if @professional&.persisted? %>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Simular mudança no select de especialidades para carregar especializações
+  const specialitySelect = document.getElementById('professional_speciality_ids')
+  if (specialitySelect && specialitySelect.selectedOptions.length > 0) {
+    const event = new Event('change', { bubbles: true })
+    specialitySelect.dispatchEvent(event)
+  }
+})
+</script>
+<% end %>

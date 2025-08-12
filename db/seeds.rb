@@ -31,3 +31,45 @@ contract_types.each do |contract_type_attrs|
     contract_type.assign_attributes(contract_type_attrs)
   end
 end
+
+# Especialidades e Especializações padrão
+specialities_data = [
+  {
+    name: 'Fonoaudiologia',
+    specializations: [
+      'Linguagem',
+      'Motricidade Orofacial',
+      'Neurodesenvolvimento',
+      'Audiologia',
+      'Voz'
+    ]
+  },
+  {
+    name: 'Psicologia',
+    specializations: [
+      'ABA',
+      'Neuropsicologia',
+      'Terapia Cognitivo-Comportamental',
+      'Psicopedagogia',
+      'Psicologia Clínica'
+    ]
+  },
+  {
+    name: 'Terapia Ocupacional',
+    specializations: [
+      'Integração Sensorial',
+      'Pediatria',
+      'Reabilitação Neurológica',
+      'Saúde Mental',
+      'Reabilitação Física'
+    ]
+  }
+]
+
+specialities_data.each do |speciality_data|
+  speciality = Speciality.find_or_create_by!(name: speciality_data[:name])
+  
+  speciality_data[:specializations].each do |spec_name|
+    Specialization.find_or_create_by!(name: spec_name, speciality: speciality)
+  end
+end

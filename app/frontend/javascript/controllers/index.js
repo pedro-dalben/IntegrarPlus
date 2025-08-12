@@ -9,9 +9,13 @@ import ChartController from "./chart_controller"
 import DatepickerController from "./datepicker_controller"
 import AccordionController from "./accordion_controller"
 import ContractFieldsController from "./contract_fields_controller"
+import TomSelectController from "./tom_select_controller"
+import DependentSpecializationsController from "./dependent_specializations_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
 application.register("chart", ChartController)
 application.register("datepicker", DatepickerController)
 application.register("accordion", AccordionController)
 application.register("contract-fields", ContractFieldsController)
+application.register("tom-select", TomSelectController)
+application.register("dependent-specializations", DependentSpecializationsController)
