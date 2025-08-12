@@ -13,6 +13,7 @@ export default class extends Controller {
 
   open() {
     console.log('Sidebar open called')
+    alert('Sidebar open method called!') // Teste simples
     if (!this.hasOverlayTarget || !this.hasPanelTarget) {
       console.log('Missing targets - overlay:', this.hasOverlayTarget, 'panel:', this.hasPanelTarget)
       return
