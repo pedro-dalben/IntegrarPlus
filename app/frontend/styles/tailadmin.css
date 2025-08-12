@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@source "../../../vendor/tailadmin/src/**/*.html";
+
+/* Port core TailAdmin styles we need as utilities using our tokens */
+.ta-card { @apply rounded-xl border; border-color: rgb(var(--t-fg) / 0.06); background-color: var(--color-surface); }
+.ta-btn { @apply inline-flex items-center gap-2 rounded-lg px-3.5 py-2.5 text-sm font-medium; }
+.ta-input { @apply h-10 rounded-lg border px-3 text-sm; border-color: rgb(var(--t-fg) / 0.12); background-color: var(--color-surface); }
+
+
