@@ -16,24 +16,24 @@ module Layouts
           safe_join([
                       content_tag(:div, class: 'flex items-center gap-3 min-w-0') do
                         safe_join([
-                                                        content_tag(:button,
-                                class: 'inline-flex items-center justify-center size-9 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 lg:hidden', 
-                                data: { 
-                                  action: 'click->sidebar#open',
-                                  sidebar_target: 'trigger'
-                                }) do
-                      content_tag(:span, 'Menu', class: 'sr-only') + 
-                      content_tag(:svg, 
-                                  content_tag(:path, '', 
-                                             d: 'M4 6h16M4 12h16M4 18h16',
-                                             stroke: 'currentColor',
-                                             'stroke-width': '2',
-                                             'stroke-linecap': 'round',
-                                             'stroke-linejoin': 'round'),
-                                  class: 'size-5',
-                                  fill: 'none',
-                                  viewBox: '0 0 24 24')
-                    end,
+                                    content_tag(:button,
+                                                class: 'inline-flex items-center justify-center size-9 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 lg:hidden',
+                                                data: {
+                                                  action: 'click->sidebar#open',
+                                                  sidebar_target: 'trigger'
+                                                }) do
+                                      content_tag(:span, 'Menu', class: 'sr-only') +
+                                      content_tag(:svg,
+                                                  content_tag(:path, '',
+                                                              d: 'M4 6h16M4 12h16M4 18h16',
+                                                              stroke: 'currentColor',
+                                                              'stroke-width': '2',
+                                                              'stroke-linecap': 'round',
+                                                              'stroke-linejoin': 'round'),
+                                                  class: 'size-5',
+                                                  fill: 'none',
+                                                  viewBox: '0 0 24 24')
+                                    end,
                                     content_tag(:div, class: 'flex items-center gap-3 min-w-0') do
                                       safe_join([
                                                   content_tag(:div,
@@ -85,7 +85,12 @@ module Layouts
     def user_dropdown
       content_tag(:div, class: 'relative', data: { controller: 'menu' }) do
         content_tag(:button,
-                    class: 'inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5', aria: { haspopup: 'menu', expanded: 'false' }, data: { action: 'click->menu#toggle' }) do
+                    class: 'inline-flex items-center gap-2 rounded-lg px-2.5 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5', 
+                    aria: { haspopup: 'menu', expanded: 'false' }, 
+                    data: { 
+                      action: 'click->menu#toggle',
+                      menu_target: 'trigger'
+                    }) do
           avatar = content_tag(:div, initials_for(@current_professional&.try(:full_name)) || 'US',
                                class: 'h-8 w-8 rounded-full grid place-content-center bg-brand-50 text-brand-600 text-sm font-medium relative')
           text_block = content_tag(:div, class: 'hidden lg:flex flex-col items-start leading-tight') do

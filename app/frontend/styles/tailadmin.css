@@ -141,6 +141,71 @@
   @apply lg:w-[290px];
 }
 
+/* Classes utilitárias para mobile */
+.no-scrollbar {
+  /* Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Mobile adaptations */
+@media (max-width: 1023px) {
+  .container-app {
+    @apply px-4;
+  }
+  
+  .ta-card {
+    @apply px-3 py-3;
+  }
+  
+  /* Sidebar mobile adjustments */
+  .sidebar {
+    @apply transform -translate-x-full transition-transform duration-300 ease-in-out;
+  }
+  
+  .sidebar.open {
+    @apply translate-x-0;
+  }
+}
+
+/* Responsive text sizes */
+@media (max-width: 640px) {
+  .container-app {
+    @apply px-3;
+  }
+  
+  h1 { @apply text-2xl; }
+  h2 { @apply text-xl; }
+  h3 { @apply text-lg; }
+  
+  .ta-card {
+    @apply p-3;
+  }
+  
+  /* Mobile menu adjustments */
+  .menu-item {
+    @apply px-2 py-2;
+  }
+  
+  .menu-item-text {
+    @apply text-sm;
+  }
+}
+
+/* Touch improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .menu-item {
+    @apply py-3; /* Bigger touch targets */
+  }
+  
+  .ta-btn {
+    @apply py-3 px-4; /* Better touch targets */
+  }
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .ta-badge-primary {

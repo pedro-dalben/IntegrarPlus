@@ -39,17 +39,37 @@ module Layouts
     def mobile_sidebar_html
       content_tag(:div, class: 'lg:hidden', data: { controller: 'sidebar' }) do
         # Overlay
-        content_tag(:div, '', class: 'fixed inset-0 z-40 bg-black/50 hidden', 
-                    data: { sidebar_target: 'overlay', action: 'click->sidebar#close' }) +
+        content_tag(:div, '', 
+                    class: 'fixed inset-0 z-40 bg-black/50 hidden', 
+                    data: { 
+                      sidebar_target: 'overlay', 
+                      action: 'click->sidebar#close' 
+                    }) +
         # Mobile panel
-        content_tag(:div, class: 'fixed inset-y-0 left-0 z-50 w-[290px] -translate-x-full transition-transform bg-white dark:bg-gray-800 border-r',
-                    data: { sidebar_target: 'panel' }) do
-          content_tag(:div, class: 'p-5') do
-            content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7') do
-              link_to('/admin', class: 'flex items-center') do
-                content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
-              end
+        content_tag(:aside, 
+                    class: 'fixed inset-y-0 left-0 z-50 w-[290px] transform -translate-x-full transition-transform duration-300 ease-in-out bg-white dark:bg-gray-800 border-r px-5',
+                    data: { sidebar_target: 'panel' },
+                    style: 'border-color: rgb(var(--t-fg) / 0.06)') do
+          content_tag(:div, class: 'flex items-center justify-between pt-8 pb-7') do
+            link_to('/admin', class: 'flex items-center') do
+              content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
             end +
+            content_tag(:button, 
+                        class: 'inline-flex items-center justify-center size-8 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5',
+                        data: { action: 'click->sidebar#close' }) do
+              content_tag(:svg,
+                          content_tag(:path, '', 
+                                     d: 'M6 18L18 6M6 6l12 12',
+                                     stroke: 'currentColor',
+                                     'stroke-width': '2',
+                                     'stroke-linecap': 'round',
+                                     'stroke-linejoin': 'round'),
+                          class: 'size-5',
+                          fill: 'none',
+                          viewBox: '0 0 24 24')
+            end
+          end +
+          content_tag(:div, class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar h-full pb-8') do
             content_tag(:nav) do
               render_menu_groups
             end
