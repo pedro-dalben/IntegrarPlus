@@ -11,7 +11,7 @@ class Layouts::AdminComponent < ViewComponent::Base
   def call
     content_tag :div, class: "min-h-screen bg-bg text-fg" do
       safe_join([
-        render(Layouts::TopbarComponent.new(current_professional: current_user)),
+        render(Layouts::TopbarComponent.new(current_professional: current_user, title: @title, breadcrumbs: @breadcrumbs)),
         content_tag(:div, class: "flex") do
           sidebar_html = @hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: current_user))
           main_html = content_tag(:main, class: "flex-1 container-app py-6") do
