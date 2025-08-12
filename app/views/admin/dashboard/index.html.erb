@@ -1,10 +1,79 @@
 <%= render Layouts::AdminComponent.new(title: "Dashboard") do |c| %>
   <% c.with_actions do %>
-    <button class="btn-primary">Ação</button>
+    <div class="flex items-center gap-2">
+      <button class="ta-btn" style="background-color: var(--color-brand-500); color: white">Novo</button>
+      <button class="ta-btn" style="border: 1px solid rgb(var(--t-fg) / 0.12)">Exportar</button>
+    </div>
   <% end %>
 
-  <div class="card">
-    <p>Bem-vindo ao painel administrativo.</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+    <% [["Receita", "R$ 128k"], ["Usuários", "5.420"], ["Pedidos", "2.134"], ["Conversão", "4,8%"]].each do |label, value| %>
+      <div class="ta-card p-5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-theme-sm text-gray-500"><%= label %></span>
+          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs" style="background: var(--color-brand-50); color: var(--color-brand-600)">Hoje</span>
+        </div>
+        <div class="text-2xl font-semibold tracking-tight"><%= value %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
+    <div class="ta-card p-5 xl:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold">Vendas mensais</h3>
+        <div class="inline-flex gap-2">
+          <button class="ta-btn" style="border: 1px solid rgb(var(--t-fg) / 0.12)">12m</button>
+          <button class="ta-btn" style="border: 1px solid rgb(var(--t-fg) / 0.12)">30d</button>
+        </div>
+      </div>
+      <div class="h-72 rounded-lg" style="background: rgb(var(--t-fg) / 0.06)"></div>
+    </div>
+    <div class="ta-card p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold">Top produtos</h3>
+        <span class="text-theme-sm text-gray-500">Atualizado agora</span>
+      </div>
+      <ul class="space-y-3">
+        <% 5.times do |i| %>
+          <li class="flex items-center justify-between">
+            <span class="text-sm">Produto <%= i+1 %></span>
+            <span class="text-sm font-medium">R$ <%= (1000 - i*123).to_s.reverse.gsub(/...(?!$)/, '\\0.').reverse %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ta-card p-5 mt-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold">Últimos pedidos</h3>
+      <button class="ta-btn" style="border: 1px solid rgb(var(--t-fg) / 0.12)">Ver todos</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left text-gray-500 border-b" style="border-color: rgb(var(--t-fg) / 0.06)">
+            <th class="py-2 pr-4">Pedido</th>
+            <th class="py-2 pr-4">Cliente</th>
+            <th class="py-2 pr-4">Status</th>
+            <th class="py-2 pr-4 text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% [["#1001","Maria","Pago","R$ 890,00"],["#1002","João","Pendente","R$ 420,00"],["#1003","Ana","Pago","R$ 1.240,00"],["#1004","Pedro","Cancelado","R$ 0,00"]].each do |row| %>
+            <tr class="border-b last:border-b-0" style="border-color: rgb(var(--t-fg) / 0.06)">
+              <td class="py-2 pr-4"><%= row[0] %></td>
+              <td class="py-2 pr-4"><%= row[1] %></td>
+              <td class="py-2 pr-4">
+                <span class="px-2 py-0.5 rounded-full text-xs" style="background: var(--color-success) / 0.1; color: var(--color-success)"><%= row[2] %></span>
+              </td>
+              <td class="py-2 pr-4 text-right font-medium"><%= row[3] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 <% end %>
 
