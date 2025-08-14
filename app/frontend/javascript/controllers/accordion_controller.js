@@ -21,7 +21,15 @@ export default class extends Controller {
     console.log('Setting accordion to:', v)
     this.element.setAttribute('aria-expanded', String(v))
     this.panelTargets.forEach(p => {
-      p.classList.toggle('hidden', !v)
+      if (v) {
+        p.classList.remove('hidden')
+        p.style.maxHeight = '200px'
+        p.style.opacity = '1'
+      } else {
+        p.classList.add('hidden')
+        p.style.maxHeight = '0'
+        p.style.opacity = '0'
+      }
       console.log('Panel hidden:', !v)
     })
     this.iconTargets.forEach(i => i.classList.toggle('menu-item-arrow-active', v))
