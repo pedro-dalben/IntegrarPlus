@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@source "../../../vendor/tailadmin/src/**/*.html";
+/* TailAdmin utilities - ported from TailAdmin design system */
 
 /* Port core TailAdmin styles we need as utilities using our tokens */
 

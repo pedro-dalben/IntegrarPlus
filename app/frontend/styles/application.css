@@ -1,7 +1,6 @@
 @import "./tokens.css";
 @import "tailwindcss";
 @import "preline/variants.css";
-@import "./tailadmin.css";
 
 @source "../../../app/views/**/*.html.erb";
 @source "../../../app/views/**/*.rb";
