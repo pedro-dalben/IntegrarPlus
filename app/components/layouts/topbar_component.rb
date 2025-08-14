@@ -11,7 +11,7 @@ module Layouts
 
     def call
       content_tag :header, class: 'fixed top-0 left-0 right-0 z-40 bg-white border-b lg:left-[290px]',
-                           style: 'border-color: rgb(var(--t-fg) / 0.06); background-color: white;' do
+                           style: 'border-color: rgba(15, 23, 42, 0.06); background-color: white;' do
         content_tag :div, class: 'container-app h-16 flex items-center gap-3 justify-between' do
           safe_join([
                       content_tag(:div, class: 'flex items-center gap-3 min-w-0') do
@@ -88,7 +88,7 @@ module Layouts
                       menu_target: 'trigger'
                     }) do
           avatar = content_tag(:div, initials_for(@current_professional&.try(:full_name)) || 'US',
-                               class: 'h-8 w-8 rounded-full grid place-content-center bg-brand-50 text-brand-600 text-sm font-medium relative')
+                               class: 'h-8 w-8 rounded-full grid place-content-center bg-blue-50 text-blue-600 text-sm font-medium relative')
           text_block = content_tag(:div, class: 'flex flex-col items-start leading-tight') do
             content_tag(:span, @current_professional&.try(:full_name) || 'Usuário',
                         class: 'text-sm font-semibold text-fg hidden sm:block') +
@@ -98,7 +98,7 @@ module Layouts
           avatar + text_block
         end +
           content_tag(:div,
-                      class: 'absolute right-0 mt-2 w-56 rounded-xl border bg-white shadow-xl hidden z-50', data: { menu_target: 'panel' }, style: 'border-color: rgb(var(--t-fg) / 0.06); background-color: white;') do
+                      class: 'absolute right-0 mt-2 w-56 rounded-xl border bg-white shadow-xl hidden z-50', data: { menu_target: 'panel' }, style: 'border-color: rgba(15, 23, 42, 0.06); background-color: white;') do
             safe_join([
                         link_to('Meu Perfil', '#',
                                 class: 'block px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-white/5'),

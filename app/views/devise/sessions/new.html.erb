@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between">
           <%= f.label :password, "Senha", class: "block text-sm mb-1" %>
           <% if devise_mapping.recoverable? %>
-            <%= link_to "Esqueci minha senha", new_password_path(resource_name), class: "text-sm text-brand-600 hover:underline" %>
+            <%= link_to "Esqueci minha senha", new_password_path(resource_name), class: "text-sm text-blue-600 hover:underline" %>
           <% end %>
         </div>
         <%= f.password_field :password, autocomplete: "current-password", class: "ta-input w-full" %>
