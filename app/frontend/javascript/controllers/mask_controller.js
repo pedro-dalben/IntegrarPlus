@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import IMask from "imask"
+import * as IMask from "imask"
 
 export default class extends Controller {
   static targets = ["input"]
@@ -61,7 +61,7 @@ export default class extends Controller {
         return
     }
 
-    this.mask = IMask(input, maskOptions)
+    this.mask = IMask.IMask(input, maskOptions)
     
     this.mask.on('accept', () => {
       this.dispatch('masked', { detail: { value: this.mask.value } })
