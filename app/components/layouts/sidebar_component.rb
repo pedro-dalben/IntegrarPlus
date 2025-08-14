@@ -18,11 +18,10 @@ module Layouts
                               ':class': 'sidebarToggle ? "block" : "hidden"',
                               '@click': 'sidebarToggle = false'),
                   # Sidebar
-                  content_tag(:aside,
-                              ':class': "sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'",
-                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0',
-                              'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }",
-                              '@click.outside': 'sidebarToggle = false') do
+                          content_tag(:aside,
+                    ':class': "sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'",
+                    class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0',
+                    '@click.outside': 'sidebarToggle = false') do
                     content_tag(:div,
                                 class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
                                 ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
@@ -197,22 +196,6 @@ module Layouts
       helpers.request.fullpath
     end
 
-    def current_page
-      path = helpers.request.path
-      case path
-      when '/admin'
-        'dashboard'
-      when '/admin/professionals'
-        'profissionais'
-      when '/admin/contract_types'
-        'formas de contratação'
-      when '/admin/specialities'
-        'especialidades'
-      when '/admin/specializations'
-        'especializações'
-      else
-        'dashboard'
-      end
-    end
+
   end
 end

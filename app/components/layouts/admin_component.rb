@@ -13,7 +13,9 @@ module Layouts
     end
 
     def call
-      content_tag :div, class: 'min-h-screen bg-white text-gray-900' do
+      content_tag :div, 
+                  class: 'min-h-screen bg-white text-gray-900',
+                  'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }" do
         safe_join([
           (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
           content_tag(:div, class: 'lg:pl-[290px]') do
@@ -145,6 +147,24 @@ module Layouts
             end
           )
         end
+      end
+    end
+
+    def current_page
+      path = helpers.request.path
+      case path
+      when '/admin'
+        'dashboard'
+      when '/admin/professionals'
+        'profissionais'
+      when '/admin/contract_types'
+        'formas de contratação'
+      when '/admin/specialities'
+        'especialidades'
+      when '/admin/specializations'
+        'especializações'
+      else
+        'dashboard'
       end
     end
   end

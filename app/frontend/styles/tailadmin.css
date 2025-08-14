@@ -378,4 +378,15 @@
   max-width: 28rem;
 }
 
+/* Menu button styles */
+.size-9 {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.size-5 {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 
