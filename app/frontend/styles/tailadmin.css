@@ -115,8 +115,8 @@
 }
 
 .menu-item-active {
-  background-color: #465fff !important;
-  color: white !important;
+  background-color: #465fff;
+  color: white;
 }
 
 .menu-item-inactive {
@@ -132,8 +132,8 @@
 }
 
 .menu-item-icon-active {
-  color: white !important;
-  fill: white !important;
+  color: white;
+  fill: white;
 }
 
 .menu-item-icon-inactive {
@@ -201,6 +201,21 @@
   background-color: white;
   padding: 0 20px;
   transition: all 0.3s ease-linear;
+}
+
+.sidebar.translate-x-0 {
+  transform: translateX(0);
+}
+
+.sidebar.-translate-x-full {
+  transform: translateX(-100%);
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    position: static;
+    transform: translateX(0);
+  }
 }
 
 .sidebar.collapsed {
@@ -332,6 +347,14 @@
   gap: 4px;
   margin-top: 8px;
   padding-left: 36px;
+}
+
+.translate {
+  transition: all 0.3s ease-in-out;
+}
+
+.translate.transform {
+  transform: translateY(0);
 }
 
 /* Accordion animations */

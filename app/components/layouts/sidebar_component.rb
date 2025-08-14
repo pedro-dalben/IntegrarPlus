@@ -13,7 +13,7 @@ module Layouts
     def call
       content_tag(:aside,
                   class: sidebar_classes,
-                  'x-data': '{ sidebarToggle: false, selected: $persist("Dashboard") }',
+                  'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }",
                   '@click.outside': 'sidebarToggle = false') do
         content_tag(:div,
                     class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
@@ -107,8 +107,8 @@ module Layouts
 
       content_tag(:li) do
         link_to(item[:path],
-                class: menu_item_classes(active),
-                ':class': "(page === '#{item[:label].downcase}') ? 'menu-item-active' : 'menu-item-inactive'") do
+                class: 'menu-item group',
+                ':class': "(page === '#{current_page}') ? 'menu-item-active' : 'menu-item-inactive'") do
           safe_join([
                       item[:icon],
                       content_tag(:span, item[:label],
@@ -127,8 +127,8 @@ module Layouts
         content_tag(:a,
                     href: '#',
                     '@click.prevent': "selected = (selected === '#{item[:label]}' ? '' : '#{item[:label]}')",
-                    class: menu_item_classes(active),
-                    ':class': "(selected === '#{item[:label]}') || (page === '#{item[:label].downcase}') ? 'menu-item-active' : 'menu-item-inactive'") do
+                    class: 'menu-item group',
+                    ':class': "(selected === '#{item[:label]}') ? 'menu-item-active' : 'menu-item-inactive'") do
           safe_join([
                       item[:icon],
                       content_tag(:span, item[:label],
@@ -155,7 +155,7 @@ module Layouts
       content_tag(:li) do
         link_to(item[:path],
                 class: 'menu-dropdown-item group',
-                ':class': "page === '#{item[:label].downcase}' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'") do
+                ':class': "page === '#{current_page}' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'") do
           item[:label]
         end
       end
@@ -182,7 +182,7 @@ module Layouts
                               'stroke-linecap': 'round',
                               'stroke-linejoin': 'round'),
                   class: 'menu-item-arrow',
-                  ':class': "[(selected === '#{item[:label]}') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '']",
+                  ':class': "[(selected === '#{item[:label]}') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive']",
                   width: '20',
                   height: '20',
                   viewBox: '0 0 20 20',
@@ -192,6 +192,24 @@ module Layouts
 
     def current_path
       helpers.request.fullpath
+    end
+
+    def current_page
+      path = helpers.request.path
+      case path
+      when '/admin'
+        'dashboard'
+      when '/admin/professionals'
+        'profissionais'
+      when '/admin/contract_types'
+        'formas de contratação'
+      when '/admin/specialities'
+        'especialidades'
+      when '/admin/specializations'
+        'especializações'
+      else
+        'dashboard'
+      end
     end
   end
 end
