@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContractType < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validate :cnpj_requires_company

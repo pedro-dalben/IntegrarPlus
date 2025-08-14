@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpecialityPolicy < ApplicationPolicy
   def index?
     user.permit?('settings.read')

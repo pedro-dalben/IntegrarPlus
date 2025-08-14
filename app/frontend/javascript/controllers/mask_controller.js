@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import * as IMask from "imask"
+import IMask from "imask"
 
 export default class extends Controller {
   static targets = ["input"]

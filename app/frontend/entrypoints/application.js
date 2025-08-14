@@ -27,12 +27,21 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 import "../styles/application.css";
+import "../styles/tailadmin.css";
 import "../javascript/application";
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "flatpickr/dist/flatpickr.css";
 import "tom-select/dist/css/tom-select.css";
 import "../styles/tailadmin-base.css";
+
+// Alpine.js
+import Alpine from 'alpinejs';
+import persist from '@alpinejs/persist';
+
+Alpine.plugin(persist);
+window.Alpine = Alpine;
+Alpine.start();
 
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {

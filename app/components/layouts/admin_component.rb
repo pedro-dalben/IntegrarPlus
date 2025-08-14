@@ -13,7 +13,7 @@ module Layouts
     end
 
     def call
-      content_tag :div, class: 'min-h-screen bg-bg text-fg', data: { controller: 'sidebar' } do
+      content_tag :div, class: 'min-h-screen bg-white text-gray-900' do
         safe_join([
           (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
           content_tag(:div, class: 'lg:pl-[290px]') do

@@ -7,14 +7,18 @@
     "vite-plugin-ruby": "^5.1.1"
   },
   "dependencies": {
+    "@alpinejs/persist": "^3.14.9",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.16",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/vite": "^4.1.11",
+    "alpinejs": "^3.14.9",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.0",
     "flatpickr": "^4.6.13",
+    "imask": "^7.6.1",
     "preline": "^3.2.3",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "tom-select": "^2.4.3"
   }
 }

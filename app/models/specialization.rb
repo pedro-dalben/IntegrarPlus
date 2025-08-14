@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 class Specialization < ApplicationRecord
   belongs_to :speciality
-  
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  validates :speciality, presence: true
 
   has_many :professional_specializations, dependent: :destroy
   has_many :professionals, through: :professional_specializations
