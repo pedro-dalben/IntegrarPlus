@@ -13,7 +13,7 @@ module Layouts
     end
 
     def call
-      content_tag :div, 
+      content_tag :div,
                   class: 'min-h-screen bg-white text-gray-900',
                   'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }" do
         safe_join([
