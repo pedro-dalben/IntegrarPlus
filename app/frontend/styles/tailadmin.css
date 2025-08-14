@@ -389,4 +389,18 @@
   height: 1.25rem;
 }
 
+/* Ensure menu button is clickable */
+.inline-flex.items-center.justify-center.size-9 {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Ensure SVG inside button is clickable */
+.inline-flex.items-center.justify-center.size-9 svg {
+  pointer-events: none;
+}
+
 

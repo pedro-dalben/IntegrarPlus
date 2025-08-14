@@ -27,13 +27,18 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 import "../styles/application.css";
-import "../styles/tailadmin.css";
+import "../styles/tailadmin-pro.css";
 import "../javascript/application";
+import "../javascript/tailadmin-pro";
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "flatpickr/dist/flatpickr.css";
 import "tom-select/dist/css/tom-select.css";
-import "../styles/tailadmin-base.css";
+import "dropzone/dist/dropzone.css";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "prismjs/themes/prism.css";
 
 // Alpine.js
 import Alpine from 'alpinejs';
