@@ -327,4 +327,12 @@
   }
 }
 
+.menu-dropdown {
+  @apply flex flex-col gap-1 mt-2 pl-9;
+}
+
+.menu-dropdown-item {
+  @apply text-sm relative flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium;
+}
+
 

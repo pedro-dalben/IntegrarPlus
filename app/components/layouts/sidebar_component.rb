@@ -12,23 +12,23 @@ module Layouts
 
     def call
       safe_join([
-        # Desktop sidebar
-        content_tag(:aside, class: sidebar_classes) do
-          content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header') do
-            link_to('/admin', class: 'flex items-center') do
-              content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
-            end
-          end +
-            content_tag(:div,
-                        class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
-              content_tag(:nav, data: { controller: 'sidebar-nav' }) do
-                render_menu_groups
-              end
-            end
-        end,
-        # Mobile sidebar
-        mobile_sidebar_html
-      ])
+                  # Desktop sidebar
+                  content_tag(:aside, class: sidebar_classes) do
+                    content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header') do
+                      link_to('/admin', class: 'flex items-center') do
+                        content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
+                      end
+                    end +
+                      content_tag(:div,
+                                  class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
+                        content_tag(:nav, data: { controller: 'sidebar-nav' }) do
+                          render_menu_groups
+                        end
+                      end
+                  end,
+                  # Mobile sidebar
+                  mobile_sidebar_html
+                ])
     end
 
     private
@@ -124,6 +124,7 @@ module Layouts
       return true if item[:path] == '/admin' && current_path == '/admin'
       return true if item[:path] && current_path.start_with?(item[:path])
       return true if item[:children]&.any? { |child| current_path.start_with?(child[:path]) }
+
       false
     end
 
@@ -171,9 +172,9 @@ module Layouts
       end
 
       dropdown = content_tag(:div,
-                             class: "overflow-hidden transform translate #{expanded ? 'block' : 'hidden'}",
+                             class: "overflow-hidden #{expanded ? 'block' : 'hidden'}",
                              data: { accordion_target: 'panel' }) do
-        content_tag(:ul, class: 'flex flex-col gap-1 mt-2 menu-dropdown pl-9') do
+        content_tag(:ul, class: 'flex flex-col gap-1 mt-2 menu-dropdown') do
           safe_join(item[:children].map { |child| render_dropdown_item(child) })
         end
       end
