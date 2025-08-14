@@ -203,14 +203,6 @@
   transition: all 0.3s ease-linear;
 }
 
-.sidebar.translate-x-0 {
-  transform: translateX(0);
-}
-
-.sidebar.-translate-x-full {
-  transform: translateX(-100%);
-}
-
 @media (min-width: 1024px) {
   .sidebar {
     position: static;

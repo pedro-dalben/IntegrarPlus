@@ -11,35 +11,38 @@ module Layouts
     end
 
     def call
-      content_tag(:aside,
-                  class: sidebar_classes,
-                  'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }",
-                  '@click.outside': 'sidebarToggle = false') do
-        content_tag(:div,
-                    class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
-                    ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
-          link_to('/admin', class: 'flex items-center') do
-            content_tag(:span, 'IntegrarPlus',
-                        class: 'text-xl font-semibold',
-                        ':class': 'sidebarToggle ? "lg:hidden" : ""')
-          end
-        end +
-          content_tag(:div,
-                      class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
-            content_tag(:nav) do
-              render_menu_groups
-            end
-          end
-      end
+      safe_join([
+                  # Overlay para mobile
+                  content_tag(:div, '',
+                              class: 'fixed inset-0 z-40 bg-black/50 lg:hidden',
+                              ':class': 'sidebarToggle ? "block" : "hidden"',
+                              '@click': 'sidebarToggle = false'),
+                  # Sidebar
+                  content_tag(:aside,
+                              ':class': "sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'",
+                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0',
+                              'x-data': "{ sidebarToggle: false, selected: $persist('Dashboard'), page: '#{current_page}' }",
+                              '@click.outside': 'sidebarToggle = false') do
+                    content_tag(:div,
+                                class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
+                                ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
+                      link_to('/admin', class: 'flex items-center') do
+                        content_tag(:span, 'IntegrarPlus',
+                                    class: 'text-xl font-semibold',
+                                    ':class': 'sidebarToggle ? "lg:hidden" : ""')
+                      end
+                    end +
+                      content_tag(:div,
+                                  class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
+                        content_tag(:nav) do
+                          render_menu_groups
+                        end
+                      end
+                  end
+                ])
     end
 
     private
-
-    def sidebar_classes
-      base_classes = 'sidebar fixed left-0 top-0 z-50 flex h-screen w-[290px] flex-col overflow-y-hidden border-r bg-white px-5 lg:static lg:translate-x-0'
-      base_classes += @collapsed ? ' collapsed' : ''
-      base_classes
-    end
 
     def render_menu_groups
       safe_join([

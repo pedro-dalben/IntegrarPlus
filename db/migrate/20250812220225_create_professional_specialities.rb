@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateProfessionalSpecialities < ActiveRecord::Migration[8.0]
   def change
     create_table :professional_specialities do |t|
@@ -6,6 +8,7 @@ class CreateProfessionalSpecialities < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :professional_specialities, [:professional_id, :speciality_id], unique: true, name: 'index_professional_specialities_unique'
+    add_index :professional_specialities, %i[professional_id speciality_id], unique: true,
+                                                                             name: 'index_professional_specialities_unique'
   end
 end

@@ -68,19 +68,19 @@ specialities_data = [
 
 specialities_data.each do |speciality_data|
   speciality = Speciality.find_or_create_by!(name: speciality_data[:name])
-  
+
   speciality_data[:specializations].each do |spec_name|
     Specialization.find_or_create_by!(name: spec_name, speciality: speciality)
   end
 end
 
 # Grupos padrão
-groups = [
-  'Administradores',
-  'Coordenadores',
-  'Profissionais',
-  'Estagiários',
-  'Voluntários'
+groups = %w[
+  Administradores
+  Coordenadores
+  Profissionais
+  Estagiários
+  Voluntários
 ]
 
 groups.each do |group_name|

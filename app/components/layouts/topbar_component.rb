@@ -18,10 +18,7 @@ module Layouts
                         safe_join([
                                     content_tag(:button,
                                                 class: 'inline-flex items-center justify-center size-9 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 lg:hidden',
-                                                data: {
-                                                  action: 'click->sidebar#open',
-                                                  sidebar_target: 'trigger'
-                                                }) do
+                                                '@click': 'sidebarToggle = true') do
                                       content_tag(:span, 'Menu', class: 'sr-only') +
                                       content_tag(:svg,
                                                   content_tag(:path, '',

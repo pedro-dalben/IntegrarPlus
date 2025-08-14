@@ -6,7 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  def permit?(permission_key)
+  def permit?(_permission_key)
     # Por enquanto, retorna true para todas as permissões
     # TODO: Implementar sistema de permissões real
     true
