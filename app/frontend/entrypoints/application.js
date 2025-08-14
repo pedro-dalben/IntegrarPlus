@@ -39,6 +39,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "prismjs/themes/prism.css";
+import "@fullcalendar/core/main.css";
+import "@fullcalendar/daygrid/main.css";
+import "@fullcalendar/timegrid/main.css";
 
 // Alpine.js
 import Alpine from 'alpinejs';

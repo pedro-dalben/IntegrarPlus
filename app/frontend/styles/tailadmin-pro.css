@@ -34,6 +34,7 @@
 }
 
 @layer utilities {
+  /* Componentes essenciais do TailAdmin Pro */
   .sidebar {
     @apply fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0;
   }
@@ -66,6 +67,7 @@
     @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
   }
   
+  /* Botões e inputs */
   .ta-btn {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300;
   }
@@ -80,5 +82,25 @@
   
   .ta-input {
     @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+  }
+  
+  /* Utilitários para componentes */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Animações */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
