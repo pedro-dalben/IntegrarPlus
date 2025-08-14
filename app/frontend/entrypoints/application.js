@@ -30,6 +30,9 @@ import "../styles/application.css";
 import "../javascript/application";
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "flatpickr/dist/flatpickr.css";
+import "tom-select/dist/css/tom-select.css";
+import "../../vendor/tailadmin/src/css/style.css";
 
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
