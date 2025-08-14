@@ -11,15 +11,22 @@ module Layouts
     end
 
     def call
-      content_tag(:aside, class: sidebar_classes) do
-        content_tag(:div, class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header') do
+      content_tag(:aside,
+                  class: sidebar_classes,
+                  'x-data': '{ sidebarToggle: false, selected: $persist("Dashboard") }',
+                  '@click.outside': 'sidebarToggle = false') do
+        content_tag(:div,
+                    class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
+                    ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
           link_to('/admin', class: 'flex items-center') do
-            content_tag(:span, 'IntegrarPlus', class: 'text-xl font-semibold')
+            content_tag(:span, 'IntegrarPlus',
+                        class: 'text-xl font-semibold',
+                        ':class': 'sidebarToggle ? "lg:hidden" : ""')
           end
         end +
           content_tag(:div,
                       class: 'flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar') do
-            content_tag(:nav, data: { controller: 'sidebar-nav' }) do
+            content_tag(:nav) do
               render_menu_groups
             end
           end
@@ -36,14 +43,15 @@ module Layouts
 
     def render_menu_groups
       safe_join([
-                  render_menu_group('MENU', main_menu_items),
-                  render_menu_group('OTHERS', other_menu_items)
+                  render_menu_group('MENU', main_menu_items)
                 ])
     end
 
     def render_menu_group(title, items)
       content_tag(:div, class: 'mb-6') do
-        content_tag(:h3, title, class: 'mb-4 text-xs uppercase leading-[20px] text-gray-400') +
+        content_tag(:h3, title,
+                    class: 'mb-4 text-xs uppercase leading-[20px] text-gray-400',
+                    ':class': 'sidebarToggle ? "lg:hidden" : ""') +
           content_tag(:ul, class: 'flex flex-col gap-4') do
             safe_join(items.map { |item| render_menu_item(item) })
           end
@@ -97,11 +105,17 @@ module Layouts
     def render_simple_menu_item(item)
       active = item[:active] || current_path.start_with?(item[:path])
 
-      link_to(item[:path], class: menu_item_classes(active)) do
-        safe_join([
-                    item[:icon],
-                    content_tag(:span, item[:label], class: 'menu-item-text')
-                  ])
+      content_tag(:li) do
+        link_to(item[:path],
+                class: menu_item_classes(active),
+                ':class': "(page === '#{item[:label].downcase}') ? 'menu-item-active' : 'menu-item-inactive'") do
+          safe_join([
+                      item[:icon],
+                      content_tag(:span, item[:label],
+                                  class: 'menu-item-text',
+                                  ':class': 'sidebarToggle ? "lg:hidden" : ""')
+                    ])
+        end
       end
     end
 
@@ -109,30 +123,29 @@ module Layouts
       expanded = item[:children]&.any? { |child| current_path.start_with?(child[:path]) }
       active = expanded || (item[:active] || false)
 
-      content_tag(:div, class: 'relative') do
-        button = content_tag(:button,
-                             class: menu_item_classes(active),
-                             data: {
-                               controller: 'accordion',
-                               action: 'click->accordion#toggle'
-                             },
-                             aria: { expanded: expanded.to_s }) do
+      content_tag(:li) do
+        content_tag(:a,
+                    href: '#',
+                    '@click.prevent': "selected = (selected === '#{item[:label]}' ? '' : '#{item[:label]}')",
+                    class: menu_item_classes(active),
+                    ':class': "(selected === '#{item[:label]}') || (page === '#{item[:label].downcase}') ? 'menu-item-active' : 'menu-item-inactive'") do
           safe_join([
                       item[:icon],
-                      content_tag(:span, item[:label], class: 'menu-item-text flex-1'),
-                      dropdown_arrow(active)
+                      content_tag(:span, item[:label],
+                                  class: 'menu-item-text',
+                                  ':class': 'sidebarToggle ? "lg:hidden" : ""'),
+                      dropdown_arrow(item)
                     ])
-        end
-
-        dropdown = content_tag(:div,
-                               class: "overflow-hidden #{expanded ? 'block' : 'hidden'}",
-                               data: { accordion_target: 'panel' }) do
-          content_tag(:ul, class: 'flex flex-col gap-1 mt-2 menu-dropdown') do
-            safe_join(item[:children].map { |child| render_dropdown_item(child) })
+        end +
+          content_tag(:div,
+                      class: 'translate transform overflow-hidden',
+                      ':class': "(selected === '#{item[:label]}') ? 'block' : 'hidden'") do
+            content_tag(:ul,
+                        class: 'menu-dropdown mt-2 flex flex-col gap-1 pl-9',
+                        ':class': 'sidebarToggle ? "lg:hidden" : "flex"') do
+              safe_join(item[:children].map { |child| render_dropdown_item(child) })
+            end
           end
-        end
-
-        safe_join([button, dropdown])
       end
     end
 
@@ -140,7 +153,9 @@ module Layouts
       active = current_path.start_with?(item[:path])
 
       content_tag(:li) do
-        link_to(item[:path], class: dropdown_item_classes(active)) do
+        link_to(item[:path],
+                class: 'menu-dropdown-item group',
+                ':class': "page === '#{item[:label].downcase}' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'") do
           item[:label]
         end
       end
@@ -158,7 +173,7 @@ module Layouts
       base
     end
 
-    def dropdown_arrow(active)
+    def dropdown_arrow(item)
       content_tag(:svg,
                   content_tag(:path, '',
                               d: 'M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585',
@@ -166,7 +181,8 @@ module Layouts
                               'stroke-width': '1.5',
                               'stroke-linecap': 'round',
                               'stroke-linejoin': 'round'),
-                  class: "menu-item-arrow #{active ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive'}",
+                  class: 'menu-item-arrow',
+                  ':class': "[(selected === '#{item[:label]}') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '']",
                   width: '20',
                   height: '20',
                   viewBox: '0 0 20 20',

@@ -32,6 +32,14 @@ import "../javascript/application";
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+// Alpine.js
+import Alpine from 'alpinejs';
+import persist from '@alpinejs/persist';
+
+Alpine.plugin(persist);
+window.Alpine = Alpine;
+Alpine.start();
+
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
     window.HSStaticMethods.autoInit()
