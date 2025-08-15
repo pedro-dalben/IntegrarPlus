@@ -143,14 +143,31 @@ html.sidebar-open .sidebar {
   transform: translateX(0);
 }
 
+html.sidebar-open .sidebar-overlay {
+  display: block !important;
+}
+
 .sidebar {
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 40;
+}
+
+.sidebar-overlay {
+  display: none;
 }
 
 @media (min-width: 1024px) {
   .sidebar {
     transform: translateX(0);
+  }
+  
+  .sidebar-overlay {
+    display: none !important;
   }
 }
 

@@ -14,15 +14,12 @@ module Layouts
 
     def call
       content_tag :div,
-                  class: 'min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white',
-                  'x-data': "{ sidebarToggle: false, menuToggle: false, darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false'), selected: $persist('Dashboard'), page: '#{current_page}' }",
-                  'x-init': "$watch('darkMode', (val) => { document.documentElement.classList.toggle('dark', val); localStorage.setItem('darkMode', JSON.stringify(val)); }); document.documentElement.classList.toggle('dark', darkMode)" do
+                  class: 'min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white' do
         safe_join([
+          render(Ui::HeaderComponent.new(current_user: helpers.current_user)),
           (@hide_sidebar ? nil : render(Layouts::SidebarComponent.new(current_professional: helpers.current_user))),
           content_tag(:div, class: 'lg:pl-[290px]') do
             safe_join([
-                        render(Layouts::TopbarComponent.new(current_professional: helpers.current_user, title: @title,
-                                                            breadcrumbs: @breadcrumbs)),
                         content_tag(:main, class: 'pt-4') do
                           content_tag(:div, class: 'container-app pb-6') do
                             safe_join([

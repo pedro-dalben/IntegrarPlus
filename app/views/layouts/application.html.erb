@@ -21,7 +21,6 @@
   </head>
 
   <body class="min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-    <%= render Ui::HeaderComponent.new(current_user: user_signed_in? ? current_user : nil) %>
     <%= yield %>
   </body>
 </html>

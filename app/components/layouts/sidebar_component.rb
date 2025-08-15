@@ -14,21 +14,16 @@ module Layouts
       safe_join([
                   # Overlay para mobile
                   content_tag(:div, '',
-                              class: 'fixed inset-0 z-40 bg-black/50 lg:hidden',
-                              ':class': 'sidebarToggle ? "block" : "hidden"',
-                              '@click': 'sidebarToggle = false'),
+                              class: 'fixed inset-0 z-40 bg-black/50 lg:hidden sidebar-overlay',
+                              style: 'display: none;'),
                   # Sidebar
                   content_tag(:aside,
-                              ':class': "sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'",
-                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0 dark:bg-gray-800 dark:border-gray-700',
-                              '@click.outside': 'sidebarToggle = false') do
+                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0 dark:bg-gray-800 dark:border-gray-700') do
                     content_tag(:div,
-                                class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
-                                ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
+                                class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header justify-between') do
                       link_to('/admin', class: 'flex items-center') do
                         content_tag(:span, 'IntegrarPlus',
-                                    class: 'text-xl font-semibold dark:text-white',
-                                    ':class': 'sidebarToggle ? "lg:hidden" : ""')
+                                    class: 'text-xl font-semibold dark:text-white')
                       end
                     end +
                       content_tag(:div,
@@ -52,8 +47,7 @@ module Layouts
     def render_menu_group(title, items)
       content_tag(:div, class: 'mb-6') do
         content_tag(:h3, title,
-                    class: 'mb-4 text-xs uppercase leading-[20px] text-gray-400',
-                    ':class': 'sidebarToggle ? "lg:hidden" : ""') +
+                    class: 'mb-4 text-xs uppercase leading-[20px] text-gray-400') +
           content_tag(:ul, class: 'flex flex-col gap-4') do
             safe_join(items.map { |item| render_menu_item(item) })
           end
