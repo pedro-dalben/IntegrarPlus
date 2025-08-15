@@ -1,6 +1,7 @@
 @import "./tokens.css";
 @import "tailwindcss";
 @import "preline/variants.css";
+@import "./login-layout.css";
 
 @source "../../../app/views/**/*.html.erb";
 @source "../../../app/views/**/*.rb";
@@ -84,5 +85,53 @@ h3 { @apply text-xl sm:text-2xl; }
 p { @apply text-base text-fg/80 leading-relaxed; }
 
 a { @apply text-primary hover:text-primary-hov underline-offset-4 hover:underline; }
+
+/* Classes necessárias para o layout de login */
+[x-cloak] { display: none !important; }
+
+@utility lg-flex {
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
+
+@utility lg-w-1-2 {
+  @media (min-width: 1024px) {
+    width: 50%;
+  }
+}
+
+@utility lg-w-6-12 {
+  @media (min-width: 1024px) {
+    width: 50%;
+  }
+}
+
+@utility lg-px-8 {
+  @media (min-width: 1024px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@utility lg-px-6 {
+  @media (min-width: 1024px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@utility xl-w-6-12 {
+  @media (min-width: 1280px) {
+    width: 50%;
+  }
+}
+
+@utility sm-px-6 {
+  @media (min-width: 640px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
 
 
