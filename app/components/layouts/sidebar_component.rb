@@ -20,14 +20,14 @@ module Layouts
                   # Sidebar
                   content_tag(:aside,
                               ':class': "sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'",
-                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0',
+                              class: 'sidebar fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0 dark:bg-gray-800 dark:border-gray-700',
                               '@click.outside': 'sidebarToggle = false') do
                     content_tag(:div,
                                 class: 'flex items-center gap-2 pt-8 pb-7 sidebar-header',
                                 ':class': 'sidebarToggle ? "justify-center" : "justify-between"') do
                       link_to('/admin', class: 'flex items-center') do
                         content_tag(:span, 'IntegrarPlus',
-                                    class: 'text-xl font-semibold',
+                                    class: 'text-xl font-semibold dark:text-white',
                                     ':class': 'sidebarToggle ? "lg:hidden" : ""')
                       end
                     end +
@@ -105,7 +105,7 @@ module Layouts
     end
 
     def render_simple_menu_item(item)
-      active = item[:active] || current_path.start_with?(item[:path])
+      item[:active] || current_path.start_with?(item[:path])
 
       content_tag(:li) do
         link_to(item[:path],
@@ -123,7 +123,7 @@ module Layouts
 
     def render_menu_item_with_dropdown(item)
       expanded = item[:children]&.any? { |child| current_path.start_with?(child[:path]) }
-      active = expanded || (item[:active] || false)
+      expanded || (item[:active] || false)
 
       content_tag(:li) do
         content_tag(:a,
@@ -152,7 +152,7 @@ module Layouts
     end
 
     def render_dropdown_item(item)
-      active = current_path.start_with?(item[:path])
+      current_path.start_with?(item[:path])
 
       content_tag(:li) do
         link_to(item[:path],

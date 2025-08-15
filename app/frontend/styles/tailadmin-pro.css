@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 /* FullCalendar CSS */
 .fc {
@@ -63,104 +62,171 @@
   border-radius: 0.25rem;
 }
 
-@layer base {
-  :root {
-    --color-brand-25: #f2f7ff;
-    --color-brand-50: #ecf3ff;
-    --color-brand-100: #dde9ff;
-    --color-brand-200: #c2d6ff;
-    --color-brand-300: #9cb9ff;
-    --color-brand-400: #7592ff;
-    --color-brand-500: #465fff;
-    --color-brand-600: #3641f5;
-    --color-brand-700: #2a31d8;
-    --color-brand-800: #252dae;
-    --color-brand-900: #262e89;
-    --color-brand-950: #161950;
-    
-    --color-gray-25: #fcfcfd;
-    --color-gray-50: #f9fafb;
-    --color-gray-100: #f2f4f7;
-    --color-gray-200: #e4e7ec;
-    --color-gray-300: #d0d5dd;
-    --color-gray-400: #98a2b3;
-    --color-gray-500: #667085;
-    --color-gray-600: #475467;
-    --color-gray-700: #344054;
-    --color-gray-800: #1d2939;
-    --color-gray-900: #101828;
-    --color-gray-950: #0c111d;
+@theme {
+  --color-brand-25: #f2f7ff;
+  --color-brand-50: #ecf3ff;
+  --color-brand-100: #dde9ff;
+  --color-brand-200: #c2d6ff;
+  --color-brand-300: #9cb9ff;
+  --color-brand-400: #7592ff;
+  --color-brand-500: #465fff;
+  --color-brand-600: #3641f5;
+  --color-brand-700: #2a31d8;
+  --color-brand-800: #252dae;
+  --color-brand-900: #262e89;
+  --color-brand-950: #161950;
+  
+  --color-gray-25: #fcfcfd;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f2f4f7;
+  --color-gray-200: #e4e7ec;
+  --color-gray-300: #d0d5dd;
+  --color-gray-400: #98a2b3;
+  --color-gray-500: #667085;
+  --color-gray-600: #475467;
+  --color-gray-700: #344054;
+  --color-gray-800: #1d2939;
+  --color-gray-900: #101828;
+  --color-gray-950: #0c111d;
+}
+
+@utility sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  height: 100vh;
+  width: 290px;
+  flex-direction: column;
+  overflow-y: hidden;
+  border-right: 1px solid rgb(229 231 235);
+  background-color: white;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  transition-duration: 300ms;
+  transition-timing-function: linear;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    position: static;
+    transform: translateX(0);
   }
 }
 
-@layer utilities {
-  /* Componentes essenciais do TailAdmin Pro */
-  .sidebar {
-    @apply fixed left-0 top-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 duration-300 ease-linear lg:static lg:translate-x-0;
-  }
-  
-  .menu-item {
-    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300;
-  }
-  
-  .menu-item-active {
-    @apply bg-brand-50 text-brand-600;
-  }
-  
-  .menu-item-inactive {
-    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
-  }
-  
-  .menu-dropdown {
-    @apply mt-2 flex flex-col gap-1 pl-9;
-  }
-  
-  .menu-dropdown-item {
-    @apply rounded-lg px-3 py-2 text-sm transition-all duration-300;
-  }
-  
-  .menu-dropdown-item-active {
-    @apply bg-brand-50 text-brand-600;
-  }
-  
-  .menu-dropdown-item-inactive {
-    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
-  }
-  
-  /* Botões e inputs */
-  .ta-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300;
-  }
-  
-  .ta-btn-primary {
-    @apply bg-brand-600 text-white hover:bg-brand-700;
-  }
-  
-  .ta-btn-secondary {
-    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
-  }
-  
-  .ta-input {
-    @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
-  }
-  
-  /* Utilitários para componentes */
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Animações */
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+@utility menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+@utility menu-item-active {
+  background-color: rgb(239 246 255);
+  color: rgb(37 99 235);
+}
+
+@utility menu-item-inactive {
+  color: rgb(75 85 99);
+}
+
+.menu-item-inactive:hover {
+  background-color: rgb(243 244 246);
+  color: rgb(17 24 39);
+}
+
+@utility menu-dropdown {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 2.25rem;
+}
+
+@utility menu-dropdown-item {
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+}
+
+@utility menu-dropdown-item-active {
+  background-color: rgb(239 246 255);
+  color: rgb(37 99 235);
+}
+
+@utility menu-dropdown-item-inactive {
+  color: rgb(75 85 99);
+}
+
+.menu-dropdown-item-inactive:hover {
+  background-color: rgb(243 244 246);
+  color: rgb(17 24 39);
+}
+
+@utility ta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+@utility ta-btn-primary {
+  background-color: rgb(37 99 235);
+  color: white;
+}
+
+.ta-btn-primary:hover {
+  background-color: rgb(29 78 216);
+}
+
+@utility ta-btn-secondary {
+  background-color: rgb(243 244 246);
+  color: rgb(55 65 81);
+}
+
+.ta-btn-secondary:hover {
+  background-color: rgb(229 231 235);
+}
+
+@utility ta-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(209 213 219);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.ta-input:focus {
+  border-color: rgb(59 130 246);
+  outline: none;
+  box-shadow: 0 0 0 1px rgb(59 130 246);
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
