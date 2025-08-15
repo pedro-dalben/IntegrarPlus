@@ -19,7 +19,11 @@ module Ui
     end
 
     def user_avatar
-      current_user&.avatar || 'user/user-01.jpg'
+      if current_user&.avatar.present?
+        current_user.avatar
+      else
+        'fakeperson.webp'
+      end
     end
   end
 end
