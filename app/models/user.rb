@@ -14,9 +14,9 @@ class User < ApplicationRecord
     true
   end
 
+  validates :name, presence: true, length: { minimum: 2, maximum: 100 }
+
   def full_name
-    # Por enquanto, retorna o email como nome
-    # TODO: Adicionar campos first_name e last_name ao modelo
-    email.split('@').first.titleize
+    name.present? ? name : email.split('@').first.titleize
   end
 end

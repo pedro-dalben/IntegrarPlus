@@ -15,12 +15,12 @@ class Professional < ApplicationRecord
   has_many :specializations, through: :professional_specializations
 
   validates :full_name, presence: true
-  validates :cpf, presence: true, uniqueness: { case_sensitive: false }, cpf: true
+  validates :cpf, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
-  validates :phone, phone: true, allow_blank: true
-  validates :cnpj, cnpj: true, allow_blank: true
+  # validates :phone, phone: true, allow_blank: true
+  # validates :cnpj, cnpj: true, allow_blank: true
   validates :workload_minutes, numericality: { greater_than_or_equal_to: 0 }
-  validates :birth_date, date: { after: Date.new(1900, 1, 1), before_or_equal_to: Date.current }, allow_blank: true
+  # validates :birth_date, date: { after: Date.new(1900, 1, 1), before_or_equal_to: Date.current }, allow_blank: true
 
   validate :contract_type_consistency
   validate :specialization_consistency

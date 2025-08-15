@@ -86,3 +86,11 @@ groups = %w[
 groups.each do |group_name|
   Group.find_or_create_by!(name: group_name)
 end
+
+# Usuário admin padrão
+admin_user = User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
+  user.name = 'Administrador'
+  user.password = 'password123'
+  user.password_confirmation = 'password123'
+  user.confirmed_at = Time.current
+end

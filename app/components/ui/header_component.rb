@@ -11,7 +11,7 @@ module Ui
     attr_reader :current_user
 
     def user_name
-      current_user&.name || 'Usuário'
+      current_user&.full_name || 'Usuário'
     end
 
     def user_email
