@@ -30,6 +30,7 @@ import "../styles/application.css";
 import "../styles/tailadmin-pro.css";
 import "../javascript/application";
 import "../javascript/tailadmin-pro";
+import "../javascript/header-fixes";
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "flatpickr/dist/flatpickr.css";

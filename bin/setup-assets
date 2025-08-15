@@ -1,0 +1,29 @@
+#!/bin/bash
+
+echo "🔄 Configurando assets do TailAdmin Pro..."
+
+# Criar diretórios
+echo "📁 Criando diretórios..."
+mkdir -p public/assets/images/logo
+mkdir -p public/assets/images/user
+mkdir -p public/vendor/tailadmin-pro/images/logo
+mkdir -p public/vendor/tailadmin-pro/images/user
+
+# Copiar imagens do logo
+echo "🖼️  Copiando imagens do logo..."
+cp vendor/tailadmin-pro/images/logo/*.svg public/assets/images/logo/ 2>/dev/null || echo "⚠️  Nenhum arquivo SVG encontrado em vendor/tailadmin-pro/images/logo/"
+cp vendor/tailadmin-pro/images/logo/*.svg public/vendor/tailadmin-pro/images/logo/ 2>/dev/null || echo "⚠️  Nenhum arquivo SVG encontrado em vendor/tailadmin-pro/images/logo/"
+
+# Copiar imagens de usuário
+echo "👤 Copiando imagens de usuário..."
+cp vendor/tailadmin-pro/images/user/*.jpg public/assets/images/user/ 2>/dev/null || echo "⚠️  Nenhum arquivo JPG encontrado em vendor/tailadmin-pro/images/user/"
+cp vendor/tailadmin-pro/images/user/*.png public/assets/images/user/ 2>/dev/null || echo "⚠️  Nenhum arquivo PNG encontrado em vendor/tailadmin-pro/images/user/"
+cp vendor/tailadmin-pro/images/user/*.jpg public/vendor/tailadmin-pro/images/user/ 2>/dev/null || echo "⚠️  Nenhum arquivo JPG encontrado em vendor/tailadmin-pro/images/user/"
+cp vendor/tailadmin-pro/images/user/*.png public/vendor/tailadmin-pro/images/user/ 2>/dev/null || echo "⚠️  Nenhum arquivo PNG encontrado em vendor/tailadmin-pro/images/user/"
+
+echo "✅ Assets configurados com sucesso!"
+echo ""
+echo "📋 Verificação:"
+echo "   - Logo: http://localhost:3000/assets/images/logo/logo.svg"
+echo "   - Usuário: http://localhost:3000/assets/images/user/owner.png"
+echo "   - Fallback: http://localhost:3000/vendor/tailadmin-pro/images/logo/logo.svg"

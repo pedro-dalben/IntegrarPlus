@@ -1,5 +1,4 @@
 <header
-  x-data="{menuToggle: false}"
   class="sticky top-0 z-99999 flex w-full border-gray-200 bg-white xl:border-b dark:border-gray-800 dark:bg-gray-900"
 >
   <div
@@ -67,12 +66,13 @@
       </button>
       <!-- Hamburger Toggle BTN -->
 
-      <a href="index.html" class="xl:hidden">
-        <img class="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
+      <a href="<%= admin_path %>" class="xl:hidden">
+        <img class="dark:hidden" src="/assets/images/logo/logo.svg" alt="Logo" onerror="this.src='/vendor/tailadmin-pro/images/logo/logo.svg'" />
         <img
           class="hidden dark:block"
-          src="./images/logo/logo-dark.svg"
+          src="/assets/images/logo/logo-dark.svg"
           alt="Logo"
+          onerror="this.src='/vendor/tailadmin-pro/images/logo/logo-dark.svg'"
         />
       </a>
 
@@ -615,10 +615,10 @@
           @click.prevent="dropdownOpen = ! dropdownOpen"
         >
           <span class="mr-3 h-11 w-11 overflow-hidden rounded-full">
-            <img src="./images/user/owner.png" alt="User" />
+            <img src="/assets/images/user/owner.png" alt="User" onerror="this.src='/vendor/tailadmin-pro/images/user/owner.png'" />
           </span>
 
-          <span class="text-theme-sm mr-1 block font-medium"> Musharof </span>
+          <span class="text-theme-sm mr-1 block font-medium"> <%= user&.name || user&.email || 'Usuário' %> </span>
 
           <svg
             :class="dropdownOpen && 'rotate-180'"
@@ -648,12 +648,12 @@
             <span
               class="text-theme-sm block font-medium text-gray-700 dark:text-gray-400"
             >
-              Musharof Chowdhury
+              <%= user&.name || 'Usuário' %>
             </span>
             <span
               class="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400"
             >
-              randomuser@pimjo.com
+              <%= user&.email || 'usuario@exemplo.com' %>
             </span>
           </div>
 
@@ -680,7 +680,7 @@
                     fill=""
                   />
                 </svg>
-                Edit profile
+                Editar perfil
               </a>
             </li>
             <li>
@@ -730,9 +730,7 @@
               </a>
             </li>
           </ul>
-          <button
-            class="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-          >
+          <%= button_to destroy_user_session_path, method: :delete, class: "group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 w-full text-left" do %>
             <svg
               class="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
               width="24"
@@ -749,8 +747,8 @@
               />
             </svg>
 
-            Sign out
-          </button>
+            Sair
+          <% end %>
         </div>
         <!-- Dropdown End -->
       </div>
