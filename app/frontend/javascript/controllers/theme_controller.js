@@ -6,6 +6,10 @@ export default class extends Controller {
     this.applyTheme()
   }
 
+  disconnect() {
+    // Cleanup if needed
+  }
+
   toggle() {
     const html = document.documentElement
     const isDark = html.classList.contains('dark')

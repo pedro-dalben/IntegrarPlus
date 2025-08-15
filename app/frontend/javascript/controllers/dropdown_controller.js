@@ -7,6 +7,7 @@ export default class extends Controller {
 
   connect() {
     useClickOutside(this)
+    this.render(false)
   }
 
   toggle() {

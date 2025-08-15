@@ -5,6 +5,8 @@
       class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 lg:hidden"
       data-controller="sidebar"
       data-action="click->sidebar#toggle"
+      aria-label="Abrir menu lateral"
+      aria-expanded="false"
     >
       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -23,6 +25,8 @@
       class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 lg:hidden"
       data-controller="menu"
       data-action="click->menu#toggle"
+      aria-label="Menu do aplicativo"
+      aria-expanded="false"
     >
       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -34,6 +38,7 @@
       class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
       data-controller="theme"
       data-action="click->theme#toggle"
+      aria-label="Alternar tema escuro/claro"
     >
       <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
@@ -48,6 +53,8 @@
         type="button"
         class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300"
         data-action="click->dropdown#toggle"
+        aria-label="Notificações"
+        aria-expanded="false"
       >
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.5 19.5h9a2.5 2.5 0 002.5-2.5V7a2.5 2.5 0 00-2.5-2.5h-9A2.5 2.5 0 002 7v10a2.5 2.5 0 002.5 2.5z"></path>
@@ -85,6 +92,8 @@
         type="button"
         class="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
         data-action="click->dropdown#toggle"
+        aria-label="Menu do usuário"
+        aria-expanded="false"
       >
         <img class="h-8 w-8 rounded-full object-cover" src="<%= asset_path(user_avatar) %>" alt="Avatar">
         <span class="hidden lg:block"><%= user_name %></span>
