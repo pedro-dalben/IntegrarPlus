@@ -40,13 +40,81 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "prismjs/themes/prism.css";
 
-// Alpine.js
+// Alpine.js with TailAdmin Pro configuration
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 
 Alpine.plugin(persist);
 window.Alpine = Alpine;
+
+// Register Alpine.js components before initializing (TailAdmin Pro specific)
+Alpine.data("dropdown", () => ({
+  open: false,
+  toggle() {
+    this.open = !this.open;
+    if (this.open) this.position();
+  },
+  position() {
+    this.$nextTick(() => {
+      const button = this.$el;
+      const dropdown = this.$refs.dropdown;
+      if (!dropdown) return;
+      
+      const rect = button.getBoundingClientRect();
+
+      dropdown.style.position = "fixed";
+      dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+      dropdown.style.right = `${window.innerWidth - rect.right}px`;
+      dropdown.style.zIndex = "999";
+
+      // Reposition if would overflow viewport
+      const dropdownRect = dropdown.getBoundingClientRect();
+      if (dropdownRect.bottom > window.innerHeight) {
+        dropdown.style.top = `${rect.top + window.scrollY - dropdownRect.height}px`;
+      }
+    });
+  },
+  init() {
+    this.$watch("open", (value) => {
+      if (value) this.position();
+    });
+  },
+}));
+
+// Start Alpine.js after registering components
 Alpine.start();
+
+// TailAdmin Pro specific JavaScript functionality
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("search-input");
+  const searchButton = document.getElementById("search-button");
+
+  if (searchInput && searchButton) {
+    // Function to focus the search input
+    function focusSearchInput() {
+      searchInput.focus();
+    }
+
+    // Add click event listener to the search button
+    searchButton.addEventListener("click", focusSearchInput);
+
+    // Add keyboard event listener for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+    document.addEventListener("keydown", function (event) {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault(); // Prevent the default browser behavior
+        focusSearchInput();
+      }
+    });
+
+    // Add keyboard event listener for "/" key
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "/" && document.activeElement !== searchInput) {
+        event.preventDefault(); // Prevent the "/" character from being typed
+        focusSearchInput();
+      }
+    });
+  }
+});
 
 document.addEventListener("turbo:load", () => {
   if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
