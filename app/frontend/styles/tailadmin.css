@@ -254,15 +254,15 @@
   }
   
   /* Header adjustments for mobile */
-  header {
+  /* header {
     left: 0 !important;
     padding-left: 0 !important;
-  }
+  } */
   
   /* No padding left in mobile */
-  .lg\:pl-\[290px\] {
+  /* .lg\:pl-\[290px\] {
     padding-left: 0 !important;
-  }
+  } */
 
   /* User dropdown mobile adjustments */
   .relative [data-menu-target="panel"] {
@@ -290,10 +290,10 @@
   }
   
   /* Header should start after sidebar */
-  header.lg\:left-\[290px\] {
+  /* header.lg\:left-\[290px\] {
     left: 290px !important;
     width: calc(100% - 290px) !important;
-  }
+  } */
 }
 
 /* Responsive text sizes */
