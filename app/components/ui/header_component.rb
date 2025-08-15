@@ -11,11 +11,11 @@ class Ui::HeaderComponent < ViewComponent::Base
   attr_reader :user, :options
 
   def user_name
-    user&.name || "Usuário"
+    user&.name || "Usuário Admin"
   end
 
   def user_email
-    user&.email || "usuario@integrarplus.com"
+    user&.email || "admin@integrarplus.com"
   end
 
   def user_avatar
