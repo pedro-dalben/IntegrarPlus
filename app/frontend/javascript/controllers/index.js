@@ -5,6 +5,7 @@
 import { application } from "./application"
 import MenuController from "./menu_controller"
 import SidebarController from "./sidebar_controller"
+import ThemeController from "./theme_controller"
 import ChartController from "./chart_controller"
 import DatepickerController from "./datepicker_controller"
 import AccordionController from "./accordion_controller"
@@ -19,6 +20,7 @@ import RowController from "./row_controller"
 import DropdownController from "./dropdown_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
+application.register("theme", ThemeController)
 application.register("chart", ChartController)
 application.register("datepicker", DatepickerController)
 application.register("accordion", AccordionController)

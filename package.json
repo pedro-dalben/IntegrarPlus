@@ -28,6 +28,7 @@
     "preline": "^3.2.3",
     "prettier": "^3.6.2",
     "prismjs": "^1.30.0",
+    "stimulus-use": "^0.52.3",
     "swiper": "^11.1.14",
     "tom-select": "^2.4.3"
   }

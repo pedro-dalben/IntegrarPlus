@@ -75,7 +75,7 @@
   dependencies:
     "@fullcalendar/daygrid" "~6.1.19"
 
-"@hotwired/stimulus@^3.2.2":
+"@hotwired/stimulus@^3.2.2", "@hotwired/stimulus@>= 3":
   version "3.2.2"
   resolved "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.2.2.tgz"
   integrity sha512-eGeIqNOQpXoPAIP7tC1+1Yc1yl1xnwYqg+3mzqxyrbE5pg5YFBZcA6YoTiByJB6DKAEsiWtl6tjTJS4IYtbB7A==
@@ -592,6 +592,11 @@ graceful-fs@^4.2.4:
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.11.tgz"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
+"hotkeys-js@>= 3":
+  version "3.13.15"
+  resolved "https://registry.npmjs.org/hotkeys-js/-/hotkeys-js-3.13.15.tgz"
+  integrity sha512-gHh8a/cPTCpanraePpjRxyIlxDFrIhYqjuh01UHWEwDpglJKCnvLW8kqSx5gQtOuSsJogNZXLhOdbSExpgUiqg==
+
 imask@^7.6.1:
   version "7.6.1"
   resolved "https://registry.npmjs.org/imask/-/imask-7.6.1.tgz"
@@ -872,6 +877,11 @@ source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"
   integrity sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==
+
+stimulus-use@^0.52.3:
+  version "0.52.3"
+  resolved "https://registry.npmjs.org/stimulus-use/-/stimulus-use-0.52.3.tgz"
+  integrity sha512-stZ5dID6FUrGCR/ChWUa0FT5Z8iqkzT6lputOAb50eF+Ayg7RzJj4U/HoRlp2NV333QfvoRidru9HLbom4hZVw==
 
 svg.draggable.js@^2.2.2:
   version "2.2.2"

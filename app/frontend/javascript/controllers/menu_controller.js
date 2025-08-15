@@ -1,7 +1,9 @@
+// app/frontend/javascript/controllers/menu_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["panel", "trigger"]
+  static values = { open: Boolean }
 
   connect() {
     this.boundCloseOnClickOutside = this.closeOnClickOutside.bind(this)
@@ -12,29 +14,26 @@ export default class extends Controller {
     this.removeEventListeners()
   }
 
-  toggle(event) {
-    event.preventDefault()
-    event.stopPropagation()
-    
-    if (!this.hasPanelTarget) return
-    
-    const isHidden = this.panelTarget.classList.contains('hidden')
-    
-    if (isHidden) {
-      this.open()
-    } else {
+  toggle() {
+    if (this.openValue) {
       this.close()
+    } else {
+      this.open()
     }
   }
 
   open() {
-    this.panelTarget.classList.remove('hidden')
+    this.openValue = true
+    this.element.classList.remove('hidden')
+    this.element.classList.add('flex')
     this.setAriaExpanded(true)
     this.addEventListeners()
   }
 
   close() {
-    this.panelTarget.classList.add('hidden')
+    this.openValue = false
+    this.element.classList.remove('flex')
+    this.element.classList.add('hidden')
     this.setAriaExpanded(false)
     this.removeEventListeners()
   }
@@ -52,8 +51,9 @@ export default class extends Controller {
   }
 
   setAriaExpanded(expanded) {
-    const triggers = this.hasTriggerTarget ? [this.triggerTarget] : this.element.querySelectorAll('[aria-haspopup="menu"]')
-    triggers.forEach(el => el.setAttribute('aria-expanded', expanded.toString()))
+    if (this.hasTriggerTarget) {
+      this.triggerTargets.forEach(el => el.setAttribute('aria-expanded', expanded.toString()))
+    }
   }
 
   addEventListeners() {
