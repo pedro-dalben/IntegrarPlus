@@ -41,7 +41,9 @@ export default class extends Controller {
   }
 
   toggleSidebar() {
+    console.log("Header: toggleSidebar() chamado")
     this.dispatch("sidebar-toggle")
+    console.log("Header: evento sidebar-toggle disparado")
     setTimeout(() => this.updatePosition(), 300)
   }
 
@@ -61,13 +63,16 @@ export default class extends Controller {
   }
 
   handleSidebarToggle(event) {
+    console.log("Header: handleSidebarToggle() chamado", event)
     setTimeout(() => this.updatePosition(), 300)
   }
 
   updatePosition() {
+    console.log("Header: updatePosition() chamado")
     const sidebar = document.querySelector('.sidebar')
     if (sidebar) {
       const isCollapsed = sidebar.classList.contains('sidebar-collapsed')
+      console.log("Header: sidebar encontrada, collapsed:", isCollapsed)
       const sidebarWidth = isCollapsed ? 90 : this.sidebarWidthValue
       
       this.element.style.left = '0'
@@ -77,9 +82,13 @@ export default class extends Controller {
       if (hamburgerButton && window.innerWidth >= 1280) {
         const marginLeft = isCollapsed ? '90px' : `${this.sidebarWidthValue}px`
         hamburgerButton.style.marginLeft = marginLeft
+        console.log("Header: margem do botão ajustada para:", marginLeft)
       } else if (hamburgerButton) {
         hamburgerButton.style.marginLeft = '0'
+        console.log("Header: margem do botão resetada para 0")
       }
+    } else {
+      console.log("Header: sidebar não encontrada")
     }
   }
 }

@@ -15,10 +15,12 @@ export default class extends Controller {
   }
 
   disconnect() {
+    console.log("Sidebar controller disconnected")
     this.removeEventListeners()
   }
 
   setupEventListeners() {
+    console.log("Sidebar: setupEventListeners()")
     this.resizeHandler = this.handleResize.bind(this)
     window.addEventListener('resize', this.resizeHandler)
     
@@ -33,6 +35,7 @@ export default class extends Controller {
     
     this.sidebarToggleHandler = this.handleSidebarToggle.bind(this)
     document.addEventListener('sidebar-toggle', this.sidebarToggleHandler)
+    console.log("Sidebar: event listeners configurados")
   }
 
   removeEventListeners() {
@@ -44,22 +47,31 @@ export default class extends Controller {
   }
 
   initializeState() {
+    console.log("Sidebar: initializeState()")
     this.collapsedValue = localStorage.getItem('sidebarCollapsed') === 'true'
     this.selectedValue = localStorage.getItem('sidebarSelected') || ''
+    console.log("Sidebar: estado inicial - collapsed:", this.collapsedValue, "selected:", this.selectedValue)
     this.updateSidebarClasses()
   }
 
   toggle() {
+    console.log("Sidebar: toggle() chamado, estado atual:", this.collapsedValue)
     this.collapsedValue = !this.collapsedValue
     localStorage.setItem('sidebarCollapsed', this.collapsedValue.toString())
+    console.log("Sidebar: novo estado - collapsed:", this.collapsedValue)
     this.updateSidebarClasses()
     this.dispatch('sidebar-toggle', { detail: { collapsed: this.collapsedValue } })
+    console.log("Sidebar: evento sidebar-toggle disparado com detail:", { collapsed: this.collapsedValue })
   }
 
   handleSidebarToggle(event) {
+    console.log("Sidebar: handleSidebarToggle() chamado", event)
+    console.log("Sidebar: window.innerWidth:", window.innerWidth)
     if (window.innerWidth < 1280) {
+      console.log("Sidebar: modo mobile - chamando toggle()")
       this.toggle()
     } else {
+      console.log("Sidebar: modo desktop - chamando toggle()")
       this.toggle()
     }
   }
@@ -88,12 +100,15 @@ export default class extends Controller {
   }
 
   updateSidebarClasses() {
+    console.log("Sidebar: updateSidebarClasses() - collapsed:", this.collapsedValue)
     if (this.collapsedValue) {
       this.element.classList.add('sidebar-collapsed')
       this.element.classList.remove('sidebar-expanded')
+      console.log("Sidebar: classes atualizadas - collapsed adicionada")
     } else {
       this.element.classList.add('sidebar-expanded')
       this.element.classList.remove('sidebar-collapsed')
+      console.log("Sidebar: classes atualizadas - expanded adicionada")
     }
   }
 
@@ -119,11 +134,14 @@ export default class extends Controller {
   }
 
   handleResize() {
+    console.log("Sidebar: handleResize() - window.innerWidth:", window.innerWidth)
     if (window.innerWidth >= 1280) {
       this.element.classList.remove('-translate-x-full')
+      console.log("Sidebar: desktop - removida classe -translate-x-full")
     } else {
       if (!this.collapsedValue) {
         this.element.classList.add('-translate-x-full')
+        console.log("Sidebar: mobile - adicionada classe -translate-x-full")
       }
     }
   }
@@ -141,18 +159,23 @@ export default class extends Controller {
   }
 
   handleSidebarClose() {
+    console.log("Sidebar: handleSidebarClose() chamado")
     this.closeMobile()
   }
 
   closeMobile() {
+    console.log("Sidebar: closeMobile() chamado")
     if (window.innerWidth < 1280) {
       this.element.classList.add('-translate-x-full')
+      console.log("Sidebar: mobile - sidebar fechada")
     }
   }
 
   openMobile() {
+    console.log("Sidebar: openMobile() chamado")
     if (window.innerWidth < 1280) {
       this.element.classList.remove('-translate-x-full')
+      console.log("Sidebar: mobile - sidebar aberta")
     }
   }
 }
