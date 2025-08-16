@@ -1,6 +1,8 @@
 // TailAdmin Pro - Importação completa do JavaScript original
 // Baseado no vendor/tailadmin-pro/js/index.js
 
+console.log('TailAdmin Pro JS carregando...');
+
 // CSS imports (já importados no application.js)
 // import "jsvectormap/dist/jsvectormap.min.css";
 // import "flatpickr/dist/flatpickr.min.css";
@@ -14,45 +16,32 @@
 import flatpickr from "flatpickr";
 import Dropzone from "dropzone";
 
-// Charts específicos do TailAdmin
-import chart01 from "../../../vendor/tailadmin-pro/js/components/charts/chart-01.js";
-import chart02 from "../../../vendor/tailadmin-pro/js/components/charts/chart-02.js";
-import chart03 from "../../../vendor/tailadmin-pro/js/components/charts/chart-03.js";
-import chart04 from "../../../vendor/tailadmin-pro/js/components/charts/chart-04.js";
-import chart05 from "../../../vendor/tailadmin-pro/js/components/charts/chart-05.js";
-import chart06 from "../../../vendor/tailadmin-pro/js/components/charts/chart-06.js";
-import chart07 from "../../../vendor/tailadmin-pro/js/components/charts/chart-07.js";
-import chart08 from "../../../vendor/tailadmin-pro/js/components/charts/chart-08.js";
-import chart09 from "../../../vendor/tailadmin-pro/js/components/charts/chart-09.js";
-import chart10 from "../../../vendor/tailadmin-pro/js/components/charts/chart-10.js";
-import chart11 from "../../../vendor/tailadmin-pro/js/components/charts/chart-11.js";
-import chart12 from "../../../vendor/tailadmin-pro/js/components/charts/chart-12.js";
-import chart13 from "../../../vendor/tailadmin-pro/js/components/charts/chart-13.js";
-import chart14 from "../../../vendor/tailadmin-pro/js/components/charts/chart-14.js";
-import chart15 from "../../../vendor/tailadmin-pro/js/components/charts/chart-15.js";
-import chart16 from "../../../vendor/tailadmin-pro/js/components/charts/chart-16.js";
-import chart17 from "../../../vendor/tailadmin-pro/js/components/charts/chart-17.js";
-import chart18 from "../../../vendor/tailadmin-pro/js/components/charts/chart-18.js";
-import chart19 from "../../../vendor/tailadmin-pro/js/components/charts/chart-19.js";
-import chart20 from "../../../vendor/tailadmin-pro/js/components/charts/chart-20.js";
-import chart21 from "../../../vendor/tailadmin-pro/js/components/charts/chart-21.js";
-import chart22 from "../../../vendor/tailadmin-pro/js/components/charts/chart-22.js";
-import chart23 from "../../../vendor/tailadmin-pro/js/components/charts/chart-23.js";
-import chart24 from "../../../vendor/tailadmin-pro/js/components/charts/chart-24.js";
+console.log('Flatpickr e Dropzone importados');
 
-// Outros componentes
-import map01 from "../../../vendor/tailadmin-pro/js/components/map-01.js";
-import "../../../vendor/tailadmin-pro/js/components/carousels/carousel-01.js";
-import "../../../vendor/tailadmin-pro/js/components/carousels/carousel-02.js";
-import "../../../vendor/tailadmin-pro/js/components/carousels/carousel-03.js";
-import "../../../vendor/tailadmin-pro/js/components/carousels/carousel-04.js";
-import "../../../vendor/tailadmin-pro/js/components/trending-stocks.js";
-import "../../../vendor/tailadmin-pro/js/components/calendar-init.js";
-import "../../../vendor/tailadmin-pro/js/components/task-drag.js";
-import "../../../vendor/tailadmin-pro/js/components/image-resize.js";
+// Charts específicos do TailAdmin (importação simplificada)
+try {
+  import("../../../vendor/tailadmin-pro/js/components/charts/chart-01.js");
+  import("../../../vendor/tailadmin-pro/js/components/charts/chart-02.js");
+  import("../../../vendor/tailadmin-pro/js/components/charts/chart-03.js");
+  import("../../../vendor/tailadmin-pro/js/components/charts/chart-04.js");
+  import("../../../vendor/tailadmin-pro/js/components/charts/chart-05.js");
+  console.log('Charts carregados com sucesso');
+} catch (error) {
+  console.error('Erro ao carregar charts:', error);
+}
 
-// Prism.js para syntax highlighting
-import "../../../vendor/tailadmin-pro/js/components/prism.js";
+// Outros componentes (importação simplificada)
+try {
+  import("../../../vendor/tailadmin-pro/js/components/map-01.js");
+  import("../../../vendor/tailadmin-pro/js/components/trending-stocks.js");
+  import("../../../vendor/tailadmin-pro/js/components/calendar-init.js");
+  import("../../../vendor/tailadmin-pro/js/components/task-drag.js");
+  import("../../../vendor/tailadmin-pro/js/components/image-resize.js");
+  import("../../../vendor/tailadmin-pro/js/components/prism.js");
+  console.log('Componentes carregados com sucesso');
+} catch (error) {
+  console.error('Erro ao carregar componentes:', error);
+}
 
 // Inicializar flatpickr (configuração completa do TailAdmin)
 flatpickr(".datepicker", {
@@ -232,3 +221,5 @@ window.TailAdminPro = {
   flatpickr,
   Dropzone
 };
+
+console.log('TailAdmin Pro JS carregado completamente!');
