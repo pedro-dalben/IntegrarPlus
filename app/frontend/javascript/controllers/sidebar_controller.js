@@ -2,36 +2,137 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["overlay", "panel", "initialFocus", "trigger"]
+  static targets = ["menuItem", "dropdown", "overlay"]
+  static values = { 
+    collapsed: { type: Boolean, default: false },
+    selected: { type: String, default: "" }
+  }
 
   connect() {
-    this.keyHandler = (e) => { if (e.key === 'Escape') this.close() }
+    console.log("Sidebar controller connected")
+    this.setupEventListeners()
+    this.initializeState()
+  }
+
+  disconnect() {
+    this.removeEventListeners()
+  }
+
+  setupEventListeners() {
+    this.resizeHandler = this.handleResize.bind(this)
+    window.addEventListener('resize', this.resizeHandler)
+    
+    this.clickOutsideHandler = this.handleClickOutside.bind(this)
+    document.addEventListener('click', this.clickOutsideHandler)
+    
+    this.escapeHandler = this.handleEscape.bind(this)
+    document.addEventListener('keydown', this.escapeHandler)
+  }
+
+  removeEventListeners() {
+    window.removeEventListener('resize', this.resizeHandler)
+    document.removeEventListener('click', this.clickOutsideHandler)
+    document.removeEventListener('keydown', this.escapeHandler)
+  }
+
+  initializeState() {
+    this.collapsedValue = localStorage.getItem('sidebarCollapsed') === 'true'
+    this.selectedValue = localStorage.getItem('sidebarSelected') || ''
+    this.updateSidebarClasses()
   }
 
   toggle() {
-    const html = document.documentElement
-    const isOpen = html.classList.contains('sidebar-open')
+    this.collapsedValue = !this.collapsedValue
+    localStorage.setItem('sidebarCollapsed', this.collapsedValue.toString())
+    this.updateSidebarClasses()
+    this.dispatch('sidebar-toggle', { detail: { collapsed: this.collapsedValue } })
+  }
+
+  toggleDropdown(event) {
+    const menuItem = event.currentTarget
+    const menuName = menuItem.dataset.menu
     
-    if (isOpen) {
-      this.close()
+    if (this.selectedValue === menuName) {
+      this.selectedValue = ''
     } else {
-      this.open()
+      this.selectedValue = menuName
+    }
+    
+    localStorage.setItem('sidebarSelected', this.selectedValue)
+    this.updateDropdownStates()
+  }
+
+  selectMenuItem(event) {
+    const menuItem = event.currentTarget
+    const menuName = menuItem.dataset.menu
+    
+    this.selectedValue = menuName
+    localStorage.setItem('sidebarSelected', this.selectedValue)
+    this.updateDropdownStates()
+  }
+
+  updateSidebarClasses() {
+    if (this.collapsedValue) {
+      this.element.classList.add('sidebar-collapsed')
+      this.element.classList.remove('sidebar-expanded')
+    } else {
+      this.element.classList.add('sidebar-expanded')
+      this.element.classList.remove('sidebar-collapsed')
     }
   }
 
-  open() {
-    document.documentElement.classList.add('sidebar-open')
-    this.setAriaExpanded(true)
+  updateDropdownStates() {
+    this.menuItemTargets.forEach(item => {
+      const menuName = item.dataset.menu
+      const dropdown = this.element.querySelector(`[data-dropdown="${menuName}"]`)
+      
+      if (this.selectedValue === menuName) {
+        item.classList.add('menu-item-active')
+        if (dropdown) {
+          dropdown.classList.remove('hidden')
+          dropdown.classList.add('block')
+        }
+      } else {
+        item.classList.remove('menu-item-active')
+        if (dropdown) {
+          dropdown.classList.add('hidden')
+          dropdown.classList.remove('block')
+        }
+      }
+    })
   }
 
-  close() {
-    document.documentElement.classList.remove('sidebar-open')
-    this.setAriaExpanded(false)
+  handleResize() {
+    if (window.innerWidth >= 1280) {
+      this.element.classList.remove('-translate-x-full')
+    } else {
+      if (!this.collapsedValue) {
+        this.element.classList.add('-translate-x-full')
+      }
+    }
   }
 
-  setAriaExpanded(expanded) {
-    if (this.hasTriggerTarget) {
-      this.triggerTargets.forEach(t => t.setAttribute('aria-expanded', expanded.toString()))
+  handleClickOutside(event) {
+    if (window.innerWidth < 1280 && !this.element.contains(event.target)) {
+      this.closeMobile()
+    }
+  }
+
+  handleEscape(event) {
+    if (event.key === 'Escape') {
+      this.closeMobile()
+    }
+  }
+
+  closeMobile() {
+    if (window.innerWidth < 1280) {
+      this.element.classList.add('-translate-x-full')
+    }
+  }
+
+  openMobile() {
+    if (window.innerWidth < 1280) {
+      this.element.classList.remove('-translate-x-full')
     }
   }
 }

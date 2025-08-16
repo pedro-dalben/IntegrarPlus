@@ -16,31 +16,62 @@ class Ui::SidebarComponent < ViewComponent::Base
         title: "Dashboard",
         path: "/admin/dashboard",
         icon: dashboard_icon,
-        active: current_path&.start_with?("/admin/dashboard")
+        active: current_path&.start_with?("/admin/dashboard"),
+        badge: nil
       },
       {
         title: "Profissionais",
         path: "/admin/professionals", 
         icon: professionals_icon,
-        active: current_path&.start_with?("/admin/professionals")
+        active: current_path&.start_with?("/admin/professionals"),
+        badge: nil
       },
       {
         title: "Especialidades",
         path: "/admin/specialities",
         icon: specialities_icon,
-        active: current_path&.start_with?("/admin/specialities")
+        active: current_path&.start_with?("/admin/specialities"),
+        badge: nil
       },
       {
         title: "Especializações",
         path: "/admin/specializations",
         icon: specializations_icon,
-        active: current_path&.start_with?("/admin/specializations")
+        active: current_path&.start_with?("/admin/specializations"),
+        badge: nil
       },
       {
         title: "Tipos de Contrato",
         path: "/admin/contract_types",
         icon: contract_types_icon,
-        active: current_path&.start_with?("/admin/contract_types")
+        active: current_path&.start_with?("/admin/contract_types"),
+        badge: nil
+      }
+    ]
+  end
+
+  def support_items
+    [
+      {
+        title: "Configurações",
+        path: "#",
+        icon: settings_icon,
+        active: false,
+        badge: nil
+      },
+      {
+        title: "Usuários",
+        path: "#",
+        icon: users_icon,
+        active: false,
+        badge: nil
+      },
+      {
+        title: "Integrações",
+        path: "#",
+        icon: integrations_icon,
+        active: false,
+        badge: "New"
       }
     ]
   end
@@ -63,5 +94,17 @@ class Ui::SidebarComponent < ViewComponent::Base
 
   def contract_types_icon
     '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>'.html_safe
+  end
+
+  def settings_icon
+    '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>'.html_safe
+  end
+
+  def users_icon
+    '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'.html_safe
+  end
+
+  def integrations_icon
+    '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>'.html_safe
   end
 end

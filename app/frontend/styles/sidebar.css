@@ -1,0 +1,227 @@
+/* Sidebar Styles - Baseado no TailAdmin */
+
+/* Sidebar Container */
+.sidebar {
+  transition: all 0.3s ease;
+}
+
+.sidebar-collapsed {
+  width: 90px !important;
+}
+
+.sidebar-collapsed .logo {
+  display: none;
+}
+
+.sidebar-collapsed .logo-icon {
+  display: block;
+}
+
+.sidebar-collapsed .menu-item-text,
+.sidebar-collapsed .menu-group-title,
+.sidebar-collapsed .menu-item-badge {
+  display: none;
+}
+
+.sidebar-collapsed .sidebar-header {
+  justify-content: center;
+}
+
+/* Menu Items */
+.menu-item {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+  background-color: rgb(243 244 246);
+}
+
+.dark .menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.menu-item-active {
+  background-color: rgb(243 244 246);
+  color: rgb(59 130 246);
+}
+
+.dark .menu-item-active {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgb(96 165 250);
+}
+
+.menu-item-icon {
+  transition: all 0.3s ease;
+}
+
+.menu-item-active .menu-item-icon {
+  color: rgb(59 130 246);
+}
+
+.dark .menu-item-active .menu-item-icon {
+  color: rgb(96 165 250);
+}
+
+/* Menu Item Badges */
+.menu-item-badge {
+  transition: all 0.3s ease;
+}
+
+/* Dropdown Menus */
+.menu-dropdown {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.menu-dropdown-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(107 114 128);
+  transition: all 0.3s ease;
+  border-radius: 0.25rem;
+}
+
+.menu-dropdown-item:hover {
+  background-color: rgb(243 244 246);
+  color: rgb(59 130 246);
+}
+
+.dark .menu-dropdown-item {
+  color: rgb(156 163 175);
+}
+
+.dark .menu-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgb(96 165 250);
+}
+
+.menu-dropdown-item-active {
+  background-color: rgb(243 244 246);
+  color: rgb(59 130 246);
+}
+
+.dark .menu-dropdown-item-active {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgb(96 165 250);
+}
+
+/* Badge Styles */
+.menu-dropdown-badge {
+  position: absolute;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.menu-dropdown-badge-active {
+  background-color: rgb(59 130 246);
+  color: white;
+}
+
+.menu-dropdown-badge-inactive {
+  background-color: rgb(243 244 246);
+  color: rgb(107 114 128);
+}
+
+.dark .menu-dropdown-badge-inactive {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(156 163 175);
+}
+
+/* Pro Badge */
+.menu-dropdown-badge-pro {
+  background-color: rgb(34 197 94);
+  color: white;
+}
+
+.menu-dropdown-badge-pro-active {
+  background-color: rgb(34 197 94);
+  color: white;
+}
+
+.menu-dropdown-badge-pro-inactive {
+  background-color: rgb(243 244 246);
+  color: rgb(107 114 128);
+}
+
+.dark .menu-dropdown-badge-pro-inactive {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(156 163 175);
+}
+
+/* Responsive */
+@media (max-width: 1279px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+/* Scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Promo Box */
+.sidebar .promo-box {
+  background: linear-gradient(135deg, rgb(59 130 246), rgb(147 51 234));
+  color: white;
+}
+
+.sidebar .promo-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Adjustments */
+.dark .sidebar {
+  background-color: rgb(0 0 0);
+  border-color: rgb(31 41 55);
+}
+
+.dark .menu-item {
+  color: rgb(156 163 175);
+}
+
+.dark .menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .menu-item-active {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgb(96 165 250);
+}
+
+/* Animation Classes */
+.sidebar-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-item-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus States */
+.menu-item:focus-visible {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+.dark .menu-item:focus-visible {
+  outline-color: rgb(96 165 250);
+}
