@@ -18,16 +18,7 @@
     <%= vite_javascript_tag "entrypoints/application" %>
   </head>
 
-  <body
-    data-controller="header"
-    data-header-dark-mode-value="false"
-    data-header-sidebar-toggle-value="false"
-    data-header-menu-toggle-value="true"
-    data-header-loaded-value="false"
-    x-data="{ sidebarToggle: false, menuToggle: true, darkMode: false, loaded: false }"
-    class=""
-  >
-
+  <body class="">
 
     <!-- ===== Page Wrapper Start ===== -->
     <div class="flex h-screen overflow-hidden">
@@ -39,9 +30,9 @@
       <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto z-10">
         <!-- Small Device Overlay Start -->
         <div
-          :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
-          x-cloak
-          class="fixed z-50 h-screen w-full bg-gray-900/50"
+          data-controller="sidebar-overlay"
+          data-sidebar-overlay-target="overlay"
+          class="fixed z-50 h-screen w-full bg-gray-900/50 hidden"
         ></div>
         <!-- Small Device Overlay End -->
 

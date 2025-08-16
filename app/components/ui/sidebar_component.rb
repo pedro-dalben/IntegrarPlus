@@ -13,38 +13,38 @@ class Ui::SidebarComponent < ViewComponent::Base
   def menu_items
     [
       {
-        title: "Dashboard",
-        path: "/admin/dashboard",
+        title: 'Dashboard',
+        path: '/admin/dashboard',
         icon: dashboard_icon,
-        active: current_path&.start_with?("/admin/dashboard"),
+        active: current_path&.start_with?('/admin/dashboard'),
         badge: nil
       },
       {
-        title: "Profissionais",
-        path: "/admin/professionals", 
+        title: 'Profissionais',
+        path: '/admin/professionals',
         icon: professionals_icon,
-        active: current_path&.start_with?("/admin/professionals"),
+        active: current_path&.start_with?('/admin/professionals'),
         badge: nil
       },
       {
-        title: "Especialidades",
-        path: "/admin/specialities",
+        title: 'Especialidades',
+        path: '/admin/specialities',
         icon: specialities_icon,
-        active: current_path&.start_with?("/admin/specialities"),
+        active: current_path&.start_with?('/admin/specialities'),
         badge: nil
       },
       {
-        title: "Especializações",
-        path: "/admin/specializations",
+        title: 'Especializações',
+        path: '/admin/specializations',
         icon: specializations_icon,
-        active: current_path&.start_with?("/admin/specializations"),
+        active: current_path&.start_with?('/admin/specializations'),
         badge: nil
       },
       {
-        title: "Tipos de Contrato",
-        path: "/admin/contract_types",
+        title: 'Tipos de Contrato',
+        path: '/admin/contract_types',
         icon: contract_types_icon,
-        active: current_path&.start_with?("/admin/contract_types"),
+        active: current_path&.start_with?('/admin/contract_types'),
         badge: nil
       }
     ]
@@ -53,25 +53,25 @@ class Ui::SidebarComponent < ViewComponent::Base
   def support_items
     [
       {
-        title: "Configurações",
-        path: "#",
+        title: 'Configurações',
+        path: '#',
         icon: settings_icon,
         active: false,
         badge: nil
       },
       {
-        title: "Usuários",
-        path: "#",
+        title: 'Usuários',
+        path: '#',
         icon: users_icon,
         active: false,
         badge: nil
       },
       {
-        title: "Integrações",
-        path: "#",
+        title: 'Integrações',
+        path: '#',
         icon: integrations_icon,
         active: false,
-        badge: "New"
+        badge: 'New'
       }
     ]
   end

@@ -27,12 +27,20 @@ export default class extends Controller {
     
     this.escapeHandler = this.handleEscape.bind(this)
     document.addEventListener('keydown', this.escapeHandler)
+    
+    this.sidebarCloseHandler = this.handleSidebarClose.bind(this)
+    document.addEventListener('sidebar-close', this.sidebarCloseHandler)
+    
+    this.sidebarToggleHandler = this.handleSidebarToggle.bind(this)
+    document.addEventListener('sidebar-toggle', this.sidebarToggleHandler)
   }
 
   removeEventListeners() {
     window.removeEventListener('resize', this.resizeHandler)
     document.removeEventListener('click', this.clickOutsideHandler)
     document.removeEventListener('keydown', this.escapeHandler)
+    document.removeEventListener('sidebar-close', this.sidebarCloseHandler)
+    document.removeEventListener('sidebar-toggle', this.sidebarToggleHandler)
   }
 
   initializeState() {
@@ -46,6 +54,14 @@ export default class extends Controller {
     localStorage.setItem('sidebarCollapsed', this.collapsedValue.toString())
     this.updateSidebarClasses()
     this.dispatch('sidebar-toggle', { detail: { collapsed: this.collapsedValue } })
+  }
+
+  handleSidebarToggle(event) {
+    if (window.innerWidth < 1280) {
+      this.toggle()
+    } else {
+      this.toggle()
+    }
   }
 
   toggleDropdown(event) {
@@ -122,6 +138,10 @@ export default class extends Controller {
     if (event.key === 'Escape') {
       this.closeMobile()
     }
+  }
+
+  handleSidebarClose() {
+    this.closeMobile()
   }
 
   closeMobile() {
