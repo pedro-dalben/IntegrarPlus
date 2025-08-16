@@ -1,55 +1,32 @@
 // app/frontend/javascript/controllers/dropdown_controller.js
 import { Controller } from "@hotwired/stimulus"
-import { useClickOutside } from "stimulus-use"
 
 export default class extends Controller {
-  static targets = ["panel"]
+  static targets = ["menu"]
+  static values = { open: { type: Boolean, default: false } }
 
   connect() {
-    useClickOutside(this)
-    this.render(false)
+    console.log("Dropdown controller connected")
   }
 
   toggle() {
-    if (this.isOpen()) {
-      this.close()
-    } else {
-      this.open()
-    }
-  }
-
-  open() {
-    this.render(true)
-    this.setAriaExpanded(true)
+    this.openValue = !this.openValue
+    console.log('Dropdown toggled:', this.openValue)
   }
 
   close() {
-    this.render(false)
-    this.setAriaExpanded(false)
+    this.openValue = false
   }
 
-  render(show) {
-    if (this.hasPanelTarget) {
-      if (show) {
-        this.panelTarget.style.display = 'block'
-      } else {
-        this.panelTarget.style.display = 'none'
-      }
-    }
-  }
-
-  isOpen() {
-    return this.hasPanelTarget && this.panelTarget.style.display !== 'none'
-  }
-
-  setAriaExpanded(expanded) {
-    const button = this.element.querySelector('button')
-    if (button) {
-      button.setAttribute('aria-expanded', expanded.toString())
-    }
-  }
-
+  // Fechar quando clicar fora
   clickOutside(event) {
-    this.close()
+    if (!this.element.contains(event.target)) {
+      this.close()
+    }
+  }
+
+  // Classes computadas
+  get menuClasses() {
+    return this.openValue ? 'block' : 'hidden'
   }
 }
