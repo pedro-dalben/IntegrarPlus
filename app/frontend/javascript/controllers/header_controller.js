@@ -10,9 +10,6 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("Header controller connected")
-    console.log("Alpine.js available:", typeof window.Alpine !== 'undefined')
-    console.log("Initial menuToggle:", this.menuToggleValue)
     
     // Carregar dark mode do localStorage
     this.darkModeValue = JSON.parse(localStorage.getItem('darkMode') || 'false')
