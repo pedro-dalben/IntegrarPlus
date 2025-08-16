@@ -4,11 +4,6 @@
 @import "./login-layout.css";
 @import "./sidebar.css";
 
-@source "../../../app/views/**/*.html.erb";
-@source "../../../app/views/**/*.rb";
-@source "../javascript/**/*.js";
-@source "../../../node_modules/preline/dist/*.js";
-
 @plugin "@tailwindcss/forms";
 
 @theme {
