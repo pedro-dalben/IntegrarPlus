@@ -13,6 +13,9 @@ console.log('Vite ⚡️ Rails')
 
 console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify.app/guide/rails')
 
+// Stimulus application é iniciado em ../javascript/application
+// (remove o uso de stimulus-vite-helpers)
+
 // Example: Load Rails libraries in Vite.
 //
 // import * as Turbo from '@hotwired/turbo'
@@ -29,8 +32,7 @@ console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify
 import "../styles/application.css";
 import "../javascript/application";
 import "../javascript/tailadmin-pro";
-import "../javascript/header-fixes";
-import "../javascript/tailadmin-checker";
+// Removidos imports de arquivos de teste/debug
 import "preline";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "flatpickr/dist/flatpickr.css";
@@ -41,49 +43,15 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "prismjs/themes/prism.css";
 
-// Alpine.js with TailAdmin Pro configuration
+// Alpine.js
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 
 Alpine.plugin(persist);
 window.Alpine = Alpine;
-
-// Register Alpine.js components before initializing (TailAdmin Pro specific)
-Alpine.data("dropdown", () => ({
-  open: false,
-  toggle() {
-    this.open = !this.open;
-    if (this.open) this.position();
-  },
-  position() {
-    this.$nextTick(() => {
-      const button = this.$el;
-      const dropdown = this.$refs.dropdown;
-      if (!dropdown) return;
-      
-      const rect = button.getBoundingClientRect();
-
-      dropdown.style.position = "fixed";
-      dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-      dropdown.style.right = `${window.innerWidth - rect.right}px`;
-      dropdown.style.zIndex = "999";
-
-      // Reposition if would overflow viewport
-      const dropdownRect = dropdown.getBoundingClientRect();
-      if (dropdownRect.bottom > window.innerHeight) {
-        dropdown.style.top = `${rect.top + window.scrollY - dropdownRect.height}px`;
-      }
-    });
-  },
-  init() {
-    this.$watch("open", (value) => {
-      if (value) this.position();
-    });
-  },
-}));
-
-// Start Alpine.js after registering components
 Alpine.start();
+
+
 
 // TailAdmin Pro specific JavaScript functionality
 document.addEventListener("DOMContentLoaded", function () {
