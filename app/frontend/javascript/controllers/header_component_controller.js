@@ -37,16 +37,18 @@ export default class extends Controller {
     const sidebar = document.querySelector('.sidebar')
     if (sidebar) {
       const isCollapsed = sidebar.classList.contains('xl:w-[90px]')
-      const leftPosition = isCollapsed ? '90px' : `${this.sidebarWidthValue}px`
+      const sidebarWidth = isCollapsed ? 90 : this.sidebarWidthValue
       
-      // Em mobile, header ocupa toda largura
-      if (window.innerWidth < 1280) {
-        this.element.style.left = '0'
-        this.element.style.right = '0'
-      } else {
-        // Em desktop, header respeita sidebar
-        this.element.style.left = leftPosition
-        this.element.style.right = '0'
+      // Header sempre ocupa 100% da largura
+      this.element.style.left = '0'
+      this.element.style.right = '0'
+      
+      // Ajusta posição do botão hamburger
+      const hamburgerButton = this.element.querySelector('[data-action*="toggleSidebar"]')
+      if (hamburgerButton && window.innerWidth >= 1280) {
+        hamburgerButton.style.marginLeft = `${sidebarWidth}px`
+      } else if (hamburgerButton) {
+        hamburgerButton.style.marginLeft = '0'
       }
     }
   }
