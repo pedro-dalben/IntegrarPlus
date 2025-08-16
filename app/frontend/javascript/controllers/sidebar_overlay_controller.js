@@ -30,16 +30,21 @@ export default class extends Controller {
 
   handleSidebarToggle(event) {
     console.log("Sidebar overlay: handleSidebarToggle() chamado", event)
-    const isCollapsed = event.detail?.collapsed || false
-    console.log("Sidebar overlay: isCollapsed:", isCollapsed, "window.innerWidth:", window.innerWidth)
+    console.log("Sidebar overlay: window.innerWidth:", window.innerWidth)
     
     if (window.innerWidth < 1280) {
-      if (isCollapsed) {
-        console.log("Sidebar overlay: mostrando overlay")
-        this.showOverlay()
-      } else {
-        console.log("Sidebar overlay: ocultando overlay")
-        this.hideOverlay()
+      const sidebar = document.querySelector('.sidebar')
+      if (sidebar) {
+        const isHidden = sidebar.classList.contains('-translate-x-full')
+        console.log("Sidebar overlay: sidebar está oculta:", isHidden)
+        
+        if (isHidden) {
+          console.log("Sidebar overlay: ocultando overlay")
+          this.hideOverlay()
+        } else {
+          console.log("Sidebar overlay: mostrando overlay")
+          this.showOverlay()
+        }
       }
     } else {
       console.log("Sidebar overlay: desktop - ignorando overlay")

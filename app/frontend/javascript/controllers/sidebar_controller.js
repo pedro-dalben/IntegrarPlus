@@ -24,9 +24,6 @@ export default class extends Controller {
     this.resizeHandler = this.handleResize.bind(this)
     window.addEventListener('resize', this.resizeHandler)
     
-    this.clickOutsideHandler = this.handleClickOutside.bind(this)
-    document.addEventListener('click', this.clickOutsideHandler)
-    
     this.escapeHandler = this.handleEscape.bind(this)
     document.addEventListener('keydown', this.escapeHandler)
     
@@ -40,7 +37,6 @@ export default class extends Controller {
 
   removeEventListeners() {
     window.removeEventListener('resize', this.resizeHandler)
-    document.removeEventListener('click', this.clickOutsideHandler)
     document.removeEventListener('keydown', this.escapeHandler)
     document.removeEventListener('sidebar-close', this.sidebarCloseHandler)
     document.removeEventListener('sidebar-toggle', this.sidebarToggleHandler)
@@ -67,12 +63,27 @@ export default class extends Controller {
   handleSidebarToggle(event) {
     console.log("Sidebar: handleSidebarToggle() chamado", event)
     console.log("Sidebar: window.innerWidth:", window.innerWidth)
+    
     if (window.innerWidth < 1280) {
-      console.log("Sidebar: modo mobile - chamando toggle()")
-      this.toggle()
+      console.log("Sidebar: modo mobile - alternando visibilidade")
+      this.toggleMobile()
     } else {
-      console.log("Sidebar: modo desktop - chamando toggle()")
+      console.log("Sidebar: modo desktop - alternando colapso")
       this.toggle()
+    }
+  }
+
+  toggleMobile() {
+    console.log("Sidebar: toggleMobile() chamado")
+    const isHidden = this.element.classList.contains('-translate-x-full')
+    console.log("Sidebar: mobile - está oculta:", isHidden)
+    
+    if (isHidden) {
+      this.element.classList.remove('-translate-x-full')
+      console.log("Sidebar: mobile - sidebar aberta")
+    } else {
+      this.element.classList.add('-translate-x-full')
+      console.log("Sidebar: mobile - sidebar fechada")
     }
   }
 
@@ -143,12 +154,6 @@ export default class extends Controller {
         this.element.classList.add('-translate-x-full')
         console.log("Sidebar: mobile - adicionada classe -translate-x-full")
       }
-    }
-  }
-
-  handleClickOutside(event) {
-    if (window.innerWidth < 1280 && !this.element.contains(event.target)) {
-      this.closeMobile()
     }
   }
 
