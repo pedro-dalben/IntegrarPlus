@@ -19,17 +19,21 @@
   </head>
 
   <body
-    x-data="{ page: 'dashboard', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'menuToggle': false, 'scrollTop': false }"
-    x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
-         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
+    data-controller="header"
+    data-header-dark-mode-value="false"
+    data-header-sidebar-toggle-value="false"
+    data-header-menu-toggle-value="false"
+    data-header-loaded-value="true"
+    x-data="{ sidebarToggle: false, menuToggle: false, darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false'), loaded: false }"
+    x-init="$watch('darkMode', (val) => { document.documentElement.classList.toggle('dark', val); localStorage.setItem('darkMode', JSON.stringify(val)); }); document.documentElement.classList.toggle('dark', darkMode); setTimeout(() => { loaded = true }, 300)"
+    class=""
   >
     <!-- ===== Preloader Start ===== -->
     <div
-      x-show="loaded"
-      x-init="window.addEventListener('DOMContentLoaded', () => {setTimeout(() => loaded = false, 500)})"
-      class="fixed left-0 top-0 z-999999 flex h-screen w-screen items-center justify-center bg-white dark:bg-black"
+      data-header-target="preloader"
+      x-show="!loaded"
+      x-cloak
+      class="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-white dark:bg-black"
     >
       <div
         class="h-16 w-16 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent"
@@ -48,6 +52,8 @@
         <!-- Small Device Overlay Start -->
         <div
           :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
+          x-cloak
+          @click="sidebarToggle = false"
           class="fixed z-50 h-screen w-full bg-gray-900/50"
         ></div>
         <!-- Small Device Overlay End -->
