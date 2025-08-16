@@ -82,9 +82,11 @@ export default class extends Controller {
     
     if (isHidden) {
       this.element.classList.remove('-translate-x-full')
+      this.element.classList.add('mobile-open')
       console.log("Sidebar: mobile - sidebar aberta")
     } else {
       this.element.classList.add('-translate-x-full')
+      this.element.classList.remove('mobile-open')
       console.log("Sidebar: mobile - sidebar fechada")
     }
   }
@@ -149,11 +151,12 @@ export default class extends Controller {
   handleResize() {
     console.log("Sidebar: handleResize() - window.innerWidth:", window.innerWidth)
     if (window.innerWidth >= 1280) {
-      this.element.classList.remove('-translate-x-full')
-      console.log("Sidebar: desktop - removida classe -translate-x-full")
+      this.element.classList.remove('-translate-x-full', 'mobile-open')
+      console.log("Sidebar: desktop - removidas classes mobile")
     } else {
       if (!this.collapsedValue) {
         this.element.classList.add('-translate-x-full')
+        this.element.classList.remove('mobile-open')
         console.log("Sidebar: mobile - adicionada classe -translate-x-full")
       }
     }
@@ -174,6 +177,7 @@ export default class extends Controller {
     console.log("Sidebar: closeMobile() chamado")
     if (window.innerWidth < 1280) {
       this.element.classList.add('-translate-x-full')
+      this.element.classList.remove('mobile-open')
       console.log("Sidebar: mobile - sidebar fechada")
     }
   }
@@ -182,6 +186,7 @@ export default class extends Controller {
     console.log("Sidebar: openMobile() chamado")
     if (window.innerWidth < 1280) {
       this.element.classList.remove('-translate-x-full')
+      this.element.classList.add('mobile-open')
       console.log("Sidebar: mobile - sidebar aberta")
     }
   }

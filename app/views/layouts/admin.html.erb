@@ -27,22 +27,22 @@
       <!-- ===== Sidebar End ===== -->
 
       <!-- ===== Content Area Start ===== -->
-      <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto z-10">
+      <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
         <!-- Small Device Overlay Start -->
         <div
           data-controller="sidebar-overlay"
           data-sidebar-overlay-target="overlay"
-          class="fixed z-50 h-screen w-full bg-gray-900/50 hidden"
+          class="fixed z-40 h-screen w-full bg-gray-900/50 hidden"
         ></div>
         <!-- Small Device Overlay End -->
 
         <!-- ===== Main Content Start ===== -->
-        <main class="pt-16">
+        <main>
           <!-- ===== Header Start ===== -->
           <%= render Ui::HeaderComponent.new(user: current_user) %>
           <!-- ===== Header End ===== -->
           
-          <div class="mx-auto max-w-screen-2xl p-4 md:p-6">
+          <div class="mx-auto max-w-screen-2xl p-4 md:p-6 pt-6">
             <!-- Flash Messages -->
             <% if notice %>
               <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">
