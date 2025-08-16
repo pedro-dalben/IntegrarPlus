@@ -1,3 +1,5 @@
+console.log("Sidebar controller file loaded")
+
 // app/frontend/javascript/controllers/sidebar_controller.js
 import { Controller } from "@hotwired/stimulus"
 

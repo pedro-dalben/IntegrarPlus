@@ -5,6 +5,7 @@
 import { application } from "./application"
 import MenuController from "./menu_controller"
 import SidebarController from "./sidebar_controller"
+import SidebarOverlayController from "./sidebar_overlay_controller"
 import ThemeController from "./theme_controller"
 import ChartController from "./chart_controller"
 import DatepickerController from "./datepicker_controller"
@@ -22,6 +23,7 @@ import HeaderComponentController from "./header_component_controller"
 import ContentAreaController from "./content_area_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
+application.register("sidebar-overlay", SidebarOverlayController)
 application.register("theme", ThemeController)
 application.register("chart", ChartController)
 application.register("datepicker", DatepickerController)
