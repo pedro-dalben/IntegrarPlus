@@ -44,7 +44,7 @@ export default class extends Controller {
       this.element.style.right = '0'
       
       // Ajusta posição do botão hamburger
-      const hamburgerButton = this.element.querySelector('[data-action*="toggleSidebar"]')
+      const hamburgerButton = this.element.querySelector('.hamburger-button')
       if (hamburgerButton && window.innerWidth >= 1280) {
         hamburgerButton.style.marginLeft = `${sidebarWidth}px`
       } else if (hamburgerButton) {
