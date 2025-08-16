@@ -19,6 +19,7 @@ import SearchController from "./search_controller"
 import RowController from "./row_controller"
 import DropdownController from "./dropdown_controller"
 import HeaderComponentController from "./header_component_controller"
+import ContentAreaController from "./content_area_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
 application.register("theme", ThemeController)
@@ -35,3 +36,4 @@ application.register("search", SearchController)
 application.register("row", RowController)
 application.register("dropdown", DropdownController)
 application.register("header-component", HeaderComponentController)
+application.register("content-area", ContentAreaController)
