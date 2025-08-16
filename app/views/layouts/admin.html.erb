@@ -22,17 +22,14 @@
     data-controller="header"
     data-header-dark-mode-value="false"
     data-header-sidebar-toggle-value="false"
-    data-header-menu-toggle-value="false"
+    data-header-menu-toggle-value="true"
     data-header-loaded-value="true"
-    x-data="{ sidebarToggle: false, menuToggle: false, darkMode: JSON.parse(localStorage.getItem('darkMode') || 'false'), loaded: false }"
-    x-init="$watch('darkMode', (val) => { document.documentElement.classList.toggle('dark', val); localStorage.setItem('darkMode', JSON.stringify(val)); }); document.documentElement.classList.toggle('dark', darkMode); setTimeout(() => { loaded = true }, 300)"
+    x-data="{ sidebarToggle: false, menuToggle: true, darkMode: false, loaded: true }"
     class=""
   >
     <!-- ===== Preloader Start ===== -->
     <div
       data-header-target="preloader"
-      x-show="!loaded"
-      x-cloak
       class="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-white dark:bg-black"
     >
       <div
@@ -53,7 +50,6 @@
         <div
           :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
           x-cloak
-          @click="sidebarToggle = false"
           class="fixed z-50 h-screen w-full bg-gray-900/50"
         ></div>
         <!-- Small Device Overlay End -->
