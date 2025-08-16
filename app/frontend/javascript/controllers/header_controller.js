@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["sidebar", "menu", "darkMode", "notifications", "userDropdown", "preloader"]
+  static targets = ["sidebar", "menu", "darkMode", "notifications", "userDropdown"]
   static values = { 
     darkMode: { type: Boolean, default: false },
     sidebarToggle: { type: Boolean, default: false },
@@ -14,11 +14,6 @@ export default class extends Controller {
     
     // Carregar dark mode do localStorage
     this.darkModeValue = JSON.parse(localStorage.getItem('darkMode') || 'false')
-    
-    // Esconder preloader após 1 segundo
-    setTimeout(() => {
-      this.loadedValue = true
-    }, 1000)
   }
 
   disconnect() {
@@ -67,7 +62,5 @@ export default class extends Controller {
     return this.darkModeValue ? 'dark bg-gray-900' : ''
   }
 
-  get preloaderClasses() {
-    return this.loadedValue ? 'block' : 'hidden'
-  }
+
 }
