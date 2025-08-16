@@ -4,6 +4,7 @@
 @import "./login-layout.css";
 @import "./sidebar.css";
 
+
 @plugin "@tailwindcss/forms";
 
 @theme {
