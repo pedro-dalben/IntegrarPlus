@@ -18,6 +18,7 @@ import FlashController from "./flash_controller"
 import SearchController from "./search_controller"
 import RowController from "./row_controller"
 import DropdownController from "./dropdown_controller"
+import HeaderComponentController from "./header_component_controller"
 application.register("menu", MenuController)
 application.register("sidebar", SidebarController)
 application.register("theme", ThemeController)
@@ -33,3 +34,4 @@ application.register("flash", FlashController)
 application.register("search", SearchController)
 application.register("row", RowController)
 application.register("dropdown", DropdownController)
+application.register("header-component", HeaderComponentController)

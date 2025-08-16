@@ -1,34 +1,15 @@
 # frozen_string_literal: true
 
 class Ui::HeaderComponent < ViewComponent::Base
-  def initialize(user: nil, **options)
+  def initialize(user: nil)
     @user = user
-    @options = options
   end
 
   private
 
-  attr_reader :user, :options
+  attr_reader :user
 
   def user_name
     user&.name || "Usuário Admin"
-  end
-
-  def user_email
-    user&.email || "admin@integrarplus.com"
-  end
-
-  def user_avatar
-    user&.avatar&.attached? ? user.avatar : nil
-  end
-
-  def notifications_count
-    # Implementar lógica de notificações
-    3
-  end
-
-  def messages_count
-    # Implementar lógica de mensagens
-    2
   end
 end
