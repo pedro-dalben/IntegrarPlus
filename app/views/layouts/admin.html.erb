@@ -23,13 +23,14 @@
     data-header-dark-mode-value="false"
     data-header-sidebar-toggle-value="false"
     data-header-menu-toggle-value="true"
-    data-header-loaded-value="true"
-    x-data="{ sidebarToggle: false, menuToggle: true, darkMode: false, loaded: true }"
+    data-header-loaded-value="false"
+    x-data="{ sidebarToggle: false, menuToggle: true, darkMode: false, loaded: false }"
     class=""
   >
     <!-- ===== Preloader Start ===== -->
     <div
       data-header-target="preloader"
+      data-header-loaded-class="hidden"
       class="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-white dark:bg-black"
     >
       <div

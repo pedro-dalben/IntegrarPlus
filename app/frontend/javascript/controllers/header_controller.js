@@ -17,7 +17,7 @@ export default class extends Controller {
     
     // Esconder preloader após 1 segundo
     setTimeout(() => {
-      this.loadedValue = false
+      this.loadedValue = true
     }, 1000)
   }
 
