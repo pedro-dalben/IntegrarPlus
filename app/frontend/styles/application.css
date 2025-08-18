@@ -1,6 +1,2 @@
-/* Estilos básicos de fallback */
-[x-cloak] {
-  display: none !important;
-}
-
-
+@import "./tailadmin-pro.css";
+@import "./login-layout.css";

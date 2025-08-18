@@ -4,4 +4,7 @@ class PagesController < ApplicationController
 
   def test_tailwind
   end
+
+  def simple_test
+  end
 end

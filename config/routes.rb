@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   get 'styleguide' => 'styleguide#index'
   get 'tailadmin-demo' => 'pages#tailadmin_demo'
   get 'test-tailwind' => 'pages#test_tailwind'
+  get 'simple-test' => 'pages#simple_test'
 
   namespace :admin do
     resources :professionals do
