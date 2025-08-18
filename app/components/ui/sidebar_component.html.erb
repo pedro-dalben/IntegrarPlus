@@ -1,44 +1,51 @@
-<!-- Sidebar -->
 <aside
-  data-controller="sidebar"
+  :class="sidebarToggle ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
   class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
+  @click.outside="sidebarToggle = false"
 >
   <!-- SIDEBAR HEADER -->
-  <div class="sidebar-header flex items-center gap-2 pt-8 pb-7">
-    <a href="/admin/dashboard">
-      <span class="logo">
-        <div class="flex items-center gap-3">
-          <div class="shrink-0 size-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg class="shrink-0 size-5 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9,22 9,12 15,12 15,22"/>
-            </svg>
-          </div>
-          <span class="text-xl font-bold text-gray-900 dark:text-white">Integrar+</span>
-        </div>
+  <div
+    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
+    class="sidebar-header flex items-center gap-2 pt-8 pb-7"
+  >
+    <a href="/admin">
+      <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
+        <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" />
+        <img
+          class="hidden dark:block"
+          src="/images/logo/logo-dark.svg"
+          alt="Logo"
+        />
       </span>
 
       <img
-        class="logo-icon hidden"
-        src="<%= asset_path('logo/logo-icon.svg') %>"
+        class="logo-icon"
+        :class="sidebarToggle ? 'xl:block' : 'hidden'"
+        src="/images/logo/logo-icon.svg"
         alt="Logo"
       />
     </a>
   </div>
   <!-- SIDEBAR HEADER -->
 
-  <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+  <div
+    class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear"
+  >
     <!-- Sidebar Menu -->
-    <nav>
+    <nav x-data="{selected: $persist('Dashboard')}">
       <!-- Menu Group -->
       <div>
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-          <span class="menu-group-title">
+          <span
+            class="menu-group-title"
+            :class="sidebarToggle ? 'xl:hidden' : ''"
+          >
             MENU
           </span>
 
           <svg
-            class="menu-group-icon mx-auto fill-current hidden"
+            :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
+            class="menu-group-icon mx-auto fill-current"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -55,45 +62,508 @@
         </h3>
 
         <ul class="mb-6 flex flex-col gap-1">
-          <% menu_items.each do |item| %>
-            <!-- Menu Item -->
-            <li>
-              <%= link_to item[:path], 
-                  class: "menu-item group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 #{'menu-item-active bg-gray-100 dark:bg-white/5' if item[:active]}" do %>
-                
-                <!-- Ícone -->
-                <span class="menu-item-icon shrink-0">
-                  <%= item[:icon] %>
-                </span>
+          <!-- Menu Item Dashboard -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Dashboard' ? '':'Dashboard')"
+              class="menu-item group"
+              :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V8.99998C3.25 10.2426 4.25736 11.25 5.5 11.25H9C10.2426 11.25 11.25 10.2426 11.25 8.99998V5.5C11.25 4.25736 10.2426 3.25 9 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H9C9.41421 4.75 9.75 5.08579 9.75 5.5V8.99998C9.75 9.41419 9.41421 9.74998 9 9.74998H5.5C5.08579 9.74998 4.75 9.41419 4.75 8.99998V5.5ZM5.5 12.75C4.25736 12.75 3.25 13.7574 3.25 15V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H9C10.2426 20.75 11.25 19.7427 11.25 18.5V15C11.25 13.7574 10.2426 12.75 9 12.75H5.5ZM4.75 15C4.75 14.5858 5.08579 14.25 5.5 14.25H9C9.41421 14.25 9.75 14.5858 9.75 15V18.5C9.75 18.9142 9.41421 19.25 9 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V15ZM12.75 5.5C12.75 4.25736 13.7574 3.25 15 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V8.99998C20.75 10.2426 19.7426 11.25 18.5 11.25H15C13.7574 11.25 12.75 10.2426 12.75 8.99998V5.5ZM15 4.75C14.5858 4.75 14.25 5.08579 14.25 5.5V8.99998C14.25 9.41419 14.5858 9.74998 15 9.74998H18.5C18.9142 9.74998 19.25 9.41419 19.25 8.99998V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H15ZM15 12.75C13.7574 12.75 12.75 13.7574 12.75 15V18.5C12.75 19.7426 13.7574 20.75 15 20.75H18.5C19.7426 20.75 20.75 19.7427 20.75 18.5V15C20.75 13.7574 19.7426 12.75 18.5 12.75H15ZM14.25 15C14.25 14.5858 14.5858 14.25 15 14.25H18.5C18.9142 14.25 19.25 14.5858 19.25 15V18.5C19.25 18.9142 18.9142 19.25 18.5 19.25H15C14.5858 19.25 14.25 18.9142 14.25 18.5V15Z"
+                  fill="currentColor"
+                />
+              </svg>
 
-                <!-- Texto do item -->
-                <span class="menu-item-text">
-                  <%= item[:title] %>
-                </span>
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Dashboard
+              </span>
 
-                <!-- Badge (se houver) -->
-                <% if item[:badge] %>
-                  <span class="absolute right-10 flex items-center gap-1">
-                    <span class="menu-dropdown-badge">
-                      <%= item[:badge] %>
-                    </span>
-                  </span>
-                <% end %>
-              <% end %>
-            </li>
-          <% end %>
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Dashboard') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Dashboard') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="/admin/dashboard"
+                    class="menu-dropdown-item group"
+                    :class="page === 'dashboard' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Dashboard
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Dashboard -->
+
+          <!-- Menu Item Profissionais -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Profissionais' ? '':'Profissionais')"
+              class="menu-item group"
+              :class="(selected === 'Profissionais') || (page === 'professionals') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Profissionais') || (page === 'professionals') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="9"
+                  cy="7"
+                  r="4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M22 21v-2a4 4 0 0 0-3-3.87"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M16 3.13a4 4 0 0 1 0 7.75"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Profissionais
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Profissionais') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Profissionais') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="/admin/professionals"
+                    class="menu-dropdown-item group"
+                    :class="page === 'professionals' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Profissionais
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/admin/professionals/new"
+                    class="menu-dropdown-item group"
+                    :class="page === 'professionals_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Novo Profissional
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Profissionais -->
+
+          <!-- Menu Item Especialidades -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Especialidades' ? '':'Especialidades')"
+              class="menu-item group"
+              :class="(selected === 'Especialidades') || (page === 'specialities') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Especialidades') || (page === 'specialities') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M22 12h-4l-3 9L9 3l-3 9H2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Especialidades
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Especialidades') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Especialidades') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="/admin/specialities"
+                    class="menu-dropdown-item group"
+                    :class="page === 'specialities' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Especialidades
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/admin/specialities/new"
+                    class="menu-dropdown-item group"
+                    :class="page === 'specialities_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Nova Especialidade
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Especialidades -->
+
+          <!-- Menu Item Especializações -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Especializações' ? '':'Especializações')"
+              class="menu-item group"
+              :class="(selected === 'Especializações') || (page === 'specializations') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Especializações') || (page === 'specializations') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <polyline
+                  points="14,2 14,8 20,8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line
+                  x1="16"
+                  x2="8"
+                  y1="13"
+                  y2="13"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line
+                  x1="16"
+                  x2="8"
+                  y1="17"
+                  y2="17"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Especializações
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Especializações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Especializações') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="/admin/specializations"
+                    class="menu-dropdown-item group"
+                    :class="page === 'specializations' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Especializações
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/admin/specializations/new"
+                    class="menu-dropdown-item group"
+                    :class="page === 'specializations_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Nova Especialização
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Especializações -->
+
+          <!-- Menu Item Tipos de Contrato -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Tipos de Contrato' ? '':'Tipos de Contrato')"
+              class="menu-item group"
+              :class="(selected === 'Tipos de Contrato') || (page === 'contract_types') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Tipos de Contrato') || (page === 'contract_types') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <polyline
+                  points="14,2 14,8 20,8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line
+                  x1="16"
+                  x2="8"
+                  y1="13"
+                  y2="13"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line
+                  x1="16"
+                  x2="8"
+                  y1="17"
+                  y2="17"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Tipos de Contrato
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Tipos de Contrato') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Tipos de Contrato') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="/admin/contract_types"
+                    class="menu-dropdown-item group"
+                    :class="page === 'contract_types' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Tipos
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/admin/contract_types/new"
+                    class="menu-dropdown-item group"
+                    :class="page === 'contract_types_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Novo Tipo
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Tipos de Contrato -->
         </ul>
       </div>
 
       <!-- Support Group -->
       <div>
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-          <span class="menu-group-title">
+          <span
+            class="menu-group-title"
+            :class="sidebarToggle ? 'xl:hidden' : ''"
+          >
             Support
           </span>
 
           <svg
-            class="menu-group-icon mx-auto fill-current hidden"
+            :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
+            class="menu-group-icon mx-auto fill-current"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -110,54 +580,345 @@
         </h3>
 
         <ul class="mb-6 flex flex-col gap-1">
-          <% support_items.each do |item| %>
-            <!-- Menu Item -->
-            <li>
-              <%= link_to item[:path], 
-                  class: "menu-item group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 #{'menu-item-active bg-gray-100 dark:bg-white/5' if item[:active]}" do %>
-                
-                <!-- Ícone -->
-                <span class="menu-item-icon shrink-0">
-                  <%= item[:icon] %>
-                </span>
+          <!-- Menu Item Configurações -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Configurações' ? '':'Configurações')"
+              class="menu-item group"
+              :class="(selected === 'Configurações') || (page === 'settings') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Configurações') || (page === 'settings') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
 
-                <!-- Texto do item -->
-                <span class="menu-item-text">
-                  <%= item[:title] %>
-                </span>
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Configurações
+              </span>
 
-                <!-- Badge (se houver) -->
-                <% if item[:badge] %>
-                  <span class="absolute right-10 flex items-center gap-1">
-                    <span class="menu-dropdown-badge">
-                      <%= item[:badge] %>
-                    </span>
-                  </span>
-                <% end %>
-              <% end %>
-            </li>
-          <% end %>
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Configurações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Configurações') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'settings' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Configurações Gerais
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'settings_security' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Segurança
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Configurações -->
+
+          <!-- Menu Item Usuários -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Usuários' ? '':'Usuários')"
+              class="menu-item group"
+              :class="(selected === 'Usuários') || (page === 'users') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Usuários') || (page === 'users') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="9"
+                  cy="7"
+                  r="4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M22 21v-2a4 4 0 0 0-3-3.87"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M16 3.13a4 4 0 0 1 0 7.75"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Usuários
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Usuários') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Usuários') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'users' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Usuários
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'users_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Novo Usuário
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Usuários -->
+
+          <!-- Menu Item Integrações -->
+          <li>
+            <a
+              href="#"
+              @click.prevent="selected = (selected === 'Integrações' ? '':'Integrações')"
+              class="menu-item group"
+              :class="(selected === 'Integrações') || (page === 'integrations') ? 'menu-item-active' : 'menu-item-inactive'"
+            >
+              <svg
+                :class="(selected === 'Integrações') || (page === 'integrations') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  width="18"
+                  height="11"
+                  x="3"
+                  y="11"
+                  rx="2"
+                  ry="2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="5"
+                  r="2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 7v4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              <span
+                class="menu-item-text"
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+              >
+                Integrações
+              </span>
+
+              <span
+                :class="sidebarToggle ? 'xl:hidden' : ''"
+                class="absolute right-10 flex items-center gap-1"
+              >
+                <span
+                  class="menu-dropdown-badge"
+                  :class="page === 'integrations' ? 'menu-dropdown-badge-active' : 'menu-dropdown-badge-inactive'"
+                >
+                  New
+                </span>
+              </span>
+
+              <svg
+                class="menu-item-arrow"
+                :class="[(selected === 'Integrações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+
+            <!-- Dropdown Menu Start -->
+            <div
+              class="translate transform overflow-hidden"
+              :class="(selected === 'Integrações') ? 'block' :'hidden'"
+            >
+              <ul
+                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+              >
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'integrations' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Lista de Integrações
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="menu-dropdown-item group"
+                    :class="page === 'integrations_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                  >
+                    Nova Integração
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <!-- Dropdown Menu End -->
+          </li>
+          <!-- Menu Item Integrações -->
         </ul>
       </div>
     </nav>
     <!-- Sidebar Menu -->
 
     <!-- Promo Box -->
-    <div class="mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]">
+    <div
+      :class="sidebarToggle ? 'xl:hidden' : ''"
+      class="mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]"
+    >
       <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">
-        #1 Gestão Clínica
+        Integrar Plus
       </h3>
-      <p class="text-sm mb-4 text-gray-500 dark:text-gray-400">
-        Plataforma completa para gestão de clínicas e profissionais de saúde.
+      <p class="text-theme-sm mb-4 text-gray-500 dark:text-gray-400">
+        Sistema de gestão de profissionais e especialidades.
       </p>
       <a
-        href="#"
-        class="bg-blue-600 hover:bg-blue-700 text-sm flex items-center justify-center rounded-lg p-3 font-medium text-white transition-colors"
+        href="/tailadmin-demo"
+        class="bg-brand-500 text-theme-sm hover:bg-brand-600 flex items-center justify-center rounded-lg p-3 font-medium text-white"
       >
-        Saiba Mais
+        Ver Demo
       </a>
     </div>
     <!-- Promo Box -->
   </div>
 </aside>
-<!-- End Sidebar -->
