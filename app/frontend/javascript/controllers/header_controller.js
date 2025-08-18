@@ -1,105 +1,57 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
+
+const STORAGE_KEYS = {
+  DARK: "ui:dark",
+  SIDEBAR: "ui:sidebarOpen",
+};
 
 export default class extends Controller {
-  static targets = ["sidebarToggle", "darkModeToggle", "menuToggle"]
-  static values = {
-    sidebarOpen: { type: Boolean, default: false },
-    darkMode: { type: Boolean, default: false },
-    menuOpen: { type: Boolean, default: false }
-  }
+  static targets = ["searchInput"];
 
   connect() {
-    // Carregar estado salvo do localStorage
-    this.loadPersistedState()
-    
-    // Aplicar tema inicial
-    this.applyDarkMode()
-    
-    // Fechar sidebar automaticamente em mobile ao trocar rota
-    this.closeSidebarOnMobile()
+    // Aplica dark mode salvo
+    const dark = localStorage.getItem(STORAGE_KEYS.DARK) === "true";
+    this.applyDark(dark);
+
+    // Fecha dropdowns ao navegar (se adicionar dropdowns depois)
+    document.addEventListener("turbo:load", () => {
+      // noop por enquanto; reservado p/ limpar estados se necessário
+    });
+
+    // Atalho / Cmd/Ctrl+K para busca
+    document.addEventListener("keydown", (e) => {
+      const k = e.key?.toLowerCase();
+      if ((e.metaKey || e.ctrlKey) && k === "k") {
+        e.preventDefault();
+        this.focusSearch();
+      }
+      if (k === "/" && document.activeElement !== this.searchInputTarget) {
+        e.preventDefault();
+        this.focusSearch();
+      }
+    });
   }
 
-  disconnect() {
-    // Salvar estado no localStorage
-    this.savePersistedState()
+  // Dark mode
+  toggleDark() {
+    const isDark = !document.documentElement.classList.contains("dark");
+    this.applyDark(isDark);
+    localStorage.setItem(STORAGE_KEYS.DARK, String(isDark));
   }
 
-  // Sidebar Toggle
+  applyDark(v) {
+    document.documentElement.classList.toggle("dark", v);
+  }
+
+  // Sidebar
   toggleSidebar() {
-    this.sidebarOpenValue = !this.sidebarOpenValue
-    this.dispatchSidebarEvent()
+    const next = !(localStorage.getItem(STORAGE_KEYS.SIDEBAR) === "true");
+    localStorage.setItem(STORAGE_KEYS.SIDEBAR, String(next));
+    // Emite evento global para qualquer interessando (ex.: sidebar_controller)
+    window.dispatchEvent(new CustomEvent("ui:sidebar", { detail: { open: next } }));
   }
 
-  closeSidebar() {
-    this.sidebarOpenValue = false
-    this.dispatchSidebarEvent()
-  }
-
-  // Dark Mode Toggle
-  toggleDarkMode() {
-    this.darkModeValue = !this.darkModeValue
-    this.applyDarkMode()
-  }
-
-  // Menu Toggle (mobile)
-  toggleMenu() {
-    this.menuOpenValue = !this.menuOpenValue
-  }
-
-  // Aplicar dark mode ao HTML
-  applyDarkMode() {
-    document.documentElement.classList.toggle('dark', this.darkModeValue)
-  }
-
-  // Fechar sidebar em mobile ao trocar rota
-  closeSidebarOnMobile() {
-    if (window.innerWidth < 1280) {
-      this.closeSidebar()
-    }
-  }
-
-  // Disparar evento customizado para sincronizar com sidebar
-  dispatchSidebarEvent() {
-    const event = new CustomEvent('sidebar:toggle', {
-      detail: { open: this.sidebarOpenValue },
-      bubbles: true
-    })
-    this.element.dispatchEvent(event)
-  }
-
-  // Persistência no localStorage
-  savePersistedState() {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('header-sidebar-open', this.sidebarOpenValue)
-      localStorage.setItem('header-dark-mode', this.darkModeValue)
-    }
-  }
-
-  loadPersistedState() {
-    if (typeof localStorage !== 'undefined') {
-      const sidebarOpen = localStorage.getItem('header-sidebar-open')
-      const darkMode = localStorage.getItem('header-dark-mode')
-      
-      if (sidebarOpen !== null) {
-        this.sidebarOpenValue = sidebarOpen === 'true'
-      }
-      
-      if (darkMode !== null) {
-        this.darkModeValue = darkMode === 'true'
-      }
-    }
-  }
-
-  // Getters para usar no template
-  get sidebarOpen() {
-    return this.sidebarOpenValue
-  }
-
-  get darkMode() {
-    return this.darkModeValue
-  }
-
-  get menuOpen() {
-    return this.menuOpenValue
+  focusSearch() {
+    if (this.hasSearchInputTarget) this.searchInputTarget.focus();
   }
 }

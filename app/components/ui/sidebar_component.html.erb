@@ -1,5 +1,6 @@
 <aside
   data-controller="sidebar"
+  data-action="click@window->sidebar#outside"
   class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
 >
   <!-- SIDEBAR HEADER -->
@@ -59,8 +60,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Dashboard"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Dashboard"
               class="menu-item group"
             >
               <svg
@@ -133,8 +134,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Profissionais"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Profissionais"
               class="menu-item group"
             >
               <svg
@@ -264,8 +265,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Especialidades"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Especialidades"
               class="menu-item group"
             >
               <svg
@@ -372,8 +373,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Especializações"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Especializações"
               class="menu-item group"
             >
               <svg
@@ -507,8 +508,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Tipos de Contrato"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Tipos de Contrato"
               class="menu-item group"
             >
               <svg
@@ -673,8 +674,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Configurações"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Configurações"
               class="menu-item group"
             >
               <svg
@@ -790,8 +791,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Usuários"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Usuários"
               class="menu-item group"
             >
               <svg
@@ -921,8 +922,8 @@
           <li>
             <a
               href="#"
-              data-action="click->sidebar#toggleMenuItem"
-              data-menu-name="Integrações"
+              data-action="click->sidebar#toggleGroup"
+              data-sidebar-name-param="Integrações"
               class="menu-item group"
             >
               <svg

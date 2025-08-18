@@ -1,104 +1,59 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
+
+const STORAGE_KEYS = {
+  SIDEBAR: "ui:sidebarOpen",
+  GROUP:   "ui:sidebarGroup", // opcional
+};
 
 export default class extends Controller {
-  static targets = ["menuItem", "submenu"]
-  static values = {
-    selected: { type: String, default: 'Dashboard' }
-  }
+  static targets = ["panel", "groupList"]; // opcional
 
   connect() {
-    // Carregar estado salvo do localStorage
-    this.loadPersistedState()
-    
-    // Escutar eventos do header
-    this.listenToHeaderEvents()
-    
-    // Fechar sidebar em mobile ao clicar fora
-    this.setupClickOutside()
+    // Estado inicial
+    const open = localStorage.getItem(STORAGE_KEYS.SIDEBAR) === "true";
+    this.applyOpen(open);
+
+    // Ouvir eventos do header
+    this._handler = (e) => this.applyOpen(!!e.detail?.open);
+    window.addEventListener("ui:sidebar", this._handler);
+
+    // Fechar ao navegar (mobile)
+    document.addEventListener("turbo:load", () => {
+      if (window.innerWidth < 1280) this.applyOpen(false);
+    });
   }
 
   disconnect() {
-    // Salvar estado no localStorage
-    this.savePersistedState()
+    window.removeEventListener("ui:sidebar", this._handler);
   }
 
-  // Escutar eventos do header
-  listenToHeaderEvents() {
-    document.addEventListener('sidebar:toggle', (event) => {
-      this.handleSidebarToggle(event.detail.open)
-    })
+  // Clique fora
+  outside(event) {
+    if (window.innerWidth >= 1280) return; // XL ou maior: comportamento colapsado, não "drawer"
+    if (!this.element.contains(event.target)) this.applyOpen(false);
   }
 
-  // Manipular toggle da sidebar
-  handleSidebarToggle(open) {
-    if (open) {
-      this.openSidebar()
-    } else {
-      this.closeSidebar()
-    }
+  // Aplicar estado visual
+  applyOpen(open) {
+    localStorage.setItem(STORAGE_KEYS.SIDEBAR, String(open));
+    // Usa classes utilitárias conforme seu HTML original
+    this.element.classList.toggle("-translate-x-full", !open);
+    this.element.classList.toggle("translate-x-0", open);
+    // Largura colapsada em XL: sua UI original usava 'xl:w-[90px]'
+    this.element.classList.toggle("xl:w-[90px]", open);
   }
 
-  // Abrir sidebar
-  openSidebar() {
-    this.element.classList.remove('-translate-x-full')
-    this.element.classList.add('translate-x-0', 'xl:w-[90px]')
+  // Dropdown de grupo (Dashboard/Profissionais/…)
+  toggleGroup(event) {
+    const name = event?.params?.name;
+    const current = localStorage.getItem(STORAGE_KEYS.GROUP);
+    const next = current === name ? "" : name;
+    localStorage.setItem(STORAGE_KEYS.GROUP, next);
+    this.updateGroups(next);
   }
 
-  // Fechar sidebar
-  closeSidebar() {
-    this.element.classList.add('-translate-x-full')
-    this.element.classList.remove('translate-x-0', 'xl:w-[90px]')
-  }
-
-  // Toggle de item do menu
-  toggleMenuItem(event) {
-    const menuItem = event.currentTarget
-    const menuName = menuItem.getAttribute('data-menu-name')
-    
-    if (this.selectedValue === menuName) {
-      this.selectedValue = ''
-    } else {
-      this.selectedValue = menuName
-    }
-  }
-
-  // Setup para fechar sidebar ao clicar fora (mobile)
-  setupClickOutside() {
-    document.addEventListener('click', (event) => {
-      if (window.innerWidth < 1280 && !this.element.contains(event.target)) {
-        this.closeSidebar()
-      }
-    })
-  }
-
-  // Verificar se sidebar está aberta
-  get isOpen() {
-    return this.element.classList.contains('translate-x-0')
-  }
-
-  // Verificar se sidebar está colapsada (modo estreito)
-  get isCollapsed() {
-    return this.element.classList.contains('xl:w-[90px]')
-  }
-
-  // Persistência no localStorage
-  savePersistedState() {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('sidebar-selected', this.selectedValue)
-    }
-  }
-
-  loadPersistedState() {
-    if (typeof localStorage !== 'undefined') {
-      const selected = localStorage.getItem('sidebar-selected')
-      if (selected !== null) {
-        this.selectedValue = selected
-      }
-    }
-  }
-
-  // Getters para usar no template
-  get selected() {
-    return this.selectedValue
+  updateGroups(active) {
+    // opcional: você pode marcar itens ativos via data-attrs/classe
+    // ou simplesmente checar no HTML com helpers Rails.
   }
 }
