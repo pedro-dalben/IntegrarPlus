@@ -3,7 +3,9 @@
  * See post @ http://www.lab4games.net/zz85/blog/2014/11/15/resizing-moving-snapping-windows-with-js-css/
  */
 
-if (document.querySelectorAll("#pane").length) {
+export default function imageResize() {
+  if (!document.querySelectorAll("#pane").length) return;
+  
   ("use strict");
 
   // Minimum resizable area

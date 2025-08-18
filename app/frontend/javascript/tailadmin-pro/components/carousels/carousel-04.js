@@ -5,18 +5,23 @@ import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-const swiper = new Swiper(".carouselFour", {
-  modules: [Navigation, Pagination, Autoplay],
-  autoplay: {
-    delay: 5000,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-});
+export default function carousel04() {
+  const el = document.querySelector(".carouselFour");
+  if (!el) return;
+  
+  new Swiper(".carouselFour", {
+    modules: [Navigation, Pagination, Autoplay],
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+  });
+}
