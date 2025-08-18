@@ -128,6 +128,28 @@ safe(novoWidget);
 </div>
 ```
 
+### Store Global para UI
+```html
+<!-- Header usando store global -->
+<header x-data="headerState()" x-cloak>
+  <button @click.stop="$store.ui.toggleSidebar()">
+    <!-- ícone hambúrguer -->
+  </button>
+  <button @click.prevent="$store.ui.toggleDark()">
+    <!-- ícone dark mode -->
+  </button>
+</header>
+
+<!-- Sidebar usando store global -->
+<aside
+  :class="$store.ui.sidebarOpen ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
+  @click.outside="if (window.innerWidth < 1280) $store.ui.closeSidebar()"
+  x-cloak
+>
+  <!-- conteúdo da sidebar -->
+</aside>
+```
+
 ## 🔍 Troubleshooting
 
 ### Alpine não funciona após navegação
@@ -141,6 +163,11 @@ safe(novoWidget);
 ### Erros no console
 - Verifique se todos os componentes usam `safe()` wrapper
 - Confirme que elementos existem antes de inicializar
+
+### Sidebar não sincroniza entre header e aside
+- Verifique se a store global `ui` está sendo registrada
+- Confirme que `registerAlpineOnce()` é chamada no `bootTailadmin()`
+- Use `$store.ui.sidebarOpen` em vez de variáveis locais
 
 ## 📚 Dependências
 
