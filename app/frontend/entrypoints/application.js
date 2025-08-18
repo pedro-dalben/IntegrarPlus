@@ -14,61 +14,26 @@ import "swiper/css/pagination";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 // ----------------------------
-// Alpine primeiro (antes de qq módulo que o use)
-// ----------------------------
-import Alpine from "alpinejs";
-import persist from "@alpinejs/persist";
-import "alpine-turbo-drive-adapter"; // precisa estar carregado antes do .start()
-
-Alpine.plugin(persist);
-window.Alpine = Alpine;
-
-// Start apenas uma vez (evita duplicar em HMR/Turbo)
-if (!window.__ALPINE_STARTED__) {
-  Alpine.start();
-  window.__ALPINE_STARTED__ = true;
-}
-
-// ----------------------------
-// Sua app Stimulus/Hotwire (se houver)
+// Sua app Stimulus/Hotwire
 // ----------------------------
 import "../javascript/application";
 
 // ----------------------------
-// TailAdmin: importar depois de Alpine exposto
-// (o index.js do TailAdmin **não** deve chamar Alpine.start())
+// TailAdmin: componentes específicos (se necessário)
 // ----------------------------
-import { bootTailadmin } from "../javascript/tailadmin-pro/index";
-
-// ----------------------------
-// Bibliotecas que não dependem de Alpine global no import time
-// (se alguma depender, mova para dentro do bootTailadmin)
-// ----------------------------
-import "preline";           // HSStaticMethods.autoInit disponível em window
-import "../javascript/tailadmin-pro"; // caso tenha side-effects necessários DEPOIS de Alpine exposto
+import "../javascript/tailadmin-pro.js";
 
 // ----------------------------
 // Reinit seguro para Turbo / renders parciais
-// (agora Alpine já existe no window)
 // ----------------------------
 const reinitAll = () => {
   console.log("🔄 Re-inicializando componentes após navegação...");
-
-  // Revarrer o DOM para componentes Alpine injetados após o start
-  if (window.Alpine && typeof window.Alpine.initTree === "function") {
-    window.Alpine.initTree(document.body);
-  }
-
-  // Reinit Preline (se presente)
-  if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
-    window.HSStaticMethods.autoInit();
-  }
-
-  // Se você tiver um namespace global do TailAdmin (opcional)
+  
+  // Re-inicializar componentes TailAdmin se necessário
   if (window.TailAdminPro && typeof window.TailAdminPro.initializeComponents === "function") {
     window.TailAdminPro.initializeComponents();
   }
-
+  
   console.log("✅ Re-inicialização concluída");
 };
 
@@ -76,7 +41,6 @@ const reinitAll = () => {
 // Boot inicial + eventos Turbo
 // ----------------------------
 function hardBoot() {
-  bootTailadmin();
   reinitAll();
 }
 
@@ -89,13 +53,7 @@ if (document.readyState === "loading") {
 
 // 2) Soft loads via Turbo
 document.addEventListener("turbo:load", () => {
-  bootTailadmin();
   reinitAll();
-  
-  // Fechar sidebar automaticamente em mobile ao trocar rota
-  if (window.innerWidth < 1280 && window.Alpine?.store('ui')) {
-    window.Alpine.store('ui').closeSidebar();
-  }
 });
 
 document.addEventListener("turbo:render", reinitAll);
@@ -125,11 +83,4 @@ document.addEventListener("DOMContentLoaded", function () {
       focusSearchInput();
     }
   });
-});
-
-// Re-aplicar Preline a cada navegação Turbo
-document.addEventListener("turbo:load", () => {
-  if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
-    window.HSStaticMethods.autoInit();
-  }
 });

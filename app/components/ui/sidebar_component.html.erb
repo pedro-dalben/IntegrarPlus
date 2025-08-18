@@ -1,16 +1,13 @@
 <aside
-  :class="$store.ui.sidebarOpen ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
+  data-controller="sidebar"
   class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
-  @click.outside="if (window.innerWidth < 1280) $store.ui.closeSidebar()"
-  x-cloak
 >
   <!-- SIDEBAR HEADER -->
   <div
-    :class="$store.ui.sidebarOpen ? 'justify-center' : 'justify-between'"
     class="sidebar-header flex items-center gap-2 pt-8 pb-7"
   >
     <a href="/admin">
-      <span class="logo" :class="$store.ui.sidebarOpen ? 'hidden' : ''">
+      <span class="logo">
         <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" />
         <img
           class="hidden dark:block"
@@ -20,8 +17,7 @@
       </span>
 
       <img
-        class="logo-icon"
-        :class="$store.ui.sidebarOpen ? 'xl:block' : 'hidden'"
+        class="logo-icon hidden"
         src="/images/logo/logo-icon.svg"
         alt="Logo"
       />
@@ -33,20 +29,16 @@
     class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear"
   >
     <!-- Sidebar Menu -->
-    <nav x-data="{selected: $persist('Dashboard')}">
+    <nav>
       <!-- Menu Group -->
       <div>
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-          <span
-            class="menu-group-title"
-            :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-          >
+          <span class="menu-group-title">
             MENU
           </span>
 
           <svg
-            :class="$store.ui.sidebarOpen ? 'xl:block hidden' : 'hidden'"
-            class="menu-group-icon mx-auto fill-current"
+            class="menu-group-icon mx-auto fill-current hidden"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -67,12 +59,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Dashboard' ? '':'Dashboard')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Dashboard"
               class="menu-item group"
-              :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -87,16 +78,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Dashboard
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Dashboard') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -104,36 +91,41 @@
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.50008 18.9584C12.2026 18.9584 16.0417 15.1194 16.0417 10.4168C16.0417 5.71423 12.2026 1.87516 7.50008 1.87516C2.79751 1.87516 -1.04156 5.71423 -1.04156 10.4168C-1.04156 15.1194 2.79751 18.9584 7.50008 18.9584ZM10.8324 12.9834C11.0545 12.7613 11.0545 12.4027 10.8324 12.1806L8.45742 9.80556H13.9584C14.2728 9.80556 14.5251 9.55325 14.5251 9.23889C14.5251 8.92453 14.2728 8.67222 13.9584 8.67222H8.45742L10.8324 6.29722C11.0545 6.07514 11.0545 5.71653 10.8324 5.49444C10.6103 5.27236 10.2517 5.27236 10.0296 5.49444L6.47116 9.05289C6.24908 9.27497 6.24908 9.63358 6.47116 9.85566L10.0296 13.4141C10.2517 13.6362 10.6103 13.6362 10.8324 12.9834Z"
+                  fill="currentColor"
                 />
               </svg>
             </a>
 
-            <!-- Dropdown Menu Start -->
-            <div
-              class="translate transform overflow-hidden"
-              :class="(selected === 'Dashboard') ? 'block' :'hidden'"
+            <ul
+              class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
             >
-              <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
-                class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
-              >
-                <li>
-                  <a
-                    href="/admin/dashboard"
-                    class="menu-dropdown-item group"
-                    :class="page === 'dashboard' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+              <li>
+                <a
+                  href="#"
+                  class="menu-dropdown-link group"
+                >
+                  <svg
+                    class="menu-dropdown-link-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    Dashboard
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <!-- Dropdown Menu End -->
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M7.50008 18.9584C12.2026 18.9584 16.0417 15.1194 16.0417 10.4168C16.0417 5.71423 12.2026 1.87516 7.50008 1.87516C2.79751 1.87516 -1.04156 5.71423 -1.04156 10.4168C-1.04156 15.1194 2.79751 18.9584 7.50008 18.9584ZM10.8324 12.9834C11.0545 12.7613 11.0545 12.4027 10.8324 12.1806L8.45742 9.80556H13.9584C14.2728 9.80556 14.5251 9.55325 14.5251 9.23889C14.5251 8.92453 14.2728 8.67222 13.9584 8.67222H8.45742L10.8324 6.29722C11.0545 6.07514 11.0545 5.71653 10.8324 5.49444C10.6103 5.27236 10.2517 5.27236 10.0296 5.49444L6.47116 9.05289C6.24908 9.27497 6.24908 9.63358 6.47116 9.85566L10.0296 13.4141C10.2517 13.6362 10.6103 13.6362 10.8324 12.9834Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  <span class="menu-dropdown-link-text">Analytics</span>
+                </a>
+              </li>
+            </ul>
           </li>
           <!-- Menu Item Dashboard -->
 
@@ -141,12 +133,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Profissionais' ? '':'Profissionais')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Profissionais"
               class="menu-item group"
-              :class="(selected === 'Profissionais') || (page === 'professionals') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Profissionais') || (page === 'professionals') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -185,16 +176,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Profissionais
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Profissionais') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -214,28 +201,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Profissionais') ? 'block' :'hidden'"
+              :class="selected === 'Profissionais' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
-                    href="/admin/professionals"
-                    class="menu-dropdown-item group"
-                    :class="page === 'professionals' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Profissionais
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Profissionais</span>
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/admin/professionals/new"
-                    class="menu-dropdown-item group"
-                    :class="page === 'professionals_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Novo Profissional
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Novo Profissional</span>
                   </a>
                 </li>
               </ul>
@@ -248,12 +264,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Especialidades' ? '':'Especialidades')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Especialidades"
               class="menu-item group"
-              :class="(selected === 'Especialidades') || (page === 'specialities') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Especialidades') || (page === 'specialities') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -269,16 +284,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Especialidades
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Especialidades') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -298,28 +309,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Especialidades') ? 'block' :'hidden'"
+              :class="selected === 'Especialidades' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
-                    href="/admin/specialities"
-                    class="menu-dropdown-item group"
-                    :class="page === 'specialities' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Especialidades
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Especialidades</span>
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/admin/specialities/new"
-                    class="menu-dropdown-item group"
-                    :class="page === 'specialities_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Nova Especialidade
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Nova Especialidade</span>
                   </a>
                 </li>
               </ul>
@@ -332,12 +372,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Especializações' ? '':'Especializações')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Especializações"
               class="menu-item group"
-              :class="(selected === 'Especializações') || (page === 'specializations') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Especializações') || (page === 'specializations') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -380,16 +419,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Especializações
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Especializações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -409,28 +444,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Especializações') ? 'block' :'hidden'"
+              :class="selected === 'Especializações' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
-                    href="/admin/specializations"
-                    class="menu-dropdown-item group"
-                    :class="page === 'specializations' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Especializações
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Especializações</span>
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/admin/specializations/new"
-                    class="menu-dropdown-item group"
-                    :class="page === 'specializations_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Nova Especialização
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Nova Especialização</span>
                   </a>
                 </li>
               </ul>
@@ -443,12 +507,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Tipos de Contrato' ? '':'Tipos de Contrato')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Tipos de Contrato"
               class="menu-item group"
-              :class="(selected === 'Tipos de Contrato') || (page === 'contract_types') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Tipos de Contrato') || (page === 'contract_types') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -491,16 +554,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Tipos de Contrato
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Tipos de Contrato') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -520,28 +579,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Tipos de Contrato') ? 'block' :'hidden'"
+              :class="selected === 'Tipos de Contrato' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
-                    href="/admin/contract_types"
-                    class="menu-dropdown-item group"
-                    :class="page === 'contract_types' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Tipos
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Tipos</span>
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/admin/contract_types/new"
-                    class="menu-dropdown-item group"
-                    :class="page === 'contract_types_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    href="#"
+                    class="menu-dropdown-link group"
                   >
-                    Novo Tipo
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Novo Tipo</span>
                   </a>
                 </li>
               </ul>
@@ -585,12 +673,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Configurações' ? '':'Configurações')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Configurações"
               class="menu-item group"
-              :class="(selected === 'Configurações') || (page === 'settings') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Configurações') || (page === 'settings') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -615,16 +702,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Configurações
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Configurações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -644,28 +727,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Configurações') ? 'block' :'hidden'"
+              :class="selected === 'Configurações' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'settings' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Configurações Gerais
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Configurações Gerais</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'settings_security' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Segurança
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Segurança</span>
                   </a>
                 </li>
               </ul>
@@ -678,12 +790,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Usuários' ? '':'Usuários')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Usuários"
               class="menu-item group"
-              :class="(selected === 'Usuários') || (page === 'users') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Usuários') || (page === 'users') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -722,16 +833,12 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Usuários
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Usuários') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -751,28 +858,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Usuários') ? 'block' :'hidden'"
+              :class="selected === 'Usuários' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'users' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Usuários
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Usuários</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'users_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Novo Usuário
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Novo Usuário</span>
                   </a>
                 </li>
               </ul>
@@ -785,12 +921,11 @@
           <li>
             <a
               href="#"
-              @click.prevent="selected = (selected === 'Integrações' ? '':'Integrações')"
+              data-action="click->sidebar#toggleMenuItem"
+              data-menu-name="Integrações"
               class="menu-item group"
-              :class="(selected === 'Integrações') || (page === 'integrations') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Integrações') || (page === 'integrations') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -827,10 +962,7 @@
                 />
               </svg>
 
-              <span
-                class="menu-item-text"
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
-              >
+              <span class="menu-item-text">
                 Integrações
               </span>
 
@@ -848,7 +980,6 @@
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Integrações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -868,28 +999,57 @@
             <!-- Dropdown Menu Start -->
             <div
               class="translate transform overflow-hidden"
-              :class="(selected === 'Integrações') ? 'block' :'hidden'"
+              :class="selected === 'Integrações' ? 'block' :'hidden'"
             >
               <ul
-                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'integrations' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Lista de Integrações
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Lista de Integrações</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="#"
-                    class="menu-dropdown-item group"
-                    :class="page === 'integrations_new' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'"
+                    class="menu-dropdown-link group"
                   >
-                    Nova Integração
+                    <svg
+                      class="menu-dropdown-link-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span class="menu-dropdown-link-text">Nova Integração</span>
                   </a>
                 </li>
               </ul>
@@ -907,17 +1067,24 @@
       :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
       class="mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]"
     >
-      <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">
-        Integrar Plus
-      </h3>
-      <p class="text-theme-sm mb-4 text-gray-500 dark:text-gray-400">
-        Sistema de gestão de profissionais e especialidades.
+      <div class="mb-4 flex justify-center">
+        <img
+          class="h-12 w-12"
+          src="./images/logo/logo-icon.svg"
+          alt="Logo"
+        />
+      </div>
+      <h5 class="mb-2 text-base font-semibold text-black dark:text-white">
+        TailAdmin
+      </h5>
+      <p class="mb-4 text-sm text-body-color dark:text-body-color-dark">
+        Get started with TailAdmin
       </p>
       <a
-        href="/tailadmin-demo"
-        class="bg-brand-500 text-theme-sm hover:bg-brand-600 flex items-center justify-center rounded-lg p-3 font-medium text-white"
+        href="javascript:void(0)"
+        class="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-opacity-90"
       >
-        Ver Demo
+        Get Pro
       </a>
     </div>
     <!-- Promo Box -->
