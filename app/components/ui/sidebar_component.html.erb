@@ -1,15 +1,16 @@
 <aside
-  :class="sidebarToggle ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
+  :class="$store.ui.sidebarOpen ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
   class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
-  @click.outside="sidebarToggle = false"
+  @click.outside="if (window.innerWidth < 1280) $store.ui.closeSidebar()"
+  x-cloak
 >
   <!-- SIDEBAR HEADER -->
   <div
-    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
+    :class="$store.ui.sidebarOpen ? 'justify-center' : 'justify-between'"
     class="sidebar-header flex items-center gap-2 pt-8 pb-7"
   >
     <a href="/admin">
-      <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
+      <span class="logo" :class="$store.ui.sidebarOpen ? 'hidden' : ''">
         <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" />
         <img
           class="hidden dark:block"
@@ -20,7 +21,7 @@
 
       <img
         class="logo-icon"
-        :class="sidebarToggle ? 'xl:block' : 'hidden'"
+        :class="$store.ui.sidebarOpen ? 'xl:block' : 'hidden'"
         src="/images/logo/logo-icon.svg"
         alt="Logo"
       />
@@ -38,13 +39,13 @@
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
           <span
             class="menu-group-title"
-            :class="sidebarToggle ? 'xl:hidden' : ''"
+            :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
           >
             MENU
           </span>
 
           <svg
-            :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
+            :class="$store.ui.sidebarOpen ? 'xl:block hidden' : 'hidden'"
             class="menu-group-icon mx-auto fill-current"
             width="24"
             height="24"
@@ -88,14 +89,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Dashboard
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Dashboard') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Dashboard') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -118,7 +119,7 @@
               :class="(selected === 'Dashboard') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -186,14 +187,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Profissionais
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Profissionais') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Profissionais') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -216,7 +217,7 @@
               :class="(selected === 'Profissionais') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -270,14 +271,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Especialidades
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Especialidades') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Especialidades') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -300,7 +301,7 @@
               :class="(selected === 'Especialidades') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -381,14 +382,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Especializações
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Especializações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Especializações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -411,7 +412,7 @@
               :class="(selected === 'Especializações') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -492,14 +493,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Tipos de Contrato
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Tipos de Contrato') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Tipos de Contrato') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -522,7 +523,7 @@
               :class="(selected === 'Tipos de Contrato') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -556,13 +557,13 @@
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
           <span
             class="menu-group-title"
-            :class="sidebarToggle ? 'xl:hidden' : ''"
+            :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
           >
             Support
           </span>
 
           <svg
-            :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
+            :class="$store.ui.sidebarOpen ? 'xl:block hidden' : 'hidden'"
             class="menu-group-icon mx-auto fill-current"
             width="24"
             height="24"
@@ -616,14 +617,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Configurações
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Configurações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Configurações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -646,7 +647,7 @@
               :class="(selected === 'Configurações') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -723,14 +724,14 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Usuários
               </span>
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Usuários') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Usuários') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -753,7 +754,7 @@
               :class="(selected === 'Usuários') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -828,13 +829,13 @@
 
               <span
                 class="menu-item-text"
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
               >
                 Integrações
               </span>
 
               <span
-                :class="sidebarToggle ? 'xl:hidden' : ''"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
                 class="absolute right-10 flex items-center gap-1"
               >
                 <span
@@ -847,7 +848,7 @@
 
               <svg
                 class="menu-item-arrow"
-                :class="[(selected === 'Integrações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'xl:hidden' : '' ]"
+                :class="[(selected === 'Integrações') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', $store.ui.sidebarOpen ? 'xl:hidden' : '' ]"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
@@ -870,7 +871,7 @@
               :class="(selected === 'Integrações') ? 'block' :'hidden'"
             >
               <ul
-                :class="sidebarToggle ? 'xl:hidden' : 'flex'"
+                :class="$store.ui.sidebarOpen ? 'xl:hidden' : 'flex'"
                 class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
               >
                 <li>
@@ -903,7 +904,7 @@
 
     <!-- Promo Box -->
     <div
-      :class="sidebarToggle ? 'xl:hidden' : ''"
+      :class="$store.ui.sidebarOpen ? 'xl:hidden' : ''"
       class="mx-auto mb-10 w-full max-w-60 rounded-2xl bg-gray-50 px-4 py-5 text-center dark:bg-white/[0.03]"
     >
       <h3 class="mb-2 font-semibold text-gray-900 dark:text-white">

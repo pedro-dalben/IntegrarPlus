@@ -1,5 +1,6 @@
 <header
-  x-data="{menuToggle: false}"
+  x-data="headerState()"
+  x-cloak
   class="sticky top-0 z-99999 flex w-full border-gray-200 bg-white xl:border-b dark:border-gray-800 dark:bg-gray-900"
 >
   <div
@@ -10,9 +11,9 @@
     >
       <!-- Hamburger Toggle BTN -->
       <button
-        :class="$store.tailadmin.sidebarToggle ? 'xl:bg-transparent dark:xl:bg-transparent bg-gray-100 dark:bg-gray-800' : ''"
+        :class="$store.ui.sidebarOpen ? 'xl:bg-transparent dark:xl:bg-transparent bg-gray-100 dark:bg-gray-800' : ''"
         class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500 xl:h-11 xl:w-11 xl:border dark:border-gray-800 dark:text-gray-400"
-        @click.stop="$store.tailadmin.toggleSidebar()"
+        @click.stop="$store.ui.toggleSidebar()"
       >
         <svg
           class="hidden fill-current xl:block"
@@ -31,7 +32,7 @@
         </svg>
 
         <svg
-          :class="$store.tailadmin.sidebarToggle ? 'hidden' : 'block xl:hidden'"
+          :class="$store.ui.sidebarOpen ? 'hidden' : 'block xl:hidden'"
           class="fill-current xl:hidden"
           width="24"
           height="24"
@@ -49,7 +50,7 @@
 
         <!-- cross icon -->
         <svg
-          :class="$store.tailadmin.sidebarToggle ? 'block xl:hidden' : 'hidden'"
+          :class="$store.ui.sidebarOpen ? 'block xl:hidden' : 'hidden'"
           class="fill-current"
           width="24"
           height="24"
@@ -67,11 +68,11 @@
       </button>
       <!-- Hamburger Toggle BTN -->
 
-      <a href="/admin" class="xl:hidden">
-        <img class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" />
+      <a href="index.html" class="xl:hidden">
+        <img class="dark:hidden" src="./images/logo/logo.svg" alt="Logo" />
         <img
           class="hidden dark:block"
-          src="/images/logo/logo-dark.svg"
+          src="./images/logo/logo-dark.svg"
           alt="Logo"
         />
       </a>
@@ -263,7 +264,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-02.jpg"
+                      src="./images/user/user-02.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -305,7 +306,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-03.jpg"
+                      src="./images/user/user-03.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -347,7 +348,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-04.jpg"
+                      src="./images/user/user-04.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -389,7 +390,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-05.jpg"
+                      src="./images/user/user-05.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -431,7 +432,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-02.jpg"
+                      src="./images/user/user-02.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -473,7 +474,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-03.jpg"
+                      src="./images/user/user-03.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -515,7 +516,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-04.jpg"
+                      src="./images/user/user-04.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -557,7 +558,7 @@
                     class="relative z-1 block h-10 w-full max-w-10 rounded-full"
                   >
                     <img
-                      src="/images/user/user-05.jpg"
+                      src="./images/user/user-05.jpg"
                       alt="User"
                       class="overflow-hidden rounded-full"
                     />
@@ -615,7 +616,7 @@
           @click.prevent="dropdownOpen = ! dropdownOpen"
         >
           <span class="mr-3 h-11 w-11 overflow-hidden rounded-full">
-            <img src="/images/user/owner.png" alt="User" />
+            <img src="./images/user/owner.png" alt="User" />
           </span>
 
           <span class="text-theme-sm mr-1 block font-medium"> Musharof </span>

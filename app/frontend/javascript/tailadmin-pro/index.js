@@ -40,33 +40,44 @@ function registerAlpineOnce() {
   if (!window.__ALPINE_COMPONENTS__) window.__ALPINE_COMPONENTS__ = {};
   const A = window.Alpine;
 
-  if (!window.__ALPINE_COMPONENTS__.dropdown) {
-    A.data("dropdown", () => ({
-      open: false,
-      toggle() {
-        this.open = !this.open;
-        if (this.open) this.position();
-      },
-      position() {
-        this.$nextTick(() => {
-          const button = this.$el;
-          const dropdown = this.$refs.dropdown;
-          const rect = button.getBoundingClientRect();
-          dropdown.style.position = "fixed";
-          dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-          dropdown.style.right = `${window.innerWidth - rect.right}px`;
-          dropdown.style.zIndex = "999";
-          const dr = dropdown.getBoundingClientRect();
-          if (dr.bottom > window.innerHeight) {
-            dropdown.style.top = `${rect.top + window.scrollY - dr.height}px`;
-          }
-        });
-      },
-      init() {
-        this.$watch("open", (v) => v && this.position());
-      },
+  // Store global para UI
+  if (!A.store('ui')) {
+    A.store('ui', {
+      // persiste estado da sidebar entre navegações
+      sidebarOpen: A.persist(false),
+      toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; },
+      closeSidebar() { this.sidebarOpen = false; },
+
+      // tema
+      darkMode: A.persist(false),
+      toggleDark() { this.darkMode = !this.darkMode; },
+      applyDark() { document.documentElement.classList.toggle('dark', this.darkMode); }
+    });
+  }
+
+  // garantir aplicar tema no boot
+  if (!window.__ALPINE_COMPONENTS__.applyDarkOnce) {
+    A.effect(() => { A.store('ui').applyDark(); });
+    window.__ALPINE_COMPONENTS__.applyDarkOnce = true;
+  }
+
+  // componente de header que usa a store
+  if (!window.__ALPINE_COMPONENTS__.headerState) {
+    A.data('headerState', () => ({
+      get menuToggle(){ return this.$store.ui.menuToggle ?? false },
+      set menuToggle(v){ this.$store.ui.menuToggle = v },
+
+      init(){ this.$nextTick(()=> this.$store.ui.applyDark()); },
+      // atalhos úteis
+      get darkMode(){ return this.$store.ui.darkMode },
+      set darkMode(v){ this.$store.ui.darkMode = v },
+      toggleDark(){ this.$store.ui.toggleDark(); },
+      // sidebar via store
+      get sidebarToggle(){ return this.$store.ui.sidebarOpen },
+      set sidebarToggle(v){ this.$store.ui.sidebarOpen = v },
+      toggleSidebar(){ this.$store.ui.toggleSidebar(); },
     }));
-    window.__ALPINE_COMPONENTS__.dropdown = true;
+    window.__ALPINE_COMPONENTS__.headerState = true;
   }
 }
 

@@ -2,8 +2,8 @@
 // Vite + estilos base
 // ----------------------------
 import "../styles/application.css";
-import "../../styles/prism.css";
-import "../../styles/tailadmin-pro.css";
+import "../styles/prism.css";
+import "../styles/tailadmin-pro.css";
 
 import "flatpickr/dist/flatpickr.min.css";
 import "tom-select/dist/css/tom-select.css";
@@ -91,6 +91,11 @@ if (document.readyState === "loading") {
 document.addEventListener("turbo:load", () => {
   bootTailadmin();
   reinitAll();
+  
+  // Fechar sidebar automaticamente em mobile ao trocar rota
+  if (window.innerWidth < 1280 && window.Alpine?.store('ui')) {
+    window.Alpine.store('ui').closeSidebar();
+  }
 });
 
 document.addEventListener("turbo:render", reinitAll);
