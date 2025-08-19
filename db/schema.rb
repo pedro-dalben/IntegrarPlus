@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_161641) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_19_211354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -72,6 +72,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_161641) do
     t.index ["name"], name: "index_groups_on_name", unique: true
   end
 
+  create_table "invites", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "confirmed_at"
+    t.integer "attempts_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_invites_on_expires_at"
+    t.index ["token"], name: "index_invites_on_token", unique: true
+    t.index ["user_id"], name: "index_invites_on_user_id"
+  end
+
   create_table "memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "group_id", null: false
@@ -125,9 +138,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_161641) do
     t.string "cnpj"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["contract_type_id"], name: "index_professionals_on_contract_type_id"
     t.index ["cpf"], name: "index_professionals_on_cpf", unique: true
     t.index ["email"], name: "index_professionals_on_email", unique: true
+    t.index ["user_id"], name: "index_professionals_on_user_id"
   end
 
   create_table "specialities", force: :cascade do |t|
@@ -186,6 +201,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_161641) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
+  add_foreign_key "invites", "users"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
   add_foreign_key "professional_specialities", "professionals"
@@ -193,5 +209,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_161641) do
   add_foreign_key "professional_specializations", "professionals"
   add_foreign_key "professional_specializations", "specializations"
   add_foreign_key "professionals", "contract_types"
+  add_foreign_key "professionals", "users"
   add_foreign_key "specializations", "specialities"
 end

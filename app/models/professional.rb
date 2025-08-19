@@ -8,6 +8,7 @@ class Professional < ApplicationRecord
          :confirmable, :trackable
 
   belongs_to :contract_type, optional: true
+  belongs_to :user, optional: true
 
   has_many :memberships, dependent: :destroy
   has_many :groups, through: :memberships
@@ -104,5 +105,29 @@ class Professional < ApplicationRecord
       errors.add(:specializations,
                  "especialização '#{specialization.name}' não pertence a nenhuma especialidade selecionada")
     end
+  end
+  
+  def create_user!
+    return user if user.present?
+    
+    new_user = User.create!(
+      name: full_name,
+      email: email,
+      password: SecureRandom.hex(8)
+    )
+    
+    update!(user: new_user)
+    new_user
+  end
+  
+  def ensure_user_exists!
+    create_user! unless user.present?
+  end
+  
+  def user_status
+    return 'Sem usuário' unless user
+    return 'Pendente' if user.pending_invite?
+    return 'Confirmado' if user.confirmed_invite?
+    'Ativo'
   end
 end
