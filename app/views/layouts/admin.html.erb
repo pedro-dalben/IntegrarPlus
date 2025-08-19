@@ -31,7 +31,7 @@
         data-controller="sidebar"
         data-action="click@window->sidebar#outside"
         class="
-          fixed inset-y-0 left-0 z-[9999] w-72 transform border-r bg-white transition-transform duration-300
+          fixed inset-y-0 left-0 z-[9998] w-72 transform border-r bg-white transition-transform duration-300
           dark:bg-black dark:border-gray-800
           xl:static
         "
@@ -43,13 +43,14 @@
       <div class="flex flex-1 flex-col overflow-hidden content-area">
         
         <!-- Header -->
-        <header class="sticky top-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 header-sticky">
-          <%= render Ui::HeaderComponent.new(user: current_user) %>
-        </header>
+        <%= render Ui::HeaderComponent.new(user: current_user) %>
 
         <!-- Main Content -->
         <main id="main-content" class="flex-1 overflow-y-auto main-content">
           <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+            <!-- Breadcrumb -->
+            <%= render Ui::BreadcrumbComponent.new(current_path: request.path) %>
+            
             <!-- Flash Messages -->
             <% if notice %>
               <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">

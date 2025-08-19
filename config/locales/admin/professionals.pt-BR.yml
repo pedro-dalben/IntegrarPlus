@@ -1,0 +1,19 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      professional: "Profissional"
+      professionals: "Profissionais"
+    pages:
+      professional:
+        index:
+          title: "Profissionais"
+          subtitle: "Gerencie os profissionais da plataforma"
+        new:
+          title: "Novo Profissional"
+          subtitle: "Cadastre um novo profissional"
+        edit:
+          title: "Editar Profissional"
+          subtitle: "Edite as informações do profissional"
+        show:
+          title: "Detalhes do Profissional"
+          subtitle: "Visualize as informações do profissional"

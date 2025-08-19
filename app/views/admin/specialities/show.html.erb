@@ -1,0 +1,86 @@
+<%= render ::Layouts::AdminComponent.new(title: "Detalhes da Especialidade") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to edit_admin_speciality_path(@speciality), class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M13.5858 3.58579C14.3668 2.80474 15.6332 2.80474 16.4142 3.58579C17.1953 4.36683 17.1953 5.63316 16.4142 6.41421L15.6213 7.20711L12.7929 4.37868L13.5858 3.58579ZM11.3787 5.79289L4 13.1716V16H6.82842L14.2071 8.62132L11.3787 5.79289Z" fill="currentColor"/>
+      </svg>
+      Editar
+    <% end %>
+  <% end %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Informações Básicas -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Básicas</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome</label>
+            <p class="text-sm text-gray-900 dark:text-white"><%= @speciality.name %></p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Especialidade</label>
+            <p class="text-sm text-gray-900 dark:text-white"><%= @speciality.specialty %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estatísticas -->
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Estatísticas</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profissionais com esta especialização</label>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @speciality.professionals.count %></p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Especializações relacionadas</label>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @speciality.specializations.count %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metadados -->
+    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Metadados</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Criado em</label>
+          <p class="text-sm text-gray-900 dark:text-white"><%= l(@speciality.created_at, format: :long) %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Última atualização</label>
+          <p class="text-sm text-gray-900 dark:text-white"><%= l(@speciality.updated_at, format: :long) %></p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Ações -->
+    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex gap-3">
+        <%= link_to edit_admin_speciality_path(@speciality), 
+            class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          Editar
+        <% end %>
+        
+        <%= link_to admin_specialities_path, 
+            class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Voltar
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

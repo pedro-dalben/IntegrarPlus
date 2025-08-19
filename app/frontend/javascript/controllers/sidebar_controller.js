@@ -5,7 +5,7 @@ const K = { SIDEBAR: "ui:sidebarOpen" };
 export default class extends Controller {
   static targets = ["overlay"];
 
-    connect() {
+  connect() {
     // estado inicial baseado no tamanho da tela
     const isDesktop = window.innerWidth >= 1280;
     const savedState = localStorage.getItem(K.SIDEBAR) === "true";
@@ -130,42 +130,6 @@ export default class extends Controller {
     // overlay
     if (this.hasOverlayTarget) {
       this.overlayTarget.classList.toggle("hidden", !open || isDesktop);
-    }
-  }
-
-  toggleGroup(event) {
-    // Verificar se o clique foi no botão do grupo ou em um link dentro do dropdown
-    const clickedElement = event.target.closest('a');
-    
-    // Se clicou em um link dentro do dropdown, permitir navegação
-    if (clickedElement && clickedElement.closest('[data-sidebar-dropdown]')) {
-      return; // Permitir navegação normal
-    }
-    
-    // Se clicou no botão do grupo, prevenir navegação e toggle
-    if (clickedElement && clickedElement.getAttribute('href') === '#') {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    
-    const name = event.params.name;
-    const group = this.element.querySelector(`[data-sidebar-group="${name}"]`);
-    const dropdown = group?.querySelector('[data-sidebar-dropdown]');
-    const button = group?.querySelector('[data-sidebar-target="groupButton"]');
-    
-    if (dropdown && button) {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true';
-      const newExpanded = !isExpanded;
-      
-      button.setAttribute('aria-expanded', String(newExpanded));
-      dropdown.classList.toggle('hidden', !newExpanded);
-    }
-  }
-
-  handleKeydown(event) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      this.toggleGroup(event);
     }
   }
 }

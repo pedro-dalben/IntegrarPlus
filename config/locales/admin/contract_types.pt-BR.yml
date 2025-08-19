@@ -1,0 +1,19 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      contract_type: "Tipo de Contrato"
+      contract_types: "Tipos de Contrato"
+    pages:
+      contract_type:
+        index:
+          title: "Tipos de Contrato"
+          subtitle: "Gerencie os tipos de contrato disponíveis"
+        new:
+          title: "Novo Tipo de Contrato"
+          subtitle: "Cadastre um novo tipo de contrato"
+        edit:
+          title: "Editar Tipo de Contrato"
+          subtitle: "Edite as informações do tipo de contrato"
+        show:
+          title: "Detalhes do Tipo de Contrato"
+          subtitle: "Visualize as informações do tipo de contrato"

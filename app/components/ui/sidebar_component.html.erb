@@ -22,17 +22,10 @@
 
         <ul class="space-y-1">
           <!-- Menu Item Dashboard -->
-          <li data-sidebar-group="Dashboard">
+          <li>
             <a
-              href="#"
-              role="button"
-              tabindex="0"
-              data-action="click->sidebar#toggleGroup keydown->sidebar#handleKeydown"
-              data-sidebar-name-param="Dashboard"
-              data-sidebar-target="groupButton"
-              aria-expanded="<%= helpers.sidebar_group_expanded?(['/admin/dashboard']) %>"
-              aria-label="Alternar grupo Dashboard"
-              class="<%= helpers.sidebar_group_classes(['/admin/dashboard']) %>"
+              href="/admin/dashboard"
+              class="<%= helpers.sidebar_menu_item_classes('/admin/dashboard', 'menu-item') %>"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
@@ -42,44 +35,14 @@
               <span class="menu-item-text">
                 Dashboard
               </span>
-
-              <svg class="menu-item-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </a>
-
-            <div
-              data-sidebar-dropdown
-              class="<%= helpers.sidebar_dropdown_classes(['/admin/dashboard'], 'menu-dropdown') %>"
-            >
-              <ul class="space-y-1">
-                <li>
-                  <a
-                    href="/admin/dashboard"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/dashboard', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Visão Geral</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
 
           <!-- Menu Item Profissionais -->
-          <li data-sidebar-group="Profissionais">
+          <li>
             <a
-              href="#"
-              role="button"
-              tabindex="0"
-              data-action="click->sidebar#toggleGroup keydown->sidebar#handleKeydown"
-              data-sidebar-name-param="Profissionais"
-              data-sidebar-target="groupButton"
-              aria-expanded="<%= helpers.sidebar_group_expanded?(['/admin/professionals']) %>"
-              aria-label="Alternar grupo Profissionais"
-              class="<%= helpers.sidebar_group_classes(['/admin/professionals']) %>"
+              href="/admin/professionals"
+              class="<%= helpers.sidebar_menu_item_classes('/admin/professionals', 'menu-item') %>"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
@@ -88,55 +51,14 @@
               <span class="menu-item-text">
                 Profissionais
               </span>
-
-              <svg class="menu-item-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </a>
-
-            <div
-              data-sidebar-dropdown
-              class="<%= helpers.sidebar_dropdown_classes(['/admin/professionals'], 'menu-dropdown') %>"
-            >
-              <ul class="space-y-1">
-                <li>
-                  <a
-                    href="/admin/professionals"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/professionals', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Lista de Profissionais</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/admin/professionals/new"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/professionals/new', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Novo Profissional</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
 
           <!-- Menu Item Especialidades -->
-          <li data-sidebar-group="Especialidades">
+          <li>
             <a
-              href="#"
-              role="button"
-              tabindex="0"
-              data-action="click->sidebar#toggleGroup keydown->sidebar#handleKeydown"
-              data-sidebar-name-param="Especialidades"
-              data-sidebar-target="groupButton"
-              aria-expanded="<%= helpers.sidebar_group_expanded?(['/admin/specialities']) %>"
-              aria-label="Alternar grupo Especialidades"
-              class="<%= helpers.sidebar_group_classes(['/admin/specialities']) %>"
+              href="/admin/specialities"
+              class="<%= helpers.sidebar_menu_item_classes('/admin/specialities', 'menu-item') %>"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -145,55 +67,14 @@
               <span class="menu-item-text">
                 Especialidades
               </span>
-
-              <svg class="menu-item-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </a>
-
-            <div
-              data-sidebar-dropdown
-              class="<%= helpers.sidebar_dropdown_classes(['/admin/specialities'], 'menu-dropdown') %>"
-            >
-              <ul class="space-y-1">
-                <li>
-                  <a
-                    href="/admin/specialities"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/specialities', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Lista de Especialidades</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/admin/specialities/new"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/specialities/new', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Nova Especialidade</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
 
           <!-- Menu Item Especializações -->
-          <li data-sidebar-group="Especializações">
+          <li>
             <a
-              href="#"
-              role="button"
-              tabindex="0"
-              data-action="click->sidebar#toggleGroup keydown->sidebar#handleKeydown"
-              data-sidebar-name-param="Especializações"
-              data-sidebar-target="groupButton"
-              aria-expanded="<%= helpers.sidebar_group_expanded?(['/admin/specializations']) %>"
-              aria-label="Alternar grupo Especializações"
-              class="<%= helpers.sidebar_group_classes(['/admin/specializations']) %>"
+              href="/admin/specializations"
+              class="<%= helpers.sidebar_menu_item_classes('/admin/specializations', 'menu-item') %>"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -202,55 +83,14 @@
               <span class="menu-item-text">
                 Especializações
               </span>
-
-              <svg class="menu-item-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </a>
-
-            <div
-              data-sidebar-dropdown
-              class="<%= helpers.sidebar_dropdown_classes(['/admin/specializations'], 'menu-dropdown') %>"
-            >
-              <ul class="space-y-1">
-                <li>
-                  <a
-                    href="/admin/specializations"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/specializations', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Lista de Especializações</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/admin/specializations/new"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/specializations/new', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Nova Especialização</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
 
           <!-- Menu Item Tipos de Contrato -->
-          <li data-sidebar-group="Tipos de Contrato">
+          <li>
             <a
-              href="#"
-              role="button"
-              tabindex="0"
-              data-action="click->sidebar#toggleGroup keydown->sidebar#handleKeydown"
-              data-sidebar-name-param="Tipos de Contrato"
-              data-sidebar-target="groupButton"
-              aria-expanded="<%= helpers.sidebar_group_expanded?(['/admin/contract_types']) %>"
-              aria-label="Alternar grupo Tipos de Contrato"
-              class="<%= helpers.sidebar_group_classes(['/admin/contract_types']) %>"
+              href="/admin/contract_types"
+              class="<%= helpers.sidebar_menu_item_classes('/admin/contract_types', 'menu-item') %>"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -259,41 +99,7 @@
               <span class="menu-item-text">
                 Tipos de Contrato
               </span>
-
-              <svg class="menu-item-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </a>
-
-            <div
-              data-sidebar-dropdown
-              class="<%= helpers.sidebar_dropdown_classes(['/admin/contract_types'], 'menu-dropdown') %>"
-            >
-              <ul class="space-y-1">
-                <li>
-                  <a
-                    href="/admin/contract_types"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/contract_types', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Lista de Tipos</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/admin/contract_types/new"
-                    class="<%= helpers.sidebar_menu_item_classes('/admin/contract_types/new', 'menu-dropdown-link') %>"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    <span class="menu-dropdown-link-text">Novo Tipo</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
         </ul>
       </div>
