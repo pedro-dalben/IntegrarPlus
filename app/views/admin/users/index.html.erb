@@ -1,0 +1,125 @@
+<div class="page-header d-print-none">
+  <div class="container-xl">
+    <div class="row g-2 align-items-center">
+      <div class="col">
+        <h2 class="page-title">
+          Usuários
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="container-xl">
+    <div class="card">
+      <div class="card-header">
+        <div class="row align-items-center">
+          <div class="col">
+            <form class="row g-2" method="get">
+              <div class="col-auto">
+                <input type="text" class="form-control" name="search" value="<%= params[:search] %>" placeholder="Buscar por nome...">
+              </div>
+              <div class="col-auto">
+                <select class="form-select" name="status">
+                  <option value="">Todos os status</option>
+                  <option value="active" <%= 'selected' if params[:status] == 'active' %>>Ativos</option>
+                  <option value="pending" <%= 'selected' if params[:status] == 'pending' %>>Pendentes</option>
+                  <option value="inactive" <%= 'selected' if params[:status] == 'inactive' %>>Inativos</option>
+                  <option value="expired" <%= 'selected' if params[:status] == 'expired' %>>Expirados</option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <%= link_to 'Limpar', admin_users_path, class: 'btn btn-outline-secondary' %>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Profissional</th>
+              <th>Convite</th>
+              <th class="w-1"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr>
+                <td>
+                  <div class="d-flex py-1 align-items-center">
+                    <span class="avatar me-2">
+                      <% if user.avatar.attached? %>
+                        <%= image_tag user.avatar, class: 'avatar' %>
+                      <% else %>
+                        <span class="avatar-initials"><%= user.name.first.upcase %></span>
+                      <% end %>
+                    </span>
+                    <div class="flex-fill">
+                      <div class="font-weight-medium"><%= user.name %></div>
+                    </div>
+                  </div>
+                </td>
+                <td><%= user.email %></td>
+                <td>
+                  <% if user.professional&.active? %>
+                    <span class="badge bg-success">✅ Ativo</span>
+                  <% elsif user.pending_invite? %>
+                    <span class="badge bg-warning">⏳ Pendente</span>
+                  <% elsif user.professional&.active? == false %>
+                    <span class="badge bg-danger">❌ Inativo</span>
+                  <% elsif user.latest_invite&.expired? %>
+                    <span class="badge bg-secondary">🔄 Expirado</span>
+                  <% else %>
+                    <span class="badge bg-secondary">Sem usuário</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% if user.professional %>
+                    <%= link_to user.professional.full_name, admin_professional_path(user.professional), class: 'text-decoration-none' %>
+                  <% else %>
+                    <span class="text-muted">Não associado</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% if user.latest_invite %>
+                    <small class="text-muted">
+                      <%= user.latest_invite.confirmed? ? 'Confirmado' : 'Pendente' %>
+                      <br>
+                      <%= l(user.latest_invite.created_at, format: :short) %>
+                    </small>
+                  <% else %>
+                    <span class="text-muted">Sem convite</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="btn-list flex-nowrap">
+                    <%= link_to 'Ver', admin_user_path(user), class: 'btn btn-sm btn-outline-primary' %>
+                    <% if user.professional&.active? == false %>
+                      <%= link_to 'Ativar', activate_admin_user_path(user), method: :patch, class: 'btn btn-sm btn-success', data: { confirm: 'Tem certeza?' } %>
+                    <% elsif user.professional&.active? %>
+                      <%= link_to 'Desativar', deactivate_admin_user_path(user), method: :patch, class: 'btn btn-sm btn-warning', data: { confirm: 'Tem certeza?' } %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <% if @users.respond_to?(:current_page) %>
+        <div class="card-footer d-flex align-items-center">
+          <%= paginate @users %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
