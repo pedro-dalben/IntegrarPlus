@@ -48,64 +48,64 @@ Implementação de um sistema completo de permissionamento baseado em especialid
 
 ## 🚀 Tasks por Bloco
 
-### Bloco 1: Estrutura de Dados
-- [ ] Criar migration para adicionar user_id em professionals
-- [ ] Criar migration para tabela permissions
-- [ ] Criar migration para tabela invites
-- [ ] Criar migration para tabela user_permissions
-- [ ] Criar modelo Permission
-- [ ] Criar modelo Invite
-- [ ] Criar modelo UserPermission
-- [ ] Atualizar modelo User com relacionamentos
-- [ ] Atualizar modelo Professional com relacionamento User
+### Bloco 1: Estrutura de Dados ✅
+- [x] Criar migration para adicionar user_id em professionals
+- [x] Criar migration para tabela permissions
+- [x] Criar migration para tabela invites
+- [x] Criar migration para tabela user_permissions
+- [x] Criar modelo Permission
+- [x] Criar modelo Invite
+- [x] Criar modelo UserPermission
+- [x] Atualizar modelo User com relacionamentos
+- [x] Atualizar modelo Professional com relacionamento User
 
-### Bloco 2: Sistema de Permissões
-- [ ] Implementar método `permit?` no modelo User
-- [ ] Criar sistema de permissões baseado em especialidades
-- [ ] Implementar verificação de permissões no BaseController
-- [ ] Atualizar todos os controllers admin com verificação de permissões
-- [ ] Criar UserPolicy
-- [ ] Criar InvitePolicy
-- [ ] Atualizar todas as policies existentes
+### Bloco 2: Sistema de Permissões ✅
+- [x] Implementar método `permit?` no modelo User
+- [x] Criar sistema de permissões baseado em especialidades
+- [x] Implementar verificação de permissões no BaseController
+- [x] Atualizar todos os controllers admin com verificação de permissões
+- [x] Criar UserPolicy
+- [x] Criar InvitePolicy
+- [x] Atualizar todas as policies existentes
 
-### Bloco 3: Gerenciamento de Usuários
-- [ ] Criar Admin::UsersController
-- [ ] Criar views para listagem de usuários
-- [ ] Implementar filtros por status (Ativo, Pendente, Inativo)
-- [ ] Implementar busca de usuários
-- [ ] Criar view de detalhes do usuário
-- [ ] Implementar edição de usuário
-- [ ] Implementar ativação/desativação de usuário
+### Bloco 3: Gerenciamento de Usuários ✅
+- [x] Criar Admin::UsersController
+- [x] Criar views para listagem de usuários
+- [x] Implementar filtros por status (Ativo, Pendente, Inativo)
+- [x] Implementar busca de usuários
+- [x] Criar view de detalhes do usuário
+- [x] Implementar edição de usuário
+- [x] Implementar ativação/desativação de usuário
 
-### Bloco 4: Sistema de Convites
-- [ ] Criar Admin::InvitesController
-- [ ] Implementar geração de tokens únicos
-- [ ] Criar sistema de expiração de convites
-- [ ] Implementar contador de tentativas
-- [ ] Criar view para gerar convite
-- [ ] Implementar cópia de link para clipboard
-- [ ] Criar InvitesController para aceitar convites
-- [ ] Criar view de aceitar convite
-- [ ] Implementar validação de token
+### Bloco 4: Sistema de Convites ✅
+- [x] Criar Admin::InvitesController
+- [x] Implementar geração de tokens únicos
+- [x] Criar sistema de expiração de convites
+- [x] Implementar contador de tentativas
+- [x] Criar view para gerar convite
+- [x] Implementar cópia de link para clipboard
+- [x] Criar InvitesController para aceitar convites
+- [x] Criar view de aceitar convite
+- [x] Implementar validação de token
 
-### Bloco 5: Navegação e Menu
-- [ ] Atualizar AdminNav com itens de usuários
-- [ ] Implementar filtro de menu por permissões
-- [ ] Adicionar link para usuário na tela de profissionais
-- [ ] Implementar redirecionamento para usuários sem permissão
+### Bloco 5: Navegação e Menu ✅
+- [x] Atualizar AdminNav com itens de usuários
+- [x] Implementar filtro de menu por permissões
+- [x] Adicionar link para usuário na tela de profissionais
+- [x] Implementar redirecionamento para usuários sem permissão
 
-### Bloco 6: Integração e Testes
-- [ ] Testar fluxo completo de criação de profissional
-- [ ] Testar sistema de permissões
-- [ ] Testar geração e aceitação de convites
-- [ ] Testar controle de acesso no menu
-- [ ] Testar redirecionamentos de segurança
+### Bloco 6: Integração e Testes ✅
+- [x] Testar fluxo completo de criação de profissional
+- [x] Testar sistema de permissões
+- [x] Testar geração e aceitação de convites
+- [x] Testar controle de acesso no menu
+- [x] Testar redirecionamentos de segurança
 
-### Bloco 7: Dados Iniciais
-- [ ] Criar seeds para especialidades especiais (Admin, Programador, etc.)
-- [ ] Criar seeds para permissões padrão
-- [ ] Criar usuário administrador inicial
-- [ ] Configurar permissões por especialidade
+### Bloco 7: Dados Iniciais ✅
+- [x] Criar seeds para especialidades especiais (Admin, Programador, etc.)
+- [x] Criar seeds para permissões padrão
+- [x] Criar usuário administrador inicial
+- [x] Configurar permissões por especialidade
 
 ## 🔧 Configurações Especiais
 
