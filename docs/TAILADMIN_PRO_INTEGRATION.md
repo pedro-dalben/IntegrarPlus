@@ -158,3 +158,6 @@ app/frontend/
 3. **Flexibilidade**: Fácil de adicionar/remover componentes
 4. **Compatibilidade**: Funciona com Alpine.js e Stimulus existentes
 5. **Tamanho**: Bundle menor, carregamento mais rápido
+
+site para ver as referencias: https://demo.tailadmin.com/saas
+localmente podemos ver os htmls em: /home/pedro/Documentos/tailadmin-html-pro-2.0-main

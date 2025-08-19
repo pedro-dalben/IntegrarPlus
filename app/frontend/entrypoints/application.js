@@ -1,55 +1,86 @@
-// To see this message, add the following to the `<head>` section in your
-// views/layouts/application.html.erb
-//
-//    <%= vite_client_tag %>
-//    <%= vite_javascript_tag 'application' %>
-console.log('Vite ⚡️ Rails')
-
-// If using a TypeScript entrypoint file:
-//     <%= vite_typescript_tag 'application' %>
-//
-// If you want to use .jsx or .tsx, add the extension:
-//     <%= vite_javascript_tag 'application.jsx' %>
-
-console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify.app/guide/rails')
-
-// Example: Load Rails libraries in Vite.
-//
-// import * as Turbo from '@hotwired/turbo'
-// Turbo.start()
-//
-// import ActiveStorage from '@rails/activestorage'
-// ActiveStorage.start()
-//
-// // Import all channels.
-// const channels = import.meta.globEager('./**/*_channel.js')
-
-// Example: Import a stylesheet in app/frontend/index.css
-// import '~/index.css'
+// ----------------------------
+// Vite + estilos base
+// ----------------------------
 import "../styles/application.css";
+import "../styles/prism.css";
 import "../styles/tailadmin-pro.css";
-import "../javascript/application";
-import "../javascript/tailadmin-pro";
-import "preline";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "flatpickr/dist/flatpickr.css";
+
+import "flatpickr/dist/flatpickr.min.css";
 import "tom-select/dist/css/tom-select.css";
 import "dropzone/dist/dropzone.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "prismjs/themes/prism.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-// Alpine.js
-import Alpine from 'alpinejs';
-import persist from '@alpinejs/persist';
+// ----------------------------
+// Sua app Stimulus/Hotwire
+// ----------------------------
+import "../javascript/application";
 
-Alpine.plugin(persist);
-window.Alpine = Alpine;
-Alpine.start();
+// ----------------------------
+// TailAdmin: componentes específicos (se necessário)
+// ----------------------------
+import "../javascript/tailadmin-pro.js";
 
-document.addEventListener("turbo:load", () => {
-  if (window.HSStaticMethods && typeof window.HSStaticMethods.autoInit === "function") {
-    window.HSStaticMethods.autoInit()
+// ----------------------------
+// Reinit seguro para Turbo / renders parciais
+// ----------------------------
+const reinitAll = () => {
+  console.log("🔄 Re-inicializando componentes após navegação...");
+  
+  // Re-inicializar componentes TailAdmin se necessário
+  if (window.TailAdminPro && typeof window.TailAdminPro.initializeComponents === "function") {
+    window.TailAdminPro.initializeComponents();
   }
-})
+  
+  console.log("✅ Re-inicialização concluída");
+};
+
+// ----------------------------
+// Boot inicial + eventos Turbo
+// ----------------------------
+function hardBoot() {
+  reinitAll();
+}
+
+// 1) Hard load
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", hardBoot);
+} else {
+  hardBoot();
+}
+
+// 2) Soft loads via Turbo
+document.addEventListener("turbo:load", () => {
+  reinitAll();
+});
+
+document.addEventListener("turbo:render", reinitAll);
+
+// ----------------------------
+// TailAdmin JS adicional (não crítico)
+// ----------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("search-input");
+  const searchButton = document.getElementById("search-button");
+  if (!searchInput || !searchButton) return;
+
+  const focusSearchInput = () => searchInput.focus();
+
+  searchButton.addEventListener("click", focusSearchInput);
+
+  document.addEventListener("keydown", function (event) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      event.preventDefault();
+      focusSearchInput();
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "/" && document.activeElement !== searchInput) {
+      event.preventDefault();
+      focusSearchInput();
+    }
+  });
+});

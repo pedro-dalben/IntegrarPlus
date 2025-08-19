@@ -1,0 +1,65 @@
+#!/bin/bash
+
+echo "🔍 Verificando se o TailAdmin Pro está funcionando corretamente..."
+
+echo ""
+echo "📋 1. Verificando se o servidor está rodando..."
+if curl -s http://localhost:3000 > /dev/null; then
+    echo "✅ Servidor Rails está rodando"
+else
+    echo "❌ Servidor Rails não está rodando"
+    exit 1
+fi
+
+echo ""
+echo "📋 2. Verificando se as imagens estão sendo servidas..."
+if curl -s -I http://localhost:3000/assets/images/logo/logo.svg | grep -q "200 OK"; then
+    echo "✅ Imagens do logo estão sendo servidas"
+else
+    echo "❌ Imagens do logo não estão sendo servidas"
+fi
+
+if curl -s -I http://localhost:3000/assets/images/user/owner.png | grep -q "200 OK"; then
+    echo "✅ Imagens de usuário estão sendo servidas"
+else
+    echo "❌ Imagens de usuário não estão sendo servidas"
+fi
+
+echo ""
+echo "📋 3. Verificando se o Alpine.js está carregado..."
+if curl -s http://localhost:3000/admin | grep -q "x-data"; then
+    echo "✅ Alpine.js está presente no HTML"
+else
+    echo "❌ Alpine.js não está presente no HTML"
+fi
+
+echo ""
+echo "📋 4. Verificando se o Tailwind CSS está funcionando..."
+if curl -s http://localhost:3000/admin | grep -q "bg-white"; then
+    echo "✅ Classes do Tailwind estão presentes"
+else
+    echo "❌ Classes do Tailwind não estão presentes"
+fi
+
+echo ""
+echo "📋 5. Verificando se o JavaScript está sendo carregado..."
+if curl -s http://localhost:3000/admin | grep -q "vite"; then
+    echo "✅ Vite está sendo carregado"
+else
+    echo "❌ Vite não está sendo carregado"
+fi
+
+echo ""
+echo "🎯 Próximos passos:"
+echo "   1. Acesse http://localhost:3000/admin"
+echo "   2. Verifique se o header está funcionando"
+echo "   3. Teste o menu mobile (hamburger)"
+echo "   4. Teste o dropdown do usuário"
+echo "   5. Verifique se as imagens estão carregando"
+
+echo ""
+echo "🔧 Se algo não estiver funcionando:"
+echo "   - Verifique o console do navegador (F12)"
+echo "   - Verifique se há erros de JavaScript"
+echo "   - Verifique se o Alpine.js está inicializando"
+echo "   - Verifique se o Tailwind está compilando"

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+echo "🧪 Testando TailAdmin Pro..."
+
+echo ""
+echo "📋 1. Verificando se o servidor está rodando..."
+if curl -s http://localhost:3000 > /dev/null; then
+    echo "✅ Servidor Rails está rodando"
+else
+    echo "❌ Servidor Rails não está rodando"
+    echo "   Execute: rails server -p 3000"
+    exit 1
+fi
+
+echo ""
+echo "📋 2. Verificando se as imagens estão sendo servidas..."
+if curl -s -I http://localhost:3000/assets/images/logo/logo.svg | grep -q "200 OK"; then
+    echo "✅ Imagens do logo estão sendo servidas"
+else
+    echo "❌ Imagens do logo não estão sendo servidas"
+    echo "   Execute: ./bin/setup-assets"
+fi
+
+if curl -s -I http://localhost:3000/assets/images/user/owner.png | grep -q "200 OK"; then
+    echo "✅ Imagens de usuário estão sendo servidas"
+else
+    echo "❌ Imagens de usuário não estão sendo servidas"
+    echo "   Execute: ./bin/setup-assets"
+fi
+
+echo ""
+echo "📋 3. Verificando se o JavaScript está sendo carregado..."
+if curl -s http://localhost:3000/admin | grep -q "vite"; then
+    echo "✅ Vite está sendo carregado"
+else
+    echo "❌ Vite não está sendo carregado"
+fi
+
+echo ""
+echo "🎯 PRÓXIMOS PASSOS:"
+echo "   1. Abra o navegador e acesse: http://localhost:3000/admin"
+echo "   2. Faça login com: admin@integrar.com / 123456"
+echo "   3. Abra o console do navegador (F12)"
+echo "   4. Execute no console: checkTailAdmin()"
+echo "   5. Verifique o relatório detalhado"
+echo ""
+echo "🔧 SE HOUVER PROBLEMAS:"
+echo "   - Verifique se há erros no console do navegador"
+echo "   - Execute: ./bin/setup-assets"
+echo "   - Reinicie o servidor: pkill -f 'rails server' && rails server -p 3000 -d"
+echo ""
+echo "📊 O relatório do checkTailAdmin() mostrará:"
+echo "   • Alpine.js funcionando"
+echo "   • Tailwind CSS funcionando"
+echo "   • Vite funcionando"
+echo "   • Imagens carregando"
+echo "   • Header funcionando"
+echo "   • Sidebar funcionando"
+echo "   • Dropdowns funcionando"
+echo "   • E muito mais..."

@@ -1,9 +1,16 @@
-import { Application } from "@hotwired/stimulus"
+import { Application } from "@hotwired/stimulus";
 
-const application = Application.start()
+const application = Application.start();
 
 // Configure Stimulus development experience
-application.debug = false
-window.Stimulus   = application
+application.debug = false;
+window.Stimulus   = application;
 
-export { application }
+// Auto-register (opcional) ou registros manuais
+import HeaderController from "./header_controller";
+import SidebarController from "./sidebar_controller";
+
+application.register("header", HeaderController);
+application.register("sidebar", SidebarController);
+
+export { application };

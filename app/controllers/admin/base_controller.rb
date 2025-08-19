@@ -2,6 +2,8 @@
 
 module Admin
   class BaseController < ApplicationController
+    layout 'admin'
+
     before_action :authenticate_user!
 
     helper_method :admin_nav

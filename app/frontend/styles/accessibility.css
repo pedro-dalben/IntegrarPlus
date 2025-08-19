@@ -1,0 +1,257 @@
+/* Layout Fixes */
+
+/* Garantir que o body ocupe toda a altura */
+body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Container principal */
+.layout-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar fixa */
+.sidebar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 50;
+}
+
+/* Header sticky */
+.header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+/* Content area */
+.content-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content scrollable */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Sidebar específico */
+[data-controller="sidebar"] {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  z-index: 9999 !important;
+}
+
+/* Sidebar visível - maior especificidade */
+[data-controller="sidebar"].translate-x-0 {
+  transform: translateX(0) !important;
+}
+
+/* Sobrescrever classes Tailwind se necessário */
+[data-controller="sidebar"].translate-x-0 {
+  --tw-translate-x: 0 !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) !important;
+}
+
+/* Garantir que a sidebar seja visível em desktop */
+@media (min-width: 1280px) {
+  [data-controller="sidebar"] {
+    transform: none !important;
+  }
+}
+
+/* Melhorias de Acessibilidade e Transições */
+
+/* Foco visível para elementos interativos */
+.menu-item:focus,
+.menu-dropdown-link:focus,
+button:focus,
+[role="button"]:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Dropdown genérico */
+[data-controller="dropdown"] {
+  position: relative;
+}
+
+[data-dropdown-target="panel"] {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transform-origin: top right;
+}
+
+[data-dropdown-target="panel"].hidden {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+[data-dropdown-target="panel"]:not(.hidden) {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+/* Transições suaves para dropdowns */
+.menu-dropdown {
+  transition: all 0.3s ease-in-out;
+  transform-origin: top;
+}
+
+/* Melhor contraste para modo escuro */
+.dark .menu-item:focus,
+.dark .menu-dropdown-link:focus,
+.dark button:focus,
+.dark [role="button"]:focus {
+  outline-color: #60a5fa;
+}
+
+/* Sidebar Design Improvements */
+
+/* Menu items */
+.menu-item {
+  @apply flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white;
+}
+
+.menu-item-active {
+  @apply bg-blue-50 text-blue-700 border-r-2 border-blue-700 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-400;
+}
+
+/* Menu item arrows */
+.menu-item-arrow {
+  @apply w-4 h-4 text-gray-400 transition-transform duration-200 ml-auto;
+}
+
+[aria-expanded="true"] .menu-item-arrow {
+  transform: rotate(180deg);
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+/* Dropdown items */
+.menu-dropdown {
+  @apply mt-2 space-y-1;
+}
+
+.menu-dropdown-link {
+  @apply flex items-center gap-3 px-8 py-2 text-sm text-gray-600 rounded-lg transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white;
+}
+
+.menu-dropdown-link.menu-item-active {
+  @apply bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400;
+}
+
+/* Dropdown item arrows */
+.menu-dropdown-link .menu-item-arrow {
+  @apply w-3 h-3 text-gray-400 ml-auto;
+}
+
+/* Menu groups */
+.menu-group-title {
+  @apply text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400;
+}
+
+/* Badges */
+.menu-item-badge {
+  @apply inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900/20 dark:text-green-400;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.btn-secondary {
+  @apply text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600;
+}
+
+/* Melhor contraste para texto */
+.menu-item-text,
+.menu-dropdown-link-text {
+  color: inherit;
+}
+
+/* Hover states melhorados */
+.menu-item:hover,
+.menu-dropdown-link:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.dark .menu-item:hover,
+.dark .menu-dropdown-link:hover {
+  background-color: rgba(96, 165, 250, 0.1);
+}
+
+/* Skip link para acessibilidade */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #3b82f6;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 10000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Melhor contraste para badges */
+.menu-dropdown-badge {
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.menu-dropdown-badge-active {
+  background-color: #10b981;
+  color: white;
+}
+
+.menu-dropdown-badge-inactive {
+  background-color: #6b7280;
+  color: white;
+}
+
+/* Transições para overlay */
+.overlay-transition {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Melhor feedback visual para botões */
+button:active,
+[role="button"]:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Indicador de carregamento para transições */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Melhor contraste para ícones */
+.menu-dropdown-link-icon {
+  opacity: 0.7;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.menu-dropdown-link:hover .menu-dropdown-link-icon {
+  opacity: 1;
+}

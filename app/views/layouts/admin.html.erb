@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><%= content_for(:title) || "Integrar Plus - Admin" %></title>
+    
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= vite_client_tag %>
+    <%= vite_stylesheet_tag "application" %>
+    <%= vite_javascript_tag "entrypoints/application" %>
+  </head>
+
+  <body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Skip Link para Acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    
+    <!-- Layout Container -->
+    <div class="flex h-screen overflow-hidden layout-container">
+      
+      <!-- Drawer mobile + fixa desktop -->
+      <aside
+        data-controller="sidebar"
+        data-action="click@window->sidebar#outside"
+        class="
+          fixed inset-y-0 left-0 z-[9999] w-72 transform border-r bg-white transition-transform duration-300
+          dark:bg-black dark:border-gray-800
+          xl:static
+        "
+      >
+        <%= render Ui::SidebarComponent.new(current_path: request.path) %>
+      </aside>
+
+      <!-- Content Area -->
+      <div class="flex flex-1 flex-col overflow-hidden content-area">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 header-sticky">
+          <%= render Ui::HeaderComponent.new(user: current_user) %>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-1 overflow-y-auto main-content">
+          <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+            <!-- Flash Messages -->
+            <% if notice %>
+              <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <svg class="size-4 text-teal-400 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                  </div>
+                  <div class="ms-3">
+                    <p class="text-sm text-teal-800 dark:text-teal-400">
+                      <%= notice %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <% if alert %>
+              <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <svg class="size-4 text-red-400 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                    </svg>
+                  </div>
+                  <div class="ms-3">
+                    <p class="text-sm text-red-800 dark:text-red-400">
+                      <%= alert %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Page Content -->
+            <%= yield %>
+          </div>
+        </main>
+      </div>
+
+      <!-- Mobile Overlay -->
+      <div
+        data-sidebar-target="overlay"
+        class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
+      ></div>
+    </div>
+  </body>
+</html>
