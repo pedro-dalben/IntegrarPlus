@@ -1,7 +1,13 @@
 module Admin
   module SidebarHelper
     def sidebar_menu_item_active?(path)
-      current_page?(path) || request.path.start_with?(path)
+      # Para o dashboard (/admin), verificar exatamente a rota
+      if path == '/admin'
+        current_page?(path) || request.path == '/admin'
+      else
+        # Para outras rotas, usar start_with normalmente
+        current_page?(path) || request.path.start_with?(path)
+      end
     end
 
     def sidebar_group_active?(group_paths)

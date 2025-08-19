@@ -1,10 +1,9 @@
 <aside class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black">
   <!-- SIDEBAR HEADER -->
-  <div class="sidebar-header flex items-center gap-2 pt-8 pb-7">
+  <div class="sidebar-header flex items-center justify-center pt-8 pb-7">
     <a href="/admin">
       <span class="logo">
-        <%= image_tag "logo/logo.svg", class: "dark:hidden", alt: "Logo" %>
-        <%= image_tag "logo/logo-dark.svg", class: "hidden dark:block", alt: "Logo" %>
+        <%= image_tag "logo.png", class: "h-12 w-auto", alt: "Integrar Plus" %>
       </span>
     </a>
   </div>
@@ -13,22 +12,22 @@
     <!-- Sidebar Menu -->
     <nav>
       <!-- Menu Group -->
-      <div>
+      <div class="mb-8">
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
           <span class="menu-group-title">
-            MENU
+            
           </span>
         </h3>
 
-        <ul class="mb-6 flex flex-col gap-1">
+        <ul class="flex flex-col gap-2">
           <!-- Menu Item Dashboard -->
           <li>
             <a
-              href="/admin/dashboard"
-              class="<%= helpers.sidebar_menu_item_classes('/admin/dashboard', 'menu-item group') %>"
+              href="/admin"
+              class="<%= helpers.sidebar_menu_item_classes('/admin', 'menu-item group') %>"
             >
               <svg
-                class="<%= helpers.sidebar_menu_item_classes('/admin/dashboard', '', 'menu-item-icon-active', 'menu-item-icon-inactive') %>"
+                class="<%= helpers.sidebar_menu_item_classes('/admin', '', 'menu-item-icon-active', 'menu-item-icon-inactive') %>"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -172,14 +171,14 @@
       </div>
 
       <!-- Support Group -->
-      <div>
+      <div class="mb-8">
         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
           <span class="menu-group-title">
             SUPORTE
           </span>
         </h3>
 
-        <ul class="mb-6 flex flex-col gap-1">
+        <ul class="flex flex-col gap-2">
           <!-- Menu Item Configurações -->
           <li>
             <a href="#" class="menu-item group menu-item-inactive">
@@ -274,7 +273,7 @@
         Sistema completo de gestão para profissionais de saúde.
       </p>
       <a
-        href="/admin/dashboard"
+        href="/admin"
         class="bg-brand-500 text-theme-sm hover:bg-brand-600 flex items-center justify-center rounded-lg p-3 font-medium text-white"
       >
         Dashboard

@@ -12,15 +12,13 @@ module Admin
                               end
     end
 
-    def show
-    end
+    def show; end
 
     def new
       @professional = Professional.new
     end
 
-    def edit
-    end
+    def edit; end
 
     def create
       @professional = Professional.new(professional_params)

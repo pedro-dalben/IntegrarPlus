@@ -155,7 +155,7 @@ button:focus,
 
 /* Menu items */
 .menu-item {
-  @apply flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 rounded-lg transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white;
+  @apply flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white;
 }
 
 .menu-item-active {
@@ -164,7 +164,7 @@ button:focus,
 
 /* Menu item arrows */
 .menu-item-arrow {
-  @apply w-4 h-4 text-gray-400 transition-transform duration-200 ml-auto;
+  @apply w-4 h-4 text-gray-400 ml-auto;
 }
 
 [aria-expanded="true"] .menu-item-arrow {
@@ -203,7 +203,6 @@ button:focus,
 /* Hover states melhorados */
 .menu-item:hover {
   background-color: rgba(59, 130, 246, 0.1);
-  transition: background-color 0.2s ease-in-out;
 }
 
 .dark .menu-item:hover {
@@ -235,12 +234,22 @@ button:focus,
 /* Melhor feedback visual para botões */
 button:active,
 [role="button"]:active {
-  transform: scale(0.98);
-  transition: transform 0.1s ease-in-out;
+  /* Removido transform para evitar movimento */
 }
 
 /* Indicador de carregamento para transições */
 .loading {
   opacity: 0.7;
   pointer-events: none;
+}
+
+/* Logo sem movimento */
+.logo {
+  display: block;
+}
+
+.logo img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }

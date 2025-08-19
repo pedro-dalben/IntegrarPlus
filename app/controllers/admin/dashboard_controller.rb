@@ -5,7 +5,7 @@ module Admin
     skip_before_action :authenticate_user!, only: [:index]
 
     def index
-      @recent_professionals = Professional.order(created_at: :desc).limit(5)
+      # Dashboard simples com apenas estatísticas
     end
   end
 end
