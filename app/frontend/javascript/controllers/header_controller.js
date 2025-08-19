@@ -1,57 +1,46 @@
 import { Controller } from "@hotwired/stimulus";
 
-const STORAGE_KEYS = {
-  DARK: "ui:dark",
-  SIDEBAR: "ui:sidebarOpen",
-};
+const K = { SIDEBAR: "ui:sidebarOpen", DARK: "ui:dark" };
 
 export default class extends Controller {
   static targets = ["searchInput"];
 
   connect() {
-    // Aplica dark mode salvo
-    const dark = localStorage.getItem(STORAGE_KEYS.DARK) === "true";
-    this.applyDark(dark);
-
-    // Fecha dropdowns ao navegar (se adicionar dropdowns depois)
-    document.addEventListener("turbo:load", () => {
-      // noop por enquanto; reservado p/ limpar estados se necessário
-    });
-
-    // Atalho / Cmd/Ctrl+K para busca
-    document.addEventListener("keydown", (e) => {
-      const k = e.key?.toLowerCase();
-      if ((e.metaKey || e.ctrlKey) && k === "k") {
-        e.preventDefault();
-        this.focusSearch();
-      }
-      if (k === "/" && document.activeElement !== this.searchInputTarget) {
-        e.preventDefault();
-        this.focusSearch();
-      }
-    });
+    // aplicar tema salvo
+    const dark = localStorage.getItem(K.DARK) === "true";
+    document.documentElement.classList.toggle("dark", dark);
+    
+    // Debounce para evitar eventos duplos
+    this._debounceTimeout = null;
   }
 
-  // Dark mode
-  toggleDark() {
-    const isDark = !document.documentElement.classList.contains("dark");
-    this.applyDark(isDark);
-    localStorage.setItem(STORAGE_KEYS.DARK, String(isDark));
-  }
-
-  applyDark(v) {
-    document.documentElement.classList.toggle("dark", v);
-  }
-
-  // Sidebar
   toggleSidebar() {
-    const next = !(localStorage.getItem(STORAGE_KEYS.SIDEBAR) === "true");
-    localStorage.setItem(STORAGE_KEYS.SIDEBAR, String(next));
-    // Emite evento global para qualquer interessando (ex.: sidebar_controller)
-    window.dispatchEvent(new CustomEvent("ui:sidebar", { detail: { open: next } }));
+    // Debounce para evitar eventos duplos
+    if (this._debounceTimeout) {
+      clearTimeout(this._debounceTimeout);
+    }
+    
+    this._debounceTimeout = setTimeout(() => {
+      const current = localStorage.getItem(K.SIDEBAR) === "true";
+      const next = !current;
+      localStorage.setItem(K.SIDEBAR, String(next));
+      window.dispatchEvent(new CustomEvent("ui:sidebar", { detail: { open: next } }));
+    }, 100);
+  }
+
+  toggleDark() {
+    const next = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem(K.DARK, String(next));
   }
 
   focusSearch() {
     if (this.hasSearchInputTarget) this.searchInputTarget.focus();
+  }
+
+  disconnect() {
+    if (this._debounceTimeout) {
+      clearTimeout(this._debounceTimeout);
+    }
   }
 }

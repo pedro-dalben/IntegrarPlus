@@ -88,7 +88,7 @@ groups.each do |group_name|
 end
 
 # Usuário admin padrão
-admin_user = User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
+User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
   user.name = 'Administrador'
   user.password = 'password123'
   user.password_confirmation = 'password123'

@@ -19,39 +19,37 @@
     <%= vite_javascript_tag "entrypoints/application" %>
   </head>
 
-  <body
-    x-data="{ page: 'admin', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
-    x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
-         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
-  >
-    <!-- ===== Preloader End ===== -->
-
-    <!-- ===== Page Wrapper Start ===== -->
-    <div class="flex h-screen overflow-hidden">
+  <body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Skip Link para Acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    
+    <!-- Layout Container -->
+    <div class="flex h-screen overflow-hidden layout-container">
       
-      <!-- ===== Sidebar Start ===== -->
-      <%= render Ui::SidebarComponent.new(current_path: request.path) %>
-      <!-- ===== Sidebar End ===== -->
+      <!-- Drawer mobile + fixa desktop -->
+      <aside
+        data-controller="sidebar"
+        data-action="click@window->sidebar#outside"
+        class="
+          fixed inset-y-0 left-0 z-[9999] w-72 transform border-r bg-white transition-transform duration-300
+          dark:bg-black dark:border-gray-800
+          xl:static
+        "
+      >
+        <%= render Ui::SidebarComponent.new(current_path: request.path) %>
+      </aside>
 
-      <!-- ===== Content Area Start ===== -->
-      <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      <!-- Content Area -->
+      <div class="flex flex-1 flex-col overflow-hidden content-area">
         
-        <!-- Small Device Overlay Start -->
-        <div
-          :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
-          class="fixed z-50 h-screen w-full bg-gray-900/50"
-        ></div>
-        <!-- Small Device Overlay End -->
-
-        <!-- ===== Main Content Start ===== -->
-        <main>
-          <!-- ===== Header Start ===== -->
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 header-sticky">
           <%= render Ui::HeaderComponent.new(user: current_user) %>
-          <!-- ===== Header End ===== -->
-          
-          <div class="mx-auto max-w-screen-2xl p-4 md:p-6">
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-1 overflow-y-auto main-content">
+          <div class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
             <!-- Flash Messages -->
             <% if notice %>
               <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">
@@ -91,10 +89,13 @@
             <%= yield %>
           </div>
         </main>
-        <!-- ===== Main Content End ===== -->
       </div>
-      <!-- ===== Content Area End ===== -->
+
+      <!-- Mobile Overlay -->
+      <div
+        data-sidebar-target="overlay"
+        class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
+      ></div>
     </div>
-    <!-- ===== Page Wrapper End ===== -->
   </body>
 </html>

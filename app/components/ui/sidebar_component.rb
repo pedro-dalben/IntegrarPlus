@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Ui::SidebarComponent < ViewComponent::Base
+  include Admin::SidebarHelper
+
   def initialize(current_path: nil, **options)
     @current_path = current_path
     @options = options

@@ -24,11 +24,10 @@ Rails.application.routes.draw do
     end
   end
   get 'styleguide' => 'styleguide#index'
-  get 'tailadmin-demo' => 'pages#tailadmin_demo'
-  get 'test-tailwind' => 'pages#test_tailwind'
-  get 'simple-test' => 'pages#simple_test'
 
   namespace :admin do
+    resource :profile, only: %i[show edit update]
+
     resources :professionals do
       member do
         post :resend_confirmation

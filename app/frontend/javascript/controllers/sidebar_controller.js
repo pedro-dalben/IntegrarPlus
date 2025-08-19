@@ -1,59 +1,171 @@
 import { Controller } from "@hotwired/stimulus";
 
-const STORAGE_KEYS = {
-  SIDEBAR: "ui:sidebarOpen",
-  GROUP:   "ui:sidebarGroup", // opcional
-};
+const K = { SIDEBAR: "ui:sidebarOpen" };
 
 export default class extends Controller {
-  static targets = ["panel", "groupList"]; // opcional
+  static targets = ["overlay"];
 
-  connect() {
-    // Estado inicial
-    const open = localStorage.getItem(STORAGE_KEYS.SIDEBAR) === "true";
-    this.applyOpen(open);
+    connect() {
+    // estado inicial baseado no tamanho da tela
+    const isDesktop = window.innerWidth >= 1280;
+    const savedState = localStorage.getItem(K.SIDEBAR) === "true";
 
-    // Ouvir eventos do header
-    this._handler = (e) => this.applyOpen(!!e.detail?.open);
-    window.addEventListener("ui:sidebar", this._handler);
+    // Em desktop: sempre aberta, em mobile: fechada inicialmente
+    const shouldBeOpen = isDesktop ? true : false;
 
-    // Fechar ao navegar (mobile)
+    // Aplicar estado inicial com inline styles
+    if (isDesktop) {
+      this.element.style.transform = '';
+    } else {
+      this.element.style.transform = 'translateX(-100%)';
+    }
+
+    this.apply(shouldBeOpen);
+
+    // Debounce para evitar eventos duplos
+    this._debounceTimeout = null;
+    this._sync = (e) => {
+      // Clear previous timeout
+      if (this._debounceTimeout) {
+        clearTimeout(this._debounceTimeout);
+      }
+
+      // Debounce the apply call
+      this._debounceTimeout = setTimeout(() => {
+        this.apply(!!e.detail?.open);
+      }, 10);
+    };
+    window.addEventListener("ui:sidebar", this._sync);
+
+    // Ao navegar, feche em mobile
     document.addEventListener("turbo:load", () => {
-      if (window.innerWidth < 1280) this.applyOpen(false);
+      if (window.innerWidth < 1280) this.apply(false);
     });
+
+    // Fechar sidebar em mobile ao clicar em links
+    this._linkClickHandler = (e) => {
+      const link = e.target.closest('a');
+      if (link && link.getAttribute('href') !== '#' && window.innerWidth < 1280) {
+        // Pequeno delay para permitir a navegação
+        setTimeout(() => {
+          this.apply(false);
+        }, 100);
+      }
+    };
+    this.element.addEventListener('click', this._linkClickHandler);
+
+    // Ao redimensionar a janela
+    this._resizeHandler = () => {
+      const isDesktop = window.innerWidth >= 1280;
+      const currentState = localStorage.getItem(K.SIDEBAR) === "true";
+      const shouldBeOpen = isDesktop ? true : currentState;
+      this.apply(shouldBeOpen);
+    };
+
+    window.addEventListener("resize", this._resizeHandler);
   }
 
   disconnect() {
-    window.removeEventListener("ui:sidebar", this._handler);
+    window.removeEventListener("ui:sidebar", this._sync);
+    if (this._resizeHandler) {
+      window.removeEventListener("resize", this._resizeHandler);
+    }
+    if (this._linkClickHandler) {
+      this.element.removeEventListener('click', this._linkClickHandler);
+    }
+    if (this._debounceTimeout) {
+      clearTimeout(this._debounceTimeout);
+    }
   }
 
-  // Clique fora
-  outside(event) {
-    if (window.innerWidth >= 1280) return; // XL ou maior: comportamento colapsado, não "drawer"
-    if (!this.element.contains(event.target)) this.applyOpen(false);
+  // click fora (bind no window)
+  outside(e) {
+    const isDesktop = window.innerWidth >= 1280;
+    if (isDesktop) return;
+    
+    // Verificar se o click foi no botão hambúrguer
+    const hamburger = document.querySelector('[data-action="click->header#toggleSidebar"]');
+    if (hamburger && hamburger.contains(e.target)) {
+      return;
+    }
+    
+    // Verificar se o click foi em um dropdown
+    const dropdown = e.target.closest('[data-controller="dropdown"]');
+    if (dropdown) {
+      return;
+    }
+    
+    // Verificar se o click foi em um elemento do header
+    const header = e.target.closest('[data-controller="header"]');
+    if (header) {
+      return;
+    }
+    
+    if (!this.element.contains(e.target)) {
+      this.apply(false);
+    }
   }
 
-  // Aplicar estado visual
-  applyOpen(open) {
-    localStorage.setItem(STORAGE_KEYS.SIDEBAR, String(open));
-    // Usa classes utilitárias conforme seu HTML original
-    this.element.classList.toggle("-translate-x-full", !open);
-    this.element.classList.toggle("translate-x-0", open);
-    // Largura colapsada em XL: sua UI original usava 'xl:w-[90px]'
-    this.element.classList.toggle("xl:w-[90px]", open);
+  apply(open) {
+    localStorage.setItem(K.SIDEBAR, String(open));
+    
+    // Em desktop: sempre visível, em mobile: controlar com transform
+    const isDesktop = window.innerWidth >= 1280;
+    
+    if (isDesktop) {
+      // Desktop: remover transform
+      this.element.style.transform = '';
+      this.element.classList.remove("translate-x-0");
+    } else {
+      // Mobile: aplicar transform inline
+      if (open) {
+        this.element.style.transform = 'translateX(0)';
+        this.element.classList.add("translate-x-0");
+      } else {
+        this.element.style.transform = 'translateX(-100%)';
+        this.element.classList.remove("translate-x-0");
+      }
+    }
+    
+    // overlay
+    if (this.hasOverlayTarget) {
+      this.overlayTarget.classList.toggle("hidden", !open || isDesktop);
+    }
   }
 
-  // Dropdown de grupo (Dashboard/Profissionais/…)
   toggleGroup(event) {
-    const name = event?.params?.name;
-    const current = localStorage.getItem(STORAGE_KEYS.GROUP);
-    const next = current === name ? "" : name;
-    localStorage.setItem(STORAGE_KEYS.GROUP, next);
-    this.updateGroups(next);
+    // Verificar se o clique foi no botão do grupo ou em um link dentro do dropdown
+    const clickedElement = event.target.closest('a');
+    
+    // Se clicou em um link dentro do dropdown, permitir navegação
+    if (clickedElement && clickedElement.closest('[data-sidebar-dropdown]')) {
+      return; // Permitir navegação normal
+    }
+    
+    // Se clicou no botão do grupo, prevenir navegação e toggle
+    if (clickedElement && clickedElement.getAttribute('href') === '#') {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    const name = event.params.name;
+    const group = this.element.querySelector(`[data-sidebar-group="${name}"]`);
+    const dropdown = group?.querySelector('[data-sidebar-dropdown]');
+    const button = group?.querySelector('[data-sidebar-target="groupButton"]');
+    
+    if (dropdown && button) {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      const newExpanded = !isExpanded;
+      
+      button.setAttribute('aria-expanded', String(newExpanded));
+      dropdown.classList.toggle('hidden', !newExpanded);
+    }
   }
 
-  updateGroups(active) {
-    // opcional: você pode marcar itens ativos via data-attrs/classe
-    // ou simplesmente checar no HTML com helpers Rails.
+  handleKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      this.toggleGroup(event);
+    }
   }
 }

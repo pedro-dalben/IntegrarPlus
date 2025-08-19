@@ -17,6 +17,6 @@ class User < ApplicationRecord
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }
 
   def full_name
-    name.present? ? name : email.split('@').first.titleize
+    name.presence || email.split('@').first.titleize
   end
 end
