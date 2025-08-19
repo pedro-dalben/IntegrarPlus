@@ -33,6 +33,9 @@
             Status
           </th>
           <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
+            Usuário
+          </th>
+          <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
             Criado em
           </th>
           <th class="px-5 py-4 text-right text-sm font-medium text-gray-800 dark:text-white">
@@ -76,6 +79,28 @@
             </td>
             <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
               <%= l(professional.created_at, format: :short) %>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap">
+              <% if professional.user %>
+                <% if professional.user.confirmed_invite? %>
+                  <span class="text-theme-xs rounded-full bg-green-50 px-2 py-0.5 font-medium text-green-700 dark:bg-green-500/15 dark:text-green-500">
+                    ✅ Ativo
+                  </span>
+                <% elsif professional.user.pending_invite? %>
+                  <span class="text-theme-xs rounded-full bg-yellow-50 px-2 py-0.5 font-medium text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-500">
+                    ⏳ Pendente
+                  </span>
+                <% elsif professional.user.latest_invite&.expired? %>
+                  <span class="text-theme-xs rounded-full bg-red-50 px-2 py-0.5 font-medium text-red-700 dark:bg-red-500/15 dark:text-red-500">
+                    🔄 Expirado
+                  </span>
+                <% end %>
+                <%= link_to 'Ver Usuário', admin_user_path(professional.user), class: 'text-blue-600 hover:text-blue-800 text-xs ml-1' %>
+              <% else %>
+                <span class="text-theme-xs rounded-full bg-gray-50 px-2 py-0.5 font-medium text-gray-700 dark:bg-gray-500/15 dark:text-gray-500">
+                  Sem usuário
+                </span>
+              <% end %>
             </td>
             <td class="px-5 py-4 whitespace-nowrap text-right">
               <div class="flex items-center justify-end gap-2" data-controller="dropdown">

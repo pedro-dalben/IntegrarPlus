@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   resource :avatar, only: %i[update destroy]
+  
+  # Rotas para convites
+  get 'invite/:token', to: 'invites#show', as: :invite
+  post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
@@ -35,6 +39,21 @@ Rails.application.routes.draw do
         post :force_confirm
       end
     end
+    
+    resources :users do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+      resources :invites, only: [:index, :create]
+    end
+    
+    resources :invites, only: [:show, :destroy] do
+      member do
+        patch :resend
+      end
+    end
+    
     resources :specialities
     resources :specializations
     resources :contract_types
