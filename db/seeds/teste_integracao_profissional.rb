@@ -2,22 +2,22 @@ puts "🧪 Testando Integração Profissional ↔ Usuário..."
 
 # Criar um profissional de teste
 professional = Professional.create!(
-  full_name: 'João Silva Teste',
-  email: 'joao.teste@example.com',
-  cpf: '12345678901',
+  full_name: 'João Silva Teste Integração Final',
+  email: 'joao.integracao.final@example.com',
+  cpf: '99988877766',
   phone: '(11) 99999-9999',
   workload_minutes: 480,
-  active: true,
-  password: '123456',
-  password_confirmation: '123456'
+  active: true
 )
 
 puts "✅ Profissional criado: #{professional.full_name}"
 
-# Verificar se o usuário foi criado automaticamente
+# Criar usuário usando o método que implementamos
+professional.ensure_user_exists!
+
+# Verificar se o usuário foi criado
 if professional.user
   puts "✅ Usuário criado automaticamente: #{professional.user.email}"
-  puts "🔐 Senha: #{professional.password}"
   
   # Verificar se o convite foi criado
   if professional.user.invites.any?
@@ -34,9 +34,9 @@ end
 
 # Testar criação manual de usuário
 professional2 = Professional.create!(
-  full_name: 'Maria Santos Teste',
-  email: 'maria.teste@example.com',
-  cpf: '98765432109',
+  full_name: 'Maria Santos Teste Integração Final',
+  email: 'maria.integracao.final@example.com',
+  cpf: '44433322211',
   phone: '(11) 88888-8888',
   workload_minutes: 480,
   active: false

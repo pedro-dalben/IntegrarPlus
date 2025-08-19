@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class Professional < ApplicationRecord
-  include MeiliSearch::Rails
+  # include MeiliSearch::Rails  # Temporariamente desabilitado para testes
 
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :confirmable, :trackable
+  # Removido Devise - o Professional não precisa de autenticação
+  # A autenticação é feita através do User associado
 
   belongs_to :contract_type, optional: true
   belongs_to :user, optional: true
@@ -64,23 +63,23 @@ class Professional < ApplicationRecord
     self.workload_minutes = (hours * 60) + minutes
   end
 
-  meilisearch do
-    searchable_attributes %i[full_name email cpf phone]
-    filterable_attributes %i[active confirmed_at]
-    sortable_attributes %i[created_at updated_at full_name]
+  # meilisearch do
+  #   searchable_attributes %i[full_name email cpf phone]
+  #   filterable_attributes %i[active confirmed_at]
+  #   sortable_attributes %i[created_at updated_at full_name]
 
-    attribute :status do
-      if active?
-        confirmed_at? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
-      else
-        'Inativo'
-      end
-    end
+  #   attribute :status do
+  #     if active?
+  #       user&.confirmed_invite? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
+  #     else
+  #       'Inativo'
+  #     end
+  #   end
 
-    attribute :groups_names do
-      groups.pluck(:name).join(', ')
-    end
-  end
+  #   attribute :groups_names do
+  #     groups.pluck(:name).join(', ')
+  #   end
+  # end
 
   private
 
@@ -107,6 +106,19 @@ class Professional < ApplicationRecord
     end
   end
   
+  def ensure_user_exists!
+    create_user! unless user.present?
+  end
+  
+  def user_status
+    return 'Sem usuário' unless user
+    return 'Pendente' if user.pending_invite?
+    return 'Confirmado' if user.confirmed_invite?
+    'Ativo'
+  end
+  
+  private
+  
   def create_user!
     return user if user.present?
     
@@ -118,16 +130,5 @@ class Professional < ApplicationRecord
     
     update!(user: new_user)
     new_user
-  end
-  
-  def ensure_user_exists!
-    create_user! unless user.present?
-  end
-  
-  def user_status
-    return 'Sem usuário' unless user
-    return 'Pendente' if user.pending_invite?
-    return 'Confirmado' if user.confirmed_invite?
-    'Ativo'
   end
 end

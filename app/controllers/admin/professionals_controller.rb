@@ -29,7 +29,7 @@ module Admin
       if @professional.save
         # Criar usuário automaticamente
         create_user_for_professional(@professional)
-        
+
         redirect_to admin_professional_path(@professional), notice: 'Profissional criado com sucesso.'
       else
         load_form_data
@@ -41,7 +41,7 @@ module Admin
       if @professional.update(professional_params)
         # Criar usuário se não existir
         create_user_for_professional(@professional)
-        
+
         redirect_to admin_professional_path(@professional), notice: 'Profissional atualizado com sucesso.'
       else
         load_form_data
@@ -62,7 +62,7 @@ module Admin
 
       create_user_for_professional(@professional)
       redirect_to admin_professional_path(@professional), notice: 'Usuário criado com sucesso para o profissional.'
-    rescue => e
+    rescue StandardError => e
       redirect_to admin_professional_path(@professional), alert: "Erro ao criar usuário: #{e.message}"
     end
 
@@ -108,7 +108,7 @@ module Admin
       end
 
       Rails.logger.info "Usuário criado automaticamente para profissional: #{professional.full_name}"
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Erro ao criar usuário para profissional #{professional.id}: #{e.message}"
     end
   end
