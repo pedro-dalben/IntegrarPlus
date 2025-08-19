@@ -6,10 +6,10 @@ module Admin
 
     def index
       @pagy, @specializations = if params[:query].present?
-        pagy(Specialization.search(params[:query]))
-      else
-        pagy(Specialization.all)
-      end
+                                  pagy(Specialization.search(params[:query]), limit: 10)
+                                else
+                                  pagy(Specialization.all, limit: 10)
+                                end
     end
 
     def show
