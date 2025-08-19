@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 module Admin
-  class SpecialitiesController < Admin::BaseController
-    before_action :set_speciality, only: %i[edit update destroy]
+  class SpecialitiesController < BaseController
+    before_action :set_speciality, only: %i[show edit update destroy]
 
     def index
-      authorize Speciality, :index?
-      @specialities = Speciality.ordered
+      @pagy, @specialities = if params[:query].present?
+        pagy(Speciality.search(params[:query]))
+      else
+        pagy(Speciality.all)
+      end
     end
+
+    def show; end
 
     def new
       @speciality = Speciality.new
@@ -23,7 +28,7 @@ module Admin
       authorize @speciality, :create?
 
       if @speciality.save
-        redirect_to admin_specialities_path, notice: 'Especialidade criada com sucesso.'
+        redirect_to admin_speciality_path(@speciality), notice: 'Especialidade criada com sucesso.'
       else
         render :new, status: :unprocessable_entity
       end
@@ -33,7 +38,7 @@ module Admin
       authorize @speciality, :update?
 
       if @speciality.update(speciality_params)
-        redirect_to admin_specialities_path, notice: 'Especialidade atualizada com sucesso.'
+        redirect_to admin_speciality_path(@speciality), notice: 'Especialidade atualizada com sucesso.'
       else
         render :edit, status: :unprocessable_entity
       end
@@ -43,7 +48,7 @@ module Admin
       authorize @speciality, :destroy?
 
       if @speciality.destroy
-        redirect_to admin_specialities_path, notice: 'Especialidade removida com sucesso.'
+        redirect_to admin_specialities_path, notice: 'Especialidade excluída com sucesso.'
       else
         redirect_to admin_specialities_path, alert: 'Não foi possível remover a especialidade.'
       end
@@ -56,7 +61,7 @@ module Admin
     end
 
     def speciality_params
-      params.expect(speciality: [:name])
+      params.require(:speciality).permit(:specialty, :active)
     end
   end
 end

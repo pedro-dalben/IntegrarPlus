@@ -1,0 +1,9 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      home: "Início"
+      dashboard: "Dashboard"
+    pages:
+      dashboard:
+        title: "Dashboard"
+        subtitle: "Visão geral do sistema"

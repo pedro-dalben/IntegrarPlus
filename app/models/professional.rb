@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Professional < ApplicationRecord
+  include MeiliSearch::Rails
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :confirmable, :trackable
@@ -61,6 +63,24 @@ class Professional < ApplicationRecord
     self.workload_minutes = (hours * 60) + minutes
   end
 
+  meilisearch do
+    searchable_attributes %i[full_name email cpf phone]
+    filterable_attributes %i[active confirmed_at]
+    sortable_attributes %i[created_at updated_at full_name]
+
+    attribute :status do
+      if active?
+        confirmed_at? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
+      else
+        'Inativo'
+      end
+    end
+
+    attribute :groups_names do
+      groups.pluck(:name).join(', ')
+    end
+  end
+
   private
 
   def contract_type_consistency
@@ -76,14 +96,13 @@ class Professional < ApplicationRecord
   end
 
   def specialization_consistency
-    return if specializations.empty? || specialities.empty?
+    return unless specializations.any?
 
-    invalid_specializations = specializations.reject do |spec|
-      specialities.include?(spec.speciality)
+    specializations.each do |specialization|
+      next if specialization.speciality.in?(specialities)
+
+      errors.add(:specializations,
+                 "especialização '#{specialization.name}' não pertence a nenhuma especialidade selecionada")
     end
-
-    return unless invalid_specializations.any?
-
-    errors.add(:specializations, 'contém especializações que não pertencem às especialidades selecionadas')
   end
 end

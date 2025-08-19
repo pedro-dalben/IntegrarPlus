@@ -1,10 +1,22 @@
 # frozen_string_literal: true
 
 class ContractType < ApplicationRecord
+  include MeiliSearch::Rails
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :description, presence: true
   validate :cnpj_requires_company
 
+  has_many :professionals, dependent: :restrict_with_error
+
+  scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:name) }
+
+  meilisearch do
+    searchable_attributes %i[name description]
+    filterable_attributes %i[active created_at updated_at]
+    sortable_attributes %i[created_at updated_at name]
+  end
 
   private
 

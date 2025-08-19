@@ -67,11 +67,48 @@ body {
   }
 }
 
+/* Header Fixes */
+[data-controller="header"] {
+  z-index: 9999 !important;
+  position: sticky !important;
+  top: 0 !important;
+}
+
+/* Dropdown Fixes */
+[data-controller="dropdown"] {
+  position: relative !important;
+}
+
+[data-dropdown-target="panel"] {
+  z-index: 10000 !important;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 0.5rem !important;
+  min-width: 16rem !important;
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark [data-dropdown-target="panel"] {
+  background: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+/* Garantir que o dropdown não seja cortado */
+[data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
 /* Melhorias de Acessibilidade e Transições */
 
 /* Foco visível para elementos interativos */
 .menu-item:focus,
-.menu-dropdown-link:focus,
 button:focus,
 [role="button"]:focus {
   outline: 2px solid #3b82f6;
@@ -109,7 +146,6 @@ button:focus,
 
 /* Melhor contraste para modo escuro */
 .dark .menu-item:focus,
-.dark .menu-dropdown-link:focus,
 .dark button:focus,
 .dark [role="button"]:focus {
   outline-color: #60a5fa;
@@ -136,24 +172,6 @@ button:focus,
   @apply text-gray-600 dark:text-gray-300;
 }
 
-/* Dropdown items */
-.menu-dropdown {
-  @apply mt-2 space-y-1;
-}
-
-.menu-dropdown-link {
-  @apply flex items-center gap-3 px-8 py-2 text-sm text-gray-600 rounded-lg transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white;
-}
-
-.menu-dropdown-link.menu-item-active {
-  @apply bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400;
-}
-
-/* Dropdown item arrows */
-.menu-dropdown-link .menu-item-arrow {
-  @apply w-3 h-3 text-gray-400 ml-auto;
-}
-
 /* Menu groups */
 .menu-group-title {
   @apply text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400;
@@ -178,20 +196,17 @@ button:focus,
 }
 
 /* Melhor contraste para texto */
-.menu-item-text,
-.menu-dropdown-link-text {
+.menu-item-text {
   color: inherit;
 }
 
 /* Hover states melhorados */
-.menu-item:hover,
-.menu-dropdown-link:hover {
+.menu-item:hover {
   background-color: rgba(59, 130, 246, 0.1);
   transition: background-color 0.2s ease-in-out;
 }
 
-.dark .menu-item:hover,
-.dark .menu-dropdown-link:hover {
+.dark .menu-item:hover {
   background-color: rgba(96, 165, 250, 0.1);
 }
 
@@ -212,22 +227,6 @@ button:focus,
   top: 6px;
 }
 
-/* Melhor contraste para badges */
-.menu-dropdown-badge {
-  font-weight: 600;
-  font-size: 0.75rem;
-}
-
-.menu-dropdown-badge-active {
-  background-color: #10b981;
-  color: white;
-}
-
-.menu-dropdown-badge-inactive {
-  background-color: #6b7280;
-  color: white;
-}
-
 /* Transições para overlay */
 .overlay-transition {
   transition: opacity 0.3s ease-in-out;
@@ -244,14 +243,4 @@ button:active,
 .loading {
   opacity: 0.7;
   pointer-events: none;
-}
-
-/* Melhor contraste para ícones */
-.menu-dropdown-link-icon {
-  opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.menu-dropdown-link:hover .menu-dropdown-link-icon {
-  opacity: 1;
 }

@@ -1,4 +1,4 @@
-<header data-controller="header" class="sticky top-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+<header data-controller="header" class="sticky top-0 z-[9999] bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
   <div class="flex items-center justify-between px-4 py-3">
     <!-- Hamburger Button -->
     <button 
@@ -54,12 +54,12 @@
         >
           <!-- User Avatar -->
           <div class="relative">
-            <% if user&.avatar&.attached? %>
-              <%= image_tag user.avatar, class: "w-8 h-8 rounded-full object-cover", alt: user.name %>
+            <% if user_avatar %>
+              <%= image_tag user_avatar, class: "w-8 h-8 rounded-full object-cover", alt: user_name %>
             <% else %>
               <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
                 <span class="text-white text-sm font-medium">
-                  <%= user&.name&.first&.upcase || "U" %>
+                  <%= user_name.first.upcase %>
                 </span>
               </div>
             <% end %>
@@ -69,10 +69,10 @@
           <!-- User Info -->
           <div class="hidden sm:block text-left">
             <p class="text-sm font-medium text-gray-900 dark:text-white">
-              <%= user&.name || "Usuário" %>
+              <%= user_name %>
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-400">
-              <%= user&.email || "usuario@exemplo.com" %>
+              <%= user_email %>
             </p>
           </div>
           
@@ -85,14 +85,14 @@
         <!-- Dropdown Menu -->
         <div 
           data-dropdown-target="panel"
-          class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg hidden dark:bg-gray-800 dark:border-gray-700 z-50"
+          class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl hidden dark:bg-gray-800 dark:border-gray-700 z-[10000]"
         >
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <p class="text-sm font-medium text-gray-900 dark:text-white">
-              <%= user&.name || "Usuário" %>
+              <%= user_name %>
             </p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              <%= user&.email || "usuario@exemplo.com" %>
+              <%= user_email %>
             </p>
           </div>
           

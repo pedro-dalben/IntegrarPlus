@@ -1,0 +1,5 @@
+class AddSpecialtyToSpecialities < ActiveRecord::Migration[8.0]
+  def change
+    add_column :specialities, :specialty, :string, default: '', null: false
+  end
+end

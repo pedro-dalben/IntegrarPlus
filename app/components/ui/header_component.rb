@@ -10,7 +10,7 @@ class Ui::HeaderComponent < ViewComponent::Base
   attr_reader :user
 
   def user_name
-    user&.name || 'Usuário Admin'
+    user&.full_name || 'Usuário Admin'
   end
 
   def user_email

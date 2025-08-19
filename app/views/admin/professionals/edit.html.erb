@@ -1,22 +1,33 @@
 <%= render ::Layouts::AdminComponent.new(title: "Editar Profissional") do |c| %>
   <% c.with_actions do %>
-    <%= link_to "Voltar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
-    <%= link_to "Ver", admin_professional_path(@professional), class: "ta-btn ta-btn-secondary" %>
+    <%= link_to admin_professionals_path, class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+    <%= link_to admin_professional_path(@professional), class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+      </svg>
+      Ver
+    <% end %>
   <% end %>
 
   <div class="space-y-6">
     <%= form_with model: [:admin, @professional], local: true, class: "space-y-6" do |form| %>
       <% if @professional.errors.any? %>
-        <div class="ta-alert ta-alert-error" data-controller="flash">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4 dark:bg-red-900/10 dark:border-red-800">
           <div class="flex">
             <div class="flex-shrink-0">
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
               </svg>
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium">Erro ao salvar profissional</h3>
-              <div class="mt-2 text-sm">
+              <h3 class="text-sm font-medium text-red-800 dark:text-red-400">Erro ao salvar profissional</h3>
+              <div class="mt-2 text-sm text-red-700 dark:text-red-300">
                 <ul class="list-disc pl-5 space-y-1">
                   <% @professional.errors.full_messages.each do |message| %>
                     <li><%= message %></li>
@@ -29,19 +40,21 @@
       <% end %>
 
       <!-- Dados Pessoais -->
-      <div class="ta-card p-4 md:p-5">
-        <h3 class="text-lg font-semibold mb-4">Dados Pessoais</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dados Pessoais</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="md:col-span-2">
-            <%= form.label :full_name, "Nome Completo *", class: "block text-sm font-medium mb-2" %>
-            <%= form.text_field :full_name, class: "ta-input w-full", required: true %>
+            <%= form.label :full_name, "Nome Completo *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.text_field :full_name, 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+                required: true %>
           </div>
 
           <div>
-            <%= form.label :birth_date, "Data de Nascimento", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :birth_date, "Data de Nascimento", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <%= form.text_field :birth_date, 
                 value: @professional.birth_date&.strftime("%d/%m/%Y"),
-                class: "ta-input w-full",
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
                 data: { 
                   controller: "datepicker",
                   datepicker_format_value: "d/m/Y",
@@ -50,84 +63,88 @@
           </div>
 
           <div>
-            <%= form.label :cpf, "CPF *", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :cpf, "CPF *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="mask" data-mask-type-value="cpf">
               <%= form.text_field :cpf, 
-                  class: "ta-input w-full", 
+                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
                   required: true,
                   data: { mask_target: "input" } %>
             </div>
           </div>
 
           <div>
-            <%= form.label :phone, "Telefone", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :phone, "Telefone", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="mask" data-mask-type-value="phone">
               <%= form.text_field :phone, 
-                  class: "ta-input w-full",
+                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
                   data: { mask_target: "input" } %>
             </div>
           </div>
 
           <div>
-            <%= form.label :email, "E-mail *", class: "block text-sm font-medium mb-2" %>
-            <%= form.email_field :email, class: "ta-input w-full", required: true %>
+            <%= form.label :email, "E-mail *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.email_field :email, 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+                required: true %>
           </div>
         </div>
       </div>
 
       <!-- Acesso e Status -->
-      <div class="ta-card p-4 md:p-5">
-        <h3 class="text-lg font-semibold mb-4">Acesso e Status</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Acesso e Status</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <div class="flex items-center mb-2">
-              <%= form.check_box :active, class: "ta-checkbox mr-2" %>
-              <%= form.label :active, "Ativo", class: "text-sm font-medium" %>
+              <%= form.check_box :active, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+              <%= form.label :active, "Ativo", class: "text-sm font-medium text-gray-700 dark:text-gray-300 ml-2" %>
             </div>
-            <p class="text-sm text-gray-500">Profissionais inativos não conseguem fazer login</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Profissionais inativos não conseguem fazer login</p>
           </div>
 
           <div>
             <div class="mb-2">
-              <span class="text-sm font-medium">Status de Confirmação</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Status de Confirmação</span>
             </div>
             <% if @professional.confirmed_at? %>
-              <span class="ta-badge ta-badge-success text-xs">Confirmado</span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Confirmado</span>
             <% else %>
-              <span class="ta-badge ta-badge-warning text-xs">Pendente</span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Pendente</span>
             <% end %>
           </div>
 
           <div>
-            <%= form.label :password, "Senha", class: "block text-sm font-medium mb-2" %>
-            <%= form.password_field :password, class: "ta-input w-full" %>
-            <p class="text-sm text-gray-500">Deixe em branco para manter a senha atual</p>
+            <%= form.label :password, "Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.password_field :password, 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Deixe em branco para manter a senha atual</p>
           </div>
 
           <div>
-            <%= form.label :password_confirmation, "Confirmar Senha", class: "block text-sm font-medium mb-2" %>
-            <%= form.password_field :password_confirmation, class: "ta-input w-full" %>
+            <%= form.label :password_confirmation, "Confirmar Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.password_field :password_confirmation, 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
           </div>
         </div>
       </div>
 
       <!-- Vínculos e Carga -->
-      <div class="ta-card p-4 md:p-5">
-        <h3 class="text-lg font-semibold mb-4">Vínculos e Carga</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Vínculos e Carga</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <%= form.label :contract_type_id, "Forma de Contratação", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :contract_type_id, "Forma de Contratação", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <%= form.select :contract_type_id, 
                 @contract_types.map { |ct| [ct.name, ct.id] }, 
                 { prompt: "Selecione uma forma de contratação..." }, 
-                { class: "ta-input w-full" } %>
+                { class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" } %>
           </div>
 
           <div>
-            <%= form.label :hired_on, "Data de Contratação", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :hired_on, "Data de Contratação", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <%= form.text_field :hired_on, 
                 value: @professional.hired_on&.strftime("%d/%m/%Y"),
-                class: "ta-input w-full",
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
                 data: { 
                   controller: "datepicker",
                   datepicker_format_value: "d/m/Y",
@@ -136,23 +153,24 @@
           </div>
 
           <div>
-            <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="time-hhmm">
               <%= form.text_field :workload_hhmm, 
                   value: @professional.workload_hhmm,
-                  class: "ta-input w-full",
+                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
                   placeholder: "40:00",
                   data: { time_hhmm_target: "input" } %>
               <%= form.hidden_field :workload_minutes, 
                   value: @professional.workload_minutes,
                   data: { time_hhmm_target: "hidden" } %>
             </div>
-            <p class="text-sm text-gray-500">Ex: 40:00 para 40 horas semanais</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Ex: 40:00 para 40 horas semanais</p>
           </div>
 
           <div>
-            <%= form.label :council_code, "Código do Conselho", class: "block text-sm font-medium mb-2" %>
-            <%= form.text_field :council_code, class: "ta-input w-full" %>
+            <%= form.label :council_code, "Código do Conselho", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.text_field :council_code, 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
           </div>
 
           <!-- Campos condicionais -->
@@ -161,15 +179,16 @@
                data-contract-fields-current-type-value="<%= @professional.contract_type_id %>">
             
             <div data-contract-fields-target="companyField" class="md:col-span-2" style="display: none;">
-              <%= form.label :company_name, "Nome da Empresa", class: "block text-sm font-medium mb-2" %>
-              <%= form.text_field :company_name, class: "ta-input w-full" %>
+              <%= form.label :company_name, "Nome da Empresa", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.text_field :company_name, 
+                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
             </div>
 
             <div data-contract-fields-target="cnpjField" class="md:col-span-2" style="display: none;">
-              <%= form.label :cnpj, "CNPJ", class: "block text-sm font-medium mb-2" %>
+              <%= form.label :cnpj, "CNPJ", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
               <div data-controller="mask" data-mask-type-value="cnpj">
                 <%= form.text_field :cnpj, 
-                    class: "ta-input w-full",
+                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
                     data: { mask_target: "input" } %>
               </div>
             </div>
@@ -178,17 +197,17 @@
       </div>
 
       <!-- Permissões e Competências -->
-      <div class="ta-card p-4 md:p-5">
-        <h3 class="text-lg font-semibold mb-4">Permissões e Competências</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Permissões e Competências</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <%= form.label :group_ids, "Grupos", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :group_ids, "Grupos", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="tom-select">
               <%= form.select :group_ids, 
                   @groups.map { |g| [g.name, g.id] }, 
                   { prompt: "Selecione os grupos..." }, 
                   { 
-                    class: "ta-input w-full",
+                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
@@ -199,14 +218,14 @@
           </div>
 
           <div>
-            <%= form.label :speciality_ids, "Especialidades", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :speciality_ids, "Especialidades", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="tom-select dependent-specializations" 
                  data-dependent-specializations-endpoint-value="/admin/specializations.json">
               <%= form.select :speciality_ids, 
                   @specialities.map { |s| [s.name, s.id] }, 
                   { prompt: "Selecione as especialidades..." }, 
                   { 
-                    class: "ta-input w-full",
+                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
@@ -219,13 +238,13 @@
           </div>
 
           <div class="md:col-span-2">
-            <%= form.label :specialization_ids, "Especializações", class: "block text-sm font-medium mb-2" %>
+            <%= form.label :specialization_ids, "Especializações", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
             <div data-controller="tom-select dependent-specializations">
               <%= form.select :specialization_ids, 
                   [], 
                   { prompt: "Selecione as especializações..." }, 
                   { 
-                    class: "ta-input w-full",
+                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
@@ -234,15 +253,19 @@
                     }
                   } %>
             </div>
-            <p class="text-sm text-gray-500">Especializações disponíveis baseadas nas especialidades selecionadas</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Especializações disponíveis baseadas nas especialidades selecionadas</p>
           </div>
         </div>
       </div>
 
       <!-- Ações -->
-      <div class="flex justify-end gap-3">
-        <%= link_to "Cancelar", admin_professionals_path, class: "ta-btn ta-btn-secondary" %>
-        <%= form.submit "Atualizar Profissional", class: "ta-btn ta-btn-primary" %>
+      <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <%= link_to admin_professionals_path, 
+            class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+          Cancelar
+        <% end %>
+        <%= form.submit "Atualizar Profissional", 
+            class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" %>
       </div>
     <% end %>
   </div>

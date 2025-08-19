@@ -1,0 +1,19 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      specialization: "Especialização"
+      specializations: "Especializações"
+    pages:
+      specialization:
+        index:
+          title: "Especializações"
+          subtitle: "Gerencie as especializações disponíveis"
+        new:
+          title: "Nova Especialização"
+          subtitle: "Cadastre uma nova especialização"
+        edit:
+          title: "Editar Especialização"
+          subtitle: "Edite as informações da especialização"
+        show:
+          title: "Detalhes da Especialização"
+          subtitle: "Visualize as informações da especialização"
