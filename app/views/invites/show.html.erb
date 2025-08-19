@@ -1,0 +1,72 @@
+<div class="page-header d-print-none">
+  <div class="container-xl">
+    <div class="row g-2 align-items-center">
+      <div class="col">
+        <h2 class="page-title">
+          Ativar Conta
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="container-xl">
+    <div class="row row-cards justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Bem-vindo, <%= @invite.user.name %>!</h3>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-4">
+              Você foi convidado para acessar o sistema. Para ativar sua conta, defina uma senha abaixo.
+            </p>
+            
+            <%= form_with url: accept_invite_path(@invite.token), method: :post, local: true do |form| %>
+              <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" value="<%= @invite.user.name %>" readonly>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" value="<%= @invite.user.email %>" readonly>
+              </div>
+              
+              <div class="mb-3">
+                <%= form.label :password, 'Senha', class: 'form-label' %>
+                <%= form.password_field :password, class: 'form-control', required: true, minlength: 6 %>
+                <small class="form-hint">Mínimo 6 caracteres</small>
+              </div>
+              
+              <div class="mb-3">
+                <%= form.label :password_confirmation, 'Confirmar Senha', class: 'form-label' %>
+                <%= form.password_field :password_confirmation, class: 'form-control', required: true, minlength: 6 %>
+              </div>
+              
+              <div class="form-footer">
+                <%= form.submit 'Ativar Conta', class: 'btn btn-primary w-100' %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <div class="card mt-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="text-muted">Convite criado</div>
+                <div><%= l(@invite.created_at, format: :short) %></div>
+              </div>
+              <div class="col-6">
+                <div class="text-muted">Expira em</div>
+                <div><%= l(@invite.expires_at, format: :short) %></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,9 @@
       </div>
       <div class="col-auto ms-auto d-print-none">
         <div class="btn-list">
+          <% unless @user.confirmed_invite? %>
+            <%= link_to 'Gerar Convite', admin_user_invites_path(@user), method: :post, class: 'btn btn-success' %>
+          <% end %>
           <%= link_to 'Editar', edit_admin_user_path(@user), class: 'btn btn-primary' %>
           <%= link_to 'Voltar', admin_users_path, class: 'btn btn-outline-secondary' %>
         </div>
