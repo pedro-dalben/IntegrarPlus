@@ -5,13 +5,28 @@ module Admin
     layout 'admin'
 
     before_action :authenticate_user!
+    before_action :check_permissions
 
     helper_method :admin_nav
 
     private
 
     def admin_nav
-      AdminNav.items
+      AdminNav.items.select { |item| current_user.permit?(item[:required_permission]) }
+    end
+    
+    def check_permissions
+      action_permission = "#{controller_name}.#{action_name}"
+      
+      unless current_user.permit?(action_permission)
+        redirect_to admin_root_path, alert: 'Você não tem permissão para acessar esta área.'
+      end
+    end
+    
+    def require_permission(permission_key)
+      unless current_user.permit?(permission_key)
+        redirect_to admin_root_path, alert: 'Você não tem permissão para realizar esta ação.'
+      end
     end
   end
 end
