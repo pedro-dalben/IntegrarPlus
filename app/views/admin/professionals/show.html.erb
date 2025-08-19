@@ -89,6 +89,59 @@
       </div>
     <% end %>
 
+    <!-- Usuário do Sistema -->
+    <div class="ta-card p-4 md:p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold">Usuário do Sistema</h3>
+        <% if @professional.user %>
+          <%= link_to "Gerenciar Usuário", admin_user_path(@professional.user), class: "ta-btn ta-btn-primary ta-btn-sm" %>
+        <% else %>
+          <%= link_to "Criar Usuário", create_user_admin_professional_path(@professional), method: :post, class: "ta-btn ta-btn-success ta-btn-sm", data: { confirm: "Tem certeza que deseja criar um usuário para este profissional?" } %>
+        <% end %>
+      </div>
+      
+      <% if @professional.user %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h4 class="text-sm font-medium text-gray-500 mb-1">E-mail</h4>
+            <p class="text-sm"><%= @professional.user.email %></p>
+          </div>
+          <div>
+            <h4 class="text-sm font-medium text-gray-500 mb-1">Status do Convite</h4>
+            <p class="text-sm">
+              <% if @professional.user.confirmed_invite? %>
+                <span class="ta-badge ta-badge-success">✅ Confirmado</span>
+              <% elsif @professional.user.pending_invite? %>
+                <span class="ta-badge ta-badge-warning">⏳ Pendente</span>
+              <% elsif @professional.user.latest_invite&.expired? %>
+                <span class="ta-badge ta-badge-danger">🔄 Expirado</span>
+              <% else %>
+                <span class="ta-badge ta-badge-secondary">Sem convite</span>
+              <% end %>
+            </p>
+          </div>
+          <div>
+            <h4 class="text-sm font-medium text-gray-500 mb-1">Criado em</h4>
+            <p class="text-sm"><%= l(@professional.user.created_at, format: :short) %></p>
+          </div>
+          <div>
+            <h4 class="text-sm font-medium text-gray-500 mb-1">Último acesso</h4>
+            <p class="text-sm"><%= @professional.user.last_sign_in_at ? l(@professional.user.last_sign_in_at, format: :short) : "Nunca" %></p>
+          </div>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="text-gray-400 mb-2">
+            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <p class="text-gray-500">Nenhum usuário criado para este profissional</p>
+          <p class="text-sm text-gray-400 mt-1">Clique em "Criar Usuário" para criar automaticamente</p>
+        </div>
+      <% end %>
+    </div>
+
     <!-- Especialidades -->
     <% if @professional.specialities.any? %>
       <div class="ta-card p-4 md:p-5">

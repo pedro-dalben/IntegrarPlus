@@ -93,6 +93,56 @@
       <!-- Acesso e Status -->
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Acesso e Status</h3>
+        
+        <!-- Informações do Usuário -->
+        <% if @professional.user %>
+          <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/10 dark:border-green-800">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-green-800 dark:text-green-400">Usuário Criado</h3>
+                <div class="mt-2 text-sm text-green-700 dark:text-green-300">
+                  <p><strong>E-mail:</strong> <%= @professional.user.email %></p>
+                  <p><strong>Status:</strong> 
+                    <% if @professional.user.confirmed_invite? %>
+                      <span class="text-green-600">✅ Confirmado</span>
+                    <% elsif @professional.user.pending_invite? %>
+                      <span class="text-yellow-600">⏳ Pendente</span>
+                    <% elsif @professional.user.latest_invite&.expired? %>
+                      <span class="text-red-600">🔄 Expirado</span>
+                    <% else %>
+                      <span class="text-gray-600">Sem convite</span>
+                    <% end %>
+                  </p>
+                  <div class="mt-2">
+                    <%= link_to "Gerenciar Usuário", admin_user_path(@professional.user), class: "text-green-600 hover:text-green-800 underline" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg dark:bg-yellow-900/10 dark:border-yellow-800">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-400">Usuário Não Criado</h3>
+                <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                  <p>Um usuário será criado automaticamente ao salvar este profissional.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <div class="flex items-center mb-2">

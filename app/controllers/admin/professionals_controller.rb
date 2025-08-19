@@ -16,24 +16,35 @@ module Admin
 
     def new
       @professional = Professional.new
+      load_form_data
     end
 
-    def edit; end
+    def edit
+      load_form_data
+    end
 
     def create
       @professional = Professional.new(professional_params)
 
       if @professional.save
+        # Criar usuário automaticamente
+        create_user_for_professional(@professional)
+        
         redirect_to admin_professional_path(@professional), notice: 'Profissional criado com sucesso.'
       else
+        load_form_data
         render :new, status: :unprocessable_entity
       end
     end
 
     def update
       if @professional.update(professional_params)
+        # Criar usuário se não existir
+        create_user_for_professional(@professional)
+        
         redirect_to admin_professional_path(@professional), notice: 'Profissional atualizado com sucesso.'
       else
+        load_form_data
         render :edit, status: :unprocessable_entity
       end
     end
@@ -43,6 +54,18 @@ module Admin
       redirect_to admin_professionals_path, notice: 'Profissional excluído com sucesso.'
     end
 
+    def create_user
+      if @professional.user.present?
+        redirect_to admin_professional_path(@professional), alert: 'Este profissional já possui um usuário.'
+        return
+      end
+
+      create_user_for_professional(@professional)
+      redirect_to admin_professional_path(@professional), notice: 'Usuário criado com sucesso para o profissional.'
+    rescue => e
+      redirect_to admin_professional_path(@professional), alert: "Erro ao criar usuário: #{e.message}"
+    end
+
     private
 
     def set_professional
@@ -50,7 +73,43 @@ module Admin
     end
 
     def professional_params
-      params.require(:professional).permit(:name, :email, :phone, :speciality_id, :contract_type_id, :active)
+      params.require(:professional).permit(
+        :full_name, :birth_date, :cpf, :phone, :email, :active,
+        :contract_type_id, :hired_on, :workload_minutes, :council_code,
+        :company_name, :cnpj, :password, :password_confirmation,
+        group_ids: [], speciality_ids: [], specialization_ids: []
+      )
+    end
+
+    def load_form_data
+      @contract_types = ContractType.active.ordered
+      @groups = Group.ordered
+      @specialities = Speciality.active.ordered
+    end
+
+    def create_user_for_professional(professional)
+      return if professional.user.present?
+
+      # Criar usuário com dados do profissional
+      user = User.create!(
+        name: professional.full_name,
+        email: professional.email,
+        password: professional.password.presence || SecureRandom.hex(8),
+        password_confirmation: professional.password_confirmation.presence || professional.password.presence || SecureRandom.hex(8)
+      )
+
+      # Associar usuário ao profissional
+      professional.update!(user: user)
+
+      # Criar convite se o profissional estiver ativo
+      if professional.active?
+        invite = user.invites.create!
+        Rails.logger.info "Convite criado para #{user.email}: #{invite.invite_url}"
+      end
+
+      Rails.logger.info "Usuário criado automaticamente para profissional: #{professional.full_name}"
+    rescue => e
+      Rails.logger.error "Erro ao criar usuário para profissional #{professional.id}: #{e.message}"
     end
   end
 end

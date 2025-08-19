@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         post :resend_confirmation
         post :send_reset_password
         post :force_confirm
+        post :create_user
       end
     end
     
