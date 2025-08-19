@@ -2,14 +2,14 @@
 
 module Admin
   class ProfessionalsController < BaseController
-    before_action :set_professional, only: [:show, :edit, :update, :destroy]
+    before_action :set_professional, only: %i[show edit update destroy]
 
     def index
       @pagy, @professionals = if params[:query].present?
-        pagy(Professional.search(params[:query]))
-      else
-        pagy(Professional.all)
-      end
+                                pagy(Professional.search(params[:query]), limit: 10)
+                              else
+                                pagy(Professional.all, limit: 10)
+                              end
     end
 
     def show

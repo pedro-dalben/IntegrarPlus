@@ -1,0 +1,8 @@
+<div class="flex flex-col items-center justify-center gap-4">
+  <div class="order-1">
+    <%= helpers.pagy_nav(pagy) %>
+  </div>
+  <div class="text-sm text-gray-600 dark:text-gray-400 order-2">
+    Mostrando <%= pagy.from %> a <%= pagy.to %> de <%= pagy.count %> resultados
+  </div>
+</div>

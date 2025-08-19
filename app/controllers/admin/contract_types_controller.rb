@@ -6,10 +6,10 @@ module Admin
 
     def index
       @pagy, @contract_types = if params[:query].present?
-        pagy(ContractType.search(params[:query]))
-      else
-        pagy(ContractType.all)
-      end
+                                 pagy(ContractType.search(params[:query]), limit: 10)
+                               else
+                                 pagy(ContractType.all, limit: 10)
+                               end
     end
 
     def show; end

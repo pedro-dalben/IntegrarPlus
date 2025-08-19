@@ -8,9 +8,16 @@ module Admin
       group_paths.any? { |path| request.path.start_with?(path) }
     end
 
-    def sidebar_menu_item_classes(path, base_classes = 'menu-item group')
-      active_classes = sidebar_menu_item_active?(path) ? ' menu-item-active' : ''
-      "#{base_classes}#{active_classes}"
+    def sidebar_menu_item_classes(path, base_classes = 'menu-item group', active_class = 'menu-item-active',
+                                  inactive_class = 'menu-item-inactive')
+      if base_classes.empty?
+        # Para ícones
+        sidebar_menu_item_active?(path) ? active_class : inactive_class
+      else
+        # Para links
+        active_classes = sidebar_menu_item_active?(path) ? " #{active_class}" : " #{inactive_class}"
+        "#{base_classes}#{active_classes}"
+      end
     end
 
     def sidebar_group_classes(group_paths, base_classes = 'menu-item group')
