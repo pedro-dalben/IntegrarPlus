@@ -19,13 +19,13 @@ module Admin
       action_permission = "#{controller_name}.#{action_name}"
       
       unless current_user.permit?(action_permission)
-        redirect_to admin_root_path, alert: 'Você não tem permissão para acessar esta área.'
+        redirect_to root_path, alert: 'Você não tem permissão para acessar esta área.'
       end
     end
     
     def require_permission(permission_key)
       unless current_user.permit?(permission_key)
-        redirect_to admin_root_path, alert: 'Você não tem permissão para realizar esta ação.'
+        redirect_to root_path, alert: 'Você não tem permissão para realizar esta ação.'
       end
     end
   end

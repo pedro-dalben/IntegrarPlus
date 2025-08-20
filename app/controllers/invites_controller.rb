@@ -26,7 +26,7 @@ class InvitesController < ApplicationController
         @invite.confirm!
         
         sign_in(@invite.user)
-        redirect_to admin_root_path, notice: 'Conta ativada com sucesso!'
+        redirect_to root_path, notice: 'Conta ativada com sucesso!'
       else
         flash.now[:alert] = 'As senhas não coincidem.'
         render :show
