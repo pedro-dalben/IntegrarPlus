@@ -25,7 +25,7 @@
           <% else %>
             <span class="ta-badge ta-badge-danger">Inativo</span>
           <% end %>
-          <% if @professional.confirmed_at? %>
+          <% if @professional.user&.confirmed_invite? %>
             <span class="ta-badge ta-badge-primary">Confirmado</span>
           <% else %>
             <span class="ta-badge ta-badge-warning">Pendente</span>
@@ -172,7 +172,7 @@
     <div class="ta-card p-4 md:p-5">
       <h3 class="text-lg font-semibold mb-4">Ações Administrativas</h3>
       <div class="flex flex-wrap gap-3">
-        <% unless @professional.confirmed_at? %>
+        <% unless @professional.user&.confirmed_invite? %>
           <%= button_to "Reenviar confirmação", 
               resend_confirmation_admin_professional_path(@professional),
               method: :post,
@@ -186,7 +186,7 @@
             class: "ta-btn ta-btn-secondary",
             data: { confirm: "Enviar e-mail de reset de senha?" } %>
         
-        <% unless @professional.confirmed_at? %>
+        <% unless @professional.user&.confirmed_invite? %>
           <%= button_to "Forçar confirmação", 
               force_confirm_admin_professional_path(@professional),
               method: :post,
