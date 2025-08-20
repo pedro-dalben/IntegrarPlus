@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_one :professional, dependent: :nullify
   has_many :invites, dependent: :destroy
+  has_many :memberships, dependent: :destroy
+  has_many :groups, through: :memberships
 
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }
 
@@ -19,15 +21,11 @@ class User < ApplicationRecord
   def permit?(permission_key)
     return true if admin?
     
-    professional&.groups&.any? { |group| group.has_permission?(permission_key) }
+    groups.any? { |group| group.has_permission?(permission_key) }
   end
   
   def admin?
-    professional&.groups&.any?(&:admin?)
-  end
-  
-  def groups
-    professional&.groups || []
+    groups.any?(&:admin?)
   end
   
   def pending_invite?

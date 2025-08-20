@@ -75,22 +75,42 @@ specialities_data.each do |speciality_data|
 end
 
 # Grupos padrão
-groups = %w[
-  Administradores
-  Coordenadores
-  Profissionais
-  Estagiários
-  Voluntários
+groups_data = [
+  { name: 'Administradores', is_admin: true },
+  { name: 'Coordenadores', is_admin: false },
+  { name: 'Profissionais', is_admin: false },
+  { name: 'Estagiários', is_admin: false },
+  { name: 'Voluntários', is_admin: false }
 ]
 
-groups.each do |group_name|
-  Group.find_or_create_by!(name: group_name)
+groups_data.each do |group_data|
+  Group.find_or_create_by!(name: group_data[:name]) do |group|
+    group.is_admin = group_data[:is_admin]
+  end
 end
 
 # Usuário admin padrão
-User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
+admin_user = User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
   user.name = 'Administrador'
   user.password = 'password123'
   user.password_confirmation = 'password123'
   user.confirmed_at = Time.current
+end
+
+# Cria profissional para o usuário admin se não existir
+unless admin_user.professional
+  admin_professional = Professional.create!(
+    full_name: 'Administrador do Sistema',
+    email: 'admin@integrarplus.com',
+    cpf: '00000000000',
+    phone: '(11) 99999-9999',
+    active: true,
+    user: admin_user
+  )
+end
+
+# Associa o usuário admin ao grupo Administradores
+admin_group = Group.find_by(name: 'Administradores')
+if admin_group
+  Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id)
 end

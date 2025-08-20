@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Membership < ApplicationRecord
-  belongs_to :professional
+  belongs_to :user
   belongs_to :group
 
-  validates :professional_id, uniqueness: { scope: :group_id }
+  validates :user_id, uniqueness: { scope: :group_id }
 end
