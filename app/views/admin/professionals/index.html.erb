@@ -102,7 +102,7 @@
                 </span>
               <% end %>
             </td>
-            <td class="px-5 py-4 whitespace-nowrap text-right">
+            <td class="px-5 py-4 whitespace-nowrap text-right relative">
               <div class="flex items-center justify-end gap-2" data-controller="dropdown">
                 <button class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                         data-action="click->dropdown#toggle"
@@ -112,7 +112,7 @@
                   </svg>
                 </button>
                 <div data-dropdown-target="panel"
-                     class="absolute right-0 mt-2 w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
+                     class="absolute right-0 top-full mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
                   <div class="py-1">
                     <%= link_to admin_professional_path(professional), 
                         class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
