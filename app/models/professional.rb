@@ -9,8 +9,7 @@ class Professional < ApplicationRecord
   belongs_to :contract_type, optional: true
   belongs_to :user, optional: true
 
-  has_many :memberships, dependent: :destroy
-  has_many :groups, through: :memberships
+  has_many :groups, through: :user
   has_many :professional_specialities, dependent: :destroy
   has_many :specialities, through: :professional_specialities
   has_many :professional_specializations, dependent: :destroy
