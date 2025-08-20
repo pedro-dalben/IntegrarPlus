@@ -111,6 +111,4 @@ end
 
 # Associa o usuário admin ao grupo Administradores
 admin_group = Group.find_by(name: 'Administradores')
-if admin_group
-  Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id)
-end
+Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id) if admin_group
