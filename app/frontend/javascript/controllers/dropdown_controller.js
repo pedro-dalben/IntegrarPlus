@@ -21,6 +21,9 @@ export default class extends Controller {
   openDropdown() {
     this.panelTarget.classList.remove("hidden");
     
+    // Posiciona o dropdown dinamicamente
+    this.positionDropdown();
+    
     // Atualiza aria-expanded
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-expanded", "true");
@@ -87,5 +90,51 @@ export default class extends Controller {
   disconnect() {
     document.removeEventListener("click", this.closeDropdown);
     document.removeEventListener("turbo:load", this.closeDropdown);
+  }
+
+  positionDropdown() {
+    const button = this.hasButtonTarget ? this.buttonTarget : this.element.querySelector('button');
+    if (!button) return;
+
+    const buttonRect = button.getBoundingClientRect();
+    const dropdownRect = this.panelTarget.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    // Remove classes de posicionamento anteriores
+    this.panelTarget.classList.remove('top-full', 'bottom-full', 'right-0', 'left-0');
+    this.panelTarget.style.top = '';
+    this.panelTarget.style.bottom = '';
+    this.panelTarget.style.left = '';
+    this.panelTarget.style.right = '';
+
+    // Calcula se deve abrir para cima ou para baixo
+    const spaceBelow = viewportHeight - buttonRect.bottom;
+    const spaceAbove = buttonRect.top;
+    const dropdownHeight = dropdownRect.height;
+
+    // Posiciona verticalmente
+    if (spaceBelow >= dropdownHeight || spaceBelow > spaceAbove) {
+      // Abre para baixo
+      this.panelTarget.classList.add('top-full');
+      this.panelTarget.style.top = '0.25rem'; // mt-1
+    } else {
+      // Abre para cima
+      this.panelTarget.classList.add('bottom-full');
+      this.panelTarget.style.bottom = '0.25rem'; // mb-1
+    }
+
+    // Posiciona horizontalmente
+    const spaceRight = viewportWidth - buttonRect.right;
+    const spaceLeft = buttonRect.left;
+    const dropdownWidth = dropdownRect.width;
+
+    if (spaceRight >= dropdownWidth || spaceRight > spaceLeft) {
+      // Alinha à direita
+      this.panelTarget.classList.add('right-0');
+    } else {
+      // Alinha à esquerda
+      this.panelTarget.classList.add('left-0');
+    }
   }
 }

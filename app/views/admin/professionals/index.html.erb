@@ -20,7 +20,7 @@
            data-action="input->search#search">
   <% end %>
 
-    <table class="w-full table-auto">
+    <table class="w-full table-auto overflow-visible">
       <thead>
         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
           <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
@@ -112,7 +112,7 @@
                   </svg>
                 </button>
                 <div data-dropdown-target="panel"
-                     class="absolute right-0 top-full mt-1 w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
+                     class="absolute w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
                   <div class="py-1">
                     <%= link_to admin_professional_path(professional), 
                         class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
