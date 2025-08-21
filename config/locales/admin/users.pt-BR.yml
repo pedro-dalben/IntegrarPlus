@@ -1,0 +1,121 @@
+pt-BR:
+  admin:
+    users:
+      # Títulos das páginas
+      index:
+        title: "Usuários"
+        subtitle: "Gerenciar usuários do sistema"
+      show:
+        title: "Usuário"
+        subtitle: "Detalhes do usuário"
+      edit:
+        title: "Editar Usuário"
+        subtitle: "Modificar informações do usuário"
+      new:
+        title: "Novo Usuário"
+        subtitle: "Criar novo usuário"
+
+      # Seções
+      sections:
+        user_info: "Informações do Usuário"
+        professional_info: "Profissional Associado"
+        invite_history: "Histórico de Convites"
+        available_actions: "Ações Disponíveis"
+
+      # Campos
+      fields:
+        name: "Nome"
+        email: "E-mail"
+        role: "Função"
+        status: "Status"
+        created_at: "Criado em"
+        last_sign_in: "Último acesso"
+        full_name: "Nome Completo"
+        specialities: "Especialidades"
+        groups: "Grupos"
+
+      # Status
+      status:
+        active: "Ativo"
+        inactive: "Inativo"
+        pending: "Pendente"
+        expired: "Expirado"
+        confirmed: "Confirmado"
+        no_user: "Sem usuário"
+
+      # Botões
+      buttons:
+        back: "Voltar"
+        edit: "Editar"
+        save: "Salvar"
+        cancel: "Cancelar"
+        delete: "Excluir"
+        activate: "Ativar"
+        deactivate: "Desativar"
+        generate_invite: "Gerar Convite"
+        view_professional: "Ver Profissional"
+        view_user: "Ver Usuário"
+        new_invite: "Gerar Novo Convite"
+        renew: "Renovar"
+        resend: "Reenviar"
+
+      # Ações
+      actions:
+        activate_user: "Ativar Usuário"
+        deactivate_user: "Desativar Usuário"
+        delete_user: "Excluir Usuário"
+        view_professional: "Ver Profissional"
+        generate_link: "Gerar Link"
+        view_user: "Ver Usuário"
+
+      # Mensagens
+      messages:
+        created: "Usuário criado com sucesso."
+        updated: "Usuário atualizado com sucesso."
+        deleted: "Usuário removido com sucesso."
+        activated: "Usuário ativado com sucesso."
+        deactivated: "Usuário desativado com sucesso."
+        invite_created: "Convite criado e enviado com sucesso."
+        invite_error: "Convite criado mas erro ao enviar e-mail: %{error}"
+        no_professional: "Usuário não possui profissional associado."
+        redirect_notice: "Usuários são gerenciados através dos profissionais. Redirecionando para a lista de profissionais."
+
+      # Confirmações
+      confirmations:
+        delete: "Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita."
+        activate: "Tem certeza que deseja ativar este usuário?"
+        deactivate: "Tem certeza que deseja desativar este usuário?"
+        generate_invite: "Gerar novo link de convite para %{email}?"
+        renew_invite: "Renovar este convite expirado?"
+        delete_invite: "Excluir este convite?"
+
+      # Tabela de convites
+      invites:
+        table:
+          token: "Token"
+          status: "Status"
+          created_at: "Criado em"
+          expires_at: "Expira em"
+          confirmed_at: "Confirmado em"
+          attempts: "Tentativas"
+          actions: "Ações"
+        empty: "Nenhum convite encontrado para este usuário"
+        no_invites: "Nenhum convite encontrado"
+
+      # Informações
+      info:
+        user_created: "Usuário Criado"
+        system_user: "Usuário do Sistema"
+        invite_pending: "Convite Pendente"
+        no_invite: "Sem convite"
+        no_professional: "Nenhum profissional associado"
+        automatic_creation: "Criação Automática de Usuário"
+        automatic_creation_info:
+          - "Um usuário será criado automaticamente com o e-mail do profissional"
+          - "Se ativo, um convite será gerado para o profissional acessar o sistema"
+          - "A senha será definida pelo próprio usuário através do link de convite"
+
+      # Erros
+      errors:
+        save_error: "Erro ao salvar usuário"
+        invite_error: "Erro ao criar convite"

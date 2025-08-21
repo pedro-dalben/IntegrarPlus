@@ -1,15 +1,37 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module Admin
   class SpecialitiesController < BaseController
     before_action :set_speciality, only: %i[show edit update destroy]
 
     def index
-      @pagy, @specialities = if params[:query].present?
-                               pagy(Speciality.search(params[:query]), limit: 10)
-                             else
-                               pagy(Speciality.all, limit: 10)
-                             end
+      if params[:query].present?
+        search_results = Speciality.search(params[:query])
+        page = (params[:page] || 1).to_i
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        @specialities = search_results[offset, per_page] || []
+        @pagy = OpenStruct.new(
+          count: search_results.length,
+          page: page,
+          items: per_page,
+          pages: (search_results.length.to_f / per_page).ceil,
+          from: offset + 1,
+          to: [offset + per_page, search_results.length].min,
+          prev: page > 1 ? page - 1 : nil,
+          next: page < (search_results.length.to_f / per_page).ceil ? page + 1 : nil,
+          series: []
+        )
+      else
+        @pagy, @specialities = pagy(Speciality.all, limit: 10)
+      end
+
+      return unless request.xhr?
+
+      render partial: 'table', locals: { specialities: @specialities, pagy: @pagy }, layout: false
     end
 
     def show; end
@@ -61,7 +83,9 @@ module Admin
     end
 
     def speciality_params
-      params.require(:speciality).permit(:specialty, :active)
+      params = params.require(:speciality).permit(:name, :active)
+      params[:specialty] = params[:name] if params[:name].present?
+      params
     end
   end
 end

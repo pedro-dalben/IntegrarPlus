@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_211354) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_21_191515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -154,13 +154,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_211354) do
     t.index ["name"], name: "index_specialities_on_name", unique: true
   end
 
-  create_table "specializations", force: :cascade do |t|
-    t.string "name", null: false
+  create_table "specialization_specialities", force: :cascade do |t|
+    t.bigint "specialization_id", null: false
     t.bigint "speciality_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["speciality_id"], name: "index_specialization_specialities_on_speciality_id"
+    t.index ["specialization_id", "speciality_id"], name: "index_spec_spec_on_spec_id_and_spec_id", unique: true
+    t.index ["specialization_id"], name: "index_specialization_specialities_on_specialization_id"
+  end
+
+  create_table "specializations", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_specializations_on_name", unique: true
-    t.index ["speciality_id"], name: "index_specializations_on_speciality_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -210,5 +218,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_211354) do
   add_foreign_key "professional_specializations", "specializations"
   add_foreign_key "professionals", "contract_types"
   add_foreign_key "professionals", "users"
-  add_foreign_key "specializations", "specialities"
+  add_foreign_key "specialization_specialities", "specialities"
+  add_foreign_key "specialization_specialities", "specializations"
 end

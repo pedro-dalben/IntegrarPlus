@@ -1,0 +1,60 @@
+pt-BR:
+  admin:
+    invites:
+      # Títulos das páginas
+      index:
+        title: "Convites"
+        subtitle: "Gerenciar convites de usuários"
+
+      # Seções
+      sections:
+        user_invites: "Convites para %{email}"
+
+      # Campos
+      fields:
+        token: "Token"
+        status: "Status"
+        created_at: "Criado em"
+        expires_at: "Expira em"
+        confirmed_at: "Confirmado em"
+        attempts: "Tentativas"
+
+      # Status
+      status:
+        pending: "Pendente"
+        confirmed: "Confirmado"
+        expired: "Expirado"
+
+      # Botões
+      buttons:
+        back: "Voltar"
+        new_invite: "Gerar Novo Convite"
+        renew: "Renovar"
+        delete: "Excluir"
+
+      # Mensagens
+      messages:
+        created: "Convite criado e enviado com sucesso."
+        renewed: "Convite renovado com sucesso."
+        deleted: "Convite removido com sucesso."
+        not_expired: "Convite ainda não expirou."
+        email_error: "Convite criado mas erro ao enviar e-mail: %{error}"
+
+      # Confirmações
+      confirmations:
+        renew: "Renovar este convite expirado?"
+        delete: "Excluir este convite?"
+
+      # Tabela
+      table:
+        token: "Token"
+        status: "Status"
+        created_at: "Criado em"
+        expires_at: "Expira em"
+        confirmed_at: "Confirmado em"
+        attempts: "Tentativas"
+        actions: "Ações"
+
+      # Informações
+      info:
+        empty: "Nenhum convite encontrado para este usuário"

@@ -1,8 +1,4 @@
 class UserPolicy < ApplicationPolicy
-  def index?
-    user.permit?('users.index')
-  end
-
   def show?
     user.permit?('users.show')
   end

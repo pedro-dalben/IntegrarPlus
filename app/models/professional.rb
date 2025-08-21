@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Professional < ApplicationRecord
-  # include MeiliSearch::Rails  # Temporariamente desabilitado para testes
+  include MeiliSearch::Rails
 
   # Removido Devise - o Professional não precisa de autenticação
   # A autenticação é feita através do User associado
@@ -62,23 +62,31 @@ class Professional < ApplicationRecord
     self.workload_minutes = (hours * 60) + minutes
   end
 
-  # meilisearch do
-  #   searchable_attributes %i[full_name email cpf phone]
-  #   filterable_attributes %i[active confirmed_at]
-  #   sortable_attributes %i[created_at updated_at full_name]
+  meilisearch do
+    searchable_attributes %i[full_name email cpf phone]
+    filterable_attributes %i[active confirmed_at]
+    sortable_attributes %i[created_at updated_at full_name]
 
-  #   attribute :status do
-  #     if active?
-  #       user&.confirmed_invite? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
-  #     else
-  #       'Inativo'
-  #     end
-  #   end
+    attribute :full_name
+    attribute :email
+    attribute :cpf
+    attribute :phone
+    attribute :active
+    attribute :created_at
+    attribute :updated_at
 
-  #   attribute :groups_names do
-  #     groups.pluck(:name).join(', ')
-  #   end
-  # end
+    attribute :status do
+      if active?
+        user&.confirmed_invite? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
+      else
+        'Inativo'
+      end
+    end
+
+    attribute :groups_names do
+      groups.pluck(:name).join(', ')
+    end
+  end
 
   private
 

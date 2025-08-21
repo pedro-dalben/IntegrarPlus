@@ -9,8 +9,6 @@ module AdminNav
       { label: 'Cadastros', icon: 'bi-people', required_permission: 'professionals.read', children: [
         { label: 'Profissionais', path: '/admin/professionals', icon: 'bi-person',
           required_permission: 'professionals.read' },
-        { label: 'Usuários', path: '/admin/users', icon: 'bi-person-badge',
-          required_permission: 'users.index' },
         { label: 'Grupos', path: '/admin/groups', icon: 'bi-collection', required_permission: 'groups.manage' }
       ] },
       { label: 'Configurações', icon: 'bi-gear', required_permission: 'settings.read', children: [

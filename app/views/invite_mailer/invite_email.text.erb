@@ -1,0 +1,25 @@
+IntegrarPlus - Convite para Acesso ao Sistema
+==============================================
+
+Olá <%= @professional&.full_name || @user.email %>!
+
+Você foi convidado para acessar o sistema IntegrarPlus.
+
+INFORMAÇÕES DO SEU ACESSO:
+- E-mail: <%= @user.email %>
+<% if @professional %>
+- Nome: <%= @professional.full_name %>
+- Função: <%= @professional.specialities.map(&:name).join(', ') %>
+<% end %>
+
+Para acessar o sistema, clique no link abaixo e defina sua senha:
+
+<%= @invite.invite_url %>
+
+IMPORTANTE:
+- Este link é válido por 7 dias
+- Após definir sua senha, você poderá acessar o sistema normalmente
+- Se você não solicitou este convite, ignore este e-mail
+
+Este é um e-mail automático do sistema IntegrarPlus.
+Se você tiver dúvidas, entre em contato com o administrador do sistema.

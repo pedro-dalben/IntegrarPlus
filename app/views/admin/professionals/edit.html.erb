@@ -1,12 +1,12 @@
-<%= render ::Layouts::AdminComponent.new(title: "Editar Profissional") do |c| %>
+<%= render ::Layouts::AdminComponent.new do |c| %>
   <% c.with_actions do %>
-    <%= link_to admin_professionals_path, class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+    <%= link_to admin_professionals_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
       </svg>
       Voltar
     <% end %>
-    <%= link_to admin_professional_path(@professional), class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+    <%= link_to admin_professional_path(@professional), class: "ta-btn ta-btn-primary inline-flex items-center gap-2" do %>
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -16,18 +16,18 @@
   <% end %>
 
   <div class="space-y-6">
-    <%= form_with model: [:admin, @professional], local: true, class: "space-y-6" do |form| %>
+    <%= form_with model: [:admin, @professional], local: true do |form| %>
       <% if @professional.errors.any? %>
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4 dark:bg-red-900/10 dark:border-red-800">
+        <div class="ta-alert ta-alert-error">
           <div class="flex">
             <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
               </svg>
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800 dark:text-red-400">Erro ao salvar profissional</h3>
-              <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+              <h3 class="text-sm font-medium">Erro ao salvar profissional</h3>
+              <div class="mt-2 text-sm">
                 <ul class="list-disc pl-5 space-y-1">
                   <% @professional.errors.full_messages.each do |message| %>
                     <li><%= message %></li>
@@ -40,21 +40,26 @@
       <% end %>
 
       <!-- Dados Pessoais -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Dados Pessoais</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados Pessoais</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div class="md:col-span-2">
-            <%= form.label :full_name, "Nome Completo *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :full_name, "Nome Completo *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.text_field :full_name, 
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                placeholder: "Digite o nome completo",
                 required: true %>
           </div>
 
           <div>
-            <%= form.label :birth_date, "Data de Nascimento", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.text_field :birth_date, 
                 value: @professional.birth_date&.strftime("%d/%m/%Y"),
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
+                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                placeholder: "dd/mm/aaaa",
                 data: { 
                   controller: "datepicker",
                   datepicker_format_value: "d/m/Y",
@@ -63,138 +68,151 @@
           </div>
 
           <div>
-            <%= form.label :cpf, "CPF *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :cpf, "CPF *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="mask" data-mask-type-value="cpf">
               <%= form.text_field :cpf, 
-                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                  placeholder: "000.000.000-00",
                   required: true,
                   data: { mask_target: "input" } %>
             </div>
           </div>
 
           <div>
-            <%= form.label :phone, "Telefone", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :phone, "Telefone", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="mask" data-mask-type-value="phone">
               <%= form.text_field :phone, 
-                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                  placeholder: "(00) 00000-0000",
                   data: { mask_target: "input" } %>
             </div>
           </div>
 
           <div>
-            <%= form.label :email, "E-mail *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :email, "E-mail *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.email_field :email, 
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                placeholder: "exemplo@email.com",
                 required: true %>
           </div>
         </div>
-      </div>
 
-      <!-- Acesso e Status -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Acesso e Status</h3>
-        
-        <!-- Informações do Usuário -->
-        <% if @professional.user %>
-          <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/10 dark:border-green-800">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-green-800 dark:text-green-400">Usuário Criado</h3>
-                <div class="mt-2 text-sm text-green-700 dark:text-green-300">
-                  <p><strong>E-mail:</strong> <%= @professional.user.email %></p>
-                  <p><strong>Status:</strong> 
-                    <% if @professional.user.confirmed_invite? %>
-                      <span class="text-green-600">✅ Confirmado</span>
-                    <% elsif @professional.user.pending_invite? %>
-                      <span class="text-yellow-600">⏳ Pendente</span>
-                    <% elsif @professional.user.latest_invite&.expired? %>
-                      <span class="text-red-600">🔄 Expirado</span>
-                    <% else %>
-                      <span class="text-gray-600">Sem convite</span>
-                    <% end %>
-                  </p>
-                  <div class="mt-2">
-                    <%= link_to "Gerenciar Usuário", admin_user_path(@professional.user), class: "text-green-600 hover:text-green-800 underline" %>
+        <!-- Acesso e Status -->
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Acesso e Status</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div>
+            <div class="flex items-center mb-2">
+              <%= form.check_box :active, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+              <%= form.label :active, "Ativo", class: "ml-2 text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Profissionais ativos terão usuário criado automaticamente</p>
+          </div>
+
+
+
+          <div class="md:col-span-2">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-blue-800">Criação Automática de Usuário</h3>
+                  <div class="mt-2 text-sm text-blue-700">
+                    <p>• Um usuário será criado automaticamente com o e-mail do profissional</p>
+                    <p>• Se ativo, um convite será gerado para o profissional acessar o sistema</p>
+                    <p>• A senha será definida pelo próprio usuário através do link de convite</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        <% else %>
-          <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg dark:bg-yellow-900/10 dark:border-yellow-800">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-400">Usuário Não Criado</h3>
-                <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-                  <p>Um usuário será criado automaticamente ao salvar este profissional.</p>
+
+          <% if @professional.persisted? && @professional.user %>
+            <div class="md:col-span-2">
+              <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="flex justify-between items-start">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-green-800"><%= t('admin.users.info.user_created') %></h3>
+                      <div class="mt-2 text-sm text-green-700">
+                        <p>• Usuário: <%= @professional.user.email %></p>
+                        <p>• Status: 
+                          <% if @professional.user.confirmed_invite? %>
+                            <span class="font-medium"><%= t('admin.users.status.confirmed') %></span>
+                          <% elsif @professional.user.pending_invite? %>
+                            <span class="font-medium"><%= t('admin.users.info.invite_pending') %></span>
+                          <% else %>
+                            <span class="font-medium"><%= t('admin.users.info.no_invite') %></span>
+                          <% end %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ml-auto pl-3">
+                    <% unless @professional.user.confirmed_invite? %>
+                      <%= link_to admin_user_invites_path(@professional.user), 
+                          method: :post,
+                          class: "ta-btn ta-btn-success ta-btn-sm inline-flex items-center gap-2",
+                          data: { confirm: "Gerar novo link de convite para #{@professional.user.email}?" } do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
+                        </svg>
+                        <%= t('admin.users.buttons.generate_invite') %>
+                      <% end %>
+                    <% else %>
+                      <%= link_to admin_user_path(@professional.user), 
+                          class: "ta-btn ta-btn-primary ta-btn-sm inline-flex items-center gap-2" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <%= t('admin.users.buttons.view_user') %>
+                      <% end %>
+                    <% end %>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        <% end %>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <div class="flex items-center mb-2">
-              <%= form.check_box :active, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
-              <%= form.label :active, "Ativo", class: "text-sm font-medium text-gray-700 dark:text-gray-300 ml-2" %>
-            </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Profissionais inativos não conseguem fazer login</p>
-          </div>
-
-          <div>
-            <div class="mb-2">
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Status de Confirmação</span>
-            </div>
-            <% if @professional.confirmed_at? %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Confirmado</span>
-            <% else %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Pendente</span>
-            <% end %>
-          </div>
-
-          <div>
-            <%= form.label :password, "Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-            <%= form.password_field :password, 
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Deixe em branco para manter a senha atual</p>
-          </div>
-
-          <div>
-            <%= form.label :password_confirmation, "Confirmar Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-            <%= form.password_field :password_confirmation, 
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
-          </div>
+          <% end %>
         </div>
-      </div>
 
-      <!-- Vínculos e Carga -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Vínculos e Carga</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Vínculos e Carga -->
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Vínculos e Carga</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
-            <%= form.label :contract_type_id, "Forma de Contratação", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-            <%= form.select :contract_type_id, 
-                @contract_types.map { |ct| [ct.name, ct.id] }, 
-                { prompt: "Selecione uma forma de contratação..." }, 
-                { class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" } %>
+            <%= form.label :contract_type_id, "Forma de Contratação", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+            <div class="relative z-20 bg-transparent">
+              <%= form.select :contract_type_id, 
+                  @contract_types.map { |ct| [ct.name, ct.id] }, 
+                  { prompt: "Selecione uma forma de contratação..." }, 
+                  { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
+              <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
           </div>
 
           <div>
-            <%= form.label :hired_on, "Data de Contratação", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :hired_on, "Data de Contratação", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.text_field :hired_on, 
                 value: @professional.hired_on&.strftime("%d/%m/%Y"),
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
+                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                placeholder: "dd/mm/aaaa",
                 data: { 
                   controller: "datepicker",
                   datepicker_format_value: "d/m/Y",
@@ -203,11 +221,11 @@
           </div>
 
           <div>
-            <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="time-hhmm">
               <%= form.text_field :workload_hhmm, 
                   value: @professional.workload_hhmm,
-                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                   placeholder: "40:00",
                   data: { time_hhmm_target: "input" } %>
               <%= form.hidden_field :workload_minutes, 
@@ -218,9 +236,10 @@
           </div>
 
           <div>
-            <%= form.label :council_code, "Código do Conselho", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :council_code, "Código do Conselho", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.text_field :council_code, 
-                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
+                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                placeholder: "Digite o código do conselho" %>
           </div>
 
           <!-- Campos condicionais -->
@@ -229,77 +248,92 @@
                data-contract-fields-current-type-value="<%= @professional.contract_type_id %>">
             
             <div data-contract-fields-target="companyField" class="md:col-span-2" style="display: none;">
-              <%= form.label :company_name, "Nome da Empresa", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-              <%= form.text_field :company_name, 
-                  class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400" %>
+              <%= form.label :company_name, "Nome da Empresa", class: "ta-label" %>
+              <%= form.text_field :company_name, class: "ta-input" %>
             </div>
 
             <div data-contract-fields-target="cnpjField" class="md:col-span-2" style="display: none;">
-              <%= form.label :cnpj, "CNPJ", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.label :cnpj, "CNPJ", class: "ta-label" %>
               <div data-controller="mask" data-mask-type-value="cnpj">
                 <%= form.text_field :cnpj, 
-                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400",
+                    class: "ta-input",
                     data: { mask_target: "input" } %>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Permissões e Competências -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Permissões e Competências</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Permissões e Competências -->
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Permissões e Competências</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
-            <%= form.label :group_ids, "Grupos", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :group_ids, "Grupos", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="tom-select">
               <%= form.select :group_ids, 
                   @groups.map { |g| [g.name, g.id] }, 
                   { prompt: "Selecione os grupos..." }, 
                   { 
-                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
+                    class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
-                      placeholder: "Selecione os grupos..."
+                      tom_select_options_value: {
+                        plugins: ['remove_button'],
+                        placeholder: "Selecione os grupos...",
+                        maxItems: nil,
+                        create: false
+                      }.to_json
                     }
                   } %>
             </div>
           </div>
 
           <div>
-            <%= form.label :speciality_ids, "Especialidades", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :speciality_ids, "Especialidades", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="tom-select dependent-specializations" 
-                 data-dependent-specializations-endpoint-value="/admin/specializations.json">
+                 data-dependent-specializations-endpoint-value="/admin/specializations/by_speciality">
               <%= form.select :speciality_ids, 
                   @specialities.map { |s| [s.name, s.id] }, 
                   { prompt: "Selecione as especialidades..." }, 
                   { 
-                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
+                    class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
                       dependent_specializations_target: "specialitySelect",
                       action: "change->dependent-specializations#specialityChanged",
-                      placeholder: "Selecione as especialidades..."
+                      tom_select_options_value: {
+                        plugins: ['remove_button'],
+                        placeholder: "Selecione as especialidades...",
+                        maxItems: nil,
+                        create: false
+                      }.to_json
                     }
                   } %>
             </div>
           </div>
 
           <div class="md:col-span-2">
-            <%= form.label :specialization_ids, "Especializações", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.label :specialization_ids, "Especializações", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="tom-select dependent-specializations">
               <%= form.select :specialization_ids, 
                   [], 
                   { prompt: "Selecione as especializações..." }, 
                   { 
-                    class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
+                    class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
                     data: { 
                       tom_select_target: "select",
                       dependent_specializations_target: "specializationSelect",
-                      placeholder: "Selecione as especializações..."
+                      tom_select_options_value: {
+                        plugins: ['remove_button'],
+                        placeholder: "Selecione as especializações...",
+                        maxItems: nil,
+                        create: false
+                      }.to_json
                     }
                   } %>
             </div>
@@ -309,13 +343,11 @@
       </div>
 
       <!-- Ações -->
-      <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <%= link_to admin_professionals_path, 
-            class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
-          Cancelar
-        <% end %>
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <%= link_to "Cancelar", admin_professionals_path, 
+            class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
         <%= form.submit "Atualizar Profissional", 
-            class: "bg-blue-600 hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" %>
+            class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
       </div>
     <% end %>
   </div>

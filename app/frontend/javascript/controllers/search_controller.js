@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ["input", "row", "results"]
   static values = { 
     url: String,
-    debounce: { type: Number, default: 300 }
+    debounce: { type: Number, default: 500 }
   }
 
   connect() {
@@ -18,11 +18,43 @@ export default class extends Controller {
     }
 
     this.debounceTimeout = setTimeout(() => {
-      this.performSearch()
+      this.performAjaxSearch()
     }, this.debounceValue)
   }
 
-  performSearch() {
+  clear() {
+    this.inputTarget.value = ''
+    this.performAjaxSearch()
+  }
+
+  async performAjaxSearch() {
+    const query = this.inputTarget.value.trim()
+    
+    try {
+      const url = new URL(this.urlValue, window.location.origin)
+      if (query.length > 0) {
+        url.searchParams.set('query', query)
+      }
+      url.searchParams.set('page', '1')
+
+      const response = await fetch(url.toString(), {
+        headers: {
+          'Accept': 'text/html',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (response.ok) {
+        const html = await response.text()
+        this.updateResults(html)
+      }
+    } catch (error) {
+      console.error('Erro na busca:', error)
+      this.performLocalSearch()
+    }
+  }
+
+  performLocalSearch() {
     const query = this.inputTarget.value.trim().toLowerCase()
     
     if (query.length === 0) {
@@ -30,7 +62,6 @@ export default class extends Controller {
       return
     }
 
-    // Busca local nas linhas da tabela
     if (this.hasRowTarget) {
       this.rowTargets.forEach(row => {
         const text = row.textContent.toLowerCase()
@@ -48,37 +79,11 @@ export default class extends Controller {
     }
   }
 
-  // Método para busca via AJAX (futuro)
-  async performAjaxSearch() {
-    const query = this.inputTarget.value.trim()
-    
-    if (query.length === 0) {
-      this.showAllResults()
-      return
-    }
-
-    try {
-      const response = await fetch(`${this.urlValue}?query=${encodeURIComponent(query)}`, {
-        headers: {
-          'Accept': 'text/html',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-
-      if (response.ok) {
-        const html = await response.text()
-        this.updateResults(html)
-      }
-    } catch (error) {
-      console.error('Erro na busca:', error)
-    }
-  }
-
   updateResults(html) {
-    if (this.hasResultsTarget) {
-      this.resultsTarget.innerHTML = html
+    const resultsTarget = this.element.querySelector('[data-search-target="results"]')
+    if (resultsTarget) {
+      resultsTarget.innerHTML = html
     } else {
-      // Fallback para atualizar a página inteira
       window.location.href = `${this.urlValue}?query=${encodeURIComponent(this.inputTarget.value)}`
     }
   }

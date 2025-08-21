@@ -1,67 +1,60 @@
-<%= render ::Layouts::AdminComponent.new(
-  title: "Detalhes da Especialização",
-  subtitle: "Informações completas da especialização"
-) do %>
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_specializations_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+    <%= link_to edit_admin_specialization_path(@specialization), class: "ta-btn ta-btn-primary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+      Editar
+    <% end %>
+  <% end %>
 
-  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Básicas</h3>
+  <div class="space-y-6">
+    <!-- Informações Básicas -->
+    <div class="ta-card">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Básicas</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <span class="ta-label-inline">Nome</span>
+          <p class="text-sm text-gray-900 dark:text-white mt-1"><%= @specialization.name %></p>
+        </div>
         
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome</label>
-            <p class="text-gray-900 dark:text-white"><%= @specialization.name %></p>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Especialidade</label>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+        <div>
+          <span class="ta-label-inline">Especialidade</span>
+          <div class="mt-1">
+            <span class="ta-badge ta-badge-primary">
               <%= @specialization.speciality.name %>
             </span>
           </div>
         </div>
       </div>
-      
-      <div>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Estatísticas</h3>
-        
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profissionais Associados</label>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @specialization.professionals.count %></p>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Criado em</label>
-            <p class="text-gray-900 dark:text-white"><%= l(@specialization.created_at, format: :long) %></p>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Última atualização</label>
-            <p class="text-gray-900 dark:text-white"><%= l(@specialization.updated_at, format: :long) %></p>
-          </div>
-        </div>
-      </div>
     </div>
     
-    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex gap-3">
-        <%= link_to edit_admin_specialization_path(@specialization), 
-            class: "bg-brand-500 hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-          </svg>
-          Editar
-        <% end %>
+    <!-- Estatísticas -->
+    <div class="ta-card">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Estatísticas</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <span class="ta-label-inline">Profissionais Associados</span>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1"><%= @specialization.professionals.count %></p>
+        </div>
         
-        <%= link_to admin_specializations_path, 
-            class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-          </svg>
-          Voltar
-        <% end %>
+        <div>
+          <span class="ta-label-inline">Criado em</span>
+          <p class="text-sm text-gray-900 dark:text-white mt-1"><%= l(@specialization.created_at, format: :long) %></p>
+        </div>
+        
+        <div>
+          <span class="ta-label-inline">Última atualização</span>
+          <p class="text-sm text-gray-900 dark:text-white mt-1"><%= l(@specialization.updated_at, format: :long) %></p>
+        </div>
       </div>
     </div>
   </div>

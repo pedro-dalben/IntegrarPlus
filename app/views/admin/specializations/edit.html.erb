@@ -32,23 +32,35 @@
         </div>
       <% end %>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <%= form.label :name, "Nome", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-          <%= form.text_field :name, 
-              class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
-              placeholder: "Ex: Linguagem, ABA, Integração Sensorial" %>
-          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Nome único para identificar a especialização</p>
-        </div>
+      <div>
+        <%= form.label :name, "Nome", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= form.text_field :name, 
+            class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400", 
+            placeholder: "Ex: Linguagem, ABA, Integração Sensorial" %>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Nome único para identificar a especialização</p>
+      </div>
 
-        <div>
-          <%= form.label :speciality_id, "Especialidade", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
-          <%= form.select :speciality_id, 
+      <div>
+        <%= form.label :speciality_ids, "Especialidades", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <div data-controller="tom-select">
+          <%= form.select :speciality_ids, 
               @specialities.map { |s| [s.name, s.id] }, 
-              { prompt: "Selecione uma especialidade..." }, 
-              { class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white", required: true } %>
-          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Especialidade à qual esta especialização pertence</p>
+              { prompt: "Selecione as especialidades..." }, 
+              { 
+                class: "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white",
+                multiple: true,
+                data: { 
+                  tom_select_target: "select",
+                  tom_select_options_value: {
+                    plugins: ['remove_button'],
+                    placeholder: "Selecione as especialidades...",
+                    maxItems: nil,
+                    create: false
+                  }.to_json
+                }
+              } %>
         </div>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Especialidades às quais esta especialização pertence</p>
       </div>
 
       <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">

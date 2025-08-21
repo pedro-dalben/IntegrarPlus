@@ -4,13 +4,12 @@ module Layouts
   class AdminComponent < ViewComponent::Base
     renders_one :actions
 
-    def initialize(title: nil, subtitle: nil)
+    def initialize(title: nil)
       @title = title
-      @subtitle = subtitle
     end
 
     private
 
-    attr_reader :title, :subtitle
+    attr_reader :title
   end
 end

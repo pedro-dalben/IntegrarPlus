@@ -3,3 +3,12 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
+
+import ContractFieldsController from "./contract_fields_controller"
+application.register("contract-fields", ContractFieldsController)
+
+import DependentSpecializationsController from "./dependent_specializations_controller"
+application.register("dependent-specializations", DependentSpecializationsController)
+
+import TomSelectController from "./tom_select_controller"
+application.register("tom-select", TomSelectController)

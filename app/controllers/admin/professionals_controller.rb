@@ -1,15 +1,37 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module Admin
   class ProfessionalsController < BaseController
     before_action :set_professional, only: %i[show edit update destroy]
 
     def index
-      @pagy, @professionals = if params[:query].present?
-                                pagy(Professional.search(params[:query]), limit: 10)
-                              else
-                                pagy(Professional.all, limit: 10)
-                              end
+      if params[:query].present?
+        search_results = Professional.search(params[:query])
+        page = (params[:page] || 1).to_i
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        @professionals = search_results[offset, per_page] || []
+        @pagy = OpenStruct.new(
+          count: search_results.length,
+          page: page,
+          items: per_page,
+          pages: (search_results.length.to_f / per_page).ceil,
+          from: offset + 1,
+          to: [offset + per_page, search_results.length].min,
+          prev: page > 1 ? page - 1 : nil,
+          next: page < (search_results.length.to_f / per_page).ceil ? page + 1 : nil,
+          series: []
+        )
+      else
+        @pagy, @professionals = pagy(Professional.all, limit: 10)
+      end
+
+      return unless request.xhr?
+
+      render partial: 'table', locals: { professionals: @professionals, pagy: @pagy }, layout: false
     end
 
     def show; end

@@ -7,8 +7,44 @@ module ApplicationHelper
     true
   end
 
+  def generate_pagination_series(pagy)
+    return [] if pagy.pages <= 1
+
+    series = []
+    current_page = pagy.page
+    total_pages = pagy.pages
+
+    # Sempre mostrar primeira página
+    series << 1
+
+    # Adicionar gap se necessário
+    series << :gap if current_page > 4
+
+    # Páginas ao redor da página atual
+    start_page = [2, current_page - 1].max
+    end_page = [total_pages - 1, current_page + 1].min
+
+    (start_page..end_page).each do |page|
+      series << page if page > 1 && page < total_pages
+    end
+
+    # Adicionar gap se necessário
+    series << :gap if current_page < total_pages - 3
+
+    # Sempre mostrar última página
+    series << total_pages if total_pages > 1
+
+    series
+  end
+
   def pagy_nav(pagy)
     html = +'<nav class="flex items-center justify-center gap-2">'
+
+    series = if pagy.respond_to?(:series)
+               pagy.series
+             else
+               generate_pagination_series(pagy)
+             end
 
     if pagy.prev
       html << link_to('« Primeira', pagy_url_for(pagy, 1),
@@ -20,7 +56,7 @@ module ApplicationHelper
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 
-    pagy.series.each do |item|
+    series.each do |item|
       if item.is_a?(Integer) || item.to_s.match?(/^\d+$/)
         page_number = item.to_i
         if page_number == pagy.page
@@ -41,7 +77,7 @@ module ApplicationHelper
     end
 
     if pagy.next
-      html << link_to('Última »', pagy_url_for(pagy, pagy.last),
+      html << link_to('Última »', pagy_url_for(pagy, pagy.pages),
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 

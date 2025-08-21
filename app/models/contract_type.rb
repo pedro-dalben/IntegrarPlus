@@ -16,6 +16,12 @@ class ContractType < ApplicationRecord
     searchable_attributes %i[name description]
     filterable_attributes %i[active created_at updated_at]
     sortable_attributes %i[created_at updated_at name]
+
+    attribute :name
+    attribute :description
+    attribute :active
+    attribute :created_at
+    attribute :updated_at
   end
 
   private

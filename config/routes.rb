@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   resource :avatar, only: %i[update destroy]
-  
+
   # Rotas para convites
   get 'invite/:token', to: 'invites#show', as: :invite
   post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite
@@ -40,23 +40,27 @@ Rails.application.routes.draw do
         post :create_user
       end
     end
-    
-    resources :users do
+
+    resources :users, except: [:index] do
       member do
         patch :activate
         patch :deactivate
       end
-      resources :invites, only: [:index, :create]
+      resources :invites, only: %i[index create]
     end
-    
-    resources :invites, only: [:show, :destroy] do
+
+    resources :invites, only: %i[show destroy] do
       member do
         patch :resend
       end
     end
-    
+
     resources :specialities
-    resources :specializations
+    resources :specializations do
+      collection do
+        get :by_speciality, defaults: { format: :json }
+      end
+    end
     resources :contract_types
     get '/', to: 'dashboard#index'
     get '/ui', to: 'ui#index'

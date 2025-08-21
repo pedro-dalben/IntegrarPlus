@@ -3,7 +3,8 @@
 class Specialization < ApplicationRecord
   include MeiliSearch::Rails
 
-  belongs_to :speciality
+  has_many :specialization_specialities, dependent: :destroy
+  has_many :specialities, through: :specialization_specialities
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
@@ -11,11 +12,15 @@ class Specialization < ApplicationRecord
   has_many :professionals, through: :professional_specializations
 
   scope :ordered, -> { order(:name) }
-  scope :by_speciality, ->(speciality_ids) { where(speciality_id: speciality_ids) }
+  scope :by_speciality, ->(speciality_ids) { joins(:specialities).where(specialities: { id: speciality_ids }) }
 
   meilisearch do
     searchable_attributes %i[name]
-    filterable_attributes %i[speciality_id created_at updated_at]
+    filterable_attributes %i[created_at updated_at]
     sortable_attributes %i[created_at updated_at name]
+
+    attribute :name
+    attribute :created_at
+    attribute :updated_at
   end
 end

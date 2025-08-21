@@ -1,15 +1,37 @@
 # frozen_string_literal: true
 
+require 'ostruct'
+
 module Admin
   class ContractTypesController < BaseController
     before_action :set_contract_type, only: %i[show edit update destroy]
 
     def index
-      @pagy, @contract_types = if params[:query].present?
-                                 pagy(ContractType.search(params[:query]), limit: 10)
-                               else
-                                 pagy(ContractType.all, limit: 10)
-                               end
+      if params[:query].present?
+        search_results = ContractType.search(params[:query])
+        page = (params[:page] || 1).to_i
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        @contract_types = search_results[offset, per_page] || []
+        @pagy = OpenStruct.new(
+          count: search_results.length,
+          page: page,
+          items: per_page,
+          pages: (search_results.length.to_f / per_page).ceil,
+          from: offset + 1,
+          to: [offset + per_page, search_results.length].min,
+          prev: page > 1 ? page - 1 : nil,
+          next: page < (search_results.length.to_f / per_page).ceil ? page + 1 : nil,
+          series: []
+        )
+      else
+        @pagy, @contract_types = pagy(ContractType.all, limit: 10)
+      end
+
+      return unless request.xhr?
+
+      render partial: 'table', locals: { contract_types: @contract_types, pagy: @pagy }, layout: false
     end
 
     def show; end

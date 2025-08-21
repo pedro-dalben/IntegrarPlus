@@ -1,0 +1,192 @@
+<% if request.xhr? %>
+  <% specializations.each do |specialization| %>
+    <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900"
+        data-search-target="row"
+        data-action="click->row#navigate"
+        data-url="<%= admin_specialization_path(specialization) %>">
+      <td class="px-5 py-4 whitespace-nowrap">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center dark:bg-orange-900/20">
+            <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+            </svg>
+          </div>
+          <div>
+            <h6 class="text-sm font-medium text-gray-800 dark:text-white">
+              <%= specialization.name %>
+            </h6>
+          </div>
+        </div>
+      </td>
+      <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+        <% if specialization.specialities.any? %>
+          <div class="flex flex-wrap gap-1">
+            <% specialization.specialities.limit(3).each do |speciality| %>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                <%= speciality.name %>
+              </span>
+            <% end %>
+            <% if specialization.specialities.count > 3 %>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400">
+                +<%= specialization.specialities.count - 3 %> mais
+              </span>
+            <% end %>
+          </div>
+        <% else %>
+          <span class="text-gray-400 dark:text-gray-500">Nenhuma especialidade</span>
+        <% end %>
+      </td>
+      <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+        <%= l(specialization.created_at, format: :short) %>
+      </td>
+      <td class="px-5 py-4 whitespace-nowrap text-right relative">
+        <div class="flex items-center justify-end gap-2" data-controller="dropdown">
+          <button class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  data-action="click->dropdown#toggle"
+                  type="button">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 13a1 1 0 100-2 1 1 0 000 2zM19 13a1 1 0 100-2 1 1 0 000 2zM5 13a1 1 0 100-2 1 1 0 000 2z"/>
+            </svg>
+          </button>
+          <div data-dropdown-target="panel"
+               class="absolute w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
+            <div class="py-1">
+              <%= link_to admin_specialization_path(specialization), 
+                  class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Ver
+              <% end %>
+              <%= link_to edit_admin_specialization_path(specialization), 
+                  class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Editar
+              <% end %>
+              <%= link_to admin_specialization_path(specialization), 
+                  method: :delete,
+                  data: { confirm: 'Tem certeza que deseja excluir esta especialização?' },
+                  class: "flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Excluir
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+<% else %>
+  <table class="w-full table-auto overflow-visible">
+    <thead>
+      <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+        <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
+          Nome
+        </th>
+        <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
+          Especialidades
+        </th>
+        <th class="px-5 py-4 text-left text-sm font-medium text-gray-800 dark:text-white">
+          Criado em
+        </th>
+        <th class="px-5 py-4 text-right text-sm font-medium text-gray-800 dark:text-white">
+          Ações
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800" data-search-target="results">
+      <% specializations.each do |specialization| %>
+        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900"
+            data-search-target="row"
+            data-action="click->row#navigate"
+            data-url="<%= admin_specialization_path(specialization) %>">
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center dark:bg-orange-900/20">
+                <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+              </div>
+              <div>
+                <h6 class="text-sm font-medium text-gray-800 dark:text-white">
+                  <%= specialization.name %>
+                </h6>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            <% if specialization.specialities.any? %>
+              <div class="flex flex-wrap gap-1">
+                <% specialization.specialities.limit(3).each do |speciality| %>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                    <%= speciality.name %>
+                  </span>
+                <% end %>
+                <% if specialization.specialities.count > 3 %>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400">
+                    +<%= specialization.specialities.count - 3 %> mais
+                  </span>
+                <% end %>
+              </div>
+            <% else %>
+              <span class="text-gray-400 dark:text-gray-500">Nenhuma especialidade</span>
+            <% end %>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            <%= l(specialization.created_at, format: :short) %>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap text-right relative">
+            <div class="flex items-center justify-end gap-2" data-controller="dropdown">
+              <button class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      data-action="click->dropdown#toggle"
+                      type="button">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 13a1 1 0 100-2 1 1 0 000 2zM19 13a1 1 0 100-2 1 1 0 000 2zM5 13a1 1 0 100-2 1 1 0 000 2z"/>
+                </svg>
+              </button>
+              <div data-dropdown-target="panel"
+                   class="absolute w-48 rounded-lg border border-gray-200 bg-white shadow-lg hidden dark:border-gray-700 dark:bg-gray-800 z-50">
+                <div class="py-1">
+                  <%= link_to admin_specialization_path(specialization), 
+                      class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Ver
+                  <% end %>
+                  <%= link_to edit_admin_specialization_path(specialization), 
+                      class: "flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Editar
+                  <% end %>
+                  <%= link_to admin_specialization_path(specialization), 
+                      method: :delete,
+                      data: { confirm: 'Tem certeza que deseja excluir esta especialização?' },
+                      class: "flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Excluir
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <!-- Paginação -->
+  <% content_for :pagination do %>
+    <%= render Ui::PaginationComponent.new(pagy: pagy) %>
+  <% end %>
+<% end %>

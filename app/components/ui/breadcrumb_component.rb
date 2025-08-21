@@ -47,11 +47,14 @@ class Ui::BreadcrumbComponent < ViewComponent::Base
       elsif %w[new edit].include?(part)
         resource_name = path_parts[index - 1]&.singularize
 
-        breadcrumbs << {
-          name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
-          path: "/admin/#{path_parts[0..index - 1].join('/')}",
-          active: false
-        }
+        # Adiciona o recurso pai apenas se não for o primeiro item
+        if index > 0
+          breadcrumbs << {
+            name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
+            path: "/admin/#{path_parts[0..index - 1].join('/')}",
+            active: false
+          }
+        end
 
         breadcrumbs << {
           name: get_page_title(resource_name, part),
