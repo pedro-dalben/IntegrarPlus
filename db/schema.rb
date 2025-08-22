@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_180847) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -238,6 +238,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_180847) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "version_comments", force: :cascade do |t|
+    t.bigint "document_version_id", null: false
+    t.bigint "user_id", null: false
+    t.text "comment_text", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_version_comments_on_created_at"
+    t.index ["document_version_id"], name: "index_version_comments_on_document_version_id"
+    t.index ["user_id"], name: "index_version_comments_on_user_id"
+  end
+
   create_table "versions", force: :cascade do |t|
     t.string "whodunnit"
     t.datetime "created_at"
@@ -269,4 +280,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_180847) do
   add_foreign_key "professionals", "users"
   add_foreign_key "specialization_specialities", "specialities"
   add_foreign_key "specialization_specialities", "specializations"
+  add_foreign_key "version_comments", "document_versions"
+  add_foreign_key "version_comments", "users"
 end

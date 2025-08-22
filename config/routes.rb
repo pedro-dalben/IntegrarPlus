@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get "version_comments/create"
+  get "version_comments/update"
+  get "version_comments/destroy"
   get "document_permissions/index"
   get "document_permissions/create"
   get "document_permissions/destroy"
@@ -11,6 +14,7 @@ Rails.application.routes.draw do
     end
     
     resources :document_permissions, only: [:index, :create, :destroy]
+    resources :version_comments, only: [:create, :update, :destroy]
   end
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

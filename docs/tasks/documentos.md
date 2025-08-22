@@ -64,7 +64,7 @@ O fluxo deve obedecer às seguintes especificações:
 
 ---
 
-## 2. Definição de Permissões
+## 2. Definição de Permissões ✅ CONCLUÍDA
 
 ```markdown
 Implemente o **módulo de permissões de acesso por documento**.
@@ -88,6 +88,18 @@ Implemente o **módulo de permissões de acesso por documento**.
 
 ### Segurança
 - Acesso não autorizado deve retornar **403 Forbidden** e registrar no log de auditoria.
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo DocumentPermission com enums para níveis de acesso
+- ✅ Controller DocumentPermissionsController para gerenciar permissões
+- ✅ View para adicionar/remover permissões de usuários e grupos
+- ✅ Verificação de permissões no DocumentsController
+- ✅ Métodos de verificação de acesso (visualizar, comentar, editar)
+- ✅ Relacionamentos nos modelos User, Group e Document
+- ✅ Controller Stimulus para interface de permissões
+- ✅ Rotas aninhadas para permissões de documentos
+- ✅ Link 'Permissões' na view de show do documento
+- ✅ Validações para garantir que user_id ou group_id estejam presentes
 ```
 
 ---
