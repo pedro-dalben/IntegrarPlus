@@ -1,6 +1,8 @@
 class DocumentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_document, only: %i[show edit update destroy download upload_version]
+  before_action :ensure_can_view, only: %i[show download]
+  before_action :ensure_can_edit, only: %i[edit update destroy upload_version]
 
   ALLOWED_FILE_TYPES = %w[.pdf .docx .xlsx .jpg .jpeg .png].freeze
   MAX_FILE_SIZE = 50.megabytes
@@ -103,5 +105,17 @@ class DocumentsController < ApplicationController
     return false if file.size > MAX_FILE_SIZE
 
     true
+  end
+
+  def ensure_can_view
+    unless @document.user_can_view?(current_user)
+      redirect_to documents_path, alert: 'Você não tem permissão para visualizar este documento.'
+    end
+  end
+
+  def ensure_can_edit
+    unless @document.user_can_edit?(current_user)
+      redirect_to @document, alert: 'Você não tem permissão para editar este documento.'
+    end
   end
 end

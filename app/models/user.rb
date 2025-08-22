@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :groups, through: :memberships
   has_many :documents, foreign_key: :author_id, dependent: :destroy
   has_many :document_versions, foreign_key: :created_by_id, dependent: :destroy
+  has_many :document_permissions, dependent: :destroy
 
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }
 

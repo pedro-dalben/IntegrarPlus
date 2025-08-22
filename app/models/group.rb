@@ -10,6 +10,7 @@ class Group < ApplicationRecord
   has_many :users, through: :memberships
   has_many :group_permissions, dependent: :destroy
   has_many :permissions, through: :group_permissions
+  has_many :document_permissions, dependent: :destroy
 
   scope :ordered, -> { order(:name) }
   scope :admin, -> { where(is_admin: true) }

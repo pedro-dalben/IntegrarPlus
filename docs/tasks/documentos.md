@@ -16,7 +16,7 @@ Eu vou refazer cada prompt como se fosse um **documento de especificação + ins
 
 ---
 
-## 1. Upload de Documentos
+## 1. Upload de Documentos ✅ CONCLUÍDA
 
 ```markdown
 Você é um desenvolvedor especialista em Ruby on Rails 8 + Vite.  
@@ -49,7 +49,18 @@ O fluxo deve obedecer às seguintes especificações:
 - Upload de arquivo válido gera versão 1.0 e cria diretório de armazenamento.  
 - Upload de arquivo inválido deve retornar erro 422 JSON + mensagem clara.  
 - Apenas usuários autenticados podem fazer upload.
-```
+
+### ✅ IMPLEMENTADO
+- ✅ Modelos Document e DocumentVersion criados
+- ✅ Controller DocumentsController implementado
+- ✅ Views para CRUD completo criadas
+- ✅ Upload com barra de progresso via Stimulus
+- ✅ Validação de tipos de arquivo e tamanho
+- ✅ Versionamento automático (1.0, 1.1, 1.2, etc.)
+- ✅ Armazenamento local em /storage/documents/
+- ✅ Interface moderna com Tailwind CSS
+- ✅ Link no sidebar para acesso
+- ✅ Rotas configuradas
 
 ---
 
@@ -272,7 +283,3 @@ Realize a integração e validação do fluxo completo:
 6. Testes automatizados (RSpec/Capybara) devem cobrir todos os fluxos.  
 ```
 
----
-
-👉 Agora os prompts estão no nível **especialista**, com tudo: regras, persistência, UX, layout esperado, logs, segurança e integração.
-Quer que eu monte também um **wireframe em ASCII** para as duas telas principais (Workspace e Documentos Liberados) pra deixar ainda mais claro para a IA como deve ser o layout?

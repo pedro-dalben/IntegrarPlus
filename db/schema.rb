@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_160113) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_180847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_160113) do
     t.datetime "updated_at", null: false
     t.boolean "active"
     t.index ["name"], name: "index_contract_types_on_name", unique: true
+  end
+
+  create_table "document_permissions", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.bigint "user_id"
+    t.bigint "group_id"
+    t.integer "access_level", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_level"], name: "index_document_permissions_on_access_level"
+    t.index ["document_id", "group_id"], name: "index_document_permissions_on_document_id_and_group_id", unique: true, where: "(group_id IS NOT NULL)"
+    t.index ["document_id", "user_id"], name: "index_document_permissions_on_document_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["document_id"], name: "index_document_permissions_on_document_id"
+    t.index ["group_id"], name: "index_document_permissions_on_group_id"
+    t.index ["user_id"], name: "index_document_permissions_on_user_id"
+    t.check_constraint "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
   end
 
   create_table "document_versions", force: :cascade do |t|
@@ -234,6 +250,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_160113) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "document_permissions", "documents"
+  add_foreign_key "document_permissions", "groups"
+  add_foreign_key "document_permissions", "users"
   add_foreign_key "document_versions", "documents"
   add_foreign_key "document_versions", "users", column: "created_by_id"
   add_foreign_key "documents", "users", column: "author_id"

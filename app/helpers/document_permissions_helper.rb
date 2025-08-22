@@ -1,0 +1,2 @@
+module DocumentPermissionsHelper
+end

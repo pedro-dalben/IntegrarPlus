@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get "document_permissions/index"
+  get "document_permissions/create"
+  get "document_permissions/destroy"
   resources :documents do
     member do
       get :download
       post :upload_version
     end
+    
+    resources :document_permissions, only: [:index, :create, :destroy]
   end
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
