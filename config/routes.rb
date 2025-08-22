@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       end
     end
     resources :contract_types
+    resources :groups
     get '/', to: 'dashboard#index'
     get '/ui', to: 'ui#index'
   end
