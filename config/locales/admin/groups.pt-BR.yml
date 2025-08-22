@@ -1,0 +1,42 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      group: "Grupo"
+      groups: "Grupos"
+    groups:
+      messages:
+        created: "Grupo criado com sucesso."
+        updated: "Grupo atualizado com sucesso."
+        deleted: "Grupo excluído com sucesso."
+        error: "Erro ao processar o grupo."
+      titles:
+        index: "Grupos"
+        new: "Novo Grupo"
+        edit: "Editar Grupo"
+        show: "Detalhes do Grupo"
+      labels:
+        name: "Nome do Grupo"
+        description: "Descrição"
+        is_admin: "Grupo Administrador"
+        permissions: "Permissões"
+        members: "Membros"
+      placeholders:
+        name: "Ex: Médicos, Secretárias, Administradores"
+        description: "Descreva o propósito deste grupo..."
+      help:
+        is_admin: "Grupos administradores têm acesso a todas as funcionalidades do sistema"
+        permissions: "Selecione as permissões que este grupo terá"
+    pages:
+      group:
+        index:
+          title: "Grupos"
+          subtitle: "Gerencie os grupos de usuários e suas permissões"
+        new:
+          title: "Novo Grupo"
+          subtitle: "Crie um novo grupo e configure suas permissões"
+        edit:
+          title: "Editar Grupo"
+          subtitle: "Edite as informações e permissões do grupo"
+        show:
+          title: "Detalhes do Grupo"
+          subtitle: "Visualize as informações e permissões do grupo"

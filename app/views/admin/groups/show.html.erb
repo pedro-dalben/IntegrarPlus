@@ -1,0 +1,151 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_groups_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Detalhes do Grupo</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Visualize as informações e permissões do grupo</p>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Informações do Grupo</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="md:col-span-2">
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @group.name %></p>
+          </div>
+
+          <div class="md:col-span-2">
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Descrição</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @group.description.present? ? @group.description : "Nenhuma descrição fornecida" %></p>
+          </div>
+
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Tipo</span>
+            <% if @group.admin? %>
+              <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+                <i class="bi bi-shield-check mr-1"></i>
+                Administrador
+              </span>
+            <% else %>
+              <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                <i class="bi bi-people mr-1"></i>
+                Usuário
+              </span>
+            <% end %>
+          </div>
+
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Membros</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @group.users.count %> usuários</p>
+          </div>
+
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Permissões</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @group.permissions.count %> permissões</p>
+          </div>
+
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Criado em</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= l(@group.created_at, format: :long) %></p>
+          </div>
+
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Última atualização</span>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= l(@group.updated_at, format: :long) %></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Permissões</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Permissões atribuídas a este grupo</p>
+        
+        <% if @group.permissions.any? %>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <% @group.permissions.group_by { |p| p.key.split('.').first }.each do |module_name, permissions| %>
+              <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                <h3 class="mb-3 text-sm font-medium text-gray-800 dark:text-white capitalize">
+                  <%= module_name.humanize %>
+                </h3>
+                <div class="space-y-2">
+                  <% permissions.each do |permission| %>
+                    <div class="flex items-center gap-2">
+                      <i class="bi bi-check-circle text-green-500"></i>
+                      <span class="text-sm text-gray-700 dark:text-gray-300"><%= permission.description %></span>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <i class="bi bi-shield-x text-4xl text-gray-400 mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400">Este grupo não possui permissões atribuídas</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Membros</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Usuários neste grupo</p>
+        
+        <% if @group.users.any? %>
+          <div class="space-y-3">
+            <% @group.users.limit(10).each do |user| %>
+              <div class="flex items-center gap-3">
+                <div class="h-8 w-8 flex-shrink-0">
+                  <% if user.avatar.attached? %>
+                    <%= image_tag user.avatar, class: "h-8 w-8 rounded-full object-cover" %>
+                  <% else %>
+                    <div class="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center dark:bg-brand-900">
+                      <i class="bi bi-person text-brand-600 dark:text-brand-400 text-sm"></i>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    <%= user.full_name %>
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <%= user.email %>
+                  </p>
+                </div>
+              </div>
+            <% end %>
+            
+            <% if @group.users.count > 10 %>
+              <div class="text-center pt-2">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  +<%= @group.users.count - 10 %> mais membros
+                </p>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <i class="bi bi-people text-4xl text-gray-400 mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400">Nenhum membro neste grupo</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="flex items-center justify-end gap-3">
+        <%= link_to "Voltar", admin_groups_path, 
+            class: "inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" %>
+        <%= link_to "Editar Grupo", edit_admin_group_path(@group), 
+            class: "inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800" %>
+      </div>
+    </div>
+  </div>
+<% end %>

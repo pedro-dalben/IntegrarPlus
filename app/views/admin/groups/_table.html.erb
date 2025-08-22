@@ -1,0 +1,163 @@
+<div class="custom-scrollbar overflow-x-auto">
+  <table class="w-full table-auto">
+    <thead>
+      <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Nome
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Descrição
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Tipo
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Permissões
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Membros
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          Última Atualização
+        </th>
+        <th class="px-5 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+          <div class="relative">
+            <span class="sr-only">Ações</span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
+      <% @groups.each do |group| %>
+        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="h-8 w-8 flex-shrink-0">
+                <div class="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center dark:bg-brand-900">
+                  <i class="bi bi-collection text-brand-600 dark:text-brand-400"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                  <%= link_to group.name, admin_group_path(group), class: "hover:text-brand-600 dark:hover:text-brand-400" %>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900 dark:text-white">
+              <%= truncate(group.description, length: 50) if group.description.present? %>
+            </div>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <% if group.admin? %>
+              <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+                <i class="bi bi-shield-check mr-1"></i>
+                Administrador
+              </span>
+            <% else %>
+              <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                <i class="bi bi-people mr-1"></i>
+                Usuário
+              </span>
+            <% end %>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900 dark:text-white">
+              <%= group.permissions.count %> permissões
+            </div>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900 dark:text-white">
+              <%= group.users.count %> membros
+            </div>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <p class="text-sm text-gray-700 dark:text-gray-400">
+              <%= l(group.updated_at, format: :short) %>
+            </p>
+          </td>
+          <td class="px-5 py-4 whitespace-nowrap">
+            <div class="flex items-center justify-end gap-2">
+              <%= link_to admin_group_path(group), 
+                  class: "text-brand-600 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300",
+                  title: "Ver detalhes" do %>
+                <i class="bi bi-eye"></i>
+              <% end %>
+              <%= link_to edit_admin_group_path(group), 
+                  class: "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300",
+                  title: "Editar" do %>
+                <i class="bi bi-pencil"></i>
+              <% end %>
+              <%= link_to admin_group_path(group), 
+                  method: :delete,
+                  data: { 
+                    confirm: "Tem certeza que deseja excluir este grupo?",
+                    turbo_method: :delete
+                  },
+                  class: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300",
+                  title: "Excluir" do %>
+                <i class="bi bi-trash"></i>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+  <div class="flex flex-col items-center justify-between border-t border-gray-200 px-5 py-4 sm:flex-row dark:border-gray-800">
+    <div class="pb-3 sm:pb-0">
+      <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+        Mostrando 
+        <span class="text-gray-800 dark:text-white/90"><%= @pagy.from %></span>
+        a 
+        <span class="text-gray-800 dark:text-white/90"><%= @pagy.to %></span>
+        de
+        <span class="text-gray-800 dark:text-white/90"><%= @pagy.count %></span>
+      </span>
+    </div>
+    <% if @pagy.pages > 1 %>
+      <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
+        <% if @pagy.prev %>
+          <%= link_to admin_groups_path(page: @pagy.prev), 
+              class: "shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" do %>
+            <span>
+              <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z"/>
+              </svg>
+            </span>
+          <% end %>
+        <% end %>
+
+        <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
+          Página <%= @pagy.page %> de <%= @pagy.pages %>
+        </span>
+
+        <ul class="hidden items-center gap-0.5 sm:flex">
+          <% @pagy.series.each do |item| %>
+            <li>
+              <% if item == :gap %>
+                <span class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">...</span>
+              <% else %>
+                <%= link_to item, admin_groups_path(page: item), 
+                    class: "flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium #{item == @pagy.page ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'}" %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+
+        <% if @pagy.next %>
+          <%= link_to admin_groups_path(page: @pagy.next), 
+              class: "shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" do %>
+            <span>
+              <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z"/>
+              </svg>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
