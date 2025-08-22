@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Specialization < ApplicationRecord
+  include DashboardCache
   include MeiliSearch::Rails
 
   has_many :specialization_specialities, dependent: :destroy

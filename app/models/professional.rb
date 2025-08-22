@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Professional < ApplicationRecord
+  include DashboardCache
   include MeiliSearch::Rails
 
   # Removido Devise - o Professional não precisa de autenticação
@@ -124,8 +125,6 @@ class Professional < ApplicationRecord
 
     'Ativo'
   end
-
-  private
 
   def create_user!
     return user if user.present?

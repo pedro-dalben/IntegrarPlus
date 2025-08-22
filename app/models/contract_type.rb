@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ContractType < ApplicationRecord
+  include DashboardCache
   include MeiliSearch::Rails
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
