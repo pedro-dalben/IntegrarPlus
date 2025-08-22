@@ -1,4 +1,4 @@
-puts "🔧 Configurando Sistema de Permissionamento..."
+puts '🔧 Configurando Sistema de Permissionamento...'
 
 # Criar permissões se não existirem
 permissions_data = [
@@ -38,7 +38,7 @@ permissions_data.each do |perm_data|
   end
 end
 
-puts "✅ Permissões configuradas"
+puts '✅ Permissões configuradas'
 
 # Configurar permissões por grupo
 admin_group = Group.find_by(name: 'Admin')
@@ -47,7 +47,7 @@ if admin_group
   Permission.all.each do |permission|
     admin_group.add_permission(permission.key) unless admin_group.has_permission?(permission.key)
   end
-  puts "✅ Permissões do grupo Admin configuradas"
+  puts '✅ Permissões do grupo Admin configuradas'
 end
 
 prof_group = Group.find_by(name: 'Profissionais')
@@ -58,11 +58,11 @@ if prof_group
     'professionals.index',
     'professionals.show'
   ]
-  
+
   basic_permissions.each do |perm_key|
     prof_group.add_permission(perm_key) unless prof_group.has_permission?(perm_key)
   end
-  puts "✅ Permissões do grupo Profissionais configuradas"
+  puts '✅ Permissões do grupo Profissionais configuradas'
 end
 
 recepcao_group = Group.find_by(name: 'Recepção')
@@ -75,11 +75,11 @@ if recepcao_group
     'professionals.new',
     'professionals.create'
   ]
-  
+
   recepcao_permissions.each do |perm_key|
     recepcao_group.add_permission(perm_key) unless recepcao_group.has_permission?(perm_key)
   end
-  puts "✅ Permissões do grupo Recepção configuradas"
+  puts '✅ Permissões do grupo Recepção configuradas'
 end
 
 clinico_group = Group.find_by(name: 'Clínico')
@@ -92,11 +92,11 @@ if clinico_group
     'professionals.edit',
     'professionals.update'
   ]
-  
+
   clinico_permissions.each do |perm_key|
     clinico_group.add_permission(perm_key) unless clinico_group.has_permission?(perm_key)
   end
-  puts "✅ Permissões do grupo Clínico configuradas"
+  puts '✅ Permissões do grupo Clínico configuradas'
 end
 
 puts "\n📊 Resumo da Configuração:"

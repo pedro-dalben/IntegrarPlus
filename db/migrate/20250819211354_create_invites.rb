@@ -9,7 +9,7 @@ class CreateInvites < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :invites, :token, unique: true
     add_index :invites, :expires_at
   end

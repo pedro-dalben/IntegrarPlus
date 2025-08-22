@@ -3,6 +3,10 @@
 # This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+
+# Carregar seeds específicos
+load(Rails.root.join('db/seeds/permissionamento_setup.rb'))
+load(Rails.root.join('db/seeds/groups_setup.rb'))
 #
 # Tipos de contratação padrão
 contract_types = [
@@ -70,7 +74,8 @@ specialities_data.each do |speciality_data|
   speciality = Speciality.find_or_create_by!(name: speciality_data[:name])
 
   speciality_data[:specializations].each do |spec_name|
-    Specialization.find_or_create_by!(name: spec_name, speciality: speciality)
+    specialization = Specialization.find_or_create_by!(name: spec_name)
+    specialization.specialities << speciality unless specialization.specialities.include?(speciality)
   end
 end
 
@@ -99,7 +104,7 @@ end
 
 # Cria profissional para o usuário admin se não existir
 unless admin_user.professional
-  admin_professional = Professional.create!(
+  Professional.create!(
     full_name: 'Administrador do Sistema',
     email: 'admin@integrarplus.com',
     cpf: '00000000000',

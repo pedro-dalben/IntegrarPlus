@@ -7,8 +7,7 @@ module Admin
       @invites = @user.invites.order(created_at: :desc)
     end
 
-    def show
-    end
+    def show; end
 
     def create
       @invite = @user.invites.build

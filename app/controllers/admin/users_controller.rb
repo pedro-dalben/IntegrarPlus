@@ -11,8 +11,7 @@ module Admin
       @invites = @user.invites.order(created_at: :desc)
     end
 
-    def edit
-    end
+    def edit; end
 
     def update
       if @user.update(user_params)

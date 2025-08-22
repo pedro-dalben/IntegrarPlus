@@ -12,3 +12,6 @@ application.register("dependent-specializations", DependentSpecializationsContro
 
 import TomSelectController from "./tom_select_controller"
 application.register("tom-select", TomSelectController)
+
+import SearchController from "./search_controller"
+application.register("search", SearchController)

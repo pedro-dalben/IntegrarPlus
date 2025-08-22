@@ -1,11 +1,10 @@
 class InvitesController < ApplicationController
   layout 'admin'
-  
-  before_action :set_invite, only: [:show, :accept]
-  before_action :check_invite_validity, only: [:show, :accept]
 
-  def show
-  end
+  before_action :set_invite, only: %i[show accept]
+  before_action :check_invite_validity, only: %i[show accept]
+
+  def show; end
 
   def accept
     if @invite.confirmed?
@@ -24,7 +23,7 @@ class InvitesController < ApplicationController
       if params[:password] == params[:password_confirmation]
         @invite.user.update!(password: params[:password])
         @invite.confirm!
-        
+
         sign_in(@invite.user)
         redirect_to admin_path, notice: 'Conta ativada com sucesso!'
       else
@@ -44,8 +43,8 @@ class InvitesController < ApplicationController
   end
 
   def check_invite_validity
-    if @invite.expired?
-      redirect_to new_user_session_path, alert: 'Este convite expirou.'
-    end
+    return unless @invite.expired?
+
+    redirect_to new_user_session_path, alert: 'Este convite expirou.'
   end
 end

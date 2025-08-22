@@ -1,90 +1,67 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["input", "row", "results"]
-  static values = { 
-    url: String,
-    debounce: { type: Number, default: 500 }
-  }
+  static targets = ["input", "results"]
+  static values = { url: String }
 
   connect() {
-    this.debounceTimeout = null
-    this.search = this.search.bind(this)
+    this.debouncedSearch = this.debounce(this.performSearch.bind(this), 300)
   }
 
   search() {
-    if (this.debounceTimeout) {
-      clearTimeout(this.debounceTimeout)
-    }
-
-    this.debounceTimeout = setTimeout(() => {
-      this.performAjaxSearch()
-    }, this.debounceValue)
+    this.debouncedSearch()
   }
 
-  clear() {
-    this.inputTarget.value = ''
-    this.performAjaxSearch()
-  }
-
-  async performAjaxSearch() {
+  async performSearch() {
     const query = this.inputTarget.value.trim()
     
-    try {
-      const url = new URL(this.urlValue, window.location.origin)
-      if (query.length > 0) {
-        url.searchParams.set('query', query)
-      }
-      url.searchParams.set('page', '1')
+    if (query.length === 0) {
+      this.loadInitialResults()
+      return
+    }
 
-      const response = await fetch(url.toString(), {
+    try {
+      const response = await fetch(`${this.urlValue}?query=${encodeURIComponent(query)}`, {
         headers: {
-          'Accept': 'text/html',
           'X-Requested-With': 'XMLHttpRequest'
         }
       })
 
       if (response.ok) {
         const html = await response.text()
-        this.updateResults(html)
+        this.resultsTarget.innerHTML = html
       }
     } catch (error) {
       console.error('Erro na busca:', error)
-      this.performLocalSearch()
     }
   }
 
-  performLocalSearch() {
-    const query = this.inputTarget.value.trim().toLowerCase()
-    
-    if (query.length === 0) {
-      this.showAllResults()
-      return
-    }
-
-    if (this.hasRowTarget) {
-      this.rowTargets.forEach(row => {
-        const text = row.textContent.toLowerCase()
-        const shouldShow = text.includes(query)
-        row.style.display = shouldShow ? '' : 'none'
+  async loadInitialResults() {
+    try {
+      const response = await fetch(this.urlValue, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
       })
+
+      if (response.ok) {
+        const html = await response.text()
+        this.resultsTarget.innerHTML = html
+      }
+    } catch (error) {
+      console.error('Erro ao carregar resultados:', error)
     }
   }
 
-  showAllResults() {
-    if (this.hasRowTarget) {
-      this.rowTargets.forEach(row => {
-        row.style.display = ''
-      })
-    }
-  }
-
-  updateResults(html) {
-    const resultsTarget = this.element.querySelector('[data-search-target="results"]')
-    if (resultsTarget) {
-      resultsTarget.innerHTML = html
-    } else {
-      window.location.href = `${this.urlValue}?query=${encodeURIComponent(this.inputTarget.value)}`
+  debounce(func, wait) {
+    let timeout
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout)
+        func(...args)
+      }
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
     }
   }
 }

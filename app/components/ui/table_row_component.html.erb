@@ -1,0 +1,11 @@
+<tr class="<%= row_classes %>">
+  <% cells.each do |cell| %>
+    <%= cell %>
+  <% end %>
+  <td class="<%= cell_classes %> text-right text-sm font-medium">
+    <%= render Ui::TableActionsComponent.new(
+      model: model,
+      resource_name: model.class.model_name.singular
+    ) %>
+  </td>
+</tr>

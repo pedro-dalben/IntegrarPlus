@@ -1,4 +1,4 @@
-puts "🧪 Testando Integração Profissional ↔ Usuário..."
+puts '🧪 Testando Integração Profissional ↔ Usuário...'
 
 # Criar um profissional de teste
 professional = Professional.create!(
@@ -18,7 +18,7 @@ professional.ensure_user_exists!
 # Verificar se o usuário foi criado
 if professional.user
   puts "✅ Usuário criado automaticamente: #{professional.user.email}"
-  
+
   # Verificar se o convite foi criado
   if professional.user.invites.any?
     invite = professional.user.latest_invite
@@ -26,10 +26,10 @@ if professional.user
     puts "🔗 URL do convite: #{invite.invite_url}"
     puts "⏰ Expira em: #{invite.expires_at}"
   else
-    puts "❌ Nenhum convite criado"
+    puts '❌ Nenhum convite criado'
   end
 else
-  puts "❌ Usuário não foi criado automaticamente"
+  puts '❌ Usuário não foi criado automaticamente'
 end
 
 # Testar criação manual de usuário
@@ -45,15 +45,15 @@ professional2 = Professional.create!(
 puts "\n✅ Profissional inativo criado: #{professional2.full_name}"
 
 # Criar usuário manualmente
-if !professional2.user
+unless professional2.user
   professional2.ensure_user_exists!
   puts "✅ Usuário criado manualmente: #{professional2.user.email}"
-  
+
   # Verificar se o convite foi criado (deve ser nil pois está inativo)
   if professional2.user.invites.any?
-    puts "⚠️ Convite criado mesmo sendo inativo"
+    puts '⚠️ Convite criado mesmo sendo inativo'
   else
-    puts "✅ Nenhum convite criado (profissional inativo)"
+    puts '✅ Nenhum convite criado (profissional inativo)'
   end
 end
 
