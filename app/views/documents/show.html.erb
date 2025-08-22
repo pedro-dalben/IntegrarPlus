@@ -1,0 +1,144 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <div class="flex justify-between items-start">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @document.title %></h1>
+        <% if @document.description.present? %>
+          <p class="mt-2 text-gray-600"><%= @document.description %></p>
+        <% end %>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to documents_path, class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+          Voltar
+        <% end %>
+        <%= link_to edit_document_path(@document), class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
+          Editar
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Informações do Documento</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Tipo</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                <%= @document.document_type.humanize %>
+              </span>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Status</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <% status_classes = case @document.status
+                 when 'aguardando_revisao'
+                   'bg-yellow-100 text-yellow-800'
+                 when 'aguardando_correcoes'
+                   'bg-red-100 text-red-800'
+                 when 'aguardando_liberacao'
+                   'bg-orange-100 text-orange-800'
+                 when 'liberado'
+                   'bg-green-100 text-green-800'
+                 end %>
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
+                <%= @document.status.humanize %>
+              </span>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Versão Atual</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @document.current_version %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Autor</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @document.author.full_name %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Criado em</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= l(@document.created_at, format: :long) %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Última atualização</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= l(@document.updated_at, format: :long) %></dd>
+          </div>
+        </div>
+      </div>
+
+      <% if @document.latest_version&.file_exists? %>
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Versão Atual</h2>
+            <%= link_to download_document_path(@document), class: "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700" do %>
+              <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Baixar
+            <% end %>
+          </div>
+          
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center">
+              <svg class="w-8 h-8 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Versão <%= @document.latest_version.version_number %></p>
+                <p class="text-sm text-gray-500">
+                  Criada por <%= @document.latest_version.created_by.full_name %> em <%= l(@document.latest_version.created_at, format: :short) %>
+                </p>
+                <% if @document.latest_version.notes.present? %>
+                  <p class="text-sm text-gray-600 mt-1"><%= @document.latest_version.notes %></p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Histórico de Versões</h2>
+        
+        <% if @document.document_versions.any? %>
+          <div class="space-y-3">
+            <% @document.document_versions.order(created_at: :desc).each do |version| %>
+              <div class="border border-gray-200 rounded-lg p-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">v<%= version.version_number %></p>
+                    <p class="text-xs text-gray-500">
+                      <%= l(version.created_at, format: :short) %> • <%= version.created_by.full_name %>
+                    </p>
+                    <% if version.notes.present? %>
+                      <p class="text-xs text-gray-600 mt-1"><%= version.notes %></p>
+                    <% end %>
+                  </div>
+                  <% if version.file_exists? %>
+                    <%= link_to download_document_path(@document, version: version.version_number), class: "text-blue-600 hover:text-blue-900" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">Nenhuma versão encontrada.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

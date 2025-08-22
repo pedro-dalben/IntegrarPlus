@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_21_191515) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_160113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_191515) do
     t.datetime "updated_at", null: false
     t.boolean "active"
     t.index ["name"], name: "index_contract_types_on_name", unique: true
+  end
+
+  create_table "document_versions", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.string "version_number", null: false
+    t.string "file_path", null: false
+    t.bigint "created_by_id", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_document_versions_on_created_by_id"
+    t.index ["document_id", "version_number"], name: "index_document_versions_on_document_id_and_version_number", unique: true
+    t.index ["document_id"], name: "index_document_versions_on_document_id"
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.string "title", limit: 150, null: false
+    t.text "description"
+    t.integer "document_type", default: 0, null: false
+    t.bigint "author_id", null: false
+    t.integer "status", default: 0, null: false
+    t.string "current_version", default: "1.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_documents_on_author_id"
+    t.index ["document_type"], name: "index_documents_on_document_type"
+    t.index ["status"], name: "index_documents_on_status"
   end
 
   create_table "group_permissions", force: :cascade do |t|
@@ -207,6 +234,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_21_191515) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "document_versions", "documents"
+  add_foreign_key "document_versions", "users", column: "created_by_id"
+  add_foreign_key "documents", "users", column: "author_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"
