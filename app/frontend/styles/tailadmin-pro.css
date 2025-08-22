@@ -2,6 +2,7 @@
 layer(base); */
 
 @import "tailwindcss";
+@import "../stylesheets/components/tailadmin.scss";
 
 @plugin '@tailwindcss/forms';
 @plugin 'autoprefixer';
