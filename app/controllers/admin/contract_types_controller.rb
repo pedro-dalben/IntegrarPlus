@@ -72,7 +72,7 @@ module Admin
     end
 
     def contract_type_params
-      params.require(:contract_type).permit(:description, :active)
+      params.require(:contract_type).permit(:name, :description, :active, :requires_company, :requires_cnpj)
     end
   end
 end
