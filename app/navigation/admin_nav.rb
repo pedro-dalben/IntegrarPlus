@@ -6,6 +6,9 @@ module AdminNav
   def items
     [
       { label: 'Dashboard', path: '/admin', icon: 'bi-speedometer2', required_permission: 'dashboard.view' },
+      { label: 'Workspace', path: '/admin/workspace', icon: 'bi-folder2-open', required_permission: 'documents.read' },
+      { label: 'Documentos Liberados', path: '/admin/released_documents', icon: 'bi-check-circle',
+        required_permission: 'documents.read' },
       { label: 'Cadastros', icon: 'bi-people', required_permission: 'professionals.read', children: [
         { label: 'Profissionais', path: '/admin/professionals', icon: 'bi-person',
           required_permission: 'professionals.read' },

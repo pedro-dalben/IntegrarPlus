@@ -1,0 +1,332 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <div class="flex justify-between items-start">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900"><%= @document.title %></h1>
+        <% if @document.description.present? %>
+          <p class="mt-2 text-gray-600"><%= @document.description %></p>
+        <% end %>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to admin_documents_path, class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+          Voltar
+        <% end %>
+        <% if @document.user_can_edit?(current_user) %>
+          <%= link_to admin_document_document_permissions_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+            Permissões
+          <% end %>
+          <%= link_to admin_document_document_tasks_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+            Tarefas
+          <% end %>
+          <%= link_to admin_document_document_status_changes_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+            Status
+          <% end %>
+          <%= link_to admin_document_document_responsibles_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+            Responsáveis
+          <% end %>
+          <%= link_to admin_document_document_releases_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+            Releases
+          <% end %>
+        <% end %>
+        <%= link_to edit_admin_document_path(@document), class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
+          Editar
+        <% end %>
+        <% if @document.user_can_edit?(current_user) %>
+          <%= link_to "#", onclick: "document.getElementById('upload-version-form').classList.toggle('hidden')", class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700" do %>
+            Nova Versão
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Informações do Documento</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Tipo</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                <%= @document.document_type.humanize %>
+              </span>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Status</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full text-yellow-600 bg-yellow-50 border-yellow-200">
+                  🔍 <%= @document.status.humanize %>
+                </span>
+                <% if @document.user_can_edit?(current_user) %>
+                  <%= link_to new_admin_document_document_status_change_path(@document), 
+                      class: "text-blue-600 hover:text-blue-900 text-xs" do %>
+                    Alterar
+                  <% end %>
+                <% end %>
+              </div>
+              <% if @document.document_responsibles.any? %>
+                <p class="text-xs text-gray-500 mt-1">
+                  Responsável: <%= @document.document_responsibles.first.professional.full_name %>
+                </p>
+              <% end %>
+            </dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Versão Atual</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @document.current_version %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Autor</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @document.author&.full_name || 'Autor não definido' %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Criado em</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= l(@document.created_at, format: :long) %></dd>
+          </div>
+          
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Última atualização</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= l(@document.updated_at, format: :long) %></dd>
+          </div>
+        </div>
+      </div>
+
+      <% if @document.latest_version&.file_exists? %>
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Versão Atual</h2>
+            <%= link_to download_admin_document_path(@document), class: "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700" do %>
+              <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Baixar
+            <% end %>
+          </div>
+          
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center">
+              <svg class="w-8 h-8 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <div>
+                <p class="text-sm font-medium text-gray-900">Versão <%= @document.latest_version.version_number %></p>
+                <p class="text-sm text-gray-500">
+                  Criada por <%= @document.latest_version.created_by.full_name %> em <%= l(@document.latest_version.created_at, format: :short) %>
+                </p>
+                <% if @document.latest_version.notes.present? %>
+                  <p class="text-sm text-gray-600 mt-1"><%= @document.latest_version.notes %></p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat de Comentários -->
+        <% if @document.user_can_comment?(current_user) %>
+          <div class="bg-white shadow-md rounded-lg p-6 mt-6" data-controller="comments">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Comentários da Versão</h2>
+            
+            <div id="comments-<%= @document.latest_version.id %>" class="space-y-4 mb-4">
+              <% @document.latest_version.version_comments.ordered.each do |comment| %>
+                <%= render 'version_comments/comment', comment: comment %>
+              <% end %>
+            </div>
+
+            <%= render 'version_comments/form', document_version: @document.latest_version %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <!-- Formulário de Upload de Nova Versão -->
+      <div id="upload-version-form" class="hidden bg-white shadow-md rounded-lg p-6 mt-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Nova Versão</h2>
+        
+        <%= form_with url: upload_version_admin_document_path(@document), method: :post, local: false, 
+            class: "space-y-4", data: { controller: "upload-version" } do |form| %>
+          
+          <div>
+            <label for="file" class="block text-sm font-medium text-gray-700 mb-2">Arquivo</label>
+            <input type="file" name="file" id="file" required 
+                   accept=".pdf,.docx,.xlsx,.jpg,.jpeg,.png"
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+          </div>
+          
+          <div>
+            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
+            <textarea name="notes" id="notes" rows="3" 
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      placeholder="Descreva as mudanças nesta versão..."></textarea>
+          </div>
+          
+          <div class="flex justify-end space-x-3">
+            <button type="button" onclick="document.getElementById('upload-version-form').classList.add('hidden')" 
+                    class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              Cancelar
+            </button>
+            <button type="submit" 
+                    class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              Enviar Versão
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="lg:col-span-1">
+      <!-- Resumo das Tarefas -->
+      <% if @document.user_can_edit?(current_user) %>
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Tarefas</h2>
+            <%= link_to admin_document_document_tasks_path(@document), class: "text-sm text-blue-600 hover:text-blue-900" do %>
+              Ver todas
+            <% end %>
+          </div>
+          
+          <% pending_tasks = @document.document_tasks.pending.limit(3) %>
+          <% completed_tasks = @document.document_tasks.completed.limit(2) %>
+          
+          <% if pending_tasks.any? %>
+            <div class="mb-4">
+              <h3 class="text-sm font-medium text-gray-700 mb-2">Pendentes (<%= @document.document_tasks.pending.count %>)</h3>
+              <div class="space-y-2">
+                <% pending_tasks.each do |task| %>
+                  <div class="flex items-center gap-2 p-2 bg-yellow-50 rounded border-l-4 border-yellow-400">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate"><%= task.title %></p>
+                      <% if task.assigned_to %>
+                        <p class="text-xs text-gray-500">Responsável: <%= task.assigned_to.full_name %></p>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if completed_tasks.any? %>
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-2">Concluídas (<%= @document.document_tasks.completed.count %>)</h3>
+              <div class="space-y-2">
+                <% completed_tasks.each do |task| %>
+                  <div class="flex items-center gap-2 p-2 bg-green-50 rounded border-l-4 border-green-400">
+                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate line-through"><%= task.title %></p>
+                      <p class="text-xs text-gray-500">Concluída em <%= l(task.completed_at, format: :short) %></p>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          
+          <% if @document.document_tasks.empty? %>
+            <p class="text-sm text-gray-500 text-center py-4">Nenhuma tarefa criada ainda.</p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <!-- Resumo das Releases -->
+      <% if @document.user_can_edit?(current_user) %>
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Versões Liberadas</h2>
+            <%= link_to admin_document_document_releases_path(@document), class: "text-sm text-blue-600 hover:text-blue-900" do %>
+              Ver todas
+            <% end %>
+          </div>
+          
+          <% if @document.document_releases.any? %>
+            <div class="mb-4">
+              <h3 class="text-sm font-medium text-gray-700 mb-2">Última Liberação</h3>
+              <div class="flex items-center gap-2 p-2 bg-green-50 rounded border-l-4 border-green-400">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">v<%= @document.document_releases.last.version_number %></p>
+                  <p class="text-xs text-gray-500">
+                    Liberado em <%= l(@document.document_releases.last.released_at, format: :short) %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <p class="text-sm text-gray-500 text-center py-4">Nenhuma versão liberada ainda.</p>
+          <% end %>
+          
+          <% if @document.status == 'aguardando_liberacao' %>
+            <div class="mt-4">
+              <%= link_to new_admin_document_document_release_path(@document), 
+                  class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700" do %>
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Liberar Documento
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Histórico de Versões</h2>
+        
+        <% if @document.document_versions.any? %>
+          <div class="space-y-3">
+            <% @document.document_versions.order(created_at: :desc).each do |version| %>
+              <div class="border border-gray-200 rounded-lg p-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">v<%= version.version_number %></p>
+                    <p class="text-xs text-gray-500">
+                      <%= l(version.created_at, format: :short) %> • <%= version.created_by.full_name %>
+                    </p>
+                    <% if version.notes.present? %>
+                      <p class="text-xs text-gray-600 mt-1"><%= version.notes %></p>
+                    <% end %>
+                    <% if version.version_comments.any? %>
+                      <p class="text-xs text-blue-600 mt-1">
+                        <%= pluralize(version.version_comments.count, 'comentário') %>
+                      </p>
+                    <% end %>
+                  </div>
+                  <div class="flex space-x-2">
+                    <% if version.file_exists? %>
+                      <%= link_to download_admin_document_path(@document, version: version.version_number), class: "text-blue-600 hover:text-blue-900" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                      <% end %>
+                    <% end %>
+                    <% if @document.user_can_comment?(current_user) %>
+                      <button onclick="showVersionComments('<%= version.id %>')" class="text-green-600 hover:text-green-900" title="Ver comentários">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500">Nenhuma versão encontrada.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

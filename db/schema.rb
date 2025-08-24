@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_24_021616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,15 +69,66 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
     t.check_constraint "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
   end
 
+  create_table "document_releases", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.bigint "version_id", null: false
+    t.datetime "released_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "released_by_professional_id", null: false
+    t.index ["document_id"], name: "index_document_releases_on_document_id"
+    t.index ["released_by_professional_id"], name: "index_document_releases_on_released_by_professional_id"
+    t.index ["version_id"], name: "index_document_releases_on_version_id"
+  end
+
+  create_table "document_responsibles", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "professional_id", null: false
+    t.index ["document_id"], name: "index_document_responsibles_on_document_id"
+    t.index ["professional_id"], name: "index_document_responsibles_on_professional_id"
+  end
+
+  create_table "document_status_logs", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.integer "old_status"
+    t.integer "new_status"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "professional_id", null: false
+    t.index ["document_id"], name: "index_document_status_logs_on_document_id"
+    t.index ["professional_id"], name: "index_document_status_logs_on_professional_id"
+  end
+
+  create_table "document_tasks", force: :cascade do |t|
+    t.bigint "document_id", null: false
+    t.string "title"
+    t.text "description"
+    t.integer "priority"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "created_by_professional_id", null: false
+    t.bigint "assigned_to_professional_id"
+    t.bigint "completed_by_professional_id"
+    t.index ["assigned_to_professional_id"], name: "index_document_tasks_on_assigned_to_professional_id"
+    t.index ["completed_by_professional_id"], name: "index_document_tasks_on_completed_by_professional_id"
+    t.index ["created_by_professional_id"], name: "index_document_tasks_on_created_by_professional_id"
+    t.index ["document_id"], name: "index_document_tasks_on_document_id"
+  end
+
   create_table "document_versions", force: :cascade do |t|
     t.bigint "document_id", null: false
     t.string "version_number", null: false
     t.string "file_path", null: false
-    t.bigint "created_by_id", null: false
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_by_id"], name: "index_document_versions_on_created_by_id"
+    t.bigint "created_by_professional_id", null: false
+    t.index ["created_by_professional_id"], name: "index_document_versions_on_created_by_professional_id"
     t.index ["document_id", "version_number"], name: "index_document_versions_on_document_id_and_version_number", unique: true
     t.index ["document_id"], name: "index_document_versions_on_document_id"
   end
@@ -86,12 +137,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
     t.string "title", limit: 150, null: false
     t.text "description"
     t.integer "document_type", default: 0, null: false
-    t.bigint "author_id", null: false
     t.integer "status", default: 0, null: false
     t.string "current_version", default: "1.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["author_id"], name: "index_documents_on_author_id"
+    t.string "released_version"
+    t.bigint "author_professional_id", null: false
+    t.index ["author_professional_id"], name: "index_documents_on_author_professional_id"
     t.index ["document_type"], name: "index_documents_on_document_type"
     t.index ["status"], name: "index_documents_on_status"
   end
@@ -182,9 +234,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.integer "system_permissions", default: [], array: true
     t.index ["contract_type_id"], name: "index_professionals_on_contract_type_id"
     t.index ["cpf"], name: "index_professionals_on_cpf", unique: true
     t.index ["email"], name: "index_professionals_on_email", unique: true
+    t.index ["system_permissions"], name: "index_professionals_on_system_permissions", using: :gin
     t.index ["user_id"], name: "index_professionals_on_user_id"
   end
 
@@ -264,9 +318,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_183341) do
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "users"
+  add_foreign_key "document_releases", "document_versions", column: "version_id"
+  add_foreign_key "document_releases", "documents"
+  add_foreign_key "document_releases", "professionals", column: "released_by_professional_id"
+  add_foreign_key "document_responsibles", "documents"
+  add_foreign_key "document_responsibles", "professionals"
+  add_foreign_key "document_status_logs", "documents"
+  add_foreign_key "document_status_logs", "professionals"
+  add_foreign_key "document_tasks", "documents"
+  add_foreign_key "document_tasks", "professionals", column: "assigned_to_professional_id"
+  add_foreign_key "document_tasks", "professionals", column: "completed_by_professional_id"
+  add_foreign_key "document_tasks", "professionals", column: "created_by_professional_id"
   add_foreign_key "document_versions", "documents"
-  add_foreign_key "document_versions", "users", column: "created_by_id"
-  add_foreign_key "documents", "users", column: "author_id"
+  add_foreign_key "document_versions", "professionals", column: "created_by_professional_id"
+  add_foreign_key "documents", "professionals", column: "author_professional_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"

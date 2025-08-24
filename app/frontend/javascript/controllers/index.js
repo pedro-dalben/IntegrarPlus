@@ -15,3 +15,6 @@ application.register("tom-select", TomSelectController)
 
 import SearchController from "./search_controller"
 application.register("search", SearchController)
+
+import TaskFilterController from "./task_filter_controller"
+application.register("task-filter", TaskFilterController)
