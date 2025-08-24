@@ -1,7 +1,11 @@
 class Document < ApplicationRecord
-  belongs_to :author, class_name: 'User'
+  belongs_to :author, class_name: 'Professional', foreign_key: 'author_professional_id'
   has_many :document_versions, dependent: :destroy
   has_many :document_permissions, dependent: :destroy
+  has_many :document_tasks, dependent: :destroy
+  has_many :document_status_logs, dependent: :destroy
+  has_many :document_responsibles, dependent: :destroy
+  has_many :document_releases, dependent: :destroy
   has_one_attached :file
 
   enum :document_type, {
@@ -25,20 +29,24 @@ class Document < ApplicationRecord
 
   before_validation :set_defaults, on: :create
 
+  def self.access_levels
+    DocumentPermission.access_levels
+  end
+
   def latest_version
     document_versions.order(:version_number).last
   end
 
   def user_can_access?(user, required_level = :visualizar)
-    return true if user == author
-    return true if user.admin?
+    return true if user&.professional == author
+    return true if user&.admin?
 
     permission = find_user_permission(user)
     return false unless permission
 
     required_level_index = self.class.access_levels[required_level.to_s]
     permission_level_index = self.class.access_levels[permission.access_level]
-    
+
     permission_level_index >= required_level_index
   end
 
@@ -80,18 +88,108 @@ class Document < ApplicationRecord
     end
   end
 
-  def create_new_version(file, user, notes = nil)
+  def create_new_version(file, professional, notes = nil)
     next_version = calculate_next_version
     version = document_versions.create!(
       version_number: next_version,
       file_path: generate_file_path(next_version, file),
-      created_by: user,
+      created_by: professional,
       notes: notes
     )
 
     save_file_to_storage(file, version.file_path)
     update!(current_version: next_version)
     version
+  end
+
+  def update_status!(new_status, professional, notes = nil)
+    old_status = status
+    return if old_status == new_status
+
+    update!(status: new_status)
+
+    document_status_logs.create!(
+      old_status: old_status,
+      new_status: new_status,
+      professional: professional,
+      notes: notes
+    )
+  end
+
+  def can_transition_to?(target_status)
+    case status
+    when 'aguardando_revisao'
+      %w[aguardando_correcoes aguardando_liberacao].include?(target_status)
+    when 'aguardando_correcoes'
+      %w[aguardando_revisao].include?(target_status)
+    when 'aguardando_liberacao'
+      %w[liberado aguardando_revisao].include?(target_status)
+    when 'liberado'
+      %w[aguardando_revisao].include?(target_status)
+    else
+      false
+    end
+  end
+
+  def available_status_transitions
+    case status
+    when 'aguardando_revisao'
+      %w[aguardando_correcoes aguardando_liberacao]
+    when 'aguardando_correcoes'
+      %w[aguardando_revisao]
+    when 'aguardando_liberacao'
+      %w[liberado aguardando_revisao]
+    when 'liberado'
+      %w[aguardando_revisao]
+    else
+      []
+    end
+  end
+
+  def status_color
+    case status
+    when 'aguardando_revisao'
+      'text-yellow-600 bg-yellow-50 border-yellow-200'
+    when 'aguardando_correcoes'
+      'text-red-600 bg-red-50 border-red-200'
+    when 'aguardando_liberacao'
+      'text-orange-600 bg-orange-50 border-orange-200'
+    when 'liberado'
+      'text-green-600 bg-green-50 border-green-200'
+    end
+  end
+
+  def status_icon
+    case status
+    when 'aguardando_revisao'
+      '🔍'
+    when 'aguardando_correcoes'
+      '⚠️'
+    when 'aguardando_liberacao'
+      '⏳'
+    when 'liberado'
+      '✅'
+    end
+  end
+
+  def assign_responsible(professional, status = 'active')
+    document_responsibles.create!(
+      professional: professional,
+      status: status
+    )
+  end
+
+  def current_responsible
+    document_responsibles.for_status(status).first&.professional
+  end
+
+  def assign_responsible(professional, status = nil)
+    target_status = status || self.status
+
+    document_responsibles.find_or_initialize_by(status: target_status).tap do |responsible|
+      responsible.professional = professional
+      responsible.save!
+    end
   end
 
   private
@@ -120,5 +218,66 @@ class Document < ApplicationRecord
     full_path = Rails.root.join('storage', file_path)
     FileUtils.mkdir_p(File.dirname(full_path))
     File.binwrite(full_path, file.read)
+  end
+
+  def remove_responsible(status = nil)
+    target_status = status || self.status
+    document_responsibles.for_status(target_status).destroy_all
+  end
+
+  def responsible_for_status(status)
+    document_responsibles.for_status(status).first&.professional
+  end
+
+  def latest_release
+    document_releases.ordered.first
+  end
+
+  def can_be_released?
+    status == 'aguardando_liberacao'
+  end
+
+  def release_document!(professional)
+    return false unless can_be_released?
+
+    ActiveRecord::Base.transaction do
+      # Criar release
+      release = document_releases.create!(
+        version: latest_version,
+        released_by: professional,
+        released_at: Time.current
+      )
+
+      # Copiar arquivo para pasta released
+      copy_file_to_released_folder(release)
+
+      # Atualizar status para liberado
+      update_status!('liberado', professional, 'Documento liberado como versão final')
+
+      # Atualizar versão liberada
+      update!(released_version: latest_version.version_number)
+
+      release
+    end
+  rescue StandardError => e
+    Rails.logger.error "Erro ao liberar documento #{id}: #{e.message}"
+    false
+  end
+
+  def copy_file_to_released_folder(release)
+    source_path = Rails.root.join('storage', latest_version.file_path)
+    target_path = Rails.root.join(release.released_version_path)
+
+    FileUtils.mkdir_p(File.dirname(target_path))
+    FileUtils.cp(source_path, target_path)
+  end
+
+  def next_release_version
+    if latest_release
+      major, _minor = latest_release.version_number.split('.').map(&:to_i)
+      "#{major + 1}.0"
+    else
+      '1.0'
+    end
   end
 end
