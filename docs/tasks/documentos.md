@@ -104,7 +104,7 @@ Implemente o **módulo de permissões de acesso por documento**.
 
 ---
 
-## 3. Histórico de Versões + Chat de Revisão
+## 3. Histórico de Versões + Chat de Revisão ✅ CONCLUÍDA
 
 ```markdown
 Implemente o **histórico de versões** com chat de revisão integrado.
@@ -140,12 +140,25 @@ Implemente o **histórico de versões** com chat de revisão integrado.
 - Chat estilo “thread” com avatar, nome do autor e data/hora.  
 
 ### Segurança
-- Apenas quem tem permissão de comentar pode interagir no chat.  
+- Apenas quem tem permissão de comentar pode interagir no chat.
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo VersionComment para comentários das versões
+- ✅ Controller VersionCommentsController com CRUD completo
+- ✅ Views parciais para exibir, criar e editar comentários
+- ✅ Chat de comentários na view de show do documento
+- ✅ Verificação de permissões para comentar
+- ✅ Contador de comentários no histórico de versões
+- ✅ Controller Stimulus para gerenciar interface de comentários
+- ✅ Rotas aninhadas para comentários
+- ✅ Funcionalidades de editar e excluir comentários
+- ✅ Validações de permissões para edição/exclusão
+- ✅ Interface moderna com avatares e timestamps  
 ```
 
 ---
 
-## 4. To-do List Vinculada
+## 4. To-do List Vinculada ✅ CONCLUÍDA
 
 ```markdown
 Implemente uma **lista de tarefas vinculada a cada documento**.
@@ -170,11 +183,28 @@ Implemente uma **lista de tarefas vinculada a cada documento**.
 - To-do list aparece como aba lateral ao lado do documento.  
 - Cores: vermelho = alta, amarelo = média, verde = baixa.  
 - Usuários devem poder filtrar tarefas por status (pendente/concluída).  
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo DocumentTask com enums para prioridades
+- ✅ Controller DocumentTasksController com CRUD completo
+- ✅ Views para listar, criar e editar tarefas
+- ✅ Sistema de prioridades com cores visuais (🔴🟡🟢)
+- ✅ Atribuição de responsáveis (opcional)
+- ✅ Controle de status (pendente/concluída)
+- ✅ Filtros dinâmicos por status com Stimulus
+- ✅ Cards visuais para cada tarefa
+- ✅ Integração com sistema de permissões
+- ✅ Link "Tarefas" na view de show do documento
+- ✅ Resumo das tarefas na sidebar do documento
+- ✅ Rotas aninhadas para tarefas de documentos
+- ✅ Validações de campos obrigatórios
+- ✅ Interface moderna com Tailwind CSS
+- ✅ Suporte a modo escuro
 ```
 
 ---
 
-## 5. Status do Documento
+## 5. Status do Documento ✅ CONCLUÍDA
 
 ```markdown
 Implemente controle de **status do ciclo de vida do documento**.
@@ -186,10 +216,10 @@ Implemente controle de **status do ciclo de vida do documento**.
 - Liberado
 
 ### Regras
-- Status inicial = “Aguardando revisão” (upload).  
+- Status inicial = "Aguardando revisão" (upload).  
 - Status pode ser atualizado manualmente por editores ou automaticamente:
-  - Ao liberar → muda para “Liberado”.  
-  - Se adicionada revisão após liberação → volta para “Aguardando revisão”.  
+  - Ao liberar → muda para "Liberado".  
+  - Se adicionada revisão após liberação → volta para "Aguardando revisão".  
 - Histórico de mudanças de status deve ser registrado (quem, quando, qual mudança).
 
 ### Persistência
@@ -198,11 +228,27 @@ Implemente controle de **status do ciclo de vida do documento**.
 ### UX
 - Exibir status em destaque no cabeçalho da tela.  
 - Mostrar timeline com mudanças de status no histórico.
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo DocumentStatusLog com enums para status
+- ✅ Controller DocumentStatusChangesController para gerenciar mudanças
+- ✅ Sistema de transições controladas entre status
+- ✅ Validação de transições permitidas por regras de negócio
+- ✅ Histórico completo de mudanças com timeline visual
+- ✅ Formulário para alterar status com observações
+- ✅ Interface moderna com ícones e cores para cada status
+- ✅ Integração com sistema de permissões
+- ✅ Links "Status" e "Alterar" na view de show do documento
+- ✅ Rotas aninhadas para controle de status
+- ✅ Métodos no modelo Document para controle de status
+- ✅ Registro automático de logs de mudança
+- ✅ Design responsivo com Tailwind CSS
+- ✅ Suporte a modo escuro
 ```
 
 ---
 
-## 6. Atribuição de Responsáveis
+## 6. Atribuição de Responsáveis ✅ CONCLUÍDA
 
 ```markdown
 Adicione atribuição de **responsáveis por status**.
@@ -219,11 +265,24 @@ Adicione atribuição de **responsáveis por status**.
 ### UX
 - No cabeçalho do documento, exibir responsável atual.  
 - Dropdown para trocar responsável quando necessário.
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo DocumentResponsible com enums para status
+- ✅ Controller DocumentResponsiblesController para gerenciar responsáveis
+- ✅ Sistema de atribuição de responsáveis por status
+- ✅ Validação de unicidade por status
+- ✅ Interface para atribuir/remover responsáveis
+- ✅ Exibição do responsável atual no documento
+- ✅ Links "Responsáveis" na view de show do documento
+- ✅ Rotas aninhadas para controle de responsáveis
+- ✅ Métodos no modelo Document para gerenciar responsáveis
+- ✅ Design responsivo com Tailwind CSS
+- ✅ Suporte a modo escuro
 ```
 
 ---
 
-## 7. Liberação de Documento
+## 7. Liberação de Documento ✅ CONCLUÍDA
 
 ```markdown
 Implemente o fluxo de **liberação de documentos**.
@@ -233,20 +292,38 @@ Implemente o fluxo de **liberação de documentos**.
 - Ao liberar, criar cópia da versão atual em `/released/` dentro do diretório do documento.  
 - Versão liberada recebe incremento de parte inteira (ex: 1.0 → 2.0).  
 - Se houver revisão após liberação (2.1, 2.2), a próxima liberação será 3.0.  
-- Apenas a última versão liberada fica disponível na tela de “Documentos Liberados”.
+- Apenas a última versão liberada fica disponível na tela de "Documentos Liberados".
 
 ### Persistência
 - Campo `released_version` no documento.  
 - Nova tabela `document_releases`: document_id, version_id, released_by, released_at.
 
 ### UX
-- Botão “Liberar Documento” disponível apenas para editores.  
-- Tela de confirmação: “Deseja liberar versão X.Y como versão final X+1.0?”.  
+- Botão "Liberar Documento" disponível apenas para editores.  
+- Tela de confirmação: "Deseja liberar versão X.Y como versão final X+1.0?".
+
+### ✅ IMPLEMENTADO
+- ✅ Modelo DocumentRelease com relacionamentos
+- ✅ Controller DocumentReleasesController para liberação
+- ✅ Sistema de liberação controlada por status
+- ✅ Criação automática de cópia em pasta /released/
+- ✅ Incremento automático de versão (1.0 → 2.0)
+- ✅ Histórico completo de liberações
+- ✅ Tela de confirmação com detalhes da liberação
+- ✅ Lista de todas as liberações do documento
+- ✅ Download de versões liberadas
+- ✅ Botão de liberação integrado ao documento
+- ✅ Links "Releases" na view de show do documento
+- ✅ Rotas aninhadas para controle de releases
+- ✅ Métodos no modelo Document para liberação
+- ✅ Validações de negócio robustas
+- ✅ Design responsivo com Tailwind CSS
+- ✅ Suporte a modo escuro
 ```
 
 ---
 
-## 8. Área de Documentos Liberados
+## 8. Área de Documentos Liberados ✅ CONCLUÍDA
 
 ```markdown
 Implemente tela de **listagem de documentos liberados**.
@@ -260,11 +337,25 @@ Implemente tela de **listagem de documentos liberados**.
 ### UX
 - Listagem estilo tabela com filtros no topo.  
 - Ação principal: botão de download/visualização da versão final.
+
+### ✅ IMPLEMENTADO
+- ✅ Controller ReleasedDocumentsController para listar documentos liberados
+- ✅ Sistema de filtros avançados (tipo, autor, período de liberação)
+- ✅ Ordenação por múltiplos critérios (data, título, autor, versão)
+- ✅ Paginação para grandes volumes de documentos
+- ✅ Tabela responsiva com ações de visualização e download
+- ✅ Página de detalhes do documento liberado
+- ✅ Integração com sistema de permissões
+- ✅ Link na navegação principal
+- ✅ Design moderno com Tailwind CSS
+- ✅ Suporte a modo escuro
+- ✅ Estado vazio quando não há documentos
+- ✅ Verificação de existência de arquivos para download
 ```
 
 ---
 
-## 9. Índice de Documentos (Workspace)
+## 9. Índice de Documentos (Workspace) ✅ CONCLUÍDA
 
 ```markdown
 Crie listagem geral de documentos em andamento (Workspace).
@@ -272,12 +363,29 @@ Crie listagem geral de documentos em andamento (Workspace).
 ### Regras
 - Mostrar: título, autor, versão atual, status, responsável, última modificação.  
 - Filtros: por status, responsável, tipo de documento, data.  
-- Botão “Meus documentos” deve filtrar onde o usuário é responsável.  
+- Botão "Meus documentos" deve filtrar onde o usuário é responsável.  
 - Paginação recomendada para performance.
 
 ### UX
 - Listagem em tabela, com ícones visuais indicando status (cores diferentes).  
 - Ações rápidas: abrir documento, ver histórico, ver tarefas.
+
+### ✅ IMPLEMENTADO
+- ✅ Controller WorkspaceController para listar documentos em andamento
+- ✅ Sistema de filtros avançados (status, tipo, autor, responsável, período)
+- ✅ Filtro especial "Meus Documentos" para responsáveis
+- ✅ Ordenação por múltiplos critérios (modificação, título, autor, status, criação)
+- ✅ Paginação para performance com 20 itens por página
+- ✅ Tabela responsiva com informações essenciais
+- ✅ Status visuais com cores e ícones diferentes
+- ✅ Ações rápidas: abrir documento, ver histórico, ver tarefas
+- ✅ Estatísticas em tempo real (total e meus documentos)
+- ✅ Integração com sistema de permissões
+- ✅ Link na navegação principal
+- ✅ Design moderno com Tailwind CSS
+- ✅ Suporte a modo escuro
+- ✅ Estado vazio quando não há documentos
+- ✅ Botão para criar novo documento
 ```
 
 ---
