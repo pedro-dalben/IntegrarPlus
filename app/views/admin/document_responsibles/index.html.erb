@@ -1,0 +1,135 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Responsáveis do Documento
+        </h1>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <%= @document.title %>
+        </p>
+      </div>
+      
+      <%= link_to admin_document_path(@document), 
+          class: "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Voltar ao Documento
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Adicionar Responsável -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Adicionar Responsável</h2>
+    
+    <%= form_with url: admin_document_document_responsibles_path(@document), method: :post, local: true, class: "space-y-4" do |form| %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= form.label :professional_id, "Profissional", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+          <%= form.select :professional_id, 
+              options_from_collection_for_select(@professionals, :id, :full_name), 
+              { prompt: "Selecione um profissional" }, 
+              { class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" } %>
+        </div>
+        
+        <div>
+          <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+          <%= form.select :status, 
+              Document.statuses.keys.map { |status| [status.humanize, status] }, 
+              { prompt: "Selecione um status" }, 
+              { class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" } %>
+        </div>
+      </div>
+      
+      <div class="flex justify-end">
+        <%= form.submit "Adicionar Responsável", 
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Lista de Responsáveis -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Responsáveis Atuais</h2>
+    
+    <% if @responsibles.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Profissional
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Atribuído em
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <% @responsibles.each do |responsible| %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                      <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          <%= responsible.professional.full_name.first.upcase %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900 dark:text-white">
+                        <%= responsible.professional.full_name %>
+                      </div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <%= responsible.professional.email %>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full <%= responsible.status_color %>">
+                    <%= responsible.status.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <%= l(responsible.created_at, format: :short) %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <%= button_to admin_document_document_responsible_path(@document, responsible), 
+                      method: :delete, 
+                      class: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300",
+                      data: { confirm: "Tem certeza que deseja remover este responsável?" } do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+        </svg>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          Nenhum responsável atribuído.
+        </p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          Adicione responsáveis para gerenciar este documento.
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>

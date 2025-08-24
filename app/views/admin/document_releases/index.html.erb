@@ -1,0 +1,107 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Releases do Documento
+        </h1>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <%= @document.title %>
+        </p>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <%= link_to admin_document_path(@document), 
+            class: "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Voltar
+        <% end %>
+        
+        <%= link_to new_admin_document_document_release_path(@document), 
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Novo Release
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <% if @releases.any? %>
+    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+      <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+        <% @releases.each do |release| %>
+          <li>
+            <div class="px-4 py-4 sm:px-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                      <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div class="flex items-center">
+                      <p class="text-sm font-medium text-gray-900 dark:text-white">
+                        Versão <%= release.version %>
+                      </p>
+                      <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                        Release
+                      </span>
+                    </div>
+                    <div class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                      <p>
+                        Criado por <%= release.professional&.name || 'N/A' %> em 
+                        <%= l(release.created_at, format: :long) %>
+                      </p>
+                    </div>
+                    <% if release.notes.present? %>
+                      <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        <p><%= release.notes %></p>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <% if release.file_exists? %>
+                    <%= link_to download_admin_document_document_release_path(@document, release), 
+                        class: "inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      Download
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum release encontrado</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Comece criando o primeiro release para este documento.
+      </p>
+      <div class="mt-6">
+        <%= link_to new_admin_document_document_release_path(@document), 
+            class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Criar Release
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

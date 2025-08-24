@@ -1,0 +1,226 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="flex items-center gap-4">
+          <%= link_to admin_document_path(@document), class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" do %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+          <% end %>
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+              Tarefas do Documento
+            </h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              <%= @document.title %>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v1H7V5zm6 3H7v1h6V8zm-6 3h6v1H7v-1z" clip-rule="evenodd"></path>
+            </svg>
+            <span><%= @tasks.count %> tarefas</span>
+          </div>
+        </div>
+        
+        <%= link_to new_admin_document_document_task_path(@document), class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+          Nova Tarefa
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-8">
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Filtros</h3>
+    
+    <%= form_with url: admin_document_document_tasks_path(@document), method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do |f| %>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+        <%= f.select :status, 
+            options_for_select([
+              ['Todas', ''],
+              ['Pendentes', 'pending'],
+              ['Concluídas', 'completed']
+            ], params[:status]), 
+            {}, 
+            class: "w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prioridade</label>
+        <%= f.select :priority, 
+            options_for_select([
+              ['Todas', ''],
+              ['Baixa', 'baixa'],
+              ['Média', 'media'],
+              ['Alta', 'alta']
+            ], params[:priority]), 
+            {}, 
+            class: "w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Responsável</label>
+        <%= f.select :assigned_to_id, 
+            options_for_select([
+              ['Todos', ''],
+              ['Não atribuídas', 'unassigned']
+            ] + Professional.order(:full_name).map { |p| [p.full_name, p.id] }, params[:assigned_to_id]), 
+            {}, 
+            class: "w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+      
+      <div class="flex items-end gap-2">
+        <%= f.submit "Filtrar", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" %>
+        <%= link_to "Limpar", admin_document_document_tasks_path(@document), class: "px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Lista de Tarefas -->
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+    <% if @tasks.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Tarefa
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Prioridade
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Responsável
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Prazo
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Criada por
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <% @tasks.each do |task| %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                      <%= task.title %>
+                    </div>
+                    <% if task.description.present? %>
+                      <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                        <%= task.description %>
+                      </div>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= task.completed? ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' %>">
+                    <%= task.completed? ? 'Concluída' : 'Pendente' %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= task.priority_color %>">
+                    <%= task.priority.humanize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <%= task.assigned_to&.full_name || 'Não atribuída' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <span class="text-gray-400">Sem prazo</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <%= task.created_by.full_name %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div class="flex items-center gap-2">
+                    <% unless task.completed? %>
+                      <%= button_to complete_admin_document_document_task_path(@document, task), 
+                          method: :patch, 
+                          class: "text-green-600 hover:text-green-900 dark:hover:text-green-400",
+                          title: "Marcar como concluída" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      <% end %>
+                    <% else %>
+                      <%= button_to reopen_admin_document_document_task_path(@document, task), 
+                          method: :patch, 
+                          class: "text-yellow-600 hover:text-yellow-900 dark:hover:text-yellow-400",
+                          title: "Reabrir tarefa" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                      <% end %>
+                    <% end %>
+                    
+                    <%= link_to edit_admin_document_document_task_path(@document, task), 
+                        class: "text-blue-600 hover:text-blue-900 dark:hover:text-blue-400",
+                        title: "Editar" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                    <% end %>
+                    
+                    <%= button_to admin_document_document_task_path(@document, task), 
+                        method: :delete, 
+                        class: "text-red-600 hover:text-red-900 dark:hover:text-red-400",
+                        title: "Excluir",
+                        data: { confirm: 'Tem certeza que deseja excluir esta tarefa?' } do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Paginação -->
+      <div class="bg-white dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6">
+        <%== pagy_nav(@pagy) if @pagy %>
+      </div>
+    <% else %>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhuma tarefa encontrada</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Comece criando uma nova tarefa para este documento.
+        </p>
+        <div class="mt-6">
+          <%= link_to new_admin_document_document_task_path(@document), class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Nova Tarefa
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
