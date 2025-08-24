@@ -1,0 +1,2 @@
+module DocumentResponsiblesHelper
+end
