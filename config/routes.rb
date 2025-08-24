@@ -1,21 +1,17 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get "version_comments/create"
-  get "version_comments/update"
-  get "version_comments/destroy"
-  get "document_permissions/index"
-  get "document_permissions/create"
-  get "document_permissions/destroy"
-  resources :documents do
-    member do
-      get :download
-      post :upload_version
-    end
-    
-    resources :document_permissions, only: [:index, :create, :destroy]
-    resources :version_comments, only: [:create, :update, :destroy]
-  end
+  get 'workspace/index'
+  get 'released_documents/index'
+  get 'released_documents/show'
+  get 'workspace/index'
+  get 'version_comments/create'
+  get 'version_comments/update'
+  get 'version_comments/destroy'
+  get 'document_permissions/index'
+  get 'document_permissions/create'
+  get 'document_permissions/destroy'
+
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -45,6 +41,7 @@ Rails.application.routes.draw do
   get 'styleguide' => 'styleguide#index'
 
   namespace :admin do
+    resources :professional_permissions, only: %i[index update]
     resource :profile, only: %i[show edit update]
 
     resources :professionals do
@@ -78,6 +75,32 @@ Rails.application.routes.draw do
     end
     resources :contract_types
     resources :groups
+
+    resources :released_documents, only: %i[index show]
+    get 'workspace', to: 'workspace#index'
+    resources :documents do
+      member do
+        get :download
+        post :upload_version
+      end
+
+      resources :document_permissions, only: %i[index create destroy]
+      resources :version_comments, only: %i[create update destroy]
+      resources :document_tasks, except: [:show] do
+        member do
+          patch :complete
+          patch :reopen
+        end
+      end
+      resources :document_status_changes, only: %i[index new create]
+      resources :document_responsibles, only: %i[index create destroy]
+      resources :document_releases, only: %i[index new create] do
+        member do
+          get :download
+        end
+      end
+    end
+
     get '/', to: 'dashboard#index'
     get '/ui', to: 'ui#index'
   end
