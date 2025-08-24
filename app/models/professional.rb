@@ -16,6 +16,16 @@ class Professional < ApplicationRecord
   has_many :professional_specializations, dependent: :destroy
   has_many :specializations, through: :professional_specializations
 
+  # Document associations
+  has_many :documents, foreign_key: :author_professional_id, dependent: :destroy
+  has_many :document_versions, foreign_key: :created_by_professional_id, dependent: :destroy
+  has_many :document_responsibles, dependent: :destroy
+  has_many :document_tasks, foreign_key: :created_by_professional_id, dependent: :destroy
+  has_many :assigned_tasks, class_name: 'DocumentTask', foreign_key: :assigned_to_professional_id, dependent: :destroy
+  has_many :completed_tasks, class_name: 'DocumentTask', foreign_key: :completed_by_professional_id, dependent: :destroy
+  has_many :document_status_logs, dependent: :destroy
+  has_many :document_releases, foreign_key: :released_by_professional_id, dependent: :destroy
+
   validates :full_name, presence: true
   validates :cpf, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
@@ -29,6 +39,45 @@ class Professional < ApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:full_name) }
+
+  # System permissions for document management
+  SYSTEM_PERMISSIONS = {
+    can_access_documents: 0,      # Pode acessar área de documentos
+    can_create_documents: 1,      # Pode criar novos documentos
+    can_view_released: 2,         # Pode ver documentos liberados
+    can_manage_permissions: 3,    # Pode gerenciar permissões de outros
+    can_assign_responsibles: 4,   # Pode atribuir responsáveis
+    can_release_documents: 5      # Pode liberar documentos
+  }.freeze
+
+  # Permission verification methods
+  def can_access_documents?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_access_documents])
+  end
+
+  def can_create_documents?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_create_documents])
+  end
+
+  def can_view_released?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_view_released])
+  end
+
+  def can_manage_permissions?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_manage_permissions])
+  end
+
+  def can_assign_responsibles?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_assign_responsibles])
+  end
+
+  def can_release_documents?
+    system_permissions.include?(SYSTEM_PERMISSIONS[:can_release_documents])
+  end
+
+  def has_any_document_permission?
+    system_permissions.any?
+  end
 
   def active_for_authentication?
     super && active?
@@ -137,5 +186,9 @@ class Professional < ApplicationRecord
 
     update!(user: new_user)
     new_user
+  end
+
+  def name
+    full_name
   end
 end
