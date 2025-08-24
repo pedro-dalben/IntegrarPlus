@@ -16,8 +16,8 @@ class DocumentPermission < ApplicationRecord
 
   scope :for_user, ->(user) { where(user: user) }
   scope :for_group, ->(group) { where(group: group) }
-  scope :for_user_and_groups, ->(user) { 
-    where(user: user).or(where(group: user.groups)) 
+  scope :for_user_and_groups, lambda { |user|
+    where(user: user).or(where(group: user.groups))
   }
 
   def grantee_name
@@ -31,12 +31,10 @@ class DocumentPermission < ApplicationRecord
   private
 
   def user_or_group_present
-    if user_id.blank? && group_id.blank?
-      errors.add(:base, 'Deve especificar um usuário ou grupo')
-    end
+    errors.add(:base, 'Deve especificar um usuário ou grupo') if user_id.blank? && group_id.blank?
 
-    if user_id.present? && group_id.present?
-      errors.add(:base, 'Não pode especificar usuário e grupo simultaneamente')
-    end
+    return unless user_id.present? && group_id.present?
+
+    errors.add(:base, 'Não pode especificar usuário e grupo simultaneamente')
   end
 end

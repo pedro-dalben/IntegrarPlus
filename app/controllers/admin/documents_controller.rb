@@ -13,15 +13,13 @@ class Admin::DocumentsController < Admin::BaseController
                          .order(created_at: :desc)
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @document = Document.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @document = Document.new(document_params)

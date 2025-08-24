@@ -6,9 +6,7 @@ class VersionComment < ApplicationRecord
 
   scope :ordered, -> { order(created_at: :asc) }
 
-  def document
-    document_version.document
-  end
+  delegate :document, to: :document_version
 
   def can_be_edited_by?(user)
     user == self.user || document.user_can_edit?(user)

@@ -24,15 +24,13 @@ class Admin::DocumentTasksController < Admin::BaseController
     @pagy, @tasks = pagy(@tasks.order(created_at: :desc), items: 20)
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @task = @document.document_tasks.build
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @task = @document.document_tasks.build(task_params)

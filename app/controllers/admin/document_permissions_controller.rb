@@ -85,8 +85,6 @@ class Admin::DocumentPermissionsController < Admin::BaseController
       User.find_by(id: grantee_id)
     when 'group'
       Group.find_by(id: grantee_id)
-    else
-      nil
     end
   end
 end

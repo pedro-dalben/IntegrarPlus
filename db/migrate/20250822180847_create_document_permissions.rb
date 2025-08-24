@@ -10,9 +10,10 @@ class CreateDocumentPermissions < ActiveRecord::Migration[8.0]
     end
 
     add_index :document_permissions, :access_level
-    add_index :document_permissions, [:document_id, :user_id], unique: true, where: "user_id IS NOT NULL"
-    add_index :document_permissions, [:document_id, :group_id], unique: true, where: "group_id IS NOT NULL"
-    
-    add_check_constraint :document_permissions, "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
+    add_index :document_permissions, %i[document_id user_id], unique: true, where: 'user_id IS NOT NULL'
+    add_index :document_permissions, %i[document_id group_id], unique: true, where: 'group_id IS NOT NULL'
+
+    add_check_constraint :document_permissions, 'user_id IS NOT NULL OR group_id IS NOT NULL',
+                         name: 'check_user_or_group_present'
   end
 end
