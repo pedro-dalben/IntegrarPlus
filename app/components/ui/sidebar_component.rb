@@ -3,67 +3,94 @@
 class Ui::SidebarComponent < ViewComponent::Base
   include Admin::SidebarHelper
 
-  def initialize(current_path: nil, **options)
+  def initialize(current_path: nil, current_user: nil, **options)
     @current_path = current_path
+    @current_user = current_user
     @options = options
   end
 
   private
 
-  attr_reader :current_path, :options
+  attr_reader :current_path, :current_user, :options
 
   def menu_items
-    [
+    all_items = [
       {
         title: 'Dashboard',
         path: '/admin/dashboard',
         icon: dashboard_icon,
         active: current_path&.start_with?('/admin/dashboard'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Profissionais',
         path: '/admin/professionals',
         icon: professionals_icon,
         active: current_path&.start_with?('/admin/professionals'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Grupos',
         path: '/admin/groups',
         icon: groups_icon,
         active: current_path&.start_with?('/admin/groups'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Especialidades',
         path: '/admin/specialities',
         icon: specialities_icon,
         active: current_path&.start_with?('/admin/specialities'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Especializações',
         path: '/admin/specializations',
         icon: specializations_icon,
         active: current_path&.start_with?('/admin/specializations'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Tipos de Contrato',
         path: '/admin/contract_types',
         icon: contract_types_icon,
         active: current_path&.start_with?('/admin/contract_types'),
-        badge: nil
+        badge: nil,
+        visible: nil
       },
       {
         title: 'Documentos',
-        path: '/documents',
+        path: '/admin/workspace',
         icon: documents_icon,
-        active: current_path&.start_with?('/documents'),
-        badge: nil
+        active: current_path&.start_with?('/admin/workspace'),
+        badge: nil,
+        visible: current_user&.admin? || current_user&.permit?('documents.access') || current_user&.professional&.can_access_documents?
+      },
+      {
+        title: 'Documentos Liberados',
+        path: '/admin/released_documents',
+        icon: released_documents_icon,
+        active: current_path&.start_with?('/admin/released_documents'),
+        badge: nil,
+        visible: current_user&.admin? || current_user&.permit?('documents.view_released') || current_user&.professional&.can_view_released?
+      },
+      {
+        title: 'Gerenciar Permissões',
+        path: '/admin/professional_permissions',
+        icon: permissions_icon,
+        active: current_path&.start_with?('/admin/professional_permissions'),
+        badge: nil,
+        visible: current_user&.admin? || current_user&.permit?('documents.manage_permissions')
       }
     ]
+
+    # Filtrar itens baseado na visibilidade
+    all_items.select { |item| item[:visible].nil? || item[:visible] }
   end
 
   def support_items
@@ -111,6 +138,14 @@ class Ui::SidebarComponent < ViewComponent::Base
 
   def documents_icon
     '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>'.html_safe
+  end
+
+  def released_documents_icon
+    '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/><path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/><path d="M12 3c0 1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2z"/><path d="M12 21c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2z"/></svg>'.html_safe
+  end
+
+  def permissions_icon
+    '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>'.html_safe
   end
 
   def settings_icon
