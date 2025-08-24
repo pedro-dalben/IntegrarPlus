@@ -13,8 +13,7 @@ class User < ApplicationRecord
   has_many :invites, dependent: :destroy
   has_many :memberships, dependent: :destroy
   has_many :groups, through: :memberships
-  has_many :documents, foreign_key: :author_id, dependent: :destroy
-  has_many :document_versions, foreign_key: :created_by_id, dependent: :destroy
+
   has_many :document_permissions, dependent: :destroy
   has_many :version_comments, dependent: :destroy
 

@@ -3,7 +3,7 @@ class DocumentPermission < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :group, optional: true
 
-  enum access_level: {
+  enum :access_level, {
     visualizar: 0,
     comentar: 1,
     editar: 2

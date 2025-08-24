@@ -1,6 +1,6 @@
 class DocumentVersion < ApplicationRecord
   belongs_to :document
-  belongs_to :created_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'Professional'
   has_many :version_comments, dependent: :destroy
 
   validates :version_number, presence: true
