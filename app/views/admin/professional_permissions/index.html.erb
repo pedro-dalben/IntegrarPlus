@@ -1,0 +1,73 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Gerenciar Permissões
+        </h1>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Configure as permissões de sistema para cada profissional
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Profissionais -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <% @professionals.each do |professional| %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <%= professional.full_name %>
+          </h3>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= professional.active? ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' %>">
+            <%= professional.active? ? 'Ativo' : 'Inativo' %>
+          </span>
+        </div>
+
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <%= professional.email %>
+        </div>
+
+        <%= form_with model: professional, url: admin_professional_permission_path(professional), method: :patch, local: true do |f| %>
+          <div class="space-y-3">
+            <% Professional::SYSTEM_PERMISSIONS.each do |permission, value| %>
+              <div class="flex items-center">
+                <%= f.check_box "system_permissions", 
+                    { multiple: true, 
+                      checked: professional.system_permissions&.include?(value),
+                      class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" }, 
+                    value, 
+                    nil %>
+                <%= f.label "system_permissions_#{permission}", 
+                    permission.to_s.humanize, 
+                    class: "ml-2 block text-sm text-gray-900 dark:text-gray-300" %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-6">
+            <%= f.submit "Atualizar Permissões", 
+                class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Estado vazio -->
+  <% if @professionals.empty? %>
+    <div class="text-center py-12">
+      <div class="mx-auto h-12 w-12 text-gray-400">
+        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+        </svg>
+      </div>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum profissional encontrado</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Não há profissionais cadastrados no sistema.
+      </p>
+    </div>
+  <% end %>
+</div>

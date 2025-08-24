@@ -36,7 +36,7 @@
           xl:static
         "
       >
-        <%= render Ui::SidebarComponent.new(current_path: request.path) %>
+        <%= render Ui::SidebarComponent.new(current_path: request.path, current_user: current_user) %>
       </aside>
 
       <!-- Content Area -->
