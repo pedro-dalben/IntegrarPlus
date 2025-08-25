@@ -52,12 +52,12 @@ export default class extends Controller {
 
       case 'date':
         maskOptions = {
-          mask: '00/00/0000',
+          mask: 'DD/MM/YYYY',
           lazy: false,
           blocks: {
-            '00': { mask: IMask.MaskedRange, from: 1, to: 31 },
-            '00': { mask: IMask.MaskedRange, from: 1, to: 12 },
-            '0000': { mask: IMask.MaskedRange, from: 1900, to: 9999 }
+            'DD': { mask: IMask.MaskedRange, from: 1, to: 31 },
+            'MM': { mask: IMask.MaskedRange, from: 1, to: 12 },
+            'YYYY': { mask: IMask.MaskedRange, from: 1900, to: 9999 }
           }
         };
         break;
