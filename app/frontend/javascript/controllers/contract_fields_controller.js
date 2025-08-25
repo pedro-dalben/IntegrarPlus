@@ -11,45 +11,21 @@ export default class extends Controller {
     this.initializeContractFields();
   }
 
-  contractTypeChanged() {
-    this.loadContractFields();
+  contractTypeChanged(event) {
+    this.currentTypeValue = event.target.value;
+    this.updateFields();
   }
 
   initializeContractFields() {
-    this.loadContractFields();
-  }
-
-  async loadContractFields() {
-    const contractTypeId = this.contractTypeSelectTarget.value;
-
-    if (!contractTypeId) {
-      this.fieldsContainerTarget.innerHTML = '';
-      return;
-    }
-
-    try {
-      const response = await fetch(`/admin/contract_types/${contractTypeId}/fields`);
-      const html = await response.text();
-      this.fieldsContainerTarget.innerHTML = html;
-    } catch (error) {
-      this.fieldsContainerTarget.innerHTML =
-        '<p class="text-red-500">Erro ao carregar campos do contrato</p>';
-    }
-  }
-
-  setupContractTypeListener() {
-    const contractTypeSelect = this.element
-      .closest('form')
-      .querySelector('select[name*="contract_type_id"]');
-    if (contractTypeSelect) {
-      contractTypeSelect.addEventListener('change', () => {
-        this.currentTypeValue = contractTypeSelect.value;
-        this.updateFields();
-      });
-    }
+    this.updateFields();
   }
 
   updateFields() {
+    if (!this.currentTypeValue) {
+      this.hideAllFields();
+      return;
+    }
+
     const currentType = this.contractTypesValue.find(
       ct => ct.id.toString() === this.currentTypeValue
     );
@@ -63,11 +39,15 @@ export default class extends Controller {
   }
 
   toggleField(field, show) {
+    if (!field) return;
+
     if (show) {
       field.style.display = 'block';
+      field.setAttribute('aria-hidden', 'false');
       this.setFieldRequired(field, true);
     } else {
       field.style.display = 'none';
+      field.setAttribute('aria-hidden', 'true');
       this.setFieldRequired(field, false);
       this.clearFieldValue(field);
     }

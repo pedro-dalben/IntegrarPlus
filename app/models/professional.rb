@@ -10,7 +10,10 @@ class Professional < ApplicationRecord
   belongs_to :contract_type, optional: true
   belongs_to :user, optional: true
 
-  has_many :groups, through: :user
+  # Associações diretas com grupos
+  has_many :professional_groups, dependent: :destroy
+  has_many :groups, through: :professional_groups
+
   has_many :professional_specialities, dependent: :destroy
   has_many :specialities, through: :professional_specialities
   has_many :professional_specializations, dependent: :destroy

@@ -8,6 +8,8 @@ class Group < ApplicationRecord
 
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
+  has_many :professional_groups, dependent: :destroy
+  has_many :professionals, through: :professional_groups
   has_many :group_permissions, dependent: :destroy
   has_many :permissions, through: :group_permissions
   has_many :document_permissions, dependent: :destroy

@@ -65,7 +65,7 @@ module Admin
     end
 
     def contract_type_params
-      params.expect(contract_type: %i[name description active])
+      params.require(:contract_type).permit(:name, :description, :requires_company, :requires_cnpj, :active)
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_25_135657) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -200,6 +200,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_135657) do
     t.index ["key"], name: "index_permissions_on_key", unique: true
   end
 
+  create_table "professional_groups", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.bigint "group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_professional_groups_on_group_id"
+    t.index ["professional_id", "group_id"], name: "index_professional_groups_on_professional_id_and_group_id", unique: true
+    t.index ["professional_id"], name: "index_professional_groups_on_professional_id"
+  end
+
   create_table "professional_specialities", force: :cascade do |t|
     t.bigint "professional_id", null: false
     t.bigint "speciality_id", null: false
@@ -339,6 +349,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_135657) do
   add_foreign_key "invites", "users"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
+  add_foreign_key "professional_groups", "groups"
+  add_foreign_key "professional_groups", "professionals"
   add_foreign_key "professional_specialities", "professionals"
   add_foreign_key "professional_specialities", "specialities"
   add_foreign_key "professional_specializations", "professionals"
