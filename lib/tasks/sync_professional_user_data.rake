@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 namespace :data do
-  desc "Sincronizar dados entre Professional e User"
+  desc 'Sincronizar dados entre Professional e User'
   task sync_professional_user: :environment do
-    puts "=== Sincronização Professional <-> User ==="
+    puts '=== Sincronização Professional <-> User ==='
     puts
 
     professionals_updated = 0
@@ -11,59 +11,51 @@ namespace :data do
     errors = []
 
     Professional.includes(:user).find_each do |professional|
-      begin
-        if professional.user.present?
-          # Sincronizar dados existentes
-          user_updates = {}
+      if professional.user.present?
+        # Sincronizar dados existentes
+        user_updates = {}
 
-          if professional.user.name != professional.full_name
-            user_updates[:name] = professional.full_name
-          end
+        user_updates[:name] = professional.full_name if professional.user.name != professional.full_name
 
-          if professional.user.email != professional.email
-            user_updates[:email] = professional.email
-          end
+        user_updates[:email] = professional.email if professional.user.email != professional.email
 
-          if user_updates.any?
-            professional.user.update!(user_updates)
-            puts "✅ Usuário #{professional.user.id} atualizado: #{user_updates}"
-            professionals_updated += 1
-          end
-        else
-          # Criar usuário se não existir e profissional estiver ativo
-          if professional.active?
-            user = professional.create_user_automatically
-            if user
-              puts "✅ Usuário criado para profissional #{professional.full_name} (#{professional.email})"
-              users_created += 1
-            end
-          else
-            puts "⏭️  Profissional #{professional.full_name} inativo - usuário não criado"
-          end
+        if user_updates.any?
+          professional.user.update!(user_updates)
+          puts "✅ Usuário #{professional.user.id} atualizado: #{user_updates}"
+          professionals_updated += 1
         end
-      rescue => e
-        error_msg = "❌ Erro com profissional #{professional.id} (#{professional.full_name}): #{e.message}"
-        puts error_msg
-        errors << error_msg
+      elsif professional.active?
+        # Criar usuário se não existir e profissional estiver ativo
+        user = professional.create_user_automatically
+        if user
+          puts "✅ Usuário criado para profissional #{professional.full_name} (#{professional.email})"
+          users_created += 1
+        end
+      else
+        puts "⏭️  Profissional #{professional.full_name} inativo - usuário não criado"
       end
+    rescue StandardError => e
+      error_msg = "❌ Erro com profissional #{professional.id} (#{professional.full_name}): #{e.message}"
+      puts error_msg
+      errors << error_msg
     end
 
     puts
-    puts "=== Resumo ==="
+    puts '=== Resumo ==='
     puts "Usuários atualizados: #{professionals_updated}"
     puts "Usuários criados: #{users_created}"
     puts "Erros: #{errors.count}"
 
     if errors.any?
       puts
-      puts "=== Erros Detalhados ==="
+      puts '=== Erros Detalhados ==='
       errors.each { |error| puts error }
     end
   end
 
-  desc "Verificar inconsistências entre Professional e User"
+  desc 'Verificar inconsistências entre Professional e User'
   task check_professional_user_consistency: :environment do
-    puts "=== Verificação de Consistência Professional <-> User ==="
+    puts '=== Verificação de Consistência Professional <-> User ==='
     puts
 
     inconsistencies = []
@@ -107,7 +99,7 @@ namespace :data do
 
       puts "Execute 'rake data:sync_professional_user' para corrigir."
     else
-      puts "✅ Nenhuma inconsistência encontrada!"
+      puts '✅ Nenhuma inconsistência encontrada!'
     end
   end
 end

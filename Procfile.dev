@@ -1,4 +1,4 @@
-web: bin/rails server -p 3001
+web: bin/rails server -p 3000
 vite: bin/vite dev
 jobs: bin/rails solid_queue:start
 meilisearch: meilisearch --http-addr 127.0.0.1:7700 --env development --db-path ./storage/meilisearch --master-key XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w

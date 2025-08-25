@@ -5,9 +5,7 @@ class InviteMailer < ApplicationMailer
     @professional = @user.professional
 
     # Preload specialities se professional existir
-    if @professional
-      @professional = Professional.includes(:specialities).find(@professional.id)
-    end
+    @professional = Professional.includes(:specialities).find(@professional.id) if @professional
 
     mail(
       to: @user.email,
