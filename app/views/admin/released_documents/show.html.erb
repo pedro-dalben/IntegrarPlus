@@ -1,222 +1,228 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex items-center justify-between">
-      <div>
-        <div class="flex items-center gap-4">
-          <%= link_to admin_released_documents_path, class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" do %>
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-          <% end %>
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-              <%= @document.title %>
-            </h1>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Documento liberado - Versão <%= @latest_release&.version_number %>
-            </p>
-          </div>
-        </div>
-      </div>
-      
+<!-- Header -->
+<div class="mb-8">
+  <div class="flex items-center justify-between">
+    <div>
       <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        <%= link_to admin_released_documents_path, class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
-          Liberado
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Informações do Documento -->
-    <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Informações do Documento</h3>
-        </div>
-        <div class="px-6 py-4">
-          <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Título</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.title %></dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.document_type.humanize %></dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Autor</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.author&.full_name || 'Autor não definido' %></dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.current_responsible&.full_name || 'Responsável não definido' %></dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Criação</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@document.created_at, format: :long) %></dd>
-            </div>
-            
-            <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Liberação</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@latest_release&.created_at, format: :long) if @latest_release %></dd>
-            </div>
-            
-            <div class="sm:col-span-2">
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Descrição</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.description || 'Sem descrição' %></dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-
-      <!-- Versões -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg mt-6">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Versões</h3>
-        </div>
-        <div class="px-6 py-4">
-          <div class="space-y-4">
-            <% @document.document_versions.order(:version_number).each do |version| %>
-              <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <div class="flex items-center gap-4">
-                  <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                      <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v1H7V5zm6 3H7v1h6V8zm0 3H7v1h6v-1z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="text-sm font-medium text-gray-900 dark:text-white">
-                      Versão <%= version.version_number %>
-                    </div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                      Criada por <%= version.created_by&.full_name || 'Usuário não definido' %> em <%= l(version.created_at, format: :short) %>
-                    </div>
-                    <% if version.notes.present? %>
-                      <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        <%= version.notes %>
-                      </div>
-                    <% end %>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <% if version.file.attached? %>
-                    <%= link_to download_admin_document_path(@document, version: version.version_number), class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
-                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                      </svg>
-                      Download
-                    <% end %>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-          </div>
+        <% end %>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+            <%= @document.title %>
+          </h1>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Documento liberado - Versão <%= @latest_release&.version_number %>
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="lg:col-span-1">
-      <!-- Informações da Liberação -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Informações da Liberação</h3>
-        </div>
-        <div class="px-6 py-4">
-          <% if @latest_release %>
-            <dl class="space-y-4">
-              <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Versão Liberada</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.version_number %></dd>
-              </div>
-              
-              <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Liberado por</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.released_by&.full_name || 'Usuário não definido' %></dd>
-              </div>
-              
-              <div>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data da Liberação</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@latest_release.created_at, format: :long) %></dd>
-              </div>
-              
-              <% if @latest_release.notes.present? %>
-                <div>
-                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Observações</dt>
-                  <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.notes %></dd>
-                </div>
-              <% end %>
-            </dl>
-            
-            <div class="mt-6">
-              <%= link_to download_admin_document_document_release_path(@document, @latest_release), class: "w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                Download da Versão Liberada
-              <% end %>
-            </div>
-          <% else %>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Nenhuma informação de liberação disponível.</p>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- Histórico de Status -->
-      <div class="bg-white dark:bg-gray-800 shadow rounded-lg mt-6">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Histórico de Status</h3>
-        </div>
-        <div class="px-6 py-4">
-          <div class="flow-root">
-            <ul class="-mb-8">
-              <% @document.document_status_logs.order(:created_at).each_with_index do |log, index| %>
-                <li>
-                  <div class="relative pb-8">
-                    <% unless index == @document.document_status_logs.count - 1 %>
-                      <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></span>
-                    <% end %>
-                    <div class="relative flex space-x-3">
-                      <div>
-                        <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white dark:ring-gray-800">
-                          <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
-                          </svg>
-                        </span>
-                      </div>
-                      <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                        <div>
-                          <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Status alterado para <span class="font-medium text-gray-900 dark:text-white"><%= log.new_status.humanize %></span>
-                          </p>
-                          <% if log.notes.present? %>
-                            <p class="text-sm text-gray-600 dark:text-gray-300 mt-1"><%= log.notes %></p>
-                          <% end %>
-                        </div>
-                        <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                          <time datetime="<%= log.created_at.iso8601 %>"><%= l(log.created_at, format: :short) %></time>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        Liberado
       </div>
     </div>
   </div>
 </div>
 
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <!-- Informações do Documento -->
+  <div class="lg:col-span-2">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Informações do Documento</h3>
+      </div>
+      <div class="px-6 py-4">
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Título</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.title %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.document_type.humanize %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Categoria</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+              <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full <%= @document.category_color %>">
+                <%= @document.category_icon %> <%= @document.category.humanize %>
+              </span>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Autor</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.author&.full_name || 'Autor não definido' %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.current_responsible&.full_name || 'Responsável não definido' %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Criação</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@document.created_at, format: :long) %></dd>
+          </div>
+
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Liberação</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@latest_release&.created_at, format: :long) if @latest_release %></dd>
+          </div>
+
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Descrição</dt>
+            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @document.description || 'Sem descrição' %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Versões -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg mt-6">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Versões</h3>
+      </div>
+      <div class="px-6 py-4">
+        <div class="space-y-4">
+          <% @document.document_versions.order(:version_number).each do |version| %>
+            <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <div class="flex items-center gap-4">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <div class="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                    <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v1H7V5zm6 3H7v1h6V8zm0 3H7v1h6v-1z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">
+                    Versão <%= version.version_number %>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Criada por <%= version.created_by&.full_name || 'Usuário não definido' %> em <%= l(version.created_at, format: :short) %>
+                  </div>
+                  <% if version.notes.present? %>
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                      <%= version.notes %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <% if version.file.attached? %>
+                  <%= link_to download_admin_document_path(@document, version: version.version_number), class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="lg:col-span-1">
+    <!-- Informações da Liberação -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Informações da Liberação</h3>
+      </div>
+      <div class="px-6 py-4">
+        <% if @latest_release %>
+          <dl class="space-y-4">
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Versão Liberada</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.version_number %></dd>
+            </div>
+
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Liberado por</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.released_by&.full_name || 'Usuário não definido' %></dd>
+            </div>
+
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data da Liberação</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@latest_release.created_at, format: :long) %></dd>
+            </div>
+
+            <% if @latest_release.notes.present? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Observações</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @latest_release.notes %></dd>
+              </div>
+            <% end %>
+          </dl>
+
+          <div class="mt-6">
+            <%= link_to download_admin_document_document_release_path(@document, @latest_release), class: "w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" do %>
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Download da Versão Liberada
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Nenhuma informação de liberação disponível.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Histórico de Status -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg mt-6">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Histórico de Status</h3>
+      </div>
+      <div class="px-6 py-4">
+        <div class="flow-root">
+          <ul class="-mb-8">
+            <% @document.document_status_logs.order(:created_at).each_with_index do |log, index| %>
+              <li>
+                <div class="relative pb-8">
+                  <% unless index == @document.document_status_logs.count - 1 %>
+                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></span>
+                  <% end %>
+                  <div class="relative flex space-x-3">
+                    <div>
+                      <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white dark:ring-gray-800">
+                        <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                      <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                          Status alterado para <span class="font-medium text-gray-900 dark:text-white"><%= log.new_status.humanize %></span>
+                        </p>
+                        <% if log.notes.present? %>
+                          <p class="text-sm text-gray-600 dark:text-gray-300 mt-1"><%= log.notes %></p>
+                        <% end %>
+                      </div>
+                      <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                        <time datetime="<%= log.created_at.iso8601 %>"><%= l(log.created_at, format: :short) %></time>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

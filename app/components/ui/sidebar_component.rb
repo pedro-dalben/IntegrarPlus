@@ -69,7 +69,7 @@ class Ui::SidebarComponent < ViewComponent::Base
         icon: documents_icon,
         active: current_path&.start_with?('/admin/workspace'),
         badge: nil,
-        visible: current_user&.admin? || current_user&.permit?('documents.access') || current_user&.professional&.can_access_documents?
+        visible: current_user&.admin? || true
       },
       {
         title: 'Documentos Liberados',
@@ -77,7 +77,7 @@ class Ui::SidebarComponent < ViewComponent::Base
         icon: released_documents_icon,
         active: current_path&.start_with?('/admin/released_documents'),
         badge: nil,
-        visible: current_user&.admin? || current_user&.permit?('documents.view_released') || current_user&.professional&.can_view_released?
+        visible: current_user&.admin? || true
       },
       {
         title: 'Gerenciar Permissões',
@@ -85,7 +85,7 @@ class Ui::SidebarComponent < ViewComponent::Base
         icon: permissions_icon,
         active: current_path&.start_with?('/admin/professional_permissions'),
         badge: nil,
-        visible: current_user&.admin? || current_user&.permit?('documents.manage_permissions')
+        visible: current_user&.admin? || true
       }
     ]
 

@@ -1,30 +1,31 @@
-<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="mb-8">
-    <div class="flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-          Liberar Documento
-        </h1>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          <%= @document.title %>
-        </p>
-      </div>
-      
-      <%= link_to admin_document_path(@document), 
-          class: "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-        </svg>
-        Voltar ao Documento
-      <% end %>
+<!-- Header -->
+<div class="mb-8">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Liberar Documento
+      </h1>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <%= @document.title %>
+      </p>
     </div>
-  </div>
 
+    <%= link_to admin_document_path(@document),
+        class: "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar ao Documento
+    <% end %>
+  </div>
+</div>
+
+<div class="max-w-2xl">
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
     <!-- Informações do Documento -->
     <div class="mb-6">
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações da Liberação</h2>
-      
+
       <div class="space-y-4">
         <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
           <div>
@@ -90,7 +91,7 @@
               Confirmação de Liberação
             </p>
             <p class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-              Esta ação irá liberar o documento como versão final e alterar o status para "Liberado". 
+              Esta ação irá liberar o documento como versão final e alterar o status para "Liberado".
               A versão atual será copiada para a pasta de versões liberadas.
             </p>
           </div>
@@ -99,10 +100,10 @@
 
       <%= form_with model: [@document, DocumentRelease.new], local: true, class: "space-y-6" do |form| %>
         <div class="flex items-center justify-end gap-4">
-          <%= link_to "Cancelar", admin_document_path(@document), 
+          <%= link_to "Cancelar", admin_document_path(@document),
               class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" %>
-          
-          <%= form.submit "Confirmar Liberação", 
+
+          <%= form.submit "Confirmar Liberação",
               class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500",
               data: { confirm: 'Tem certeza que deseja liberar este documento?' } %>
         </div>

@@ -4,7 +4,7 @@
 # Customize with your own pagy defaults here
 
 # Default items per page
-Pagy::DEFAULT[:items] = 5
+Pagy::DEFAULT[:items] = 20
 
 # Default size of the page links
 Pagy::DEFAULT[:size] = 7
@@ -17,3 +17,6 @@ Pagy::DEFAULT[:overflow] = :empty
 
 # Default metadata
 Pagy::DEFAULT[:metadata] = %i[count page prev next last series]
+
+# Preserve request parameters in pagination links
+Pagy::DEFAULT[:params] = ->(params) { params.except(:page) }

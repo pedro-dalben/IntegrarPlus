@@ -17,7 +17,9 @@ export default class extends Controller {
 
     this.dropZoneTarget.addEventListener('dragleave', (e) => {
       e.preventDefault()
-      this.dropZoneTarget.classList.remove('border-blue-400', 'bg-blue-50')
+      if (!this.dropZoneTarget.contains(e.relatedTarget)) {
+        this.dropZoneTarget.classList.remove('border-blue-400', 'bg-blue-50')
+      }
     })
 
     this.dropZoneTarget.addEventListener('drop', (e) => {
@@ -32,24 +34,17 @@ export default class extends Controller {
   }
 
   handleFileSelect(event) {
-    console.log('handleFileSelect chamado')
     const file = event.target.files[0]
     if (file) {
-      console.log('Arquivo selecionado:', file.name)
       this.handleFile(file)
-    } else {
-      console.log('Nenhum arquivo encontrado')
     }
   }
 
   handleFile(file) {
-    console.log('handleFile chamado com:', file.name)
     if (!this.validateFile(file)) {
-      console.log('Arquivo inválido')
       return
     }
 
-    console.log('Arquivo válido, mostrando info')
     this.showFileInfo(file)
     this.showProgress()
   }
@@ -72,7 +67,7 @@ export default class extends Controller {
     return true
   }
 
-    showFileInfo(file) {
+  showFileInfo(file) {
     this.fileNameTarget.textContent = `${file.name} (${this.formatFileSize(file.size)})`
     this.fileInfoTarget.classList.remove('hidden')
 
@@ -82,14 +77,13 @@ export default class extends Controller {
         const dataTransfer = new DataTransfer()
         dataTransfer.items.add(file)
         fileInput.files = dataTransfer.files
-        console.log('Arquivo associado ao input:', file.name)
       } catch (error) {
         console.error('Erro ao associar arquivo:', error)
       }
     }
   }
 
-      showProgress() {
+  showProgress() {
     this.progressContainerTarget.classList.remove('hidden')
     this.submitButtonTarget.disabled = false
 

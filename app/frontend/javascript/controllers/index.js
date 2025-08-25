@@ -10,6 +10,9 @@ application.register("contract-fields", ContractFieldsController)
 import DependentSpecializationsController from "./dependent_specializations_controller"
 application.register("dependent-specializations", DependentSpecializationsController)
 
+import PermissionsController from "./permissions_controller"
+application.register("permissions", PermissionsController)
+
 import TomSelectController from "./tom_select_controller"
 application.register("tom-select", TomSelectController)
 

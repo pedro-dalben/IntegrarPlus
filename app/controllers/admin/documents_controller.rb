@@ -8,9 +8,32 @@ class Admin::DocumentsController < Admin::BaseController
   MAX_FILE_SIZE = 50.megabytes
 
   def index
-    @documents = Document.includes(:author, :document_versions)
-                         .where(author_professional_id: current_user.professional.id)
-                         .order(created_at: :desc)
+    # Busca com MeiliSearch
+    if params[:query].present?
+      begin
+        search_results = Document.search(params[:query], {
+          filter: "author_professional_id = #{current_user.professional.id}",
+          sort: [build_sort_param]
+        })
+
+        # Paginação manual para resultados do MeiliSearch
+        page = (params[:page] || 1).to_i
+        per_page = 20
+        offset = (page - 1) * per_page
+
+        @documents = search_results[offset, per_page] || []
+        @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
+      rescue => e
+        Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
+        # Fallback para busca local
+        @documents = perform_local_search
+        @pagy, @documents = pagy(@documents, items: 20)
+      end
+    else
+      # Busca local sem MeiliSearch
+      @documents = perform_local_search
+      @pagy, @documents = pagy(@documents, items: 20)
+    end
   end
 
   def show; end
@@ -87,12 +110,36 @@ class Admin::DocumentsController < Admin::BaseController
 
   private
 
+  def perform_local_search
+    Document.includes(:author, :document_versions)
+            .where(author_professional_id: current_user.professional.id)
+            .order(created_at: :desc)
+  end
+
+  def build_sort_param
+    order_by = params[:order_by] || 'created_at'
+    direction = params[:direction] || 'desc'
+
+    case order_by
+    when 'title'
+      "title:#{direction}"
+    when 'updated_at'
+      "updated_at:#{direction}"
+    when 'created_at'
+      "created_at:#{direction}"
+    else
+      "created_at:desc"
+    end
+  end
+
+
+
   def set_document
     @document = Document.find(params[:id])
   end
 
   def document_params
-    params.require(:document).permit(:title, :description, :document_type, :status, :file)
+    params.require(:document).permit(:title, :description, :document_type, :category, :status, :file)
   end
 
   def handle_file_upload

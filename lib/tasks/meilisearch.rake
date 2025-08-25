@@ -13,6 +13,10 @@ namespace :meilisearch do
     ContractType.reindex!
     puts '✓ ContractTypes indexed'
 
+    puts 'Indexing Document data...'
+    Document.reindex!
+    puts '✓ Documents indexed'
+
     puts 'All data indexed successfully!'
   end
 
@@ -29,6 +33,10 @@ namespace :meilisearch do
     puts 'Clearing ContractType index...'
     ContractType.clear_index!
     puts '✓ ContractTypes cleared'
+
+    puts 'Clearing Document index...'
+    Document.clear_index!
+    puts '✓ Documents cleared'
 
     puts 'All indexes cleared successfully!'
   end

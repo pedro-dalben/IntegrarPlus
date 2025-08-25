@@ -47,12 +47,12 @@ module ApplicationHelper
              end
 
     if pagy.prev
-      html << link_to('« Primeira', pagy_url_for(pagy, 1),
+      html << link_to('« Primeira', build_pagy_url(pagy, 1),
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 
     if pagy.prev
-      html << link_to('‹ Anterior', pagy_url_for(pagy, pagy.prev),
+      html << link_to('‹ Anterior', build_pagy_url(pagy, pagy.prev),
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 
@@ -63,7 +63,7 @@ module ApplicationHelper
           html << content_tag(:span, item,
                               class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg shadow-sm')
         else
-          html << link_to(item, pagy_url_for(pagy, page_number),
+          html << link_to(item, build_pagy_url(pagy, page_number),
                           class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
         end
       elsif item == :gap
@@ -72,16 +72,23 @@ module ApplicationHelper
     end
 
     if pagy.next
-      html << link_to('Próxima ›', pagy_url_for(pagy, pagy.next),
+      html << link_to('Próxima ›', build_pagy_url(pagy, pagy.next),
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 
     if pagy.next
-      html << link_to('Última »', pagy_url_for(pagy, pagy.pages),
+      html << link_to('Última »', build_pagy_url(pagy, pagy.pages),
                       class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors')
     end
 
     html << '</nav>'
     html.html_safe
+  end
+
+  def build_pagy_url(pagy, page)
+    # Preservar todos os parâmetros exceto a página
+    params = request.query_parameters.except(:page)
+    params[:page] = page
+    url_for(params)
   end
 end

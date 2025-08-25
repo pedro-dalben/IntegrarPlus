@@ -22,7 +22,7 @@ class DocumentReleasesController < ApplicationController
     end
 
     begin
-      release = @document.release_document!(current_professional)
+      release = @document.release_document!(current_user.professional)
 
       if release
         redirect_to @document, notice: "Documento liberado com sucesso como versão #{release.version_number}."

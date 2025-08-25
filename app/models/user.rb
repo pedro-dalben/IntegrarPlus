@@ -24,7 +24,11 @@ class User < ApplicationRecord
   end
 
   def professional_full_name
-    professional&.full_name || full_name
+    if professional&.full_name.present?
+      professional.full_name
+    else
+      full_name
+    end
   end
 
   def permit?(permission_key)

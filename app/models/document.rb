@@ -1,4 +1,6 @@
 class Document < ApplicationRecord
+  include MeiliSearch::Rails
+
   belongs_to :author, class_name: 'Professional', foreign_key: 'author_professional_id'
   has_many :document_versions, dependent: :destroy
   has_many :document_permissions, dependent: :destroy
@@ -8,11 +10,68 @@ class Document < ApplicationRecord
   has_many :document_releases, dependent: :destroy
   has_one_attached :file
 
+  meilisearch do
+    searchable_attributes %i[title description author_name responsible_name document_type_name category_name status_name]
+    filterable_attributes %i[document_type status category author_professional_id]
+    sortable_attributes %i[created_at updated_at title]
+
+    attribute :author_name do
+      author&.full_name
+    end
+
+    attribute :responsible_name do
+      current_responsible&.full_name
+    end
+
+    attribute :document_type_name do
+      document_type.humanize
+    end
+
+    attribute :category_name do
+      category.humanize
+    end
+
+    attribute :status_name do
+      status.humanize
+    end
+
+    attribute :searchable_title do
+      title
+    end
+
+    attribute :searchable_description do
+      description
+    end
+
+    attribute :status do
+      status_before_type_cast
+    end
+
+    attribute :document_type do
+      document_type_before_type_cast
+    end
+
+    attribute :category do
+      category_before_type_cast
+    end
+  end
+
   enum :document_type, {
     relatorio: 0,
     laudo: 1,
     contrato: 2,
-    outros: 3
+    outros: 3,
+    cartilha: 4,
+    anexo: 5,
+    documento: 6,
+    formulario: 7,
+    manual: 8,
+    pgrs: 9,
+    planilha: 10,
+    pop: 11,
+    requisicao: 12,
+    regimento_interno: 13,
+    termo: 14
   }
 
   enum :status, {
@@ -22,10 +81,18 @@ class Document < ApplicationRecord
     liberado: 3
   }
 
+  enum :category, {
+    geral: 0,
+    tecnica: 1,
+    recursos_humanos: 2,
+    administrativa: 3
+  }
+
   validates :title, presence: true, length: { maximum: 150 }
   validates :document_type, presence: true
   validates :current_version, presence: true
   validates :status, presence: true
+  validates :category, presence: true
 
   before_validation :set_defaults, on: :create
 
@@ -67,6 +134,9 @@ class Document < ApplicationRecord
   end
 
   def grant_permission(user_or_group, access_level)
+    raise ArgumentError, 'Usuário ou grupo deve ser especificado' if user_or_group.nil?
+    raise ArgumentError, 'Nível de acesso deve ser especificado' if access_level.nil?
+
     if user_or_group.is_a?(User)
       document_permissions.find_or_initialize_by(user: user_or_group).tap do |permission|
         permission.access_level = access_level
@@ -77,6 +147,8 @@ class Document < ApplicationRecord
         permission.access_level = access_level
         permission.save!
       end
+    else
+      raise ArgumentError, 'Tipo inválido. Deve ser User ou Group'
     end
   end
 
@@ -176,6 +248,32 @@ class Document < ApplicationRecord
     end
   end
 
+  def category_color
+    case category
+    when 'geral'
+      'text-blue-600 bg-blue-50 border-blue-200'
+    when 'tecnica'
+      'text-purple-600 bg-purple-50 border-purple-200'
+    when 'recursos_humanos'
+      'text-green-600 bg-green-50 border-green-200'
+    when 'administrativa'
+      'text-orange-600 bg-orange-50 border-orange-200'
+    end
+  end
+
+  def category_icon
+    case category
+    when 'geral'
+      '📄'
+    when 'tecnica'
+      '⚙️'
+    when 'recursos_humanos'
+      '👥'
+    when 'administrativa'
+      '📊'
+    end
+  end
+
   def assign_responsible(professional, status = 'active')
     document_responsibles.create!(
       professional: professional,
@@ -194,48 +292,6 @@ class Document < ApplicationRecord
       responsible.professional = professional
       responsible.save!
     end
-  end
-
-  private
-
-  def set_defaults
-    self.status ||= :aguardando_revisao
-    self.current_version ||= '1.0'
-  end
-
-  def calculate_next_version
-    if document_versions.empty?
-      '1.0'
-    else
-      latest = document_versions.order(:version_number).last.version_number
-      major, minor = latest.split('.').map(&:to_i)
-      "#{major}.#{minor + 1}"
-    end
-  end
-
-  def generate_file_path(version, file)
-    extension = File.extname(file.original_filename)
-    "documents/#{id}/versions/#{version}#{extension}"
-  end
-
-  def save_file_to_storage(file, file_path)
-    full_path = Rails.root.join('storage', file_path)
-    FileUtils.mkdir_p(File.dirname(full_path))
-
-    if file.respond_to?(:tempfile)
-      FileUtils.cp(file.tempfile.path, full_path)
-    else
-      File.binwrite(full_path, file.read)
-    end
-  end
-
-  def remove_responsible(status = nil)
-    target_status = status || self.status
-    document_responsibles.for_status(target_status).destroy_all
-  end
-
-  def responsible_for_status(status)
-    document_responsibles.for_status(status).first&.professional
   end
 
   def latest_release
@@ -271,6 +327,49 @@ class Document < ApplicationRecord
   rescue StandardError => e
     Rails.logger.error "Erro ao liberar documento #{id}: #{e.message}"
     false
+  end
+
+  private
+
+  def set_defaults
+    self.status ||= :aguardando_revisao
+    self.current_version ||= '1.0'
+    self.category ||= :geral
+  end
+
+  def calculate_next_version
+    if document_versions.empty?
+      '1.0'
+    else
+      latest = document_versions.order(:version_number).last.version_number
+      major, minor = latest.split('.').map(&:to_i)
+      "#{major}.#{minor + 1}"
+    end
+  end
+
+  def generate_file_path(version, file)
+    extension = File.extname(file.original_filename)
+    "documents/#{id}/versions/#{version}#{extension}"
+  end
+
+  def save_file_to_storage(file, file_path)
+    full_path = Rails.root.join('storage', file_path)
+    FileUtils.mkdir_p(File.dirname(full_path))
+
+    if file.respond_to?(:tempfile)
+      FileUtils.cp(file.tempfile.path, full_path)
+    else
+      File.binwrite(full_path, file.read)
+    end
+  end
+
+  def remove_responsible(status = nil)
+    target_status = status || self.status
+    document_responsibles.for_status(target_status).destroy_all
+  end
+
+  def responsible_for_status(status)
+    document_responsibles.for_status(status).first&.professional
   end
 
   def copy_file_to_released_folder(release)
