@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   module SidebarHelper
     def sidebar_menu_item_active?(path)

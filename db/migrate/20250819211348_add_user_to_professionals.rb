@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserToProfessionals < ActiveRecord::Migration[8.0]
   def change
     add_reference :professionals, :user, null: true, foreign_key: true

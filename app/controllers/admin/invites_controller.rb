@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class InvitesController < BaseController
     before_action :set_user, only: %i[index create]

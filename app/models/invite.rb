@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Invite < ApplicationRecord
   belongs_to :user
 
@@ -8,7 +10,7 @@ class Invite < ApplicationRecord
   before_validation :set_expires_at, on: :create
 
   scope :pending, -> { where(confirmed_at: nil).where('expires_at > ?', Time.current) }
-  scope :expired, -> { where(confirmed_at: nil).where('expires_at <= ?', Time.current) }
+  scope :expired, -> { where(confirmed_at: nil).where(expires_at: ..Time.current) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
   def expired?

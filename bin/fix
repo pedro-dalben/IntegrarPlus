@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "🔧 Corrigindo problemas automaticamente..."
+
+echo ""
+echo "📝 Corrigindo JavaScript com ESLint..."
+npx eslint app/javascript/ app/frontend/javascript/ --ext .js,.mjs,.cjs --fix
+
+echo ""
+echo "🎨 Formatando código com Prettier..."
+npx prettier --write app/javascript/ app/frontend/javascript/ --ext .js,.mjs,.cjs
+
+echo ""
+echo "💎 Corrigindo Ruby com RuboCop..."
+bundle exec rubocop -a
+
+echo ""
+echo "✅ Correções automáticas concluídas!"

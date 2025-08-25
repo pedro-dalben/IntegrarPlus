@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :meilisearch do
   desc 'Index all data in Meilisearch'
   task index: :environment do

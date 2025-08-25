@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Preview all emails at http://localhost:3000/rails/mailers/system_mailer_mailer
 class SystemMailerPreview < ActionMailer::Preview
 end

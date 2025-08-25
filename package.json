@@ -1,8 +1,19 @@
 {
   "devDependencies": {
+    "@eslint/js": "^9.34.0",
     "@playwright/test": "^1.55.0",
+    "@prettier/plugin-ruby": "^4.0.4",
     "@types/node": "^24.3.0",
     "autoprefixer": "^10.4.21",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^54.1.1",
+    "eslint-plugin-n": "^17.21.3",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-ruby": "^0.3.1",
     "rollup": "^4.46.3",
     "vite": "^5.4.19",
     "vite-plugin-rails": "^0.5.0",
@@ -26,12 +37,17 @@
     "fullcalendar": "^6.1.15",
     "imask": "^7.6.1",
     "jsvectormap": "^1.6.0",
-    "prettier": "^3.6.2",
     "prismjs": "^1.30.0",
     "stimulus-use": "^0.52.3",
     "swiper": "^11.1.14",
     "tailwindcss": "^4.1.12",
     "tom-select": "^2.4.3"
   },
-  "scripts": {}
+  "scripts": {
+    "lint": "eslint . --ext .js,.mjs,.cjs",
+    "lint:fix": "eslint . --ext .js,.mjs,.cjs --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check"
+  }
 }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Permission < ApplicationRecord
   validates :key, presence: true, uniqueness: { case_sensitive: false }
 
@@ -11,6 +13,6 @@ class Permission < ApplicationRecord
   end
 
   def self.exists?(key)
-    where(key: key).exists?
+    exists?(key: key)
   end
 end

@@ -1,41 +1,46 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["userSelect", "groupSelect"]
+  static targets = ['granteeTypeSelect', 'userSelect', 'groupSelect'];
 
   connect() {
-    console.log('🔗 Permissions controller connected')
-    console.log('User select target:', this.hasUserSelectTarget)
-    console.log('Group select target:', this.hasGroupSelectTarget)
-
-    // Aguardar um pouco para o Tom Select inicializar
-    setTimeout(() => {
-      this.toggleGranteeType()
-    }, 200)
+    this.initializeGranteeType();
   }
 
   toggleGranteeType() {
-    console.log('🔄 toggleGranteeType called')
-    const granteeTypeSelect = this.element.querySelector('select[name="grantee_type"]')
-
+    const granteeTypeSelect = this.granteeTypeSelectTarget;
     if (!granteeTypeSelect) {
-      console.log('❌ Grantee type select not found')
-      return
+      return;
     }
 
-    const granteeType = granteeTypeSelect.value
-    console.log('📋 Grantee type:', granteeType)
+    const granteeType = granteeTypeSelect.value;
 
     if (granteeType === 'user') {
-      console.log('👤 Showing user select')
-      this.userSelectTarget.style.display = 'block'
-      this.groupSelectTarget.style.display = 'none'
+      this.showUserSelect();
     } else if (granteeType === 'group') {
-      console.log('👥 Showing group select')
-      this.userSelectTarget.style.display = 'none'
-      this.groupSelectTarget.style.display = 'block'
+      this.showGroupSelect();
     }
+  }
 
-    console.log('✅ Toggle completed')
+  showUserSelect() {
+    if (this.hasUserSelectTarget) {
+      this.userSelectTarget.classList.remove('hidden');
+    }
+    if (this.hasGroupSelectTarget) {
+      this.groupSelectTarget.classList.add('hidden');
+    }
+  }
+
+  showGroupSelect() {
+    if (this.hasUserSelectTarget) {
+      this.userSelectTarget.classList.add('hidden');
+    }
+    if (this.hasGroupSelectTarget) {
+      this.groupSelectTarget.classList.remove('hidden');
+    }
+  }
+
+  initializeGranteeType() {
+    this.toggleGranteeType();
   }
 }

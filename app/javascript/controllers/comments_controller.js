@@ -1,41 +1,61 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["form", "commentsList"]
+  static targets = ['form', 'content', 'editButton', 'cancelButton'];
 
   connect() {
-    this.hideForm()
+    this.setupEventListeners();
   }
 
-  showForm() {
-    this.formTarget.classList.remove('hidden')
+  setupEventListeners() {
+    this.editButtonTargets.forEach(button => {
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        this.editComment(button.dataset.commentId);
+      });
+    });
+
+    this.cancelButtonTargets.forEach(button => {
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        this.cancelEdit(button.dataset.commentId);
+      });
+    });
   }
 
-  hideForm() {
-    this.formTarget.classList.add('hidden')
-  }
+  editComment(commentId) {
+    const form = this.formTargets.find(form => form.dataset.commentId === commentId);
+    const content = this.contentTargets.find(content => content.dataset.commentId === commentId);
+    const editButton = this.editButtonTargets.find(
+      button => button.dataset.commentId === commentId
+    );
+    const cancelButton = this.cancelButtonTargets.find(
+      button => button.dataset.commentId === commentId
+    );
 
-  toggleForm() {
-    if (this.formTarget.classList.contains('hidden')) {
-      this.showForm()
-    } else {
-      this.hideForm()
+    if (form && content && editButton && cancelButton) {
+      form.classList.remove('hidden');
+      content.classList.add('hidden');
+      editButton.classList.add('hidden');
+      cancelButton.classList.remove('hidden');
     }
   }
 
-  cancelComment() {
-    this.hideForm()
-    this.formTarget.querySelector('textarea').value = ''
+  cancelEdit(commentId) {
+    const form = this.formTargets.find(form => form.dataset.commentId === commentId);
+    const content = this.contentTargets.find(content => content.dataset.commentId === commentId);
+    const editButton = this.editButtonTargets.find(
+      button => button.dataset.commentId === commentId
+    );
+    const cancelButton = this.cancelButtonTargets.find(
+      button => button.dataset.commentId === commentId
+    );
+
+    if (form && content && editButton && cancelButton) {
+      form.classList.add('hidden');
+      content.classList.remove('hidden');
+      editButton.classList.remove('hidden');
+      cancelButton.classList.add('hidden');
+    }
   }
-}
-
-// Funções globais para edição de comentários
-window.editComment = function(commentId) {
-  // Implementação será feita via Turbo Stream
-  console.log('Editando comentário:', commentId)
-}
-
-window.cancelEditComment = function(commentId) {
-  // Implementação será feita via Turbo Stream
-  console.log('Cancelando edição do comentário:', commentId)
 }

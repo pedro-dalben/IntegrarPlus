@@ -25,6 +25,6 @@ class AvatarsController < ApplicationController
   private
 
   def avatar_params
-    params.require(:user).permit(:avatar)
+    params.expect(user: [:avatar])
   end
 end

@@ -70,7 +70,7 @@ module Admin
     end
 
     def group_params
-      params.require(:group).permit(:name, :description, :is_admin, permission_ids: [])
+      params.expect(group: [:name, :description, :is_admin, { permission_ids: [] }])
     end
   end
 end

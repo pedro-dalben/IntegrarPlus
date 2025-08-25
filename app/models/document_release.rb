@@ -3,10 +3,8 @@
 class DocumentRelease < ApplicationRecord
   belongs_to :document
   belongs_to :version, class_name: 'DocumentVersion'
-  belongs_to :released_by, class_name: 'Professional'
+  belongs_to :released_by, class_name: 'User'
 
-  validates :version, presence: true
-  validates :released_by, presence: true
   validates :released_at, presence: true
 
   scope :ordered, -> { order(released_at: :desc) }
@@ -19,6 +17,6 @@ class DocumentRelease < ApplicationRecord
   end
 
   def released_file_exists?
-    File.exist?(Rails.root.join(released_version_path))
+    Rails.root.join(released_version_path).exist?
   end
 end

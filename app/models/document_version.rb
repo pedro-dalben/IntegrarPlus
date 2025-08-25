@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DocumentVersion < ApplicationRecord
   belongs_to :document
   belongs_to :created_by, class_name: 'Professional', foreign_key: 'created_by_professional_id'
@@ -8,13 +10,13 @@ class DocumentVersion < ApplicationRecord
   validates :version_number, uniqueness: { scope: :document_id }
 
   def file_exists?
-    File.exist?(Rails.root.join('storage', file_path))
+    Rails.root.join('storage', file_path).exist?
   end
 
   def file_size
     return 0 unless file_exists?
 
-    File.size(Rails.root.join('storage', file_path))
+    Rails.root.join('storage', file_path).size
   end
 
   def file_extension

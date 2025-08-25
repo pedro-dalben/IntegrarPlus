@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "🔍 Executando linters..."
+
+echo ""
+echo "📝 Verificando JavaScript com ESLint..."
+npx eslint app/javascript/ app/frontend/javascript/ --ext .js,.mjs,.cjs
+
+echo ""
+echo "🎨 Verificando formatação com Prettier..."
+npx prettier --check app/javascript/ app/frontend/javascript/ --ext .js,.mjs,.cjs
+
+echo ""
+echo "💎 Verificando Ruby com RuboCop..."
+bundle exec rubocop
+
+echo ""
+echo "✅ Todos os linters passaram!"

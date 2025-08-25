@@ -2,22 +2,22 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from './application';
 
-import ContractFieldsController from "./contract_fields_controller"
-application.register("contract-fields", ContractFieldsController)
+import ContractFieldsController from './contract_fields_controller';
+application.register('contract-fields', ContractFieldsController);
 
-import DependentSpecializationsController from "./dependent_specializations_controller"
-application.register("dependent-specializations", DependentSpecializationsController)
+import DependentSpecializationsController from './dependent_specializations_controller';
+application.register('dependent-specializations', DependentSpecializationsController);
 
-import PermissionsController from "./permissions_controller"
-application.register("permissions", PermissionsController)
+import PermissionsController from './permissions_controller';
+application.register('permissions', PermissionsController);
 
-import TomSelectController from "./tom_select_controller"
-application.register("tom-select", TomSelectController)
+import TomSelectController from './tom_select_controller';
+application.register('tom-select', TomSelectController);
 
-import SearchController from "./search_controller"
-application.register("search", SearchController)
+import SearchController from './search_controller';
+application.register('search', SearchController);
 
-import TaskFilterController from "./task_filter_controller"
-application.register("task-filter", TaskFilterController)
+import TaskFilterController from './task_filter_controller';
+application.register('task-filter', TaskFilterController);

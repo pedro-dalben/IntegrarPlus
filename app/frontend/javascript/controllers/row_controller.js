@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   navigate(event) {
@@ -6,8 +6,8 @@ export default class extends Controller {
     if (event.target.closest('a') || event.target.closest('button')) {
       return;
     }
-    
-    const url = this.element.dataset.url;
+
+    const { url } = this.element.dataset;
     if (url) {
       window.location.href = url;
     }

@@ -1,4 +1,6 @@
-puts '🧪 Testando Integração Profissional ↔ Usuário...'
+# frozen_string_literal: true
+
+Rails.logger.debug '🧪 Testando Integração Profissional ↔ Usuário...'
 
 # Criar um profissional de teste
 professional = Professional.create!(
@@ -10,26 +12,26 @@ professional = Professional.create!(
   active: true
 )
 
-puts "✅ Profissional criado: #{professional.full_name}"
+Rails.logger.debug { "✅ Profissional criado: #{professional.full_name}" }
 
 # Criar usuário usando o método que implementamos
 professional.ensure_user_exists!
 
 # Verificar se o usuário foi criado
 if professional.user
-  puts "✅ Usuário criado automaticamente: #{professional.user.email}"
+  Rails.logger.debug { "✅ Usuário criado automaticamente: #{professional.user.email}" }
 
   # Verificar se o convite foi criado
   if professional.user.invites.any?
     invite = professional.user.latest_invite
-    puts "✅ Convite criado: #{invite.token}"
-    puts "🔗 URL do convite: #{invite.invite_url}"
-    puts "⏰ Expira em: #{invite.expires_at}"
+    Rails.logger.debug { "✅ Convite criado: #{invite.token}" }
+    Rails.logger.debug { "🔗 URL do convite: #{invite.invite_url}" }
+    Rails.logger.debug { "⏰ Expira em: #{invite.expires_at}" }
   else
-    puts '❌ Nenhum convite criado'
+    Rails.logger.debug '❌ Nenhum convite criado'
   end
 else
-  puts '❌ Usuário não foi criado automaticamente'
+  Rails.logger.debug '❌ Usuário não foi criado automaticamente'
 end
 
 # Testar criação manual de usuário
@@ -42,24 +44,24 @@ professional2 = Professional.create!(
   active: false
 )
 
-puts "\n✅ Profissional inativo criado: #{professional2.full_name}"
+Rails.logger.debug { "\n✅ Profissional inativo criado: #{professional2.full_name}" }
 
 # Criar usuário manualmente
 unless professional2.user
   professional2.ensure_user_exists!
-  puts "✅ Usuário criado manualmente: #{professional2.user.email}"
+  Rails.logger.debug { "✅ Usuário criado manualmente: #{professional2.user.email}" }
 
   # Verificar se o convite foi criado (deve ser nil pois está inativo)
   if professional2.user.invites.any?
-    puts '⚠️ Convite criado mesmo sendo inativo'
+    Rails.logger.debug '⚠️ Convite criado mesmo sendo inativo'
   else
-    puts '✅ Nenhum convite criado (profissional inativo)'
+    Rails.logger.debug '✅ Nenhum convite criado (profissional inativo)'
   end
 end
 
-puts "\n📊 Resumo do Teste:"
-puts "👤 Profissionais criados: #{Professional.count}"
-puts "👤 Usuários criados: #{User.count}"
-puts "🔗 Convites criados: #{Invite.count}"
+Rails.logger.debug "\n📊 Resumo do Teste:"
+Rails.logger.debug { "👤 Profissionais criados: #{Professional.count}" }
+Rails.logger.debug { "👤 Usuários criados: #{User.count}" }
+Rails.logger.debug { "🔗 Convites criados: #{Invite.count}" }
 
-puts "\n✅ Teste de integração concluído!"
+Rails.logger.debug "\n✅ Teste de integração concluído!"

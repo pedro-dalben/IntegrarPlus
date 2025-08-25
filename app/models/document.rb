@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Document < ApplicationRecord
   include MeiliSearch::Rails
 
@@ -303,14 +305,14 @@ class Document < ApplicationRecord
     status == 'aguardando_liberacao'
   end
 
-  def release_document!(professional)
+  def release_document!(user)
     return false unless can_be_released?
 
     ActiveRecord::Base.transaction do
       # Criar release
       release = document_releases.create!(
         version: latest_version,
-        released_by: professional,
+        released_by: user,
         released_at: Time.current
       )
 
@@ -318,7 +320,7 @@ class Document < ApplicationRecord
       copy_file_to_released_folder(release)
 
       # Atualizar status para liberado
-      update_status!('liberado', professional, 'Documento liberado como versão final')
+      update_status!('liberado', user.professional, 'Documento liberado como versão final')
 
       # Atualizar versão liberada
       update!(released_version: latest_version.version_number)

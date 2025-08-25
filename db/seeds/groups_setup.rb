@@ -1,4 +1,6 @@
-puts '👥 Configurando Grupos Padrão...'
+# frozen_string_literal: true
+
+Rails.logger.debug '👥 Configurando Grupos Padrão...'
 
 # Criar grupos padrão
 groups_data = [
@@ -36,16 +38,16 @@ groups_data.each do |group_data|
   end
 end
 
-puts '✅ Grupos padrão configurados'
+Rails.logger.debug '✅ Grupos padrão configurados'
 
 # Configurar permissões por grupo
 admin_group = Group.find_by(name: 'Administradores')
 if admin_group
   # Administradores têm todas as permissões
-  Permission.all.each do |permission|
+  Permission.find_each do |permission|
     admin_group.add_permission(permission.key) unless admin_group.has_permission?(permission.key)
   end
-  puts '✅ Permissões do grupo Administradores configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Administradores configuradas'
 end
 
 medicos_group = Group.find_by(name: 'Médicos')
@@ -63,7 +65,7 @@ if medicos_group
   medicos_permissions.each do |perm_key|
     medicos_group.add_permission(perm_key) unless medicos_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Médicos configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Médicos configuradas'
 end
 
 secretarias_group = Group.find_by(name: 'Secretárias')
@@ -82,7 +84,7 @@ if secretarias_group
   secretarias_permissions.each do |perm_key|
     secretarias_group.add_permission(perm_key) unless secretarias_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Secretárias configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Secretárias configuradas'
 end
 
 terapeutas_group = Group.find_by(name: 'Terapeutas')
@@ -98,7 +100,7 @@ if terapeutas_group
   terapeutas_permissions.each do |perm_key|
     terapeutas_group.add_permission(perm_key) unless terapeutas_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Terapeutas configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Terapeutas configuradas'
 end
 
 recepcao_group = Group.find_by(name: 'Recepção')
@@ -113,10 +115,10 @@ if recepcao_group
   recepcao_permissions.each do |perm_key|
     recepcao_group.add_permission(perm_key) unless recepcao_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Recepção configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Recepção configuradas'
 end
 
-puts "\n📊 Resumo da Configuração de Grupos:"
-puts "👥 Grupos criados: #{Group.count}"
-puts "🔐 Total de permissões: #{Permission.count}"
-puts "🔗 Relacionamentos grupo-permissão: #{GroupPermission.count}"
+Rails.logger.debug "\n📊 Resumo da Configuração de Grupos:"
+Rails.logger.debug { "👥 Grupos criados: #{Group.count}" }
+Rails.logger.debug { "🔐 Total de permissões: #{Permission.count}" }
+Rails.logger.debug { "🔗 Relacionamentos grupo-permissão: #{GroupPermission.count}" }

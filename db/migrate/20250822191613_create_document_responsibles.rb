@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDocumentResponsibles < ActiveRecord::Migration[8.0]
   def change
     create_table :document_responsibles do |t|

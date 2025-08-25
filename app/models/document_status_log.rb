@@ -9,7 +9,6 @@ class DocumentStatusLog < ApplicationRecord
 
   validates :old_status, presence: true
   validates :new_status, presence: true
-  validates :professional, presence: true
 
   scope :ordered, -> { order(created_at: :desc) }
 

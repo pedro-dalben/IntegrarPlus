@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'find'
 
@@ -139,7 +141,7 @@ namespace :documents do
       end
 
       # Retornar o arquivo mais recente se houver múltiplos
-      found_files.sort_by { |f| f[:mtime] }.last
+      found_files.max_by { |f| f[:mtime] }
     end
 
     # Função para determinar tipo baseado no ID
@@ -180,7 +182,7 @@ namespace :documents do
       doc_id = row['ID do Documento']&.strip
       doc_name = row['Nome do Documento']&.strip
       csv_category = row['Categoria']&.strip
-      status = row['Status']&.strip
+      row['Status']&.strip
 
       # Pular linhas vazias ou inválidas
       next if doc_id.blank? || doc_name.blank?

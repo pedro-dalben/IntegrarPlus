@@ -175,13 +175,13 @@ class Professional < ApplicationRecord
     # Verificar se existe outro usuário com este email (exceto o usuário associado a este profissional)
     existing_user = User.where(email: email).where.not(id: user_id).first
 
-    return unless existing_user.present?
+    return if existing_user.blank?
 
     errors.add(:email, 'já está sendo usado por outro usuário')
   end
 
   def ensure_user_exists!
-    create_user! unless user.present?
+    create_user! if user.blank?
   end
 
   def user_status
@@ -215,7 +215,7 @@ class Professional < ApplicationRecord
   end
 
   def sync_user_data
-    return unless user.present?
+    return if user.blank?
 
     user_updates = {}
 

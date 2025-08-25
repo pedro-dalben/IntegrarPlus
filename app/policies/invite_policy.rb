@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InvitePolicy < ApplicationPolicy
   def index?
     user.permit?('invites.index')

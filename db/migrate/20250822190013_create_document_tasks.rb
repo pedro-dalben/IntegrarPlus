@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDocumentTasks < ActiveRecord::Migration[8.0]
   def change
     create_table :document_tasks do |t|

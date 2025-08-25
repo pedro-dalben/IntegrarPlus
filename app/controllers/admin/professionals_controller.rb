@@ -79,11 +79,11 @@ module Admin
     end
 
     def professional_params
-      params.require(:professional).permit(
-        :full_name, :birth_date, :cpf, :phone, :email, :active,
-        :contract_type_id, :hired_on, :workload_minutes, :council_code,
-        :company_name, :cnpj, :password, :password_confirmation,
-        group_ids: [], speciality_ids: [], specialization_ids: []
+      params.expect(
+        professional: [:full_name, :birth_date, :cpf, :phone, :email, :active,
+                       :contract_type_id, :hired_on, :workload_minutes, :council_code,
+                       :company_name, :cnpj, :password, :password_confirmation,
+                       { group_ids: [], speciality_ids: [], specialization_ids: [] }]
       )
     end
 

@@ -20,6 +20,7 @@ class Speciality < ApplicationRecord
     sortable_attributes %i[created_at updated_at name]
 
     attribute :name
+    attribute :specialty
     attribute :active
     attribute :created_at
     attribute :updated_at

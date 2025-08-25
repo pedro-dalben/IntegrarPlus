@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :documents do
   desc 'Criar documentos de exemplo com os novos tipos'
   task create_samples: :environment do
@@ -90,7 +92,7 @@ namespace :documents do
       errors << error_msg
     end
 
-    puts "\n" + ('=' * 50)
+    puts "\n#{'=' * 50}"
     puts '📊 RESUMO:'
     puts "Documentos criados: #{created_count}"
     puts "Erros: #{errors.count}"
@@ -215,10 +217,10 @@ namespace :documents do
       count = Document.where(category: value).count
       puts "#{key.humanize.ljust(30)} #{count.to_s.rjust(3)} documento(s)"
 
-      next unless count > 0
+      next unless count.positive?
 
       puts '   Tipos nesta categoria:'
-      Document.where(category: value).includes(:author).each do |doc|
+      Document.where(category: value).includes(:author).find_each do |doc|
         type_name = doc.document_type
         puts "     - #{type_name.humanize}: #{doc.title}"
       end

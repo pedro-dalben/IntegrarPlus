@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'find'
 
@@ -62,7 +64,7 @@ namespace :documents do
       end
 
       # Retornar o arquivo mais recente se houver múltiplos
-      found_files.sort_by { |f| f[:mtime] }.last
+      found_files.max_by { |f| f[:mtime] }
     end
 
     # Função para determinar tipo baseado no ID
@@ -228,8 +230,8 @@ namespace :documents do
         puts
       end
 
-      if found_files.count > 1
-        latest = found_files.sort_by { |f| f[:mtime] }.last
+      if found_files.many?
+        latest = found_files.max_by { |f| f[:mtime] }
         puts '🎯 ARQUIVO MAIS RECENTE (será usado na importação):'
         puts "   #{latest[:filename]}"
         puts "   #{latest[:mtime]}"

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 module Admin
   class ContractTypesController < BaseController
     before_action :set_contract_type, only: %i[show edit update destroy]
@@ -22,12 +20,16 @@ module Admin
 
     def new
       @contract_type = ContractType.new
+      authorize @contract_type, :create?
     end
 
-    def edit; end
+    def edit
+      authorize @contract_type, :update?
+    end
 
     def create
       @contract_type = ContractType.new(contract_type_params)
+      authorize @contract_type, :create?
 
       if @contract_type.save
         redirect_to admin_contract_type_path(@contract_type), notice: 'Tipo de contrato criado com sucesso.'
@@ -37,6 +39,8 @@ module Admin
     end
 
     def update
+      authorize @contract_type, :update?
+
       if @contract_type.update(contract_type_params)
         redirect_to admin_contract_type_path(@contract_type), notice: 'Tipo de contrato atualizado com sucesso.'
       else
@@ -45,8 +49,13 @@ module Admin
     end
 
     def destroy
-      @contract_type.destroy
-      redirect_to admin_contract_types_path, notice: 'Tipo de contrato excluído com sucesso.'
+      authorize @contract_type, :destroy?
+
+      if @contract_type.destroy
+        redirect_to admin_contract_types_path, notice: 'Tipo de contrato excluído com sucesso.'
+      else
+        redirect_to admin_contract_types_path, alert: 'Não foi possível remover o tipo de contrato.'
+      end
     end
 
     private
@@ -56,7 +65,7 @@ module Admin
     end
 
     def contract_type_params
-      params.require(:contract_type).permit(:name, :description, :active, :requires_company, :requires_cnpj)
+      params.expect(contract_type: %i[name description active])
     end
   end
 end

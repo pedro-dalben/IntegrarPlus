@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VersionComment < ApplicationRecord
   belongs_to :document_version
   belongs_to :user

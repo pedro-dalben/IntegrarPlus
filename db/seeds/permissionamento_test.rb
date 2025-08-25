@@ -1,44 +1,46 @@
-puts '🧪 Testando Sistema de Permissionamento...'
+# frozen_string_literal: true
+
+Rails.logger.debug '🧪 Testando Sistema de Permissionamento...'
 
 # Testar se os modelos estão funcionando
-puts '✅ Modelos carregados com sucesso'
+Rails.logger.debug '✅ Modelos carregados com sucesso'
 
 # Testar permissões existentes
 permissions = Permission.all
-puts "📋 Permissões encontradas: #{permissions.count}"
+Rails.logger.debug { "📋 Permissões encontradas: #{permissions.count}" }
 
 # Testar grupos existentes
 groups = Group.all
-puts "👥 Grupos encontrados: #{groups.count}"
+Rails.logger.debug { "👥 Grupos encontrados: #{groups.count}" }
 
 # Testar se o grupo Admin existe
 admin_group = Group.find_by(name: 'Admin')
 if admin_group
-  puts '✅ Grupo Admin encontrado'
-  puts "🔐 Permissões do grupo Admin: #{admin_group.permissions.pluck(:key).join(', ')}"
+  Rails.logger.debug '✅ Grupo Admin encontrado'
+  Rails.logger.debug { "🔐 Permissões do grupo Admin: #{admin_group.permissions.pluck(:key).join(', ')}" }
 else
-  puts '❌ Grupo Admin não encontrado'
+  Rails.logger.debug '❌ Grupo Admin não encontrado'
 end
 
 # Testar se o grupo Profissionais existe
 prof_group = Group.find_by(name: 'Profissionais')
 if prof_group
-  puts '✅ Grupo Profissionais encontrado'
-  puts "🔐 Permissões do grupo Profissionais: #{prof_group.permissions.pluck(:key).join(', ')}"
+  Rails.logger.debug '✅ Grupo Profissionais encontrado'
+  Rails.logger.debug { "🔐 Permissões do grupo Profissionais: #{prof_group.permissions.pluck(:key).join(', ')}" }
 else
-  puts '❌ Grupo Profissionais não encontrado'
+  Rails.logger.debug '❌ Grupo Profissionais não encontrado'
 end
 
 # Testar criação de convite
 test_user = User.first
 if test_user
   invite = test_user.invites.create!
-  puts '✅ Convite criado com sucesso'
-  puts "🔗 Token: #{invite.token}"
-  puts "⏰ Expira em: #{invite.expires_at}"
-  puts "🔗 URL: #{invite.invite_url}"
+  Rails.logger.debug '✅ Convite criado com sucesso'
+  Rails.logger.debug { "🔗 Token: #{invite.token}" }
+  Rails.logger.debug { "⏰ Expira em: #{invite.expires_at}" }
+  Rails.logger.debug { "🔗 URL: #{invite.invite_url}" }
 else
-  puts '❌ Nenhum usuário encontrado para testar convite'
+  Rails.logger.debug '❌ Nenhum usuário encontrado para testar convite'
 end
 
-puts "\n✅ Teste do sistema de permissionamento concluído!"
+Rails.logger.debug "\n✅ Teste do sistema de permissionamento concluído!"

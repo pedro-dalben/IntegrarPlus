@@ -2,16 +2,16 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from './application';
 
-import CommentsController from "./comments_controller"
-application.register("comments", CommentsController)
+import CommentsController from './comments_controller';
+application.register('comments', CommentsController);
 
-import DocumentUploadController from "./document_upload_controller"
-application.register("document-upload", DocumentUploadController)
+import DocumentUploadController from './document_upload_controller';
+application.register('document-upload', DocumentUploadController);
 
-import FlashController from "./flash_controller"
-application.register("flash", FlashController)
+import FlashController from './flash_controller';
+application.register('flash', FlashController);
 
-import PermissionsController from "./permissions_controller"
-application.register("permissions", PermissionsController)
+import PermissionsController from './permissions_controller';
+application.register('permissions', PermissionsController);

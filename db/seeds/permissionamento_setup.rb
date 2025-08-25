@@ -1,4 +1,6 @@
-puts '🔧 Configurando Sistema de Permissionamento...'
+# frozen_string_literal: true
+
+Rails.logger.debug '🔧 Configurando Sistema de Permissionamento...'
 
 # Criar permissões se não existirem
 permissions_data = [
@@ -38,16 +40,16 @@ permissions_data.each do |perm_data|
   end
 end
 
-puts '✅ Permissões configuradas'
+Rails.logger.debug '✅ Permissões configuradas'
 
 # Configurar permissões por grupo
 admin_group = Group.find_by(name: 'Admin')
 if admin_group
   # Admin tem todas as permissões
-  Permission.all.each do |permission|
+  Permission.find_each do |permission|
     admin_group.add_permission(permission.key) unless admin_group.has_permission?(permission.key)
   end
-  puts '✅ Permissões do grupo Admin configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Admin configuradas'
 end
 
 prof_group = Group.find_by(name: 'Profissionais')
@@ -62,7 +64,7 @@ if prof_group
   basic_permissions.each do |perm_key|
     prof_group.add_permission(perm_key) unless prof_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Profissionais configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Profissionais configuradas'
 end
 
 recepcao_group = Group.find_by(name: 'Recepção')
@@ -79,7 +81,7 @@ if recepcao_group
   recepcao_permissions.each do |perm_key|
     recepcao_group.add_permission(perm_key) unless recepcao_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Recepção configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Recepção configuradas'
 end
 
 clinico_group = Group.find_by(name: 'Clínico')
@@ -96,15 +98,15 @@ if clinico_group
   clinico_permissions.each do |perm_key|
     clinico_group.add_permission(perm_key) unless clinico_group.has_permission?(perm_key)
   end
-  puts '✅ Permissões do grupo Clínico configuradas'
+  Rails.logger.debug '✅ Permissões do grupo Clínico configuradas'
 end
 
-puts "\n📊 Resumo da Configuração:"
-puts "🔐 Permissões criadas: #{Permission.count}"
-puts "👥 Grupos configurados: #{Group.count}"
+Rails.logger.debug "\n📊 Resumo da Configuração:"
+Rails.logger.debug { "🔐 Permissões criadas: #{Permission.count}" }
+Rails.logger.debug { "👥 Grupos configurados: #{Group.count}" }
 
-Group.all.each do |group|
-  puts "  - #{group.name}: #{group.permissions.count} permissões"
+Group.find_each do |group|
+  Rails.logger.debug "  - #{group.name}: #{group.permissions.count} permissões"
 end
 
-puts "\n✅ Configuração do sistema de permissionamento concluída!"
+Rails.logger.debug "\n✅ Configuração do sistema de permissionamento concluída!"
