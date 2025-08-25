@@ -1,0 +1,16 @@
+#!/bin/bash
+
+export DATABASE_USERNAME=pedro
+export DATABASE_PASSWORD=""
+export ASDF_SILENCE_WARNING=1
+
+echo "Variáveis de ambiente configuradas:"
+echo "DATABASE_USERNAME=$DATABASE_USERNAME"
+echo "DATABASE_PASSWORD=$DATABASE_PASSWORD"
+echo "ASDF_SILENCE_WARNING=$ASDF_SILENCE_WARNING"
+echo ""
+echo "Para usar estas variáveis em outros comandos, execute:"
+echo "source bin/setup-db"
+echo ""
+echo "Exemplo:"
+echo "source bin/setup-db && bundle exec rails db:create"

@@ -36,7 +36,9 @@ class Invite < ApplicationRecord
   end
 
   def invite_url
-    Rails.application.routes.url_helpers.accept_invite_url(token: token, host: 'localhost:3000')
+    host = ENV.fetch("APP_HOST", "localhost:3001")
+    protocol = ENV.fetch("APP_PROTOCOL", "http")
+    Rails.application.routes.url_helpers.accept_invite_url(token: token, host: host, protocol: protocol)
   end
 
   private

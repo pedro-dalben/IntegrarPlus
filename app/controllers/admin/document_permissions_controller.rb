@@ -4,11 +4,12 @@ class Admin::DocumentPermissionsController < Admin::BaseController
 
   def index
     @permissions = @document.document_permissions.includes(:user, :group)
-    @users = User.where.not(id: @document.author&.user&.id).order(:name)
+    @users = User.joins(:professional).order('professionals.full_name')
     @groups = Group.ordered
   end
 
   def create
+    Rails.logger.info "Criando permissão: #{params.inspect}"
     grantee_type = params[:grantee_type]
     grantee_id = params[:grantee_id]
     access_level = params[:access_level]
@@ -80,11 +81,17 @@ class Admin::DocumentPermissionsController < Admin::BaseController
   end
 
   def find_grantee(grantee_type, grantee_id)
+    Rails.logger.info "Buscando grantee: tipo=#{grantee_type}, id=#{grantee_id}"
+
     case grantee_type
     when 'user'
-      User.find_by(id: grantee_id)
+      user = User.find_by(id: grantee_id)
+      Rails.logger.info "Usuário encontrado: #{user&.name}"
+      user
     when 'group'
-      Group.find_by(id: grantee_id)
+      group = Group.find_by(id: grantee_id)
+      Rails.logger.info "Grupo encontrado: #{group&.name}"
+      group
     end
   end
 end

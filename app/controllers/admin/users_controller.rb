@@ -44,6 +44,16 @@ module Admin
       end
     end
 
+    def search
+      query = params[:q]
+      users = User.joins(:professional)
+                  .where('professionals.full_name ILIKE ?', "%#{query}%")
+                  .limit(10)
+                  .map { |user| { id: user.id, full_name: user.professional.full_name } }
+
+      render json: users
+    end
+
     private
 
     def set_user

@@ -5,6 +5,9 @@ class Admin::VersionCommentsController < Admin::BaseController
   before_action :ensure_can_edit_comment, only: %i[update destroy]
 
   def create
+    Rails.logger.info "Criando comentário para versão #{@document_version.id}"
+    Rails.logger.info "Parâmetros: #{params.inspect}"
+
     @comment = @document_version.version_comments.build(comment_params)
     @comment.user = current_user
 
@@ -98,7 +101,7 @@ class Admin::VersionCommentsController < Admin::BaseController
   end
 
   def comment_params
-    params.require(:version_comment).permit(:comment_text)
+    params.permit(:comment_text)
   end
 
   def render_comment(comment)

@@ -1,7 +1,30 @@
-#!/usr/bin/env bash
-set -euo pipefail
-if command -v foreman >/dev/null 2>&1; then
-  exec foreman start -f Procfile.dev
-else
-  exec ./bin/rails server "$@"
+#!/bin/bash
+
+echo "🚀 Iniciando Integrar Plus com Foreman..."
+echo ""
+
+echo "📋 Configurando variáveis de ambiente..."
+source bin/setup-db
+
+echo ""
+echo "🔧 Verificando dependências..."
+if [ ! -d "node_modules" ]; then
+    echo "📦 Instalando dependências do Node.js..."
+    npm install
 fi
+
+echo ""
+echo "🌐 Iniciando serviços..."
+echo "   - Rails Server (porta 3000)"
+echo "   - Vite Dev Server (porta 5173)"
+echo "   - Solid Queue Jobs"
+echo "   - MeiliSearch (porta 7700)"
+echo ""
+echo "📱 Acesse: http://localhost:3000"
+echo "🔧 Vite Dev: http://localhost:5173"
+echo "🔍 MeiliSearch: http://localhost:7700"
+echo ""
+echo "⏹️  Para parar: Ctrl+C"
+echo ""
+
+foreman start -f Procfile.dev

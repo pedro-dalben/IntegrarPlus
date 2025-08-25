@@ -1,128 +1,179 @@
-# Configuração do Meilisearch
+# Configuração do MeiliSearch
 
-## Instalação
+## Visão Geral
 
-### 1. Instalar o Meilisearch
+O MeiliSearch é um motor de busca rápido e relevante que está integrado ao projeto Integrar Plus. Ele fornece funcionalidades de busca avançada para documentos e outros conteúdos do sistema.
 
-#### Via Docker (Recomendado)
-```bash
-docker run -p 7700:7700 getmeili/meilisearch:latest
+## Configuração Atual
+
+### Localização dos Dados
+- **Diretório**: `./storage/meilisearch/`
+- **Porta**: 7700
+- **URL**: http://localhost:7700
+- **Master Key**: `XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w`
+
+### Estrutura de Dados
+```
+storage/meilisearch/
+├── auth/            # Configurações de autenticação
+├── indexes/         # Índices de busca criados
+├── tasks/           # Tarefas em processamento
+├── update_files/    # Arquivos de atualização
+├── instance-uid     # ID único da instância
+└── VERSION          # Versão do banco de dados
 ```
 
-#### Via Homebrew (macOS)
+## Como Usar
+
+### Iniciar com Foreman (Recomendado)
 ```bash
-brew install meilisearch
-meilisearch
+# Inicia todos os serviços incluindo MeiliSearch
+./bin/dev
+
+# Ou manualmente
+foreman start -f Procfile.dev
 ```
 
-#### Via Cargo (Rust)
+### Iniciar Individualmente
 ```bash
-cargo install meilisearch
-meilisearch
+meilisearch --http-addr 127.0.0.1:7700 --env development --db-path ./storage/meilisearch --master-key XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w
 ```
 
-### 2. Configurar Variáveis de Ambiente
+## Verificação de Status
 
-Crie um arquivo `.env` na raiz do projeto:
-
+### Verificar se está rodando
 ```bash
-# Meilisearch Configuration
+# Verificar processo
+ps aux | grep meilisearch | grep -v grep
+
+# Verificar porta
+lsof -i :7700
+
+# Testar endpoint de saúde
+curl -s http://localhost:7700/health
+```
+
+### Verificar versão (requer autenticação)
+```bash
+curl -H "Authorization: Bearer XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w" http://localhost:7700/version
+```
+
+## Configuração no Rails
+
+### Variáveis de Ambiente
+```bash
 MEILISEARCH_HOST=http://localhost:7700
-MEILISEARCH_API_KEY=YourMeilisearchAPIKey
+MEILISEARCH_API_KEY=XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w
 ```
 
-### 3. Indexar Dados
+### Arquivo de Configuração
+```ruby
+# config/initializers/meilisearch.rb
+Meilisearch::Rails.configuration = {
+  meilisearch_url: ENV.fetch('MEILISEARCH_HOST', 'http://localhost:7700'),
+  meilisearch_api_key: ENV.fetch('MEILISEARCH_API_KEY', 'XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w')
+}
+```
 
-Execute o comando rake para indexar todos os dados:
+## Solução de Problemas
 
+### Erro: "Address already in use"
 ```bash
-rails meilisearch:index
+# Parar processo do MeiliSearch
+pkill meilisearch
+
+# Verificar se a porta está livre
+lsof -i :7700
 ```
 
-## Comandos Úteis
-
-### Indexar dados
+### Erro: "Permission denied"
 ```bash
-rails meilisearch:index
+# Verificar permissões do diretório
+ls -la storage/meilisearch/
+
+# Corrigir permissões se necessário
+chmod -R 755 storage/meilisearch/
 ```
 
-### Limpar índices
+### Erro: "Database path not found"
 ```bash
-rails meilisearch:clear
+# Criar diretório se não existir
+mkdir -p storage/meilisearch
 ```
 
-### Resetar índices (limpar + indexar)
+### Erro: "Authorization header missing"
 ```bash
-rails meilisearch:reset
+# Adicionar header de autorização nas requisições
+curl -H "Authorization: Bearer XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w" http://localhost:7700/version
 ```
 
-## Configuração dos Modelos
+## Backup e Restauração
 
-### Professional
-- **Campos pesquisáveis**: `full_name`, `email`, `cpf`, `phone`
-- **Filtros**: `active`, `confirmed_at`
-- **Ordenação**: `created_at`, `updated_at`, `full_name`
-
-### Speciality
-- **Campos pesquisáveis**: `name`, `specialty`
-- **Filtros**: `created_at`, `updated_at`
-- **Ordenação**: `created_at`, `updated_at`, `name`
-
-### ContractType
-- **Campos pesquisáveis**: `name`, `description`
-- **Filtros**: `active`, `created_at`, `updated_at`
-- **Ordenação**: `created_at`, `updated_at`, `name`
-
-## Funcionalidades
-
-### Busca em Tempo Real
-- Debounce de 500ms para evitar muitas requisições
-- Busca em múltiplos campos
-- Highlight dos termos encontrados
-- Fallback para busca local se Meilisearch não estiver disponível
-
-### Interface
-- Campo de busca integrado no componente DataTable
-- Resultados atualizados dinamicamente
-- Suporte a filtros avançados
-- Ordenação por colunas
-
-## Troubleshooting
-
-### Meilisearch não está rodando
+### Backup dos Dados
 ```bash
-# Verificar se está rodando na porta 7700
-curl http://localhost:7700/health
+# Fazer backup do diretório de dados
+tar -czf meilisearch-backup-$(date +%Y%m%d).tar.gz storage/meilisearch/
 ```
 
-### Erro de conexão
-- Verifique se o Meilisearch está rodando
-- Confirme as variáveis de ambiente
-- Teste a conexão: `curl http://localhost:7700/version`
-
-### Dados não aparecem na busca
-- Execute `rails meilisearch:index` para reindexar
-- Verifique se os modelos têm dados
-- Confirme a configuração dos campos pesquisáveis
-
-## Desenvolvimento
-
-### Logs do Meilisearch
+### Restauração dos Dados
 ```bash
-# Se usando Docker
-docker logs <container_id>
+# Parar MeiliSearch
+pkill meilisearch
 
-# Se rodando localmente
-meilisearch --log-level debug
+# Restaurar dados
+tar -xzf meilisearch-backup-YYYYMMDD.tar.gz
+
+# Reiniciar MeiliSearch
+./bin/dev
 ```
 
-### Testar Busca
+## Limpeza de Dados
+
+### Limpar todos os dados
 ```bash
-# Via curl
-curl "http://localhost:7700/indexes/professional_development/search" \
-  -H "Content-Type: application/json" \
-  -d '{"q": "joão"}'
+# Parar MeiliSearch
+pkill meilisearch
+
+# Remover diretório de dados
+rm -rf storage/meilisearch/*
+
+# Reiniciar (criará nova instância)
+./bin/dev
 ```
 
-### Dashboard do Meilisearch
-Acesse `http://localhost:7700` para ver o dashboard do Meilisearch e gerenciar índices.
+### Limpar apenas índices
+```bash
+# Via API (requer autenticação)
+curl -X DELETE -H "Authorization: Bearer XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w" http://localhost:7700/indexes
+```
+
+## Monitoramento
+
+### Logs em Tempo Real
+```bash
+# Ver logs do Foreman
+foreman start -f Procfile.dev
+
+# Ou ver logs específicos do MeiliSearch
+tail -f storage/meilisearch/*.log
+```
+
+### Métricas de Performance
+```bash
+# Ver estatísticas (requer autenticação)
+curl -H "Authorization: Bearer XAXESpKGcHHdauFVvOKlRyWsgMfX0xv513anuJ-_i9w" http://localhost:7700/stats
+```
+
+## Notas Importantes
+
+1. **Dados Persistentes**: Os dados do MeiliSearch são mantidos entre reinicializações
+2. **Git Ignore**: O diretório `data.ms/` está no `.gitignore` para evitar commit acidental
+3. **Autenticação**: Todas as requisições à API precisam do header de autorização
+4. **Desenvolvimento**: Configurado para ambiente de desenvolvimento
+5. **Integração**: Integrado automaticamente com o Foreman para facilitar o desenvolvimento
+
+## Recursos Adicionais
+
+- [Documentação Oficial do MeiliSearch](https://docs.meilisearch.com/)
+- [API Reference](https://docs.meilisearch.com/reference/api/)
+- [Ruby SDK](https://github.com/meilisearch/meilisearch-ruby)

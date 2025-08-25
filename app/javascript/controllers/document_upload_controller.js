@@ -3,6 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["dropZone", "fileInfo", "fileName", "progressContainer", "progressBar", "progressText", "submitButton"]
 
+  static actions = ["submit"]
+
   connect() {
     this.setupDragAndDrop()
   }
@@ -21,7 +23,7 @@ export default class extends Controller {
     this.dropZoneTarget.addEventListener('drop', (e) => {
       e.preventDefault()
       this.dropZoneTarget.classList.remove('border-blue-400', 'bg-blue-50')
-      
+
       const files = e.dataTransfer.files
       if (files.length > 0) {
         this.handleFile(files[0])
@@ -30,19 +32,26 @@ export default class extends Controller {
   }
 
   handleFileSelect(event) {
+    console.log('handleFileSelect chamado')
     const file = event.target.files[0]
     if (file) {
+      console.log('Arquivo selecionado:', file.name)
       this.handleFile(file)
+    } else {
+      console.log('Nenhum arquivo encontrado')
     }
   }
 
   handleFile(file) {
+    console.log('handleFile chamado com:', file.name)
     if (!this.validateFile(file)) {
+      console.log('Arquivo inválido')
       return
     }
 
+    console.log('Arquivo válido, mostrando info')
     this.showFileInfo(file)
-    this.simulateProgress()
+    this.showProgress()
   }
 
   validateFile(file) {
@@ -63,27 +72,29 @@ export default class extends Controller {
     return true
   }
 
-  showFileInfo(file) {
+    showFileInfo(file) {
     this.fileNameTarget.textContent = `${file.name} (${this.formatFileSize(file.size)})`
     this.fileInfoTarget.classList.remove('hidden')
+
+    const fileInput = this.element.querySelector('input[type="file"]')
+    if (fileInput) {
+      try {
+        const dataTransfer = new DataTransfer()
+        dataTransfer.items.add(file)
+        fileInput.files = dataTransfer.files
+        console.log('Arquivo associado ao input:', file.name)
+      } catch (error) {
+        console.error('Erro ao associar arquivo:', error)
+      }
+    }
   }
 
-  simulateProgress() {
+      showProgress() {
     this.progressContainerTarget.classList.remove('hidden')
-    this.submitButtonTarget.disabled = true
+    this.submitButtonTarget.disabled = false
 
-    let progress = 0
-    const interval = setInterval(() => {
-      progress += Math.random() * 15
-      if (progress >= 100) {
-        progress = 100
-        clearInterval(interval)
-        this.submitButtonTarget.disabled = false
-      }
-      
-      this.progressBarTarget.style.width = `${progress}%`
-      this.progressTextTarget.textContent = `${Math.round(progress)}%`
-    }, 200)
+    this.progressBarTarget.style.width = '100%'
+    this.progressTextTarget.textContent = 'Arquivo selecionado e pronto para upload'
   }
 
   formatFileSize(bytes) {
@@ -92,5 +103,10 @@ export default class extends Controller {
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  submit() {
+    this.progressTextTarget.textContent = 'Enviando arquivo...'
+    this.progressBarTarget.style.width = '100%'
   }
 }

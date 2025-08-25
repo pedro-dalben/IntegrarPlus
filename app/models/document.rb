@@ -100,6 +100,10 @@ class Document < ApplicationRecord
     save_file_to_storage(file, version.file_path)
     update!(current_version: next_version)
     version
+  rescue => e
+    Rails.logger.error "Erro ao criar versão: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    raise e
   end
 
   def update_status!(new_status, professional, notes = nil)
@@ -217,7 +221,12 @@ class Document < ApplicationRecord
   def save_file_to_storage(file, file_path)
     full_path = Rails.root.join('storage', file_path)
     FileUtils.mkdir_p(File.dirname(full_path))
-    File.binwrite(full_path, file.read)
+
+    if file.respond_to?(:tempfile)
+      FileUtils.cp(file.tempfile.path, full_path)
+    else
+      File.binwrite(full_path, file.read)
+    end
   end
 
   def remove_responsible(status = nil)

@@ -26,12 +26,19 @@ class Admin::DocumentsController < Admin::BaseController
     @document.author = current_user.professional
 
     if @document.save
-      handle_file_upload if params[:document][:file].present?
+      if params[:document][:file].present?
+        handle_file_upload
+      end
 
       redirect_to admin_document_path(@document), notice: 'Documento criado com sucesso!'
     else
       render :new, status: :unprocessable_entity
     end
+  rescue => e
+    Rails.logger.error "Erro ao criar documento: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    @document.errors.add(:base, "Erro ao criar documento: #{e.message}")
+    render :new, status: :unprocessable_entity
   end
 
   def update
@@ -85,14 +92,21 @@ class Admin::DocumentsController < Admin::BaseController
   end
 
   def document_params
-    params.require(:document).permit(:title, :description, :document_type, :status)
+    params.require(:document).permit(:title, :description, :document_type, :status, :file)
   end
 
   def handle_file_upload
     file = params[:document][:file]
     return unless valid_file?(file)
 
-    @document.create_new_version(file, current_user.professional, 'Versão inicial')
+    begin
+      @document.create_new_version(file, current_user.professional, 'Versão inicial')
+    rescue => e
+      Rails.logger.error "Erro no upload do arquivo: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      @document.errors.add(:file, "Erro ao processar arquivo: #{e.message}")
+      raise e
+    end
   end
 
   def valid_file?(file)

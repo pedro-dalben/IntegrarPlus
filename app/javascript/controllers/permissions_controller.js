@@ -7,9 +7,9 @@ export default class extends Controller {
     this.toggleGranteeType()
   }
 
-  toggleGranteeType(event) {
-    const granteeType = event ? event.target.value : 'user'
-    
+  toggleGranteeType() {
+    const granteeType = this.element.querySelector('select[name="grantee_type"]').value
+
     if (granteeType === 'user') {
       this.userSelectTarget.classList.remove('hidden')
       this.groupSelectTarget.classList.add('hidden')

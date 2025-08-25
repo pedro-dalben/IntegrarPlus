@@ -54,6 +54,9 @@ Rails.application.routes.draw do
     end
 
     resources :users, except: [:index] do
+      collection do
+        get :search, defaults: { format: :json }
+      end
       member do
         patch :activate
         patch :deactivate
@@ -74,7 +77,11 @@ Rails.application.routes.draw do
       end
     end
     resources :contract_types
-    resources :groups
+    resources :groups do
+      collection do
+        get :search, defaults: { format: :json }
+      end
+    end
 
     resources :released_documents, only: %i[index show]
     get 'workspace', to: 'workspace#index'

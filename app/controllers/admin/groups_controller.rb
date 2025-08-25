@@ -57,6 +57,15 @@ module Admin
       redirect_to admin_groups_path, notice: 'Grupo excluído com sucesso.'
     end
 
+    def search
+      query = params[:q]
+      groups = Group.where('name ILIKE ?', "%#{query}%")
+                   .limit(10)
+                   .map { |group| { id: group.id, name: group.name } }
+
+      render json: groups
+    end
+
     private
 
     def set_group
