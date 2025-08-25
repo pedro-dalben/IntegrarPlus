@@ -45,11 +45,6 @@ module Ui
       end
     end
 
-  def inline_bg(var)
-    " style=\"background-color: var(#{var});\""
-  end
-
-  end
     def variant_classes
       case @variant
       when :secondary
