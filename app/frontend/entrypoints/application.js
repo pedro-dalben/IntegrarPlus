@@ -5,7 +5,7 @@ const application = Application.start()
 const controllers = import.meta.globEager("./**/*_controller.js")
 registerControllers(application, controllers)
 
-import "./stylesheets/application.css"
+import "./stylesheets/application.tailwind.css"
 
 document.addEventListener("turbo:load", () => {
   initializeComponents()
