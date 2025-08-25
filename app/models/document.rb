@@ -11,7 +11,8 @@ class Document < ApplicationRecord
   has_one_attached :file
 
   meilisearch do
-    searchable_attributes %i[title description author_name responsible_name document_type_name category_name status_name]
+    searchable_attributes %i[title description author_name responsible_name document_type_name category_name
+                             status_name]
     filterable_attributes %i[document_type status category author_professional_id]
     sortable_attributes %i[created_at updated_at title]
 
@@ -172,7 +173,7 @@ class Document < ApplicationRecord
     save_file_to_storage(file, version.file_path)
     update!(current_version: next_version)
     version
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Erro ao criar versão: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     raise e

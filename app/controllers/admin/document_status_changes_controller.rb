@@ -2,6 +2,7 @@
 
 class Admin::DocumentStatusChangesController < Admin::BaseController
   before_action :set_document
+  before_action :ensure_can_edit_document
 
   def index
     @status_logs = @document.document_status_logs.includes(:professional).ordered
@@ -15,8 +16,15 @@ class Admin::DocumentStatusChangesController < Admin::BaseController
     new_status = params[:document][:status]
     notes = params[:document][:status_notes]
 
+    if new_status.blank?
+      redirect_to new_admin_document_document_status_change_path(@document),
+                  alert: 'Por favor, selecione um novo status.'
+      return
+    end
+
     unless @document.can_transition_to?(new_status)
-      redirect_to admin_document_path(@document), alert: 'Transição de status não permitida.'
+      redirect_to new_admin_document_document_status_change_path(@document),
+                  alert: 'Transição de status não permitida.'
       return
     end
 
@@ -25,7 +33,9 @@ class Admin::DocumentStatusChangesController < Admin::BaseController
       redirect_to admin_document_path(@document),
                   notice: "Status alterado para #{@document.status.humanize} com sucesso."
     rescue StandardError => e
-      redirect_to admin_document_path(@document), alert: "Erro ao alterar status: #{e.message}"
+      Rails.logger.error "Erro ao alterar status do documento #{@document.id}: #{e.message}"
+      redirect_to new_admin_document_document_status_change_path(@document),
+                  alert: "Erro ao alterar status: #{e.message}"
     end
   end
 
@@ -33,5 +43,14 @@ class Admin::DocumentStatusChangesController < Admin::BaseController
 
   def set_document
     @document = Document.find(params[:document_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to admin_documents_path, alert: 'Documento não encontrado.'
+  end
+
+  def ensure_can_edit_document
+    return if @document.user_can_edit?(current_user)
+
+    redirect_to admin_document_path(@document),
+                alert: 'Você não tem permissão para alterar o status deste documento.'
   end
 end

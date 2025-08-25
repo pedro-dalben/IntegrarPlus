@@ -8,9 +8,9 @@ class Admin::WorkspaceController < Admin::BaseController
     if params[:query].present?
       begin
         search_results = Document.search(params[:query], {
-          filter: build_base_filters,
-          sort: [build_sort_param]
-        })
+                                           filter: build_base_filters,
+                                           sort: [build_sort_param]
+                                         })
 
         # Paginação manual para resultados do MeiliSearch
         page = (params[:page] || 1).to_i
@@ -19,7 +19,7 @@ class Admin::WorkspaceController < Admin::BaseController
 
         @documents = search_results[offset, per_page] || []
         @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
         # Fallback para busca local
         @documents = perform_local_search_with_query
@@ -51,14 +51,14 @@ class Admin::WorkspaceController < Admin::BaseController
   def perform_local_search
     # Se não pode criar documentos, mostrar apenas onde é responsável
     documents = if current_user.admin? || current_user.permit?('documents.create') || current_user.professional&.can_create_documents?
-                   Document.includes(:author, :document_versions, :document_responsibles)
-                           .where.not(status: 'liberado')
-                 else
-                   Document.joins(:document_responsibles)
-                           .where(document_responsibles: { professional: current_user.professional })
-                           .where.not(status: 'liberado')
-                           .includes(:author, :document_versions, :document_responsibles)
-                 end
+                  Document.includes(:author, :document_versions, :document_responsibles)
+                          .where.not(status: 'liberado')
+                else
+                  Document.joins(:document_responsibles)
+                          .where(document_responsibles: { professional: current_user.professional })
+                          .where.not(status: 'liberado')
+                          .includes(:author, :document_versions, :document_responsibles)
+                end
 
     # Aplicar filtros e ordenação
     documents = apply_filters(documents)
@@ -120,7 +120,7 @@ class Admin::WorkspaceController < Admin::BaseController
     filters = []
 
     # Filtro de status (excluir liberados) - usar valor numérico do enum
-    filters << "status != 3"
+    filters << 'status != 3'
 
     # Filtro de permissões
     unless current_user.admin? || current_user.permit?('documents.create') || current_user.professional&.can_create_documents?
@@ -135,7 +135,7 @@ class Admin::WorkspaceController < Admin::BaseController
     filters = []
 
     # Filtro de status (excluir liberados) - usar valor numérico do enum
-    filters << "status != 3"
+    filters << 'status != 3'
 
     # Filtro de permissões
     unless current_user.admin? || current_user.permit?('documents.create') || current_user.professional&.can_create_documents?
@@ -176,11 +176,9 @@ class Admin::WorkspaceController < Admin::BaseController
     when 'created_at'
       "created_at:#{direction}"
     else
-      "updated_at:desc"
+      'updated_at:desc'
     end
   end
-
-
 
   def ensure_can_access_documents
     return if current_user.admin?

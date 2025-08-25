@@ -8,9 +8,9 @@ class Admin::ReleasedDocumentsController < Admin::BaseController
     if params[:query].present?
       begin
         search_results = Document.search(params[:query], {
-          filter: build_search_filters,
-          sort: [build_sort_param]
-        })
+                                           filter: build_search_filters,
+                                           sort: [build_sort_param]
+                                         })
 
         # Paginação manual para resultados do MeiliSearch
         page = (params[:page] || 1).to_i
@@ -19,7 +19,7 @@ class Admin::ReleasedDocumentsController < Admin::BaseController
 
         @documents = search_results[offset, per_page] || []
         @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
         # Fallback para busca local
         @documents = perform_local_search
@@ -84,7 +84,7 @@ class Admin::ReleasedDocumentsController < Admin::BaseController
     filters = []
 
     # Filtro de status (apenas liberados) - usar valor numérico do enum
-    filters << "status = 3"
+    filters << 'status = 3'
 
     # Filtros adicionais - converter para valores numéricos dos enums
     if params[:document_type].present?
@@ -114,7 +114,7 @@ class Admin::ReleasedDocumentsController < Admin::BaseController
     when 'updated_at'
       "updated_at:#{direction}"
     else
-      "created_at:desc"
+      'created_at:desc'
     end
   end
 
@@ -125,6 +125,4 @@ class Admin::ReleasedDocumentsController < Admin::BaseController
 
     redirect_to admin_path, alert: 'Você não tem permissão para ver documentos liberados.'
   end
-
-
 end

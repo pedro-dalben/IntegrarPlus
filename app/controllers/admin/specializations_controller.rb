@@ -9,23 +9,7 @@ module Admin
 
     def index
       if params[:query].present?
-        search_results = Specialization.search(params[:query])
-        page = (params[:page] || 1).to_i
-        per_page = 10
-        offset = (page - 1) * per_page
-
-        @specializations = search_results[offset, per_page] || []
-        @pagy = OpenStruct.new(
-          count: search_results.length,
-          page: page,
-          items: per_page,
-          pages: (search_results.length.to_f / per_page).ceil,
-          from: offset + 1,
-          to: [offset + per_page, search_results.length].min,
-          prev: page > 1 ? page - 1 : nil,
-          next: page < (search_results.length.to_f / per_page).ceil ? page + 1 : nil,
-          series: []
-        )
+        @pagy, @specializations = pagy_meilisearch(Specialization, query: params[:query], limit: 10)
       else
         @pagy, @specializations = pagy(Specialization.all, limit: 10)
       end

@@ -85,7 +85,7 @@ module ApplicationHelper
     html.html_safe
   end
 
-  def build_pagy_url(pagy, page)
+  def build_pagy_url(_pagy, page)
     # Preservar todos os parâmetros exceto a página
     params = request.query_parameters.except(:page)
     params[:page] = page

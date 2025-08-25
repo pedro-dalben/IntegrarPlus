@@ -7,18 +7,15 @@ module Admin
     before_action :set_group, only: %i[show edit update destroy]
 
     def index
-      @groups = Group.all
-      @pagy = OpenStruct.new(
-        count: @groups.count,
-        page: 1,
-        items: 10,
-        pages: 1,
-        from: 1,
-        to: @groups.count,
-        prev: nil,
-        next: nil,
-        series: [1]
-      )
+      if params[:query].present?
+        @pagy, @groups = pagy_meilisearch(Group, query: params[:query], limit: 10)
+      else
+        @pagy, @groups = pagy(Group.all, limit: 10)
+      end
+
+      return unless request.xhr?
+
+      render partial: 'table', locals: { groups: @groups, pagy: @pagy }, layout: false
     end
 
     def show; end
@@ -60,8 +57,8 @@ module Admin
     def search
       query = params[:q]
       groups = Group.where('name ILIKE ?', "%#{query}%")
-                   .limit(10)
-                   .map { |group| { id: group.id, name: group.name } }
+                    .limit(10)
+                    .map { |group| { id: group.id, name: group.name } }
 
       render json: groups
     end

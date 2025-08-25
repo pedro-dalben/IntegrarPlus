@@ -38,9 +38,9 @@ class Professional < ApplicationRecord
   validate :specialization_consistency
   validate :email_not_used_by_other_user
 
+  after_create :create_user_if_needed
   # Callbacks para sincronizar dados com User
   after_update :sync_user_data, if: :should_sync_user_data?
-  after_create :create_user_if_needed
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:full_name) }
@@ -175,9 +175,9 @@ class Professional < ApplicationRecord
     # Verificar se existe outro usuário com este email (exceto o usuário associado a este profissional)
     existing_user = User.where(email: email).where.not(id: user_id).first
 
-    if existing_user.present?
-      errors.add(:email, 'já está sendo usado por outro usuário')
-    end
+    return unless existing_user.present?
+
+    errors.add(:email, 'já está sendo usado por outro usuário')
   end
 
   def ensure_user_exists!
@@ -220,19 +220,15 @@ class Professional < ApplicationRecord
     user_updates = {}
 
     # Sincronizar nome se mudou
-    if saved_change_to_full_name?
-      user_updates[:name] = full_name
-    end
+    user_updates[:name] = full_name if saved_change_to_full_name?
 
     # Sincronizar email se mudou
-    if saved_change_to_email?
-      user_updates[:email] = email
-    end
+    user_updates[:email] = email if saved_change_to_email?
 
-    if user_updates.any?
-      user.update!(user_updates)
-      Rails.logger.info "Dados do usuário sincronizados para profissional #{id}: #{user_updates}"
-    end
+    return unless user_updates.any?
+
+    user.update!(user_updates)
+    Rails.logger.info "Dados do usuário sincronizados para profissional #{id}: #{user_updates}"
   end
 
   def create_user_if_needed

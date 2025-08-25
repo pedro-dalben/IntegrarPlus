@@ -56,7 +56,8 @@ class Admin::DocumentPermissionsController < Admin::BaseController
       else
         respond_to do |format|
           format.html do
-            redirect_to admin_document_document_permissions_path(@document), alert: 'Nenhuma permissão foi concedida. Verifique os dados selecionados.'
+            redirect_to admin_document_document_permissions_path(@document),
+                        alert: 'Nenhuma permissão foi concedida. Verifique os dados selecionados.'
           end
           format.json { render json: { error: 'Nenhuma permissão foi concedida' }, status: :unprocessable_entity }
         end
@@ -73,11 +74,14 @@ class Admin::DocumentPermissionsController < Admin::BaseController
         format.html { redirect_to admin_document_document_permissions_path(@document), alert: e.message }
         format.json { render json: { error: e.message }, status: :unprocessable_entity }
       end
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Erro inesperado: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
       respond_to do |format|
-        format.html { redirect_to admin_document_document_permissions_path(@document), alert: 'Erro interno do servidor. Tente novamente.' }
+        format.html do
+          redirect_to admin_document_document_permissions_path(@document),
+                      alert: 'Erro interno do servidor. Tente novamente.'
+        end
         format.json { render json: { error: 'Erro interno do servidor' }, status: :internal_server_error }
       end
     end

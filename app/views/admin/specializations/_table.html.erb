@@ -41,19 +41,19 @@
       </td>
       <td class="px-5 py-4 whitespace-nowrap text-right relative">
         <div class="flex items-center justify-end gap-2">
-          <%= link_to admin_specialization_path(specialization), 
+          <%= link_to admin_specialization_path(specialization),
               class: "text-brand-600 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300",
               title: "Ver detalhes" do %>
             <i class="bi bi-eye"></i>
           <% end %>
-          <%= link_to edit_admin_specialization_path(specialization), 
+          <%= link_to edit_admin_specialization_path(specialization),
               class: "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300",
               title: "Editar" do %>
             <i class="bi bi-pencil"></i>
           <% end %>
-          <%= link_to admin_specialization_path(specialization), 
+          <%= link_to admin_specialization_path(specialization),
               method: :delete,
-              data: { 
+              data: {
                 confirm: "Tem certeza que deseja excluir esta especialização?",
                 turbo_method: :delete
               },
@@ -120,19 +120,19 @@
           </td>
           <td class="px-5 py-4 whitespace-nowrap">
             <div class="flex items-center justify-end gap-2">
-              <%= link_to admin_specialization_path(specialization), 
+              <%= link_to admin_specialization_path(specialization),
                   class: "text-brand-600 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300",
                   title: "Ver detalhes" do %>
                 <i class="bi bi-eye"></i>
               <% end %>
-              <%= link_to edit_admin_specialization_path(specialization), 
+              <%= link_to edit_admin_specialization_path(specialization),
                   class: "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300",
                   title: "Editar" do %>
                 <i class="bi bi-pencil"></i>
               <% end %>
-              <%= link_to admin_specialization_path(specialization), 
+              <%= link_to admin_specialization_path(specialization),
                   method: :delete,
-                  data: { 
+                  data: {
                     confirm: "Tem certeza que deseja excluir esta especialização?",
                     turbo_method: :delete
                   },
@@ -146,9 +146,4 @@
       <% end %>
     </tbody>
   </table>
-
-  <!-- Paginação -->
-  <% content_for :pagination do %>
-    <%= render Ui::PaginationComponent.new(pagy: pagy) %>
-  <% end %>
 <% end %>

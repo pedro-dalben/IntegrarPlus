@@ -2,32 +2,34 @@ require 'csv'
 require 'find'
 
 namespace :documents do
-  desc "Importar documentos do CSV e arquivos das pastas"
+  desc 'Importar documentos do CSV e arquivos das pastas'
   task import_from_csv: :environment do
     # Configurar arquivo de log
-    timestamp = Time.current.strftime("%Y%m%d_%H%M%S")
+    timestamp = Time.current.strftime('%Y%m%d_%H%M%S')
     log_path = Rails.root.join('storage', 'importador', "import_log_#{timestamp}.txt")
 
     def log_message(message, log_file = nil)
       puts message
-      if log_file
-        log_file.puts "[#{Time.current.strftime('%Y-%m-%d %H:%M:%S')}] #{message.gsub(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/, '')}"
-      end
+      return unless log_file
+
+      log_file.puts "[#{Time.current.strftime('%Y-%m-%d %H:%M:%S')}] #{message.gsub(
+        /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/, ''
+      )}"
     end
 
     log_file = File.open(log_path, 'w')
-    log_file.puts "RELATÓRIO DE IMPORTAÇÃO DE DOCUMENTOS"
-    log_file.puts "=" * 60
+    log_file.puts 'RELATÓRIO DE IMPORTAÇÃO DE DOCUMENTOS'
+    log_file.puts '=' * 60
     log_file.puts "Data/Hora: #{Time.current.strftime('%d/%m/%Y às %H:%M:%S')}"
-    log_file.puts "=" * 60
+    log_file.puts '=' * 60
     log_file.puts
 
-    log_message("🚀 INICIANDO IMPORTAÇÃO DE DOCUMENTOS", log_file)
-    log_message("="*60, log_file)
+    log_message('🚀 INICIANDO IMPORTAÇÃO DE DOCUMENTOS', log_file)
+    log_message('=' * 60, log_file)
 
     # Configurações
-    csv_path = Rails.root.join('storage', 'importador', 'csv.csv')
-    base_path = Rails.root.join('storage', 'importador')
+    csv_path = Rails.root.join('storage/importador/csv.csv')
+    base_path = Rails.root.join('storage/importador')
 
     # Contadores
     imported_count = 0
@@ -43,7 +45,7 @@ namespace :documents do
     # Buscar autor padrão
     author = Professional.first
     unless author
-      log_message("❌ ERRO: Nenhum profissional encontrado. Crie um profissional primeiro.", log_file)
+      log_message('❌ ERRO: Nenhum profissional encontrado. Crie um profissional primeiro.', log_file)
       log_file.close
       exit 1
     end
@@ -51,7 +53,7 @@ namespace :documents do
     log_message("📋 Autor padrão: #{author.full_name}", log_file)
     log_message("📁 Diretório base: #{base_path}", log_file)
     log_message("📄 Arquivo de log: #{log_path}", log_file)
-    log_message("", log_file)
+    log_message('', log_file)
 
     # Ler CSV
     unless File.exist?(csv_path)
@@ -87,7 +89,7 @@ namespace :documents do
     }
 
     # Função para encontrar arquivos
-    def find_files_for_document(base_path, doc_id, doc_name)
+    def find_files_for_document(base_path, doc_id, _doc_name)
       found_files = []
 
       # Buscar em toda a estrutura de arquivos
@@ -104,17 +106,15 @@ namespace :documents do
             filename: filename,
             mtime: File.mtime(path)
           }
-        else
+        elsif doc_id =~ /^POP0(\d{3})$/i
           # Para POPs com padrão POP0010 -> POP010, remover um zero
-          if doc_id.match(/^POP0(\d{3})$/i)
-            alternative_id = "POP#{$1}"
-            if filename.upcase.start_with?(alternative_id.upcase)
-              found_files << {
-                path: path,
-                filename: filename,
-                mtime: File.mtime(path)
-              }
-            end
+          alternative_id = "POP#{Regexp.last_match(1)}"
+          if filename.upcase.start_with?(alternative_id.upcase)
+            found_files << {
+              path: path,
+              filename: filename,
+              mtime: File.mtime(path)
+            }
           end
         end
       end
@@ -128,13 +128,13 @@ namespace :documents do
           filename = File.basename(path)
 
           # Buscar por ID do documento no nome do arquivo (busca mais ampla)
-          if filename.upcase.include?(doc_id.upcase)
-            found_files << {
-              path: path,
-              filename: filename,
-              mtime: File.mtime(path)
-            }
-          end
+          next unless filename.upcase.include?(doc_id.upcase)
+
+          found_files << {
+            path: path,
+            filename: filename,
+            mtime: File.mtime(path)
+          }
         end
       end
 
@@ -209,7 +209,7 @@ namespace :documents do
         file_info = find_files_for_document(base_path, doc_id, doc_name)
 
         if file_info.nil?
-          log_message("   ❌ Arquivo não encontrado", log_file)
+          log_message('   ❌ Arquivo não encontrado', log_file)
           missing_files << {
             id: doc_id,
             name: doc_name,
@@ -226,7 +226,7 @@ namespace :documents do
         # Verificar se documento já existe
         existing_doc = Document.find_by(title: doc_name)
         if existing_doc
-          log_message("   ⚠️  Documento já existe, pulando...", log_file)
+          log_message('   ⚠️  Documento já existe, pulando...', log_file)
           skipped_docs << {
             id: doc_id,
             name: doc_name,
@@ -243,8 +243,8 @@ namespace :documents do
           document_type: document_type,
           category: category,
           author: author,
-          status: status == 'Finalizado' ? :liberado : :aguardando_revisao,
-          current_version: "1.0"
+          status: :aguardando_revisao,
+          current_version: '1.0'
         )
 
         # Fazer upload do arquivo
@@ -271,8 +271,7 @@ namespace :documents do
           file_path: file_info[:path]
         }
         imported_count += 1
-
-      rescue => e
+      rescue StandardError => e
         log_message("   ❌ ERRO: #{e.message}", log_file)
         error_docs << {
           id: doc_id,
@@ -282,79 +281,79 @@ namespace :documents do
         error_count += 1
       end
 
-      log_message("", log_file)
+      log_message('', log_file)
     end
 
     # Relatório final
-    log_message("="*60, log_file)
-    log_message("📊 RELATÓRIO FINAL DA IMPORTAÇÃO", log_file)
-    log_message("="*60, log_file)
+    log_message('=' * 60, log_file)
+    log_message('📊 RELATÓRIO FINAL DA IMPORTAÇÃO', log_file)
+    log_message('=' * 60, log_file)
     log_message("✅ Documentos importados: #{imported_count}", log_file)
     log_message("⚠️  Documentos pulados: #{skipped_count}", log_file)
     log_message("❌ Erros: #{error_count}", log_file)
     log_message("📁 Arquivos não encontrados: #{missing_files.count}", log_file)
-    log_message("", log_file)
+    log_message('', log_file)
 
     if imported_docs.any?
-      log_message("✅ DOCUMENTOS IMPORTADOS COM SUCESSO:", log_file)
-      log_message("-" * 50, log_file)
+      log_message('✅ DOCUMENTOS IMPORTADOS COM SUCESSO:', log_file)
+      log_message('-' * 50, log_file)
       imported_docs.each do |doc|
         log_message("• #{doc[:id]} - #{doc[:name]}", log_file)
         log_message("  Tipo: #{doc[:type].humanize} | Categoria: #{doc[:category].humanize}", log_file)
         log_message("  ID no sistema: #{doc[:document_id]}", log_file)
         log_message("  Arquivo: #{File.basename(doc[:file_path])}", log_file)
-        log_message("", log_file)
+        log_message('', log_file)
       end
     end
 
     if skipped_docs.any?
-      log_message("⚠️  DOCUMENTOS PULADOS:", log_file)
-      log_message("-" * 50, log_file)
+      log_message('⚠️  DOCUMENTOS PULADOS:', log_file)
+      log_message('-' * 50, log_file)
       skipped_docs.each do |doc|
         log_message("• #{doc[:id]} - #{doc[:name]}", log_file)
         log_message("  Motivo: #{doc[:reason]}", log_file)
         log_message("  ID existente: #{doc[:existing_id]}", log_file) if doc[:existing_id]
-        log_message("", log_file)
+        log_message('', log_file)
       end
     end
 
     if missing_files.any?
-      log_message("📁 ARQUIVOS NÃO ENCONTRADOS:", log_file)
-      log_message("-" * 50, log_file)
+      log_message('📁 ARQUIVOS NÃO ENCONTRADOS:', log_file)
+      log_message('-' * 50, log_file)
       missing_files.each do |doc|
         log_message("• #{doc[:id]} - #{doc[:name]}", log_file)
         log_message("  Tipo esperado: #{doc[:type].humanize}", log_file)
         log_message("  Categoria: #{doc[:category].humanize}", log_file)
-        log_message("", log_file)
+        log_message('', log_file)
       end
     end
 
     if error_docs.any?
-      log_message("❌ ERROS DURANTE A IMPORTAÇÃO:", log_file)
-      log_message("-" * 50, log_file)
+      log_message('❌ ERROS DURANTE A IMPORTAÇÃO:', log_file)
+      log_message('-' * 50, log_file)
       error_docs.each do |doc|
         log_message("• #{doc[:id]} - #{doc[:name]}", log_file)
         log_message("  Erro: #{doc[:error]}", log_file)
-        log_message("", log_file)
+        log_message('', log_file)
       end
     end
 
     # Finalizar log
-    log_message("🎉 IMPORTAÇÃO CONCLUÍDA!", log_file)
-    log_message("", log_file)
-    log_message("=" * 60, log_file)
+    log_message('🎉 IMPORTAÇÃO CONCLUÍDA!', log_file)
+    log_message('', log_file)
+    log_message('=' * 60, log_file)
     log_message("Arquivo de log salvo em: #{log_path}", log_file)
     log_file.close
 
     puts "📄 Log detalhado salvo em: #{log_path}"
   end
 
-  desc "Listar arquivos disponíveis para importação"
+  desc 'Listar arquivos disponíveis para importação'
   task list_import_files: :environment do
-    base_path = Rails.root.join('storage', 'importador')
+    base_path = Rails.root.join('storage/importador')
 
-    puts "📁 ARQUIVOS DISPONÍVEIS PARA IMPORTAÇÃO"
-    puts "="*60
+    puts '📁 ARQUIVOS DISPONÍVEIS PARA IMPORTAÇÃO'
+    puts '=' * 60
 
     file_count = 0
 
@@ -371,12 +370,12 @@ namespace :documents do
     puts "📊 Total de arquivos encontrados: #{file_count}"
   end
 
-  desc "Verificar mapeamento de tipos e categorias do CSV"
+  desc 'Verificar mapeamento de tipos e categorias do CSV'
   task check_csv_mapping: :environment do
-    csv_path = Rails.root.join('storage', 'importador', 'csv.csv')
+    csv_path = Rails.root.join('storage/importador/csv.csv')
 
-    puts "🔍 VERIFICAÇÃO DE MAPEAMENTO DO CSV"
-    puts "="*60
+    puts '🔍 VERIFICAÇÃO DE MAPEAMENTO DO CSV'
+    puts '=' * 60
 
     # Contadores
     types_found = Hash.new(0)
@@ -429,30 +428,30 @@ namespace :documents do
       categories_found[mapped_category] += 1
     end
 
-    puts "📋 TIPOS DE DOCUMENTOS ENCONTRADOS:"
-    puts "-" * 40
+    puts '📋 TIPOS DE DOCUMENTOS ENCONTRADOS:'
+    puts '-' * 40
     types_found.each do |type, count|
       puts "• #{type.humanize}: #{count} documento(s)"
     end
 
     puts
-    puts "📂 CATEGORIAS ENCONTRADAS:"
-    puts "-" * 40
+    puts '📂 CATEGORIAS ENCONTRADAS:'
+    puts '-' * 40
     categories_found.each do |category, count|
       puts "• #{category.humanize}: #{count} documento(s)"
     end
 
     if unmapped_types.any?
       puts
-      puts "⚠️  PREFIXOS NÃO MAPEADOS:"
-      puts "-" * 40
+      puts '⚠️  PREFIXOS NÃO MAPEADOS:'
+      puts '-' * 40
       unmapped_types.each do |prefix|
         puts "• #{prefix} (será mapeado como 'outros')"
       end
     end
 
     puts
-    puts "📊 RESUMO:"
+    puts '📊 RESUMO:'
     puts "Total de tipos mapeados: #{types_found.count}"
     puts "Total de categorias: #{categories_found.count}"
     puts "Prefixos não mapeados: #{unmapped_types.count}"

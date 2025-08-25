@@ -20,3 +20,9 @@ Pagy::DEFAULT[:metadata] = %i[count page prev next last series]
 
 # Preserve request parameters in pagination links
 Pagy::DEFAULT[:params] = ->(params) { params.except(:page) }
+
+# Meilisearch integration
+Pagy::DEFAULT[:meilisearch] = {
+  limit: 10,
+  offset: 0
+}

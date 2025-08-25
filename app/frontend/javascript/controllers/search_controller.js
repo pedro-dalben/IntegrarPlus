@@ -104,30 +104,80 @@ export default class extends Controller {
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
 
-    // Atualiza apenas a seção de resultados (tabela e paginação)
-    const currentTable = document.querySelector('.bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden, .bg-white.dark\\:bg-gray-800.rounded-lg.shadow.border.border-gray-200.dark\\:border-gray-700.overflow-hidden')
-    const newTable = doc.querySelector('.bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden, .bg-white.dark\\:bg-gray-800.rounded-lg.shadow.border.border-gray-200.dark\\:border-gray-700.overflow-hidden')
+    // Estratégia 1: Procura pelo container principal da tabela (estilo novo)
+    let currentContainer = document.querySelector('.overflow-hidden.rounded-xl.border.border-gray-200.bg-white')
+    let newContainer = doc.querySelector('.overflow-hidden.rounded-xl.border.border-gray-200.bg-white')
 
-    if (currentTable && newTable) {
-      currentTable.replaceWith(newTable)
-    }
+    if (currentContainer && newContainer) {
+      // Substitui todo o container da tabela
+      currentContainer.replaceWith(newContainer)
+    } else {
+      // Estratégia 2: Procura pelo container de documentos (estilo antigo)
+      currentContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden')
+      newContainer = doc.querySelector('.bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden')
 
-    // Atualiza a paginação se existir
-    const currentPagination = document.querySelector('[aria-label="Pagination"]')
-    const newPagination = doc.querySelector('[aria-label="Pagination"]')
+      if (currentContainer && newContainer) {
+        currentContainer.replaceWith(newContainer)
+      } else {
+        // Estratégia 3: Fallback - procura pela tabela diretamente
+        const currentTable = document.querySelector('table')
+        const newTable = doc.querySelector('table')
 
-    if (currentPagination && newPagination) {
-      currentPagination.closest('.bg-white.dark\\:bg-gray-800.px-4.py-3').replaceWith(newPagination.closest('.bg-white.dark\\:bg-gray-800.px-4.py-3'))
-    } else if (newPagination) {
-      // Se não há paginação atual mas há nova, adiciona
-      const tableContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden, .bg-white.dark\\:bg-gray-800.rounded-lg.shadow.border.border-gray-200.dark\\:border-gray-700.overflow-hidden')
-      if (tableContainer) {
-        tableContainer.parentNode.appendChild(newPagination.closest('.bg-white.dark\\:bg-gray-800.px-4.py-3'))
+        if (currentTable && newTable) {
+          // Encontra o container pai da tabela atual
+          const tableContainer = currentTable.closest('.overflow-hidden, .bg-white, .shadow-md')
+          const newTableContainer = newTable.closest('.overflow-hidden, .bg-white, .shadow-md')
+
+          if (tableContainer && newTableContainer) {
+            tableContainer.replaceWith(newTableContainer)
+          } else {
+            // Último fallback: substitui apenas a tabela
+            currentTable.replaceWith(newTable)
+          }
+        }
       }
     }
 
+    // Atualiza a paginação se existir
+    this.updatePagination(doc)
+
     // Atualiza o valor do input para manter a busca
     this.inputTarget.value = query
+  }
+
+  updatePagination(doc) {
+    // Procura por diferentes tipos de paginação
+    const paginationSelectors = [
+      '[data-controller*="pagination"]',
+      '[aria-label="Pagination"]',
+      '.pagination',
+      '.bg-white.dark\\:bg-gray-800.px-4.py-3'
+    ]
+
+    let currentPagination = null
+    let newPagination = null
+
+    // Encontra a paginação atual
+    for (const selector of paginationSelectors) {
+      currentPagination = document.querySelector(selector)
+      if (currentPagination) break
+    }
+
+    // Encontra a nova paginação
+    for (const selector of paginationSelectors) {
+      newPagination = doc.querySelector(selector)
+      if (newPagination) break
+    }
+
+    if (currentPagination && newPagination) {
+      currentPagination.replaceWith(newPagination)
+    } else if (newPagination) {
+      // Se não há paginação atual mas há nova, adiciona após a tabela
+      const tableContainer = document.querySelector('.overflow-hidden.rounded-xl.border.border-gray-200.bg-white, .bg-white.dark\\:bg-gray-800.shadow-md.rounded-lg.overflow-hidden')
+      if (tableContainer) {
+        tableContainer.parentNode.appendChild(newPagination)
+      }
+    }
   }
 
   showLoading() {

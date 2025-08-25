@@ -12,9 +12,9 @@ class Admin::DocumentsController < Admin::BaseController
     if params[:query].present?
       begin
         search_results = Document.search(params[:query], {
-          filter: "author_professional_id = #{current_user.professional.id}",
-          sort: [build_sort_param]
-        })
+                                           filter: "author_professional_id = #{current_user.professional.id}",
+                                           sort: [build_sort_param]
+                                         })
 
         # Paginação manual para resultados do MeiliSearch
         page = (params[:page] || 1).to_i
@@ -23,7 +23,7 @@ class Admin::DocumentsController < Admin::BaseController
 
         @documents = search_results[offset, per_page] || []
         @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
         # Fallback para busca local
         @documents = perform_local_search
@@ -49,15 +49,13 @@ class Admin::DocumentsController < Admin::BaseController
     @document.author = current_user.professional
 
     if @document.save
-      if params[:document][:file].present?
-        handle_file_upload
-      end
+      handle_file_upload if params[:document][:file].present?
 
       redirect_to admin_document_path(@document), notice: 'Documento criado com sucesso!'
     else
       render :new, status: :unprocessable_entity
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Erro ao criar documento: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     @document.errors.add(:base, "Erro ao criar documento: #{e.message}")
@@ -128,11 +126,9 @@ class Admin::DocumentsController < Admin::BaseController
     when 'created_at'
       "created_at:#{direction}"
     else
-      "created_at:desc"
+      'created_at:desc'
     end
   end
-
-
 
   def set_document
     @document = Document.find(params[:id])
@@ -148,7 +144,7 @@ class Admin::DocumentsController < Admin::BaseController
 
     begin
       @document.create_new_version(file, current_user.professional, 'Versão inicial')
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Erro no upload do arquivo: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
       @document.errors.add(:file, "Erro ao processar arquivo: #{e.message}")
