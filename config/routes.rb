@@ -109,6 +109,7 @@ Rails.application.routes.draw do
     end
 
     get '/', to: 'dashboard#index'
+    get '/dashboard', to: 'dashboard#index'
     get '/ui', to: 'ui#index'
   end
 end

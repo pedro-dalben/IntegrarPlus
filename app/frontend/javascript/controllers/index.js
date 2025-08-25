@@ -21,3 +21,9 @@ application.register('search', SearchController);
 
 import TaskFilterController from './task_filter_controller';
 application.register('task-filter', TaskFilterController);
+
+import MaskController from './mask_controller';
+application.register('mask', MaskController);
+
+import TimeHhmmController from './time_hhmm_controller';
+application.register('time-hhmm', TimeHhmmController);

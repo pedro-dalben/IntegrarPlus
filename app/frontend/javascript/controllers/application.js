@@ -12,11 +12,17 @@ import SidebarController from './sidebar_controller';
 import DropdownController from './dropdown_controller';
 import SearchController from './search_controller';
 import RowController from './row_controller';
+import MaskController from './mask_controller';
+import TimeHhmmController from './time_hhmm_controller';
+import ContractFieldsController from './contract_fields_controller';
 
 application.register('header', HeaderController);
 application.register('sidebar', SidebarController);
 application.register('dropdown', DropdownController);
 application.register('search', SearchController);
 application.register('row', RowController);
+application.register('mask', MaskController);
+application.register('time-hhmm', TimeHhmmController);
+application.register('contract-fields', ContractFieldsController);
 
 export { application };

@@ -41,7 +41,7 @@
           <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div class="md:col-span-2">
             <%= form.label :full_name, "Nome Completo *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.text_field :full_name, 
+            <%= form.text_field :full_name,
                 class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                 placeholder: "Digite o nome completo",
                 required: true %>
@@ -49,20 +49,18 @@
 
           <div>
             <%= form.label :birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.text_field :birth_date, 
-                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
-                placeholder: "dd/mm/aaaa",
-                data: { 
-                  controller: "datepicker",
-                  datepicker_format_value: "d/m/Y",
-                  datepicker_allow_input_value: true
-                } %>
+            <div data-controller="mask" data-mask-type-value="date">
+              <%= form.text_field :birth_date,
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                  placeholder: "dd/mm/aaaa",
+                  data: { mask_target: "input" } %>
+            </div>
           </div>
 
           <div>
             <%= form.label :cpf, "CPF *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="mask" data-mask-type-value="cpf">
-              <%= form.text_field :cpf, 
+              <%= form.text_field :cpf,
                   class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                   placeholder: "000.000.000-00",
                   required: true,
@@ -73,7 +71,7 @@
           <div>
             <%= form.label :phone, "Telefone", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="mask" data-mask-type-value="phone">
-              <%= form.text_field :phone, 
+              <%= form.text_field :phone,
                   class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                   placeholder: "(00) 00000-0000",
                   data: { mask_target: "input" } %>
@@ -82,10 +80,13 @@
 
           <div>
             <%= form.label :email, "E-mail *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.email_field :email, 
-                class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
-                placeholder: "exemplo@email.com",
-                required: true %>
+            <div data-controller="mask" data-mask-type-value="email">
+              <%= form.email_field :email,
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                  placeholder: "exemplo@email.com",
+                  required: true,
+                  data: { mask_target: "input" } %>
+            </div>
           </div>
         </div>
       </div>
@@ -107,7 +108,7 @@
 
           <div>
             <%= form.label :password, "Senha (Opcional)", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.password_field :password, 
+            <%= form.password_field :password,
                 class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                 placeholder: "Deixe em branco para gerar automaticamente" %>
             <p class="text-sm text-gray-500 dark:text-gray-400">Deixe em branco para gerar senha automática</p>
@@ -115,7 +116,7 @@
 
           <div>
             <%= form.label :password_confirmation, "Confirmar Senha", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.password_field :password_confirmation, 
+            <%= form.password_field :password_confirmation,
                 class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                 placeholder: "Confirme a senha" %>
           </div>
@@ -152,9 +153,9 @@
           <div>
             <%= form.label :contract_type_id, "Forma de Contratação", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div class="relative z-20 bg-transparent">
-              <%= form.select :contract_type_id, 
-                  @contract_types.map { |ct| [ct.name, ct.id] }, 
-                  { prompt: "Selecione uma forma de contratação..." }, 
+              <%= form.select :contract_type_id,
+                  @contract_types.map { |ct| [ct.name, ct.id] },
+                  { prompt: "Selecione uma forma de contratação..." },
                   { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
               <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -166,10 +167,10 @@
 
           <div>
             <%= form.label :hired_on, "Data de Contratação", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.text_field :hired_on, 
+            <%= form.text_field :hired_on,
                 class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                 placeholder: "dd/mm/aaaa",
-                data: { 
+                data: {
                   controller: "datepicker",
                   datepicker_format_value: "d/m/Y",
                   datepicker_allow_input_value: true
@@ -179,12 +180,12 @@
           <div>
             <%= form.label :workload_hhmm, "Carga Horária (HH:MM)", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="time-hhmm">
-              <%= form.text_field :workload_hhmm, 
+              <%= form.text_field :workload_hhmm,
                   value: @professional.workload_hhmm,
                   class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                   placeholder: "40:00",
                   data: { time_hhmm_target: "input" } %>
-              <%= form.hidden_field :workload_minutes, 
+              <%= form.hidden_field :workload_minutes,
                   value: @professional.workload_minutes,
                   data: { time_hhmm_target: "hidden" } %>
             </div>
@@ -193,16 +194,16 @@
 
           <div>
             <%= form.label :council_code, "Código do Conselho", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.text_field :council_code, 
+            <%= form.text_field :council_code,
                 class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                 placeholder: "Digite o código do conselho" %>
           </div>
 
           <!-- Campos condicionais -->
-          <div data-controller="contract-fields" 
+          <div data-controller="contract-fields"
                data-contract-fields-contract-types-value="<%= @contract_types.map { |ct| { id: ct.id, requires_company: ct.requires_company, requires_cnpj: ct.requires_cnpj } }.to_json %>"
                data-contract-fields-current-type-value="<%= @professional.contract_type_id %>">
-            
+
             <div data-contract-fields-target="companyField" class="md:col-span-2" style="display: none;">
               <%= form.label :company_name, "Nome da Empresa", class: "ta-label" %>
               <%= form.text_field :company_name, class: "ta-input" %>
@@ -211,7 +212,7 @@
             <div data-contract-fields-target="cnpjField" class="md:col-span-2" style="display: none;">
               <%= form.label :cnpj, "CNPJ", class: "ta-label" %>
               <div data-controller="mask" data-mask-type-value="cnpj">
-                <%= form.text_field :cnpj, 
+                <%= form.text_field :cnpj,
                     class: "ta-input",
                     data: { mask_target: "input" } %>
               </div>
@@ -230,13 +231,13 @@
           <div>
             <%= form.label :group_ids, "Grupos", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="tom-select">
-              <%= form.select :group_ids, 
-                  @groups.map { |g| [g.name, g.id] }, 
-                  { prompt: "Selecione os grupos..." }, 
-                  { 
+              <%= form.select :group_ids,
+                  @groups.map { |g| [g.name, g.id] },
+                  { prompt: "Selecione os grupos..." },
+                  {
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
-                    data: { 
+                    data: {
                       tom_select_target: "select",
                       tom_select_options_value: {
                         plugins: ['remove_button'],
@@ -251,15 +252,15 @@
 
           <div>
             <%= form.label :speciality_ids, "Especialidades", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <div data-controller="tom-select dependent-specializations" 
+            <div data-controller="tom-select dependent-specializations"
                  data-dependent-specializations-endpoint-value="/admin/specializations/by_speciality">
-              <%= form.select :speciality_ids, 
-                  @specialities.map { |s| [s.name, s.id] }, 
-                  { prompt: "Selecione as especialidades..." }, 
-                  { 
+              <%= form.select :speciality_ids,
+                  @specialities.map { |s| [s.name, s.id] },
+                  { prompt: "Selecione as especialidades..." },
+                  {
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
-                    data: { 
+                    data: {
                       tom_select_target: "select",
                       dependent_specializations_target: "specialitySelect",
                       action: "change->dependent-specializations#specialityChanged",
@@ -277,13 +278,13 @@
           <div class="md:col-span-2">
             <%= form.label :specialization_ids, "Especializações", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <div data-controller="tom-select dependent-specializations">
-              <%= form.select :specialization_ids, 
-                  [], 
-                  { prompt: "Selecione as especializações..." }, 
-                  { 
+              <%= form.select :specialization_ids,
+                  [],
+                  { prompt: "Selecione as especializações..." },
+                  {
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
                     multiple: true,
-                    data: { 
+                    data: {
                       tom_select_target: "select",
                       dependent_specializations_target: "specializationSelect",
                       tom_select_options_value: {
@@ -302,9 +303,9 @@
 
       <!-- Ações -->
       <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <%= link_to "Cancelar", admin_professionals_path, 
+        <%= link_to "Cancelar", admin_professionals_path,
             class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
-        <%= form.submit "Criar Profissional", 
+        <%= form.submit "Criar Profissional",
             class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
       </div>
     <% end %>
