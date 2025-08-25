@@ -63,11 +63,8 @@ export default class extends Controller {
         break;
 
       case 'email':
-        maskOptions = {
-          mask: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-          lazy: false
-        };
-        break;
+        // Para email, não aplicamos máscara, apenas validação nativa do HTML5
+        return;
 
       case 'custom':
         maskOptions = options;

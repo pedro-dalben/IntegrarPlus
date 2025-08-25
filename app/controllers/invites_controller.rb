@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvitesController < ApplicationController
-  layout 'admin'
+  layout 'application'
 
   before_action :set_invite, only: %i[show accept]
   before_action :check_invite_validity, only: %i[show accept]

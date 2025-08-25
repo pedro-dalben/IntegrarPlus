@@ -82,7 +82,7 @@ module Admin
       params.expect(
         professional: [:full_name, :birth_date, :cpf, :phone, :email, :active,
                        :contract_type_id, :hired_on, :workload_minutes, :council_code,
-                       :company_name, :cnpj, :password, :password_confirmation,
+                       :company_name, :cnpj,
                        { group_ids: [], speciality_ids: [], specialization_ids: [] }]
       )
     end
@@ -96,12 +96,15 @@ module Admin
     def create_user_for_professional(professional)
       return if professional.user.present?
 
+      # Gerar senha temporária
+      temp_password = SecureRandom.hex(8)
+
       # Criar usuário com dados do profissional
       user = User.create!(
         name: professional.full_name,
         email: professional.email,
-        password: professional.password.presence || SecureRandom.hex(8),
-        password_confirmation: professional.password_confirmation.presence || professional.password.presence || SecureRandom.hex(8)
+        password: temp_password,
+        password_confirmation: temp_password
       )
 
       # Associar usuário ao profissional
