@@ -53,43 +53,45 @@
     <h1>IntegrarPlus</h1>
     <p>Convite para Acesso ao Sistema</p>
   </div>
-  
+
   <div class="content">
     <h2>Olá <%= @professional&.full_name || @user.email %>!</h2>
-    
+
     <p>Você foi convidado para acessar o sistema <strong>IntegrarPlus</strong>.</p>
-    
+
     <div class="info-box">
       <p><strong>Informações do seu acesso:</strong></p>
       <ul>
         <li><strong>E-mail:</strong> <%= @user.email %></li>
         <% if @professional %>
           <li><strong>Nome:</strong> <%= @professional.full_name %></li>
-          <li><strong>Função:</strong> <%= @professional.specialities.map(&:name).join(', ') %></li>
+          <% if @professional.specialities.any? %>
+            <li><strong>Função:</strong> <%= @professional.specialities.map(&:name).join(', ') %></li>
+          <% end %>
         <% end %>
       </ul>
     </div>
-    
+
     <p>Para acessar o sistema, clique no botão abaixo e defina sua senha:</p>
-    
+
     <div style="text-align: center;">
       <a href="<%= @invite.invite_url %>" class="button">
         Definir Senha e Acessar Sistema
       </a>
     </div>
-    
+
     <p><strong>Importante:</strong></p>
     <ul>
       <li>Este link é válido por 7 dias</li>
       <li>Após definir sua senha, você poderá acessar o sistema normalmente</li>
       <li>Se você não solicitou este convite, ignore este e-mail</li>
     </ul>
-    
+
     <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
     <p style="word-break: break-all; background-color: #f3f4f6; padding: 10px; border-radius: 4px;">
       <%= @invite.invite_url %>
     </p>
-    
+
     <div class="footer">
       <p>Este é um e-mail automático do sistema IntegrarPlus.</p>
       <p>Se você tiver dúvidas, entre em contato com o administrador do sistema.</p>

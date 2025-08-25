@@ -9,7 +9,9 @@ INFORMAÇÕES DO SEU ACESSO:
 - E-mail: <%= @user.email %>
 <% if @professional %>
 - Nome: <%= @professional.full_name %>
+<% if @professional.specialities.any? %>
 - Função: <%= @professional.specialities.map(&:name).join(', ') %>
+<% end %>
 <% end %>
 
 Para acessar o sistema, clique no link abaixo e defina sua senha:

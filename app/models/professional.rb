@@ -36,6 +36,11 @@ class Professional < ApplicationRecord
 
   validate :contract_type_consistency
   validate :specialization_consistency
+  validate :email_not_used_by_other_user
+
+  # Callbacks para sincronizar dados com User
+  after_update :sync_user_data, if: :should_sync_user_data?
+  after_create :create_user_if_needed
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:full_name) }
@@ -163,6 +168,18 @@ class Professional < ApplicationRecord
     end
   end
 
+  def email_not_used_by_other_user
+    return if email.blank?
+    return unless email_changed?
+
+    # Verificar se existe outro usuário com este email (exceto o usuário associado a este profissional)
+    existing_user = User.where(email: email).where.not(id: user_id).first
+
+    if existing_user.present?
+      errors.add(:email, 'já está sendo usado por outro usuário')
+    end
+  end
+
   def ensure_user_exists!
     create_user! unless user.present?
   end
@@ -190,5 +207,55 @@ class Professional < ApplicationRecord
 
   def name
     full_name
+  end
+
+  # Métodos para sincronização com User
+  def should_sync_user_data?
+    user.present? && (saved_change_to_full_name? || saved_change_to_email?)
+  end
+
+  def sync_user_data
+    return unless user.present?
+
+    user_updates = {}
+
+    # Sincronizar nome se mudou
+    if saved_change_to_full_name?
+      user_updates[:name] = full_name
+    end
+
+    # Sincronizar email se mudou
+    if saved_change_to_email?
+      user_updates[:email] = email
+    end
+
+    if user_updates.any?
+      user.update!(user_updates)
+      Rails.logger.info "Dados do usuário sincronizados para profissional #{id}: #{user_updates}"
+    end
+  end
+
+  def create_user_if_needed
+    return if user.present?
+    return unless active? # Só criar usuário se o profissional estiver ativo
+
+    create_user_automatically
+  end
+
+  def create_user_automatically
+    new_user = User.create!(
+      name: full_name,
+      email: email,
+      password: SecureRandom.hex(12),
+      password_confirmation: SecureRandom.hex(12)
+    )
+
+    update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
+
+    Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
+    new_user
+  rescue StandardError => e
+    Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
+    nil
   end
 end

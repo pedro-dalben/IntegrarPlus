@@ -4,6 +4,11 @@ class InviteMailer < ApplicationMailer
     @user = invite.user
     @professional = @user.professional
 
+    # Preload specialities se professional existir
+    if @professional
+      @professional = Professional.includes(:specialities).find(@professional.id)
+    end
+
     mail(
       to: @user.email,
       subject: 'Convite para acessar o sistema IntegrarPlus'

@@ -23,6 +23,10 @@ class User < ApplicationRecord
     name.presence || email.split('@').first.titleize
   end
 
+  def professional_full_name
+    professional&.full_name || full_name
+  end
+
   def permit?(permission_key)
     return true if admin?
 
