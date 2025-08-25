@@ -62,7 +62,7 @@ data: {})
   end
 
   def inline_bg(var)
-    " style="background-color: var(#{var});""
+    " style=\"background-color: var(#{var});\""
   end
 
   def inline_bg_surface

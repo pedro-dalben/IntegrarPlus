@@ -1,0 +1,47 @@
+#!/bin/bash
+
+echo "🔄 Recarregando IntegrarPlus na VPS..."
+
+# Parar serviço
+echo "⏹️  Parando serviço..."
+sudo systemctl stop integrarplus.service
+
+# Atualizar código
+echo "📥 Atualizando código do repositório..."
+git pull origin master
+
+# Configurar ambiente
+echo "⚙️  Configurando ambiente..."
+source ~/.rvm/scripts/rvm
+export RAILS_ENV=production
+source bin/setup-db
+
+# Executar migrations
+echo "🗄️  Executando migrations..."
+bundle exec rails db:migrate
+
+# Recarregar assets
+echo "🎨 Recarregando assets..."
+bundle exec rails assets:clobber assets:precompile
+bundle exec vite build
+bin/setup-assets
+
+# Reindexar MeiliSearch
+echo "🔍 Reindexando MeiliSearch..."
+bundle exec rails meilisearch:reindex
+
+# Reiniciar serviço
+echo "🚀 Reiniciando serviço..."
+sudo systemctl start integrarplus.service
+
+# Aguardar um pouco
+sleep 3
+
+# Verificar status
+echo "✅ Verificando status..."
+sudo systemctl status integrarplus.service --no-pager -l
+
+echo ""
+echo "🎉 Recarregamento concluído!"
+echo "📱 Acesse: http://localhost:3001"
+echo "📝 Logs: sudo journalctl -u integrarplus.service -f"
