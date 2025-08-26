@@ -19,6 +19,11 @@ class InvitesController < ApplicationController
       return
     end
 
+    if request.get?
+      redirect_to invite_path(@invite.token)
+      return
+    end
+
     @invite.increment_attempts!
 
     if params[:password].present? && params[:password_confirmation].present?

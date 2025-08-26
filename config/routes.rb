@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   # Rotas para convites
   get 'invite/:token', to: 'invites#show', as: :invite
-  post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite
+  get 'invite/:token/accept', to: 'invites#accept', as: :accept_invite
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
