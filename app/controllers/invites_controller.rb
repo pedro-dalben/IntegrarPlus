@@ -43,8 +43,7 @@ class InvitesController < ApplicationController
             redirect_to root_path, notice: 'Conta ativada com sucesso!'
           else
             Rails.logger.error "Erro de validação: #{user.errors.full_messages.join(', ')}"
-            flash.now[:alert] = "Erro de validação: #{user.errors.full_messages.join(', ')}"
-            render :show
+            redirect_to invite_path(@invite.token), alert: "Erro de validação: #{user.errors.full_messages.join(', ')}"
           end
         rescue => e
           Rails.logger.error "Erro ao ativar conta: #{e.message}"
@@ -52,8 +51,7 @@ class InvitesController < ApplicationController
           render :show
         end
       else
-        flash.now[:alert] = 'As senhas não coincidem.'
-        render :show
+        redirect_to invite_path(@invite.token), alert: 'As senhas não coincidem.'
       end
     else
       redirect_to invite_path(@invite.token)

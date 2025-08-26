@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <%= form_with url: accept_invite_path(@invite.token), method: :post, local: true, class: 'space-y-4' do |form| %>
+    <%= form_with url: accept_invite_path(@invite.token), method: :post, local: true, data: { turbo: false }, class: 'space-y-4' do |form| %>
       <div>
         <%= form.label :password, 'Senha', class: "block text-sm font-medium text-gray-700 mb-2" %>
         <%= form.password_field :password,

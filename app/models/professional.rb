@@ -44,6 +44,7 @@ class Professional < ApplicationRecord
   after_create :create_user_if_needed
   # Callbacks para sincronizar dados com User
   after_update :sync_user_data, if: :should_sync_user_data?
+  after_update :sync_groups_with_user, if: :saved_change_to_group_ids?
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:full_name) }
@@ -234,6 +235,20 @@ class Professional < ApplicationRecord
     Rails.logger.info "Dados do usuário sincronizados para profissional #{id}: #{user_updates}"
   end
 
+  def sync_groups_with_user
+    return if user.blank?
+
+    # Remover grupos que não estão mais associados ao profissional
+    user.memberships.where.not(group: groups).destroy_all
+
+    # Adicionar grupos que estão associados ao profissional mas não ao usuário
+    groups.each do |group|
+      user.memberships.find_or_create_by!(group: group)
+    end
+
+    Rails.logger.info "Grupos sincronizados para usuário #{user.email}: #{groups.pluck(:name).join(', ')}"
+  end
+
   def create_user_if_needed
     return if user.present?
     return unless active? # Só criar usuário se o profissional estiver ativo
@@ -250,6 +265,12 @@ class Professional < ApplicationRecord
     )
 
     update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
+
+    # Associar grupos do profissional ao usuário
+    groups.each do |group|
+      new_user.memberships.create!(group: group)
+      Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
+    end
 
     Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
     new_user

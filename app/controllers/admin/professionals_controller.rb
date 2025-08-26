@@ -79,7 +79,7 @@ module Admin
     end
 
     def professional_params
-      params.expect(
+      params.require(
         professional: [:full_name, :birth_date, :cpf, :phone, :email, :active,
                        :contract_type_id, :hired_on, :workload_minutes, :council_code,
                        :company_name, :cnpj,
@@ -109,6 +109,12 @@ module Admin
 
       # Associar usuário ao profissional
       professional.update!(user: user)
+
+      # Associar grupos do profissional ao usuário
+      professional.groups.each do |group|
+        user.memberships.create!(group: group)
+        Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{user.email}"
+      end
 
       # Criar convite se o profissional estiver ativo
       if professional.active?
