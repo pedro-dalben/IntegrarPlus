@@ -41,7 +41,7 @@ class Professional < ApplicationRecord
   validate :specialization_consistency
   validate :email_not_used_by_other_user
 
-  after_create :create_user_if_needed
+  after_create :create_user_if_needed, if: :active?
   # Callbacks para sincronizar dados com User
   after_update :sync_user_data, if: :should_sync_user_data?
   after_update :sync_groups_with_user, if: :saved_change_to_group_ids?
@@ -147,6 +147,9 @@ class Professional < ApplicationRecord
     end
   end
 
+  # Métodos públicos para criação de usuário
+
+
   private
 
   def contract_type_consistency
@@ -180,6 +183,10 @@ class Professional < ApplicationRecord
     existing_user = User.where(email: email).where.not(id: user_id).first
 
     return if existing_user.blank?
+
+    # Se estamos criando um novo profissional, permitir que o email seja usado
+    # O usuário será criado automaticamente com o mesmo email
+    return if new_record?
 
     errors.add(:email, 'já está sendo usado por outro usuário')
   end
@@ -249,33 +256,35 @@ class Professional < ApplicationRecord
     Rails.logger.info "Grupos sincronizados para usuário #{user.email}: #{groups.pluck(:name).join(', ')}"
   end
 
-  def create_user_if_needed
+    def create_user_if_needed
     return if user.present?
-    return unless active? # Só criar usuário se o profissional estiver ativo
 
     create_user_automatically
   end
 
-  def create_user_automatically
-    new_user = User.create!(
-      name: full_name,
-      email: email,
-      password: SecureRandom.hex(12),
-      password_confirmation: SecureRandom.hex(12)
-    )
+      def create_user_automatically
+    begin
+      temp_password = SecureRandom.hex(12)
+      new_user = User.create!(
+        name: full_name,
+        email: email,
+        password: temp_password,
+        password_confirmation: temp_password
+      )
 
-    update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
+      update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
 
-    # Associar grupos do profissional ao usuário
-    groups.each do |group|
-      new_user.memberships.create!(group: group)
-      Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
+      # Associar grupos do profissional ao usuário
+      groups.each do |group|
+        new_user.memberships.create!(group: group)
+        Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
+      end
+
+      Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
+      new_user
+    rescue StandardError => e
+      Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
+      nil
     end
-
-    Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
-    new_user
-  rescue StandardError => e
-    Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
-    nil
   end
 end

@@ -33,9 +33,6 @@ module Admin
       @professional = Professional.new(professional_params)
 
       if @professional.save
-        # Criar usuário automaticamente
-        create_user_for_professional(@professional)
-
         redirect_to admin_professional_path(@professional), notice: 'Profissional criado com sucesso.'
       else
         load_form_data
@@ -45,9 +42,6 @@ module Admin
 
     def update
       if @professional.update(professional_params)
-        # Criar usuário se não existir
-        create_user_for_professional(@professional)
-
         redirect_to admin_professional_path(@professional), notice: 'Profissional atualizado com sucesso.'
       else
         load_form_data
