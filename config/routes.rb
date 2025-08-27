@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   get 'document_permissions/create'
   get 'document_permissions/destroy'
 
+  # Rota pública para teste de busca
+  get 'test/search_test', to: 'test#search_test'
+
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

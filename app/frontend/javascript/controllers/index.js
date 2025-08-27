@@ -4,6 +4,9 @@
 
 import { application } from './application';
 
+import AdvancedSearchController from './advanced_search_controller';
+application.register('advanced-search', AdvancedSearchController);
+
 import ContractFieldsController from './contract_fields_controller';
 application.register('contract-fields', ContractFieldsController);
 

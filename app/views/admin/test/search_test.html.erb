@@ -1,0 +1,71 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Teste de Busca Avançada</h1>
+
+  <!-- Busca Simples -->
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+    <div class="px-6 py-4">
+      <h2 class="text-lg font-medium mb-4">Busca Simples</h2>
+
+      <%= form_with url: admin_test_search_test_path, method: :get, local: true do |f| %>
+        <div class="flex gap-4">
+          <%= f.text_field :query,
+                          value: @query,
+                          placeholder: "Digite para buscar profissionais...",
+                          class: "flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+          <%= f.submit "Buscar", class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <% if @query.present? %>
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+      <div class="px-6 py-4">
+        <h2 class="text-lg font-medium mb-4">Resultados para: "<%= @query %>"</h2>
+
+        <% if @error %>
+          <div class="text-red-600 bg-red-50 border border-red-200 rounded-md p-4">
+            <strong>Erro:</strong> <%= @error %>
+          </div>
+        <% elsif @results.any? %>
+          <div class="text-green-600 mb-4">
+            Encontrados <%= @results.length %> resultados
+          </div>
+
+          <div class="space-y-4">
+            <% @results.each do |result| %>
+              <div class="border border-gray-200 rounded-md p-4">
+                <h3 class="font-medium"><%= result.full_name %></h3>
+                <p class="text-gray-600"><%= result.email %></p>
+                <p class="text-sm text-gray-500">ID: <%= result.id %></p>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-gray-600">
+            Nenhum resultado encontrado.
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Debug Info -->
+  <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 mt-6">
+    <h3 class="font-medium mb-2">Informações de Debug:</h3>
+    <ul class="text-sm space-y-1">
+      <li><strong>Query:</strong> <%= @query || "Nenhuma" %></li>
+      <li><strong>Resultados:</strong> <%= @results&.length || 0 %></li>
+      <li><strong>Erro:</strong> <%= @error || "Nenhum" %></li>
+      <li><strong>MeiliSearch Status:</strong>
+        <% begin %>
+          <% response = Net::HTTP.get_response(URI('http://localhost:7700/health')) %>
+          <%= response.code == '200' ? 'Online' : 'Erro: ' + response.code %>
+        <% rescue %>
+          Offline
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>

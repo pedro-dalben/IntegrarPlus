@@ -1,14 +1,15 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['input', 'results', 'form', 'loading', 'error', 'suggestions']
+  static targets = ['input', 'results', 'loading', 'error', 'suggestions']
   static values = {
     url: String,
-    debounceMs: { type: Number, default: 300 },
+    debounceMs: { type: Number, default: 500 },
     minLength: { type: Number, default: 2 }
   }
 
   connect() {
+    console.log('AdvancedSearchController connected to:', this.urlValue)
     this.debouncedSearch = this.debounce(this.performSearch.bind(this), this.debounceMsValue)
     this.isSearching = false
     this.currentRequest = null
@@ -22,6 +23,7 @@ export default class extends Controller {
 
   search() {
     const query = this.inputTarget.value.trim()
+    console.log('Search triggered with query:', query)
 
     if (query.length === 0) {
       this.clearSearch()
@@ -38,6 +40,7 @@ export default class extends Controller {
 
   async performSearch() {
     const query = this.inputTarget.value.trim()
+    console.log('Performing search for:', query)
 
     if (query.length === 0 || query.length < this.minLengthValue) {
       this.clearSearch()
@@ -58,6 +61,8 @@ export default class extends Controller {
       url.searchParams.set('query', query)
       url.searchParams.set('page', '1')
 
+      console.log('Fetching URL:', url.toString())
+
       const controller = new AbortController()
       this.currentRequest = controller
 
@@ -71,6 +76,7 @@ export default class extends Controller {
 
       if (response.ok) {
         const html = await response.text()
+        console.log('Search response received, length:', html.length)
         this.updateResults(html)
         this.hideError()
       } else {
@@ -80,8 +86,8 @@ export default class extends Controller {
       if (error.name === 'AbortError') {
         return
       }
+      console.error('Search error:', error)
       this.showError()
-      console.error('Erro na busca:', error)
     } finally {
       this.isSearching = false
       this.hideLoading()
@@ -137,7 +143,9 @@ export default class extends Controller {
     if (this.hasResultsTarget) {
       this.resultsTarget.innerHTML = html
       this.resultsTarget.classList.remove('hidden')
+      console.log('Results updated')
     } else {
+      console.log('No results target, reloading page')
       window.location.reload()
     }
   }
@@ -160,7 +168,6 @@ export default class extends Controller {
     }
   }
 
-  // Métodos para sugestões de busca
   showSearchTips() {
     const tips = [
       'Use aspas para busca exata: "relatório técnico"',
@@ -181,11 +188,5 @@ export default class extends Controller {
       `
       this.showSuggestions()
     }
-  }
-
-  // Método para busca avançada
-  advancedSearch(event) {
-    event.preventDefault()
-    this.performSearch()
   }
 }
