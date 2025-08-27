@@ -391,4 +391,153 @@ class Document < ApplicationRecord
       '1.0'
     end
   end
+
+  # Métodos para normalização de texto e busca fonética
+  def normalize_text(text)
+    return '' if text.blank?
+
+    text.to_s
+        .downcase
+        .strip
+        .gsub(/[^\p{L}\p{N}\s]/, ' ')
+        .gsub(/\s+/, ' ')
+        .strip
+  end
+
+  def normalize_special_chars(text)
+    return '' if text.blank?
+
+    text.to_s
+        .downcase
+        .strip
+        .gsub(/[àáâãäå]/, 'a')
+        .gsub(/[èéêë]/, 'e')
+        .gsub(/[ìíîï]/, 'i')
+        .gsub(/[òóôõö]/, 'o')
+        .gsub(/[ùúûü]/, 'u')
+        .gsub(/[ç]/, 'c')
+        .gsub(/[ñ]/, 'n')
+        .gsub(/[^\p{L}\p{N}\s]/, ' ')
+        .gsub(/\s+/, ' ')
+        .strip
+  end
+
+  def generate_phonetic(text)
+    return '' if text.blank?
+
+    require 'text'
+    Text::Metaphone.metaphone(normalize_special_chars(text))
+  rescue LoadError, StandardError
+    # Fallback se a gem text não estiver disponível
+    normalize_special_chars(text)
+  end
+
+  # Método para busca avançada com múltiplas estratégias
+  def self.advanced_search(query, filters = {})
+    return [] if query.blank?
+
+    # Normalizar query
+    normalized_query = normalize_search_query(query)
+
+    # Buscar com diferentes estratégias
+    results = []
+
+    # 1. Busca exata
+    exact_results = search(normalized_query, filters)
+    results.concat(exact_results)
+
+    # 2. Busca fonética
+    phonetic_query = generate_phonetic_query(normalized_query)
+    if phonetic_query != normalized_query
+      phonetic_results = search(phonetic_query, filters)
+      results.concat(phonetic_results)
+    end
+
+    # 3. Busca com caracteres especiais normalizados
+    special_chars_query = normalize_special_chars_query(normalized_query)
+    if special_chars_query != normalized_query
+      special_results = search(special_chars_query, filters)
+      results.concat(special_results)
+    end
+
+    # 4. Busca por palavras parciais
+    partial_results = search_partial_words(normalized_query, filters)
+    results.concat(partial_results)
+
+    # Remover duplicatas e ordenar por relevância
+    results.uniq(&:id).sort_by { |doc| calculate_relevance_score(doc, normalized_query) }.reverse
+  end
+
+  def self.normalize_search_query(query)
+    query.to_s
+         .downcase
+         .strip
+         .gsub(/\s+/, ' ')
+  end
+
+  def self.generate_phonetic_query(query)
+    require 'text'
+    words = query.split(' ')
+    phonetic_words = words.map { |word| Text::Metaphone.metaphone(word) }
+    phonetic_words.join(' ')
+  rescue LoadError, StandardError
+    query
+  end
+
+  def self.normalize_special_chars_query(query)
+    query.gsub(/[àáâãäå]/, 'a')
+         .gsub(/[èéêë]/, 'e')
+         .gsub(/[ìíîï]/, 'i')
+         .gsub(/[òóôõö]/, 'o')
+         .gsub(/[ùúûü]/, 'u')
+         .gsub(/[ç]/, 'c')
+         .gsub(/[ñ]/, 'n')
+  end
+
+  def self.search_partial_words(query, filters)
+    words = query.split(' ')
+    return [] if words.empty?
+
+    # Buscar por cada palavra individualmente
+    partial_results = []
+    words.each do |word|
+      next if word.length < 3
+
+      partial_query = "#{word}*"
+      results = search(partial_query, filters)
+      partial_results.concat(results)
+    end
+
+    partial_results
+  end
+
+  def self.calculate_relevance_score(document, query)
+    score = 0
+    query_words = query.split(' ')
+
+    # Pontuação baseada na posição dos termos
+    query_words.each do |word|
+      # Título tem peso maior
+      if document.title&.downcase&.include?(word)
+        score += 10
+      end
+
+      # Descrição tem peso médio
+      if document.description&.downcase&.include?(word)
+        score += 5
+      end
+
+      # Autor tem peso menor
+      if document.author&.full_name&.downcase&.include?(word)
+        score += 3
+      end
+    end
+
+    # Bônus para correspondência exata
+    if document.title&.downcase == query
+      score += 50
+    end
+
+    score
+  end
 end

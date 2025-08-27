@@ -8,9 +8,28 @@ module Admin
 
     def index
       if params[:query].present?
-        @pagy, @professionals = pagy_meilisearch(Professional, query: params[:query], limit: 10)
+        begin
+          search_service = AdvancedSearchService.new(Professional)
+          filters = build_search_filters
+          options = build_search_options
+
+          search_results = search_service.search(params[:query], filters, options)
+
+          page = (params[:page] || 1).to_i
+          per_page = 10
+          offset = (page - 1) * per_page
+
+          @professionals = search_results[offset, per_page] || []
+          @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
+        rescue StandardError => e
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          @professionals = perform_local_search
+          @pagy, @professionals = pagy(@professionals, items: 10)
+        end
       else
-        @pagy, @professionals = pagy(Professional.all, limit: 10)
+        @professionals = perform_local_search
+        @pagy, @professionals = pagy(@professionals, items: 10)
       end
 
       return unless request.xhr?
@@ -67,6 +86,51 @@ module Admin
     end
 
     private
+
+    def perform_local_search
+      Professional.includes(:user, :groups, :specialities, :specializations, :contract_type)
+                  .order(created_at: :desc)
+    end
+
+    def build_search_filters
+      filters = {}
+
+      # Filtros adicionais podem ser adicionados aqui
+      if params[:active].present?
+        filters[:active] = params[:active] == 'true'
+      end
+
+      if params[:contract_type_id].present?
+        filters[:contract_type_id] = params[:contract_type_id]
+      end
+
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
+    end
+
+    def build_sort_param
+      order_by = params[:order_by] || 'created_at'
+      direction = params[:direction] || 'desc'
+
+      case order_by
+      when 'full_name'
+        "full_name:#{direction}"
+      when 'email'
+        "email:#{direction}"
+      when 'created_at'
+        "created_at:#{direction}"
+      when 'updated_at'
+        "updated_at:#{direction}"
+      else
+        'created_at:desc'
+      end
+    end
 
     def set_professional
       @professional = Professional.find(params[:id])

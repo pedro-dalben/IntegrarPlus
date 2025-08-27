@@ -5,15 +5,14 @@ module Admin
     before_action :ensure_can_view_released
 
     def index
-      # Busca com MeiliSearch
       if params[:query].present?
         begin
-          search_results = Document.search(params[:query], {
-                                             filter: build_search_filters,
-                                             sort: [build_sort_param]
-                                           })
+          search_service = AdvancedSearchService.new(Document)
+          filters = build_search_filters
+          options = build_search_options
 
-          # Paginação manual para resultados do MeiliSearch
+          search_results = search_service.search(params[:query], filters, options)
+
           page = (params[:page] || 1).to_i
           per_page = 20
           offset = (page - 1) * per_page
@@ -21,13 +20,12 @@ module Admin
           @documents = search_results[offset, per_page] || []
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
-          Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
-          # Fallback para busca local
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
           @documents = perform_local_search
           @pagy, @documents = pagy(@documents, items: 20)
         end
       else
-        # Busca local sem MeiliSearch
         @documents = perform_local_search
         @pagy, @documents = pagy(@documents, items: 20)
       end
@@ -82,25 +80,32 @@ module Admin
     end
 
     def build_search_filters
-      filters = []
+      filters = {}
 
-      # Filtro de status (apenas liberados) - usar valor numérico do enum
-      filters << 'status = 3'
+      # Filtro de status (apenas liberados)
+      filters[:status] = 'liberado'
 
-      # Filtros adicionais - converter para valores numéricos dos enums
+      # Filtros adicionais
       if params[:document_type].present?
-        doc_type_value = Document.document_types[params[:document_type]]
-        filters << "document_type = #{doc_type_value}" if doc_type_value
+        filters[:document_type] = params[:document_type]
       end
 
       if params[:category].present?
-        category_value = Document.categories[params[:category]]
-        filters << "category = #{category_value}" if category_value
+        filters[:category] = params[:category]
       end
 
-      filters << "author_professional_id = #{params[:author_id]}" if params[:author_id].present?
+      if params[:author_id].present?
+        filters[:author_professional_id] = params[:author_id]
+      end
 
-      filters.join(' AND ')
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
     end
 
     def build_sort_param

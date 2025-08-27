@@ -8,9 +8,28 @@ module Admin
 
     def index
       if params[:query].present?
-        @pagy, @groups = pagy_meilisearch(Group, query: params[:query], limit: 10)
+        begin
+          search_service = AdvancedSearchService.new(Group)
+          filters = build_search_filters
+          options = build_search_options
+
+          search_results = search_service.search(params[:query], filters, options)
+
+          page = (params[:page] || 1).to_i
+          per_page = 10
+          offset = (page - 1) * per_page
+
+          @groups = search_results[offset, per_page] || []
+          @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
+        rescue StandardError => e
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          @groups = perform_local_search
+          @pagy, @groups = pagy(@groups, items: 10)
+        end
       else
-        @pagy, @groups = pagy(Group.all, limit: 10)
+        @groups = perform_local_search
+        @pagy, @groups = pagy(@groups, items: 10)
       end
 
       return unless request.xhr?
@@ -64,6 +83,44 @@ module Admin
     end
 
     private
+
+    def perform_local_search
+      Group.includes(:permissions).order(created_at: :desc)
+    end
+
+    def build_search_filters
+      filters = {}
+
+      # Filtros adicionais podem ser adicionados aqui
+      if params[:is_admin].present?
+        filters[:is_admin] = params[:is_admin] == 'true'
+      end
+
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
+    end
+
+    def build_sort_param
+      order_by = params[:order_by] || 'created_at'
+      direction = params[:direction] || 'desc'
+
+      case order_by
+      when 'name'
+        "name:#{direction}"
+      when 'created_at'
+        "created_at:#{direction}"
+      when 'updated_at'
+        "updated_at:#{direction}"
+      else
+        'created_at:desc'
+      end
+    end
 
     def set_group
       @group = Group.find(params[:id])

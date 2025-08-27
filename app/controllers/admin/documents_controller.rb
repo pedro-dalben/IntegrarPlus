@@ -11,15 +11,14 @@ module Admin
     MAX_FILE_SIZE = 50.megabytes
 
     def index
-      # Busca com MeiliSearch
       if params[:query].present?
         begin
-          search_results = Document.search(params[:query], {
-                                             filter: "author_professional_id = #{current_user.professional.id} AND status != 3",
-                                             sort: [build_sort_param]
-                                           })
+          search_service = AdvancedSearchService.new(Document)
+          filters = build_search_filters
+          options = build_search_options
+          
+          search_results = search_service.search(params[:query], filters, options)
 
-          # Paginação manual para resultados do MeiliSearch
           page = (params[:page] || 1).to_i
           per_page = 20
           offset = (page - 1) * per_page
@@ -27,13 +26,12 @@ module Admin
           @documents = search_results[offset, per_page] || []
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
-          Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
-          # Fallback para busca local
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
           @documents = perform_local_search
           @pagy, @documents = pagy(@documents, items: 20)
         end
       else
-        # Busca local sem MeiliSearch
         @documents = perform_local_search
         @pagy, @documents = pagy(@documents, items: 20)
       end
@@ -117,6 +115,20 @@ module Admin
               .where(author_professional_id: current_user.professional.id)
               .where.not(status: 'liberado')
               .order(created_at: :desc)
+    end
+
+    def build_search_filters
+      filters = {}
+      filters[:author_professional_id] = current_user.professional.id
+      filters[:status] = '!liberado'
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
     end
 
     def build_sort_param

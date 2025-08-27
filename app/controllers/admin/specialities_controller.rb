@@ -6,9 +6,28 @@ module Admin
 
     def index
       if params[:query].present?
-        @pagy, @specialities = pagy_meilisearch(Speciality, query: params[:query], limit: 10)
+        begin
+          search_service = AdvancedSearchService.new(Speciality)
+          filters = build_search_filters
+          options = build_search_options
+
+          search_results = search_service.search(params[:query], filters, options)
+
+          page = (params[:page] || 1).to_i
+          per_page = 10
+          offset = (page - 1) * per_page
+
+          @specialities = search_results[offset, per_page] || []
+          @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
+        rescue StandardError => e
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
+          @specialities = perform_local_search
+          @pagy, @specialities = pagy(@specialities, items: 10)
+        end
       else
-        @pagy, @specialities = pagy(Speciality.all, limit: 10)
+        @specialities = perform_local_search
+        @pagy, @specialities = pagy(@specialities, items: 10)
       end
 
       return unless request.xhr?
@@ -59,6 +78,44 @@ module Admin
     end
 
     private
+
+    def perform_local_search
+      Speciality.order(created_at: :desc)
+    end
+
+    def build_search_filters
+      filters = {}
+
+      # Filtros adicionais podem ser adicionados aqui
+      if params[:active].present?
+        filters[:active] = params[:active] == 'true'
+      end
+
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
+    end
+
+    def build_sort_param
+      order_by = params[:order_by] || 'created_at'
+      direction = params[:direction] || 'desc'
+
+      case order_by
+      when 'name'
+        "name:#{direction}"
+      when 'created_at'
+        "created_at:#{direction}"
+      when 'updated_at'
+        "updated_at:#{direction}"
+      else
+        'created_at:desc'
+      end
+    end
 
     def set_speciality
       @speciality = Speciality.find(params[:id])

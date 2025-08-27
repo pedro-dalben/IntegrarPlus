@@ -1,34 +1,61 @@
-<!-- Busca -->
-<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6" data-controller="search" data-search-url-value="<%= admin_specializations_path %>">
+<!-- Busca Avançada -->
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6"
+     data-controller="advanced-search"
+     data-advanced-search-url-value="<%= admin_specializations_path %>"
+     data-advanced-search-debounce-ms-value="500"
+     data-advanced-search-min-length-value="2">
+
   <div class="px-6 py-4">
     <div class="relative">
       <input type="text"
-             data-search-target="input"
-             data-action="input->search#search"
+             data-advanced-search-target="input"
+             data-action="input->advanced-search#search focus->advanced-search#showSearchTips"
              value="<%= params[:query] %>"
-             placeholder="Digite para buscar especializações... (busca em tempo real)"
-             class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10" />
+             placeholder="Digite para buscar especializações... (busca avançada com fonética)"
+             class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10 pr-10" />
+
+      <!-- Ícone de busca -->
       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
       </div>
+
+      <!-- Indicador de carregamento -->
+      <div data-advanced-search-target="loading" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden">
+        <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Mensagem de erro -->
+    <div data-advanced-search-target="error" class="mt-2 hidden">
+      <div class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+        <div class="flex">
+          <svg class="flex-shrink-0 h-4 w-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
+          <span class="ml-2">Erro na busca. Tente novamente.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sugestões de busca -->
+    <div data-advanced-search-target="suggestions" class="mt-2 hidden">
+      <!-- Conteúdo será preenchido pelo JavaScript -->
     </div>
   </div>
 </div>
 
-<div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-  <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800">
-    <div class="flex gap-3">
-      <%= link_to new_admin_specialization_path, class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" do %>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Nova Especialização
-      <% end %>
-    </div>
-  </div>
+<!-- Resultados da busca -->
+<div data-advanced-search-target="results" class="<%= params[:query].present? ? '' : 'hidden' %>">
+  <!-- Conteúdo será preenchido pelo JavaScript -->
+</div>
 
+<!-- Lista principal (quando não há busca) -->
+<div class="<%= params[:query].present? ? 'hidden' : '' %>">
   <%= render 'table', specializations: @specializations, pagy: @pagy %>
 </div>
 

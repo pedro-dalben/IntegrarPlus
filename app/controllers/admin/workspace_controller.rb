@@ -5,15 +5,14 @@ module Admin
     before_action :ensure_can_access_documents
 
     def index
-      # Busca com MeiliSearch (independente dos filtros)
       if params[:query].present?
         begin
-          search_results = Document.search(params[:query], {
-                                             filter: build_base_filters,
-                                             sort: [build_sort_param]
-                                           })
+          search_service = AdvancedSearchService.new(Document)
+          filters = build_search_filters
+          options = build_search_options
 
-          # Paginação manual para resultados do MeiliSearch
+          search_results = search_service.search(params[:query], filters, options)
+
           page = (params[:page] || 1).to_i
           per_page = 20
           offset = (page - 1) * per_page
@@ -21,13 +20,12 @@ module Admin
           @documents = search_results[offset, per_page] || []
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
-          Rails.logger.error "Erro na busca MeiliSearch: #{e.message}"
-          # Fallback para busca local
+          Rails.logger.error "Erro na busca avançada: #{e.message}"
+          Rails.logger.error e.backtrace.join("\n")
           @documents = perform_local_search_with_query
           @pagy, @documents = pagy(@documents, items: 20)
         end
       else
-        # Busca local sem MeiliSearch (com filtros)
         @documents = perform_local_search
         @pagy, @documents = pagy(@documents, items: 20)
       end
@@ -64,6 +62,21 @@ module Admin
       # Aplicar filtros e ordenação
       documents = apply_filters(documents)
       apply_sorting(documents)
+    end
+
+    def perform_local_search_with_query
+      # Busca local com query (fallback)
+      documents = perform_local_search
+
+      if params[:query].present?
+        query = params[:query].downcase
+        documents = documents.where(
+          'LOWER(documents.title) LIKE ? OR LOWER(documents.description) LIKE ?',
+          "%#{query}%", "%#{query}%"
+        )
+      end
+
+      documents
     end
 
     def apply_filters(documents)
@@ -117,6 +130,44 @@ module Admin
       end
     end
 
+    def build_search_filters
+      filters = {}
+
+      # Filtro de status (excluir liberados)
+      filters[:status] = '!liberado'
+
+      # Filtro de permissões
+      unless current_user.admin? || current_user.permit?('documents.create') || current_user.professional&.can_create_documents?
+        filters[:author_professional_id] = current_user.professional.id
+      end
+
+      # Filtros adicionais
+      if params[:status].present?
+        filters[:status] = params[:status]
+      end
+
+      if params[:document_type].present?
+        filters[:document_type] = params[:document_type]
+      end
+
+      if params[:category].present?
+        filters[:category] = params[:category]
+      end
+
+      if params[:author_id].present?
+        filters[:author_professional_id] = params[:author_id]
+      end
+
+      filters
+    end
+
+    def build_search_options
+      {
+        limit: 1000,
+        sort: [build_sort_param]
+      }
+    end
+
     def build_base_filters
       filters = []
 
@@ -128,39 +179,6 @@ module Admin
         # Se não pode criar, mostrar apenas onde é responsável
         filters << "author_professional_id = #{current_user.professional.id}"
       end
-
-      filters.join(' AND ')
-    end
-
-    def build_search_filters
-      filters = []
-
-      # Filtro de status (excluir liberados) - usar valor numérico do enum
-      filters << 'status != 3'
-
-      # Filtro de permissões
-      unless current_user.admin? || current_user.permit?('documents.create') || current_user.professional&.can_create_documents?
-        # Se não pode criar, mostrar apenas onde é responsável
-        filters << "author_professional_id = #{current_user.professional.id}"
-      end
-
-      # Filtros adicionais - converter para valores numéricos dos enums
-      if params[:status].present?
-        status_value = Document.statuses[params[:status]]
-        filters << "status = #{status_value}" if status_value
-      end
-
-      if params[:document_type].present?
-        doc_type_value = Document.document_types[params[:document_type]]
-        filters << "document_type = #{doc_type_value}" if doc_type_value
-      end
-
-      if params[:category].present?
-        category_value = Document.categories[params[:category]]
-        filters << "category = #{category_value}" if category_value
-      end
-
-      filters << "author_professional_id = #{params[:author_id]}" if params[:author_id].present?
 
       filters.join(' AND ')
     end

@@ -20,6 +20,9 @@ gem 'pundit'
 # Meilisearch para busca avançada
 gem 'meilisearch-rails'
 
+# Busca fonética e processamento de texto
+gem 'text'
+
 gem 'solid_cable'
 gem 'solid_cache'
 gem 'solid_queue'

@@ -16,6 +16,8 @@ source ~/.rvm/scripts/rvm
 export RAILS_ENV=production
 source bin/setup-db
 
+bundle install
+
 # Executar migrations
 echo "🗄️  Executando migrations..."
 bundle exec rails db:migrate
