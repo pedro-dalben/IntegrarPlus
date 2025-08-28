@@ -1,0 +1,35 @@
+<header class="border-b border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-black">
+  <div class="flex items-center justify-between">
+    <!-- Mobile Menu Button -->
+    <button
+      type="button"
+      data-action="click->sidebar#toggle"
+      class="xl:hidden -ml-2 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800"
+    >
+      <span class="sr-only">Abrir menu</span>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Title -->
+    <div class="hidden xl:block">
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Portal de Operadoras
+      </h1>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center space-x-4">
+      <!-- External User Info (Mobile) -->
+      <div class="xl:hidden text-right">
+        <p class="text-sm font-medium text-gray-900 dark:text-white">
+          <%= external_user.name %>
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          <%= external_user.company_name %>
+        </p>
+      </div>
+    </div>
+  </div>
+</header>

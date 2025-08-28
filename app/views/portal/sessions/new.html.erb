@@ -1,0 +1,40 @@
+<div class="space-y-6">
+  <div class="text-center">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+      Portal de Operadoras
+    </h2>
+    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+      Entre com suas credenciais para acessar o portal
+    </p>
+  </div>
+
+    <%= form_with(model: @external_user, as: :external_user, url: external_user_session_path, local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
+
+      <div>
+        <%= form.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+        <%= form.email_field :email,
+            autofocus: true,
+            autocomplete: "email",
+            class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" %>
+      </div>
+
+      <div>
+        <%= form.label :password, "Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+        <%= form.password_field :password,
+            autocomplete: "current-password",
+            class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" %>
+      </div>
+
+      <div class="flex items-center">
+        <%= form.check_box :remember_me, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600" %>
+        <%= form.label :remember_me, "Lembrar de mim", class: "ml-2 block text-sm text-gray-700 dark:text-gray-300" %>
+      </div>
+
+      <div>
+        <%= form.submit "Entrar",
+            class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800" %>
+      </div>
+    <% end %>
+
+    <%= render "portal/shared/links" %>
+</div>
