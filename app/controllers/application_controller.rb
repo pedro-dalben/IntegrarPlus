@@ -21,9 +21,17 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
     devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+
+    # Para ExternalUsers
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :company_name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :company_name])
   end
 
   def current_professional
     @current_professional ||= current_user&.professional
+  end
+
+  def pundit_user
+    current_user || current_external_user
   end
 end

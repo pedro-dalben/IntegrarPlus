@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_28_203307) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "addresses", force: :cascade do |t|
+    t.string "addressable_type", null: false
+    t.bigint "addressable_id", null: false
+    t.string "address_type", default: "primary", null: false
+    t.string "zip_code", null: false
+    t.string "street", null: false
+    t.string "number"
+    t.string "complement"
+    t.string "neighborhood", null: false
+    t.string "city", null: false
+    t.string "state", limit: 2, null: false
+    t.decimal "latitude", precision: 10, scale: 8
+    t.decimal "longitude", precision: 11, scale: 8
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_type"
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable_type_and_addressable_id"
+    t.index ["city"], name: "index_addresses_on_city"
+    t.index ["latitude", "longitude"], name: "index_addresses_on_coordinates"
+    t.index ["state"], name: "index_addresses_on_state"
+    t.index ["zip_code"], name: "index_addresses_on_zip_code"
+  end
+
   create_table "contract_types", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "requires_company", default: false, null: false
@@ -60,11 +84,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
     t.integer "access_level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "professional_id"
     t.index ["access_level"], name: "index_document_permissions_on_access_level"
     t.index ["document_id", "group_id"], name: "index_document_permissions_on_document_id_and_group_id", unique: true, where: "(group_id IS NOT NULL)"
     t.index ["document_id", "user_id"], name: "index_document_permissions_on_document_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["document_id"], name: "index_document_permissions_on_document_id"
     t.index ["group_id"], name: "index_document_permissions_on_group_id"
+    t.index ["professional_id"], name: "index_document_permissions_on_professional_id"
     t.index ["user_id"], name: "index_document_permissions_on_user_id"
     t.check_constraint "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
   end
@@ -148,6 +174,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
     t.index ["category"], name: "index_documents_on_category"
     t.index ["document_type"], name: "index_documents_on_document_type"
     t.index ["status"], name: "index_documents_on_status"
+  end
+
+  create_table "external_users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "name", null: false
+    t.string "company_name", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_external_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_external_users_on_reset_password_token", unique: true
   end
 
   create_table "group_permissions", force: :cascade do |t|
@@ -254,6 +295,35 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
     t.index ["user_id"], name: "index_professionals_on_user_id"
   end
 
+  create_table "service_request_referrals", force: :cascade do |t|
+    t.bigint "service_request_id", null: false
+    t.string "cid", null: false
+    t.string "encaminhado_para", null: false
+    t.string "medico", null: false
+    t.text "descricao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "medico_crm"
+    t.date "data_encaminhamento"
+    t.index ["encaminhado_para"], name: "index_service_request_referrals_on_encaminhado_para"
+    t.index ["service_request_id"], name: "index_service_request_referrals_on_service_request_id"
+  end
+
+  create_table "service_requests", force: :cascade do |t|
+    t.bigint "external_user_id", null: false
+    t.string "convenio", null: false
+    t.string "carteira_codigo", null: false
+    t.string "nome", null: false
+    t.date "data_encaminhamento", null: false
+    t.string "status", default: "aguardando", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "telefone_responsavel", null: false
+    t.index ["data_encaminhamento"], name: "index_service_requests_on_data_encaminhamento"
+    t.index ["external_user_id"], name: "index_service_requests_on_external_user_id"
+    t.index ["status"], name: "index_service_requests_on_status"
+  end
+
   create_table "specialities", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -310,8 +380,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
     t.text "comment_text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "professional_id"
     t.index ["created_at"], name: "index_version_comments_on_created_at"
     t.index ["document_version_id"], name: "index_version_comments_on_document_version_id"
+    t.index ["professional_id"], name: "index_version_comments_on_professional_id"
     t.index ["user_id"], name: "index_version_comments_on_user_id"
   end
 
@@ -329,6 +401,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
+  add_foreign_key "document_permissions", "professionals"
   add_foreign_key "document_permissions", "users"
   add_foreign_key "document_releases", "document_versions", column: "version_id"
   add_foreign_key "document_releases", "documents"
@@ -357,8 +430,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_210251) do
   add_foreign_key "professional_specializations", "specializations"
   add_foreign_key "professionals", "contract_types"
   add_foreign_key "professionals", "users"
+  add_foreign_key "service_request_referrals", "service_requests"
+  add_foreign_key "service_requests", "external_users"
   add_foreign_key "specialization_specialities", "specialities"
   add_foreign_key "specialization_specialities", "specializations"
   add_foreign_key "version_comments", "document_versions"
+  add_foreign_key "version_comments", "professionals"
   add_foreign_key "version_comments", "users"
 end

@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  devise_for :external_users, path: 'portal', controllers: {
+    sessions: 'portal/sessions',
+    passwords: 'portal/passwords'
+  }
+
   get 'workspace/index'
   get 'released_documents/index'
   get 'released_documents/show'
@@ -14,6 +19,13 @@ Rails.application.routes.draw do
 
   # Rota pública para teste de busca
   get 'test/search_test', to: 'test#search_test'
+
+  # API para busca de CEP
+  get 'cep/:cep', to: 'cep#buscar', as: :buscar_cep
+
+  # Demonstração do componente de CEP
+  resources :cep_demo, only: [:index, :create]
+  get '/address_demo', to: 'cep_demo#address_demo'
 
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -32,6 +44,12 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # Rotas para usuários externos (operadoras)
+  authenticated :external_user do
+    root to: 'portal/service_requests#index', as: :external_user_root
+  end
+
+  # Rotas para usuários internos
   authenticated :user do
     root to: 'admin/dashboard#index', as: :authenticated_root
   end
@@ -40,6 +58,14 @@ Rails.application.routes.draw do
     unauthenticated do
       root to: 'devise/sessions#new', as: :unauthenticated_root
     end
+  end
+
+  # Portal de operadoras
+  namespace :portal do
+    resources :service_requests do
+      resources :service_request_referrals, only: [:create, :destroy], path: 'encaminhamentos'
+    end
+    root to: 'service_requests#index'
   end
   get 'styleguide' => 'styleguide#index'
 

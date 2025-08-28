@@ -104,16 +104,18 @@ end
 
 # Cria profissional para o usuário admin se não existir
 unless admin_user.professional
-  Professional.create!(
-    full_name: 'Administrador do Sistema',
-    email: 'admin@integrarplus.com',
-    cpf: '00000000000',
-    phone: '(11) 99999-9999',
-    active: true,
-    user: admin_user
-  )
+  Professional.find_or_create_by!(email: 'admin@integrarplus.com') do |professional|
+    professional.full_name = 'Administrador do Sistema'
+    professional.cpf = '11111111111'
+    professional.phone = '(11) 99999-9999'
+    professional.active = true
+    professional.user = admin_user
+  end
 end
 
 # Associa o usuário admin ao grupo Administradores
 admin_group = Group.find_by(name: 'Administradores')
 Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id) if admin_group
+
+# Carrega seeds para usuários externos (operadoras)
+load(Rails.root.join('db/seeds/external_users.rb'))
