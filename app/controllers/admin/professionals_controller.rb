@@ -146,6 +146,17 @@ module Admin
         :full_name, :birth_date, :cpf, :phone, :email, :active,
         :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes, :council_code,
         :company_name, :cnpj,
+        # Legacy address fields (for backward compatibility)
+        :zip_code, :street, :neighborhood, :city, :state, :latitude, :longitude,
+        # New nested address attributes
+        primary_address_attributes: [
+          :id, :zip_code, :street, :number, :complement,
+          :neighborhood, :city, :state, :latitude, :longitude, :_destroy
+        ],
+        secondary_address_attributes: [
+          :id, :zip_code, :street, :number, :complement,
+          :neighborhood, :city, :state, :latitude, :longitude, :_destroy
+        ],
         group_ids: [], speciality_ids: [], specialization_ids: []
       )
     end

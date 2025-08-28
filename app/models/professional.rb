@@ -3,6 +3,7 @@
 class Professional < ApplicationRecord
   include DashboardCache
   include MeiliSearch::Rails
+  include Addressable
 
   # Removido Devise - o Professional não precisa de autenticação
   # A autenticação é feita através do User associado
@@ -36,6 +37,8 @@ class Professional < ApplicationRecord
   # validates :cnpj, cnpj: true, allow_blank: true
   validates :workload_minutes, numericality: { greater_than_or_equal_to: 0 }
   # validates :birth_date, date: { after: Date.new(1900, 1, 1), before_or_equal_to: Date.current }, allow_blank: true
+
+  # Address validations are now handled by the Address model
 
   validate :contract_type_consistency
   validate :specialization_consistency
@@ -218,6 +221,20 @@ class Professional < ApplicationRecord
 
   def name
     full_name
+  end
+
+  # Address methods are now provided by the Addressable concern
+  # Legacy compatibility
+  def has_coordinates?
+    coordinates.present?
+  end
+
+  def tem_endereco_completo?
+    complete_address?
+  end
+
+  def tem_coordenadas?
+    has_coordinates?
   end
 
   # Métodos para sincronização com User
