@@ -10,6 +10,7 @@ export default class extends Controller {
 
   connect() {
     console.log('AdvancedSearchController connected to:', this.urlValue)
+
     this.debouncedSearch = this.debounce(this.performSearch.bind(this), this.debounceMsValue)
     this.isSearching = false
     this.currentRequest = null
@@ -147,9 +148,19 @@ export default class extends Controller {
   }
 
   updateResults(html) {
+    // Procurar o target results
+    let resultsContainer = null
+
     if (this.hasResultsTarget) {
-      this.resultsTarget.innerHTML = html
-      this.resultsTarget.classList.remove('hidden')
+      resultsContainer = this.resultsTarget
+    } else {
+      // Fallback: procurar por atributo data diretamente
+      resultsContainer = document.querySelector('[data-advanced-search-target="results"]')
+    }
+
+    if (resultsContainer) {
+      resultsContainer.innerHTML = html
+      resultsContainer.classList.remove('hidden')
 
       // Esconder a lista principal quando há resultados de busca
       const mainList = document.querySelector('.main-document-list')
@@ -157,10 +168,10 @@ export default class extends Controller {
         mainList.classList.add('hidden')
       }
 
-      console.log('Results updated')
+      console.log('Results updated successfully')
     } else {
-      console.log('No results target, reloading page')
-      window.location.reload()
+      console.error('Results target not found!')
+      this.showError()
     }
   }
 

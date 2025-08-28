@@ -1,12 +1,16 @@
 # Fix para Deploy - Busca Avançada
 
-## 🚨 Problema Identificado
+## 🚨 Problemas Identificados e Corrigidos
 
-O erro no ambiente de produção ocorre porque os partials não estavam nomeados corretamente:
+### 1. Partials sem Underscore
+O erro no ambiente de produção ocorria porque os partials não estavam nomeados corretamente:
 
 ```
 ActionView::MissingTemplate (Missing partial admin/workspace/_search_results
 ```
+
+### 2. Targets Fora do Escopo do Controller
+O JavaScript estava fazendo reload da página porque os targets `results` estavam fora do elemento que contém o controller Stimulus.
 
 ## ✅ Solução Aplicada
 
@@ -26,13 +30,38 @@ app/views/admin/documents/_search_results.html.erb
 # ... outros
 ```
 
-### 2. Comando para Aplicar no VPS
+### 2. Reestruturação das Views
+As views foram corrigidas para incluir os targets dentro do escopo do controller:
+
+```erb
+<!-- ANTES (incorreto) -->
+<div data-controller="advanced-search">
+  <!-- campo de busca -->
+</div>
+<div data-advanced-search-target="results"> <!-- FORA DO ESCOPO -->
+
+<!-- DEPOIS (correto) -->
+<div data-controller="advanced-search">
+  <!-- campo de busca -->
+  <div data-advanced-search-target="results"> <!-- DENTRO DO ESCOPO -->
+  </div>
+</div>
+```
+
+### 3. Comando para Aplicar no VPS
 
 Execute este comando no servidor de produção:
 
 ```bash
 cd /home/ubuntu/IntegrarPlus
 
+# Usar o script completo de deploy
+./scripts/deploy-advanced-search.sh
+```
+
+Ou manualmente:
+
+```bash
 # Renomear todos os partials para o formato correto
 find app/views/admin -name "search_results.html.erb" -exec bash -c 'dir=$(dirname "$1"); base=$(basename "$1"); mv "$1" "$dir/_$base"' _ {} \;
 
