@@ -1,0 +1,155 @@
+<% content_for :title, "Nova Solicitação - Portal de Operadoras" %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Nova Solicitação</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Preencha os dados do beneficiário e encaminhamentos
+      </p>
+    </div>
+
+    <%= link_to portal_service_requests_path,
+        class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600" do %>
+      <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Voltar
+    <% end %>
+  </div>
+
+  <%= form_with model: [@service_request], url: portal_service_requests_path, local: true, class: "space-y-8", data: { controller: "nested-form" } do |form| %>
+
+    <!-- Erros -->
+    <% if @service_request.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
+              Erro ao salvar solicitação
+            </h3>
+            <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+              <ul class="list-disc pl-5 space-y-1">
+                <% @service_request.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Dados do Beneficiário -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados do Beneficiário</h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Convênio (preenchido automaticamente) -->
+          <div>
+            <%= form.label :convenio, "Convênio *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.text_field :convenio,
+                required: true,
+                readonly: true,
+                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-600 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300" %>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Preenchido automaticamente com base na sua operadora
+            </p>
+          </div>
+
+          <!-- Código da Carteira -->
+          <div>
+            <%= form.label :carteira_codigo, "Código da Carteira *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.text_field :carteira_codigo,
+                required: true,
+                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
+
+
+
+
+
+          <!-- Nome -->
+          <div>
+            <%= form.label :nome, "Nome Completo *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.text_field :nome,
+                required: true,
+                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
+
+          <!-- Telefone do Responsável -->
+          <div>
+            <%= form.label :telefone_responsavel, "Telefone do Responsável *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.text_field :telefone_responsavel,
+                required: true,
+                placeholder: "(11) 99999-9999",
+                data: { controller: "input-mask", "input-mask-type-value": "telefone" },
+                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
+
+
+
+
+
+          <!-- Data de Encaminhamento -->
+          <div>
+            <%= form.label :data_encaminhamento, "Data de Encaminhamento *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+            <%= form.date_field :data_encaminhamento,
+                required: true,
+                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Encaminhamentos -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados dos Encaminhamentos</h2>
+        <button type="button"
+                data-action="click->nested-form#add"
+                class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-900/50 dark:text-blue-400 dark:hover:bg-blue-900">
+          <svg class="-ml-1 mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Adicionar Encaminhamento
+        </button>
+      </div>
+
+      <div class="p-6">
+        <div data-nested-form-target="container" class="space-y-6">
+          <%= form.fields_for :service_request_referrals do |referral_form| %>
+            <%= render "portal/service_requests/referral_form", form: referral_form %>
+          <% end %>
+        </div>
+
+        <!-- Template para novos encaminhamentos -->
+        <template data-nested-form-target="template">
+          <%= form.fields_for :service_request_referrals, ServiceRequestReferral.new, child_index: "NEW_RECORD" do |referral_form| %>
+            <%= render "portal/service_requests/referral_form", form: referral_form %>
+          <% end %>
+        </template>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="flex justify-end space-x-4">
+      <%= link_to "Cancelar", portal_service_requests_path,
+          class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600" %>
+
+      <%= form.submit "Criar Solicitação",
+          class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+    </div>
+  <% end %>
+</div>

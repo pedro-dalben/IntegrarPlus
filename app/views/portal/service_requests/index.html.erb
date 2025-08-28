@@ -1,0 +1,150 @@
+<% content_for :title, "Solicitações - Portal de Operadoras" %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Solicitações</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Gerencie suas solicitações de encaminhamento
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0">
+      <%= link_to new_portal_service_request_path,
+          class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Nova Solicitação
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">Filtros</h3>
+    </div>
+
+    <%= form_with url: portal_service_requests_path, method: :get, local: true, class: "p-6 space-y-4" do |form| %>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <div>
+          <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= form.select :status,
+              options_for_select([
+                ['Todos', ''],
+                ['Aguardando', 'aguardando'],
+                ['Processado', 'processado']
+              ], params[:status]),
+              {},
+              { class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" } %>
+        </div>
+
+        <div>
+          <%= form.label :data_inicio, "Data início", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= form.date_field :data_inicio,
+              value: params[:data_inicio],
+              class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= form.label :data_fim, "Data fim", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= form.date_field :data_fim,
+              value: params[:data_fim],
+              class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+      </div>
+
+      <div class="flex space-x-3">
+        <%= form.submit "Filtrar",
+            class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+        <%= link_to "Limpar", portal_service_requests_path,
+            class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Lista de Solicitações -->
+  <% if @service_requests.any? %>
+    <div class="space-y-4">
+      <% @service_requests.each do |service_request| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow">
+          <div class="p-6">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                    <%= service_request.nome %>
+                  </h3>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= service_request.status == 'aguardando' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400' : 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400' %>">
+                    <%= service_request.status_humanizado %>
+                  </span>
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
+                  <div>
+                    <span class="font-medium">Convênio:</span>
+                    <%= service_request.convenio %> - <%= service_request.carteira_codigo %>
+                  </div>
+                  <div>
+                    <span class="font-medium">Telefone:</span>
+                    <%= service_request.telefone_formatado %>
+                  </div>
+                  <div>
+                    <span class="font-medium">Data de Encaminhamento:</span>
+                    <%= l(service_request.data_encaminhamento, format: :short) %>
+                  </div>
+                  <div>
+                    <span class="font-medium">Encaminhamentos:</span>
+                    <%= service_request.service_request_referrals.count %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ml-6 flex flex-col space-y-2">
+                <%= link_to portal_service_request_path(service_request),
+                    class: "inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600" do %>
+                  Ver
+                <% end %>
+
+                <% if service_request.status == 'aguardando' %>
+                  <%= link_to edit_portal_service_request_path(service_request),
+                      class: "inline-flex items-center px-3 py-1.5 border border-blue-300 text-sm font-medium rounded text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-900/50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900" do %>
+                    Editar
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Paginação -->
+    <% if @pagy.pages > 1 %>
+      <div class="flex justify-center">
+        <%== pagy_nav(@pagy) %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhuma solicitação encontrada</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Comece criando uma nova solicitação de encaminhamento.
+      </p>
+      <div class="mt-6">
+        <%= link_to new_portal_service_request_path,
+            class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Nova Solicitação
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

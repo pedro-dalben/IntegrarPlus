@@ -1,0 +1,137 @@
+<% content_for :title, "#{@service_request.nome} - Portal de Operadoras" %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= @service_request.nome %></h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Solicitação criada em <%= l(@service_request.created_at, format: :long) %>
+      </p>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <%= link_to portal_service_requests_path,
+          class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600" do %>
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Voltar
+      <% end %>
+
+      <% if @service_request.status == 'aguardando' %>
+        <%= link_to edit_portal_service_request_path(@service_request),
+            class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" do %>
+          <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          </svg>
+          Editar
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="flex items-center">
+    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= @service_request.status == 'aguardando' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-400' : 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400' %>">
+      <%= @service_request.status_humanizado %>
+    </span>
+    <% if @service_request.status == 'processado' %>
+      <p class="ml-3 text-sm text-gray-600 dark:text-gray-400">
+        Esta solicitação foi processada e não pode mais ser editada.
+      </p>
+    <% end %>
+  </div>
+
+  <!-- Dados do Beneficiário -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados do Beneficiário</h2>
+    </div>
+
+    <div class="p-6">
+      <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Convênio</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @service_request.convenio %></dd>
+        </div>
+
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código da Carteira</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @service_request.carteira_codigo %></dd>
+        </div>
+
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Telefone do Responsável</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= @service_request.telefone_formatado %></dd>
+        </div>
+
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Encaminhamento</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= l(@service_request.data_encaminhamento, format: :short) %></dd>
+        </div>
+
+
+
+
+      </dl>
+    </div>
+  </div>
+
+  <!-- Encaminhamentos -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+        Encaminhamentos (<%= @service_request_referrals.count %>)
+      </h2>
+    </div>
+
+    <div class="p-6">
+      <% if @service_request_referrals.any? %>
+        <div class="space-y-6">
+          <% @service_request_referrals.each_with_index do |referral, index| %>
+            <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                Encaminhamento <%= index + 1 %>
+              </h3>
+
+              <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CID</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= referral.cid %></dd>
+                </div>
+
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Encaminhado para</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= referral.encaminhado_para %></dd>
+                </div>
+
+                <div class="md:col-span-2">
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Médico</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= referral.medico %></dd>
+                </div>
+
+                <% if referral.descricao.present? %>
+                  <div class="md:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Descrição</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white"><%= simple_format(referral.descricao) %></dd>
+                  </div>
+                <% end %>
+              </dl>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum encaminhamento</h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Esta solicitação ainda não possui encaminhamentos.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

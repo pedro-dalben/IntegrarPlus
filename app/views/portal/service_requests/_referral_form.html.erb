@@ -1,0 +1,67 @@
+<div data-nested-form-item class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 relative">
+  <%= form.hidden_field :_destroy %>
+
+  <button type="button"
+          data-action="click->nested-form#remove"
+          class="absolute top-2 right-2 text-gray-400 hover:text-red-500 focus:outline-none">
+    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+  </button>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- CID -->
+    <div>
+      <%= form.label :cid, "CID *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.text_field :cid,
+          required: true,
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+
+    <!-- Encaminhado para -->
+    <div>
+      <%= form.label :encaminhado_para, "Encaminhado para *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.select :encaminhado_para,
+          options_for_select([
+            ['Selecione...', '']
+          ] + ServiceRequestReferral::ENCAMINHAMENTO_OPTIONS.map { |option| [option, option] }, form.object.encaminhado_para),
+          { prompt: false },
+          { required: true, class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" } %>
+    </div>
+
+    <!-- Médico -->
+    <div>
+      <%= form.label :medico, "Médico *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.text_field :medico,
+          required: true,
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+
+    <!-- Médico CRM -->
+    <div>
+      <%= form.label :medico_crm, "Médico CRM *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.text_field :medico_crm,
+          required: true,
+          placeholder: "12345-SP",
+          data: { controller: "input-mask", "input-mask-type-value": "crm" },
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+
+    <!-- Data do Encaminhamento -->
+    <div>
+      <%= form.label :data_encaminhamento, "Data do Encaminhamento *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.date_field :data_encaminhamento,
+          required: true,
+          value: form.object.data_encaminhamento || Date.current,
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+
+    <!-- Descrição -->
+    <div class="md:col-span-3">
+      <%= form.label :descricao, "Descrição", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+      <%= form.text_area :descricao,
+          rows: 3,
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+    </div>
+  </div>
+</div>
