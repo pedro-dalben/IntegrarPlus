@@ -2,31 +2,19 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from './application';
+import { application } from "./application"
 
-import AdvancedSearchController from './advanced_search_controller';
-application.register('advanced-search', AdvancedSearchController);
+import CommentsController from "./comments_controller"
+application.register("comments", CommentsController)
 
-import ContractFieldsController from './contract_fields_controller';
-application.register('contract-fields', ContractFieldsController);
+import DocumentUploadController from "./document_upload_controller"
+application.register("document-upload", DocumentUploadController)
 
-import DependentSpecializationsController from './dependent_specializations_controller';
-application.register('dependent-specializations', DependentSpecializationsController);
+import FlashController from "./flash_controller"
+application.register("flash", FlashController)
 
-import PermissionsController from './permissions_controller';
-application.register('permissions', PermissionsController);
+import PermissionsController from "./permissions_controller"
+application.register("permissions", PermissionsController)
 
-import TomSelectController from './tom_select_controller';
-application.register('tom-select', TomSelectController);
-
-import SearchController from './search_controller';
-application.register('search', SearchController);
-
-import TaskFilterController from './task_filter_controller';
-application.register('task-filter', TaskFilterController);
-
-import MaskController from './mask_controller';
-application.register('mask', MaskController);
-
-import TimeHhmmController from './time_hhmm_controller';
-application.register('time-hhmm', TimeHhmmController);
+import SelectSearchController from "./select_search_controller"
+application.register("select-search", SelectSearchController)
