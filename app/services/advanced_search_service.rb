@@ -107,15 +107,53 @@ class AdvancedSearchService
       end
     end
 
-    # Busca por texto
+        # Busca por texto baseada no modelo
     normalized_query = query.downcase.strip
-    base_query.where(
-      'LOWER(name) LIKE ? OR LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR LOWER(full_name) LIKE ? OR LOWER(email) LIKE ?',
-      "%#{normalized_query}%",
-      "%#{normalized_query}%",
-      "%#{normalized_query}%",
-      "%#{normalized_query}%",
-      "%#{normalized_query}%"
-    )
+
+    case @model_class.name
+    when 'Professional'
+      base_query.where(
+        'LOWER(full_name) LIKE ? OR LOWER(email) LIKE ? OR LOWER(company_name) LIKE ? OR LOWER(council_code) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%",
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
+    when 'Document'
+      base_query.where(
+        'LOWER(title) LIKE ? OR LOWER(description) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
+    when 'Group'
+      base_query.where(
+        'LOWER(name) LIKE ? OR LOWER(description) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
+    when 'Speciality'
+      base_query.where(
+        'LOWER(name) LIKE ? OR LOWER(specialty) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
+    when 'Specialization'
+      base_query.where(
+        'LOWER(name) LIKE ?',
+        "%#{normalized_query}%"
+      )
+    when 'ContractType'
+      base_query.where(
+        'LOWER(name) LIKE ?',
+        "%#{normalized_query}%"
+      )
+    else
+      # Fallback genérico
+      base_query.where(
+        'LOWER(name) LIKE ? OR LOWER(title) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
+    end
   end
 end

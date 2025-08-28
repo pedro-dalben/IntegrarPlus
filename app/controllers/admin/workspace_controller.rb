@@ -37,7 +37,11 @@ module Admin
       @responsibles = Professional.joins(:document_responsibles).distinct.order(:full_name)
 
       respond_to do |format|
-        format.html
+        format.html do
+          if request.xhr?
+            render partial: 'search_results', layout: false
+          end
+        end
         format.json { render json: { results: @documents, count: @pagy.count } }
       end
 

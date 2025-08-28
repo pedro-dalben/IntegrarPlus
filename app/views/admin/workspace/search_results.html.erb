@@ -1,0 +1,126 @@
+<% if @documents.any? %>
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Resultados da busca (<%= @pagy.count %>)
+      </h3>
+      <% if params[:query].present? %>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Buscando por: "<%= params[:query] %>"
+        </p>
+      <% end %>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Título
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Tipo
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Autor
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Status
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Data
+            </th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Ações</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <% @documents.each do |document| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                  <%= link_to document.title, admin_document_path(document), class: "text-blue-600 hover:text-blue-900 dark:text-blue-400" %>
+                </div>
+                <% if document.description.present? %>
+                  <div class="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
+                    <%= document.description %>
+                  </div>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  <%= document.document_type&.humanize || 'Documento' %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 dark:text-gray-300">
+                  <%= document.author&.full_name || '-' %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                  <% case document.status %>
+                  <% when 'rascunho' %>
+                    bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                  <% when 'em_revisao' %>
+                    bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                  <% when 'aprovado' %>
+                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                  <% when 'liberado' %>
+                    bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                  <% else %>
+                    bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                  <% end %>">
+                  <%= document.status&.humanize %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <%= l(document.created_at, format: :short) %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <%= link_to "Ver", admin_document_path(document),
+                    class: "text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3" %>
+                <% if policy(document).edit? %>
+                  <%= link_to "Editar", edit_admin_document_path(document),
+                      class: "text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    <% if @pagy.pages > 1 %>
+      <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <%== pagy_nav(@pagy) %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-8 text-center">
+    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum resultado encontrado</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      <% if params[:query].present? %>
+        Nenhum documento foi encontrado para "<%= params[:query] %>".
+      <% else %>
+        Tente usar termos diferentes ou verifique a ortografia.
+      <% end %>
+    </p>
+    <div class="mt-6">
+      <button type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onclick="document.querySelector('[data-advanced-search-target=input]').value = ''; document.querySelector('[data-advanced-search-target=input]').dispatchEvent(new Event('input'));">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Limpar busca
+      </button>
+    </div>
+  </div>
+<% end %>

@@ -31,7 +31,11 @@ module Admin
       end
 
       respond_to do |format|
-        format.html
+        format.html do
+          if request.xhr?
+            render partial: 'search_results', layout: false
+          end
+        end
         format.json { render json: { results: @specialities, count: @pagy.count } }
       end
     end

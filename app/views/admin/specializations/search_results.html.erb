@@ -1,0 +1,40 @@
+<% if @specializations.any? %>
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Resultados da busca (<%= @pagy.count %>)
+      </h3>
+      <% if params[:query].present? %>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Buscando por: "<%= params[:query] %>"
+        </p>
+      <% end %>
+    </div>
+
+    <%= render 'table', specializations: @specializations, pagy: @pagy %>
+  </div>
+<% else %>
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-8 text-center">
+    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhum resultado encontrado</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      <% if params[:query].present? %>
+        Nenhum especialização foi encontrado para "<%= params[:query] %>".
+      <% else %>
+        Tente usar termos diferentes ou verifique a ortografia.
+      <% end %>
+    </p>
+    <div class="mt-6">
+      <button type="button" 
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onclick="document.querySelector('[data-advanced-search-target=input]').value = ''; document.querySelector('[data-advanced-search-target=input]').dispatchEvent(new Event('input'));">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Limpar busca
+      </button>
+    </div>
+  </div>
+<% end %>
