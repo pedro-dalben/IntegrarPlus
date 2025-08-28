@@ -32,9 +32,10 @@ module Admin
         @pagy, @professionals = pagy(@professionals, items: 10)
       end
 
-      return unless request.xhr?
-
-      render partial: 'table', locals: { professionals: @professionals, pagy: @pagy }, layout: false
+      respond_to do |format|
+        format.html
+        format.json { render json: { results: @professionals, count: @pagy.count } }
+      end
     end
 
     def show; end

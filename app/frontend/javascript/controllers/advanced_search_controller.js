@@ -70,6 +70,7 @@ export default class extends Controller {
         headers: {
           Accept: 'text/html',
           'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         signal: controller.signal
       })
@@ -101,6 +102,12 @@ export default class extends Controller {
     this.hideLoading()
     this.hideError()
     this.hideSuggestions()
+
+    // Mostrar a lista principal novamente
+    const mainList = document.querySelector('.main-document-list')
+    if (mainList) {
+      mainList.classList.remove('hidden')
+    }
   }
 
   showLoading() {
@@ -143,6 +150,13 @@ export default class extends Controller {
     if (this.hasResultsTarget) {
       this.resultsTarget.innerHTML = html
       this.resultsTarget.classList.remove('hidden')
+
+      // Esconder a lista principal quando há resultados de busca
+      const mainList = document.querySelector('.main-document-list')
+      if (mainList) {
+        mainList.classList.add('hidden')
+      }
+
       console.log('Results updated')
     } else {
       console.log('No results target, reloading page')

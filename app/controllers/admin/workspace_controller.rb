@@ -36,6 +36,11 @@ module Admin
       @authors = Professional.joins(:documents).distinct.order(:full_name)
       @responsibles = Professional.joins(:document_responsibles).distinct.order(:full_name)
 
+      respond_to do |format|
+        format.html
+        format.json { render json: { results: @documents, count: @pagy.count } }
+      end
+
       # Estatísticas
       @total_documents = Document.where.not(status: 'liberado').count
       @my_documents_count = Document.joins(:document_responsibles)

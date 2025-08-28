@@ -16,7 +16,7 @@ module Admin
           search_service = AdvancedSearchService.new(Document)
           filters = build_search_filters
           options = build_search_options
-          
+
           search_results = search_service.search(params[:query], filters, options)
 
           page = (params[:page] || 1).to_i
@@ -34,6 +34,12 @@ module Admin
       else
         @documents = perform_local_search
         @pagy, @documents = pagy(@documents, items: 20)
+      end
+
+      respond_to do |format|
+        format.html
+        format.json { render json: { results: @documents, count: @pagy.count } }
+        format.js { render 'search_results' }
       end
     end
 

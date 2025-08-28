@@ -87,7 +87,7 @@
 </div>
 
 <!-- Lista principal (quando não há busca) -->
-<div class="<%= params[:query].present? ? 'hidden' : '' %>">
+<div class="main-document-list <%= params[:query].present? ? 'hidden' : '' %>">
   <% if @documents.any? %>
     <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
