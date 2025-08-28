@@ -1,0 +1,119 @@
+<% content_for :title, "Demonstração - Busca de CEP" %>
+
+<div class="max-w-4xl mx-auto py-8 px-4">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Demonstração - Busca de CEP
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Componente de busca automática de endereço usando a API do Brasil API
+    </p>
+  </div>
+
+  <!-- Exemplo de uso básico -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      Exemplo de Formulário com Busca de CEP
+    </h2>
+
+    <%= form_with url: cep_demo_index_path, method: :post, local: true, class: "space-y-6" do |form| %>
+      <!-- Dados pessoais -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <%= form.label :nome, "Nome", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= form.text_field :nome,
+              placeholder: "Seu nome completo",
+              class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+
+        <div>
+          <%= form.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+          <%= form.email_field :email,
+              placeholder: "seu@email.com",
+              class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+      </div>
+
+      <!-- Componente de endereço -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Endereço</h3>
+        <%= render EnderecoFormComponent.new(form: form, required: true, show_coordinates: true) %>
+      </div>
+
+      <!-- Botão de envio -->
+      <div class="flex justify-end pt-6 border-t">
+        <%= form.submit "Salvar Dados",
+            class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Exemplo com prefixo -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      Exemplo com Múltiplos Endereços (usando prefixo)
+    </h2>
+
+    <%= form_with url: cep_demo_index_path, method: :post, local: true, class: "space-y-8" do |form| %>
+      <!-- Endereço residencial -->
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Endereço Residencial</h3>
+        <%= render EnderecoFormComponent.new(form: form, prefix: 'residencial', required: true) %>
+      </div>
+
+      <!-- Endereço comercial -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Endereço Comercial</h3>
+        <%= render EnderecoFormComponent.new(form: form, prefix: 'comercial') %>
+      </div>
+
+      <div class="flex justify-end pt-6 border-t">
+        <%= form.submit "Salvar Endereços",
+            class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Documentação -->
+  <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      Como usar o componente
+    </h2>
+
+    <div class="space-y-4 text-sm">
+      <div>
+        <h3 class="font-medium text-gray-900 dark:text-white">Uso básico:</h3>
+        <pre class="bg-gray-800 text-green-400 p-3 rounded mt-2 overflow-x-auto"><code>&lt;%= render EnderecoFormComponent.new(form: form) %&gt;</code></pre>
+      </div>
+
+      <div>
+        <h3 class="font-medium text-gray-900 dark:text-white">Com prefixo para múltiplos endereços:</h3>
+        <pre class="bg-gray-800 text-green-400 p-3 rounded mt-2 overflow-x-auto"><code>&lt;%= render EnderecoFormComponent.new(form: form, prefix: 'comercial') %&gt;</code></pre>
+      </div>
+
+      <div>
+        <h3 class="font-medium text-gray-900 dark:text-white">Com campos obrigatórios:</h3>
+        <pre class="bg-gray-800 text-green-400 p-3 rounded mt-2 overflow-x-auto"><code>&lt;%= render EnderecoFormComponent.new(form: form, required: true) %&gt;</code></pre>
+      </div>
+
+      <div>
+        <h3 class="font-medium text-gray-900 dark:text-white">Com coordenadas:</h3>
+        <pre class="bg-gray-800 text-green-400 p-3 rounded mt-2 overflow-x-auto"><code>&lt;%= render EnderecoFormComponent.new(form: form, show_coordinates: true) %&gt;</code></pre>
+      </div>
+    </div>
+
+    <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+      <h3 class="font-medium text-blue-900 dark:text-blue-300 mb-2">Funcionalidades:</h3>
+      <ul class="text-blue-800 dark:text-blue-400 space-y-1 text-sm">
+        <li>• Formatação automática do CEP (00000-000)</li>
+        <li>• Busca automática na API do Brasil API</li>
+        <li>• Preenchimento automático dos campos</li>
+        <li>• Indicador de carregamento</li>
+        <li>• Tratamento de erros</li>
+        <li>• Suporte a múltiplos endereços com prefixo</li>
+        <li>• Coordenadas geográficas opcionais</li>
+        <li>• Eventos personalizados para integração</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,212 @@
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-8">Demonstração do Sistema de Endereços</h1>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Formulário de Teste -->
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Teste do Sistema de Endereços</h2>
+
+      <%= form_with url: "#", local: true, class: "space-y-4" do |form| %>
+        <div class="space-y-4">
+          <h3 class="text-lg font-medium">Endereço Principal</h3>
+
+          <!-- Formulário simples para demonstração -->
+          <div data-controller="cep" class="space-y-4">
+            <!-- ZIP Code -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">CEP</label>
+              <input type="text" name="zip_code" placeholder="00000-000" maxlength="9"
+                     data-cep-target="zipCode"
+                     data-action="input->cep#formatZipCode blur->cep#search"
+                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+
+              <!-- Loading indicator -->
+              <div data-cep-target="loading" style="display: none;" class="text-sm text-gray-500 mt-1">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600 inline" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Buscando CEP...
+              </div>
+            </div>
+
+            <!-- Grid for address fields -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Street -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Logradouro</label>
+                <input type="text" name="street" placeholder="Nome da rua"
+                       data-cep-target="street"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              </div>
+
+              <!-- Number -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Número</label>
+                <input type="text" name="number" placeholder="Número"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              </div>
+
+              <!-- Complement -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Complemento</label>
+                <input type="text" name="complement" placeholder="Apt, Sala, etc."
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              </div>
+
+              <!-- Neighborhood -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Bairro</label>
+                <input type="text" name="neighborhood" placeholder="Nome do bairro"
+                       data-cep-target="neighborhood"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              </div>
+
+              <!-- City -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Cidade</label>
+                <input type="text" name="city" placeholder="Nome da cidade"
+                       data-cep-target="city"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              </div>
+
+              <!-- State -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Estado</label>
+                <select name="state" data-cep-target="state"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Selecione...</option>
+                  <option value="AC">Acre</option>
+                  <option value="AL">Alagoas</option>
+                  <option value="AP">Amapá</option>
+                  <option value="AM">Amazonas</option>
+                  <option value="BA">Bahia</option>
+                  <option value="CE">Ceará</option>
+                  <option value="DF">Distrito Federal</option>
+                  <option value="ES">Espírito Santo</option>
+                  <option value="GO">Goiás</option>
+                  <option value="MA">Maranhão</option>
+                  <option value="MT">Mato Grosso</option>
+                  <option value="MS">Mato Grosso do Sul</option>
+                  <option value="MG">Minas Gerais</option>
+                  <option value="PA">Pará</option>
+                  <option value="PB">Paraíba</option>
+                  <option value="PR">Paraná</option>
+                  <option value="PE">Pernambuco</option>
+                  <option value="PI">Piauí</option>
+                  <option value="RJ">Rio de Janeiro</option>
+                  <option value="RN">Rio Grande do Norte</option>
+                  <option value="RS">Rio Grande do Sul</option>
+                  <option value="RO">Rondônia</option>
+                  <option value="RR">Roraima</option>
+                  <option value="SC">Santa Catarina</option>
+                  <option value="SP">São Paulo</option>
+                  <option value="SE">Sergipe</option>
+                  <option value="TO">Tocantins</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Additional information -->
+            <div class="text-xs text-gray-500">
+              Digite o CEP para preenchimento automático dos campos
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            Testar Formulário
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Informações do Sistema -->
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h2 class="text-xl font-semibold mb-4">Sistema de Endereços</h2>
+
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-medium text-gray-900">✅ Implementado com Sucesso</h3>
+          <ul class="mt-2 text-sm text-gray-600 space-y-1">
+            <li>• Tabela Address polimórfica</li>
+            <li>• Concern Addressable reutilizável</li>
+            <li>• Componente AddressFormComponent</li>
+            <li>• Integração com CEP Service</li>
+            <li>• Migração de dados existentes</li>
+            <li>• Compatibilidade com código legado</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-medium text-gray-900">Tipos de Endereço</h3>
+          <ul class="mt-2 text-sm text-gray-600 space-y-1">
+            <li><code class="bg-gray-200 px-1 rounded">primary</code> - Principal</li>
+            <li><code class="bg-gray-200 px-1 rounded">secondary</code> - Secundário</li>
+            <li><code class="bg-gray-200 px-1 rounded">billing</code> - Cobrança</li>
+            <li><code class="bg-gray-200 px-1 rounded">shipping</code> - Entrega</li>
+            <li><code class="bg-gray-200 px-1 rounded">residential</code> - Residencial</li>
+            <li><code class="bg-gray-200 px-1 rounded">commercial</code> - Comercial</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-medium text-gray-900">Como Usar</h3>
+          <div class="mt-2 text-sm text-gray-600">
+            <p class="mb-2">1. Inclua o concern no modelo:</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>class MyModel < ApplicationRecord
+  include Addressable
+end</code></pre>
+
+            <p class="mb-2 mt-3">2. Use o componente:</p>
+            <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><code>&lt;%= render AddressFormComponent.new(
+  form: form,
+  address_type: 'primary'
+) %&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exemplos de CEPs para Teste -->
+  <div class="mt-8 bg-blue-50 rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">CEPs para Teste</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="font-medium">São Paulo - SP</h3>
+        <p class="text-sm text-gray-600 font-mono">01310-100</p>
+        <p class="text-xs text-gray-500">Avenida Paulista</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="font-medium">Rio de Janeiro - RJ</h3>
+        <p class="text-sm text-gray-600 font-mono">22070-900</p>
+        <p class="text-xs text-gray-500">Copacabana</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="font-medium">Belo Horizonte - MG</h3>
+        <p class="text-sm text-gray-600 font-mono">30112-000</p>
+        <p class="text-xs text-gray-500">Centro</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status do Sistema -->
+  <div class="mt-8 bg-green-50 border border-green-200 rounded-lg p-6">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-green-800">Sistema de Endereços Implementado</h3>
+        <div class="mt-2 text-sm text-green-700">
+          <p>O sistema está funcionando corretamente e pronto para uso em qualquer modelo do sistema.</p>
+          <p class="mt-1">Consulte a documentação completa em <code>docs/ADDRESS_SYSTEM.md</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
