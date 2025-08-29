@@ -44,10 +44,12 @@ module Admin
 
     def new
       @specialization = Specialization.new
+      @specialities = Speciality.order(:name)
       authorize @specialization, :create?
     end
 
     def edit
+      @specialities = Speciality.order(:name)
       authorize @specialization, :update?
     end
 
@@ -58,6 +60,7 @@ module Admin
       if @specialization.save
         redirect_to admin_specialization_path(@specialization), notice: 'Especialização criada com sucesso.'
       else
+        @specialities = Speciality.order(:name)
         render :new, status: :unprocessable_entity
       end
     end
@@ -68,6 +71,7 @@ module Admin
       if @specialization.update(specialization_params)
         redirect_to admin_specialization_path(@specialization), notice: 'Especialização atualizada com sucesso.'
       else
+        @specialities = Speciality.order(:name)
         render :edit, status: :unprocessable_entity
       end
     end
