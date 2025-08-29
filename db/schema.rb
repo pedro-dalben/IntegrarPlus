@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_28_203307) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_114728) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -223,6 +223,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_203307) do
     t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
+  create_table "journey_events", force: :cascade do |t|
+    t.bigint "portal_intake_id", null: false
+    t.string "event_type", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_journey_events_on_created_at"
+    t.index ["event_type"], name: "index_journey_events_on_event_type"
+    t.index ["portal_intake_id"], name: "index_journey_events_on_portal_intake_id"
+  end
+
   create_table "memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "group_id", null: false
@@ -239,6 +250,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_203307) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_permissions_on_key", unique: true
+  end
+
+  create_table "portal_intakes", force: :cascade do |t|
+    t.bigint "operator_id", null: false
+    t.string "beneficiary_name", null: false
+    t.string "plan_name", null: false
+    t.string "card_code", null: false
+    t.string "status", default: "aguardando_agendamento_anamnese", null: false
+    t.datetime "requested_at", null: false
+    t.date "anamnesis_scheduled_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["anamnesis_scheduled_on"], name: "index_portal_intakes_on_anamnesis_scheduled_on"
+    t.index ["operator_id"], name: "index_portal_intakes_on_operator_id"
+    t.index ["requested_at"], name: "index_portal_intakes_on_requested_at"
+    t.index ["status"], name: "index_portal_intakes_on_status"
   end
 
   create_table "professional_groups", force: :cascade do |t|
@@ -420,8 +447,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_28_203307) do
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"
+  add_foreign_key "journey_events", "portal_intakes"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
+  add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"
   add_foreign_key "professional_specialities", "professionals"

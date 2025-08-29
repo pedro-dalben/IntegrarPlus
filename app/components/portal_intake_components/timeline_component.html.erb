@@ -1,0 +1,35 @@
+<div class="flow-root">
+  <ul role="list" class="-mb-8">
+    <% journey_events.each_with_index do |event, index| %>
+      <li>
+        <div class="relative pb-8">
+          <% unless index == journey_events.length - 1 %>
+            <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+          <% end %>
+          <div class="relative flex space-x-3">
+            <div>
+              <span class="h-8 w-8 rounded-full <%= icon_class_for(event.event_type) %> bg-white flex items-center justify-center ring-8 ring-white">
+                <%= icon_svg_for(event.event_type) %>
+              </span>
+            </div>
+            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+              <div>
+                <p class="text-sm text-gray-900">
+                  <%= event.event_description %>
+                </p>
+                <p class="mt-0.5 text-xs text-gray-500">
+                  Por: <%= event.admin_name %>
+                </p>
+              </div>
+              <div class="whitespace-nowrap text-right text-sm text-gray-500">
+                <time datetime="<%= event.created_at.iso8601 %>">
+                  <%= event.formatted_date %>
+                </time>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>

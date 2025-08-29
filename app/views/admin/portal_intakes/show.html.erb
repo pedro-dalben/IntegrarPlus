@@ -1,0 +1,225 @@
+<% content_for(:title, "Entrada do Portal ##{@portal_intake.id}") %>
+
+<div class="mb-6">
+  <div class="md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
+        Entrada do Portal #<%= @portal_intake.id %>
+      </h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Gerencie a solicitação da operadora
+      </p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <span class="<%= @portal_intake.status_badge_class %>">
+        <%= @portal_intake.status_label %>
+      </span>
+      <%= link_to admin_portal_intakes_path, class: "ta-btn ta-btn-secondary" do %>
+        <svg class="size-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Voltar
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="space-y-6">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Dados da Entrada -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Dados da Operadora -->
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+            Dados da Operadora
+          </h2>
+        </div>
+        <div class="p-6">
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Empresa</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.operator.company_name %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.operator.name %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">E-mail</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.operator.email %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Entrada</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.requested_at.strftime('%d/%m/%Y às %H:%M') %></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Dados do Beneficiário -->
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+            Dados do Beneficiário
+          </h2>
+        </div>
+        <div class="p-6">
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome do Beneficiário</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.beneficiary_name %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Plano Médico</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.plan_name %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código da Carteirinha</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.card_code %></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Agendamento de Anamnese -->
+      <% if @portal_intake.can_schedule_anamnesis? %>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+              Agendar Anamnese
+            </h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              Defina a data para realização da anamnese
+            </p>
+          </div>
+          <div class="p-6">
+            <%= form_with url: schedule_anamnesis_admin_portal_intake_path(@portal_intake),
+                          method: :post, local: true, class: "space-y-4" do |form| %>
+              <div>
+                <%= form.label :anamnesis_scheduled_on, "Data da Anamnese",
+                               class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                <%= form.date_field :anamnesis_scheduled_on,
+                                   min: Date.current,
+                                   class: "block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Selecione uma data a partir de hoje
+                </p>
+              </div>
+
+              <div class="flex space-x-3">
+                <%= form.submit "Agendar Anamnese",
+                               class: "ta-btn ta-btn-primary",
+                               data: { confirm: "Confirma o agendamento da anamnese para esta data?" } %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% elsif @portal_intake.aguardando_anamnese? %>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+              Anamnese Agendada
+            </h2>
+          </div>
+          <div class="p-6">
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-4 dark:bg-blue-800/10 dark:border-blue-900">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="size-4 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-blue-800 dark:text-blue-400">
+                    Anamnese agendada
+                  </h3>
+                  <p class="mt-1 text-sm text-blue-700 dark:text-blue-300">
+                    A anamnese foi agendada para <strong><%= @portal_intake.anamnesis_scheduled_on.strftime('%d/%m/%Y') %></strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% elsif @portal_intake.anamnese_concluida? %>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+              Anamnese Concluída
+            </h2>
+          </div>
+          <div class="p-6">
+            <div class="bg-green-50 border border-green-200 rounded-md p-4 dark:bg-green-800/10 dark:border-green-900">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="size-4 text-green-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-green-800 dark:text-green-400">
+                    Processo concluído
+                  </h3>
+                  <p class="mt-1 text-sm text-green-700 dark:text-green-300">
+                    A anamnese foi realizada com sucesso em <strong><%= @portal_intake.anamnesis_scheduled_on.strftime('%d/%m/%Y') %></strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Linha do Tempo -->
+    <div class="lg:col-span-1">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+            Histórico
+          </h2>
+        </div>
+        <div class="p-6">
+          <div class="flow-root">
+            <ul role="list" class="-mb-8">
+              <% @journey_events.each_with_index do |event, index| %>
+                <li>
+                  <div class="relative pb-8">
+                    <% unless index == @journey_events.length - 1 %>
+                      <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                    <% end %>
+                    <div class="relative flex space-x-3">
+                      <div>
+                        <span class="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center ring-8 ring-white">
+                          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <circle cx="10" cy="10" r="4"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                        <div>
+                          <p class="text-sm text-gray-900">
+                            <%= event.event_description %>
+                          </p>
+                          <p class="mt-0.5 text-xs text-gray-500">
+                            Por: <%= event.admin_name %>
+                          </p>
+                        </div>
+                        <div class="whitespace-nowrap text-right text-sm text-gray-500">
+                          <time datetime="<%= event.created_at.iso8601 %>">
+                            <%= event.formatted_date %>
+                          </time>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

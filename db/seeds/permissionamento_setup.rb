@@ -31,7 +31,11 @@ permissions_data = [
   { key: 'settings.read', description: 'Ler configurações' },
   { key: 'settings.write', description: 'Editar configurações' },
   { key: 'reports.view', description: 'Visualizar relatórios' },
-  { key: 'reports.generate', description: 'Gerar relatórios' }
+  { key: 'reports.generate', description: 'Gerar relatórios' },
+  { key: 'portal_intakes.index', description: 'Listar entradas do portal' },
+  { key: 'portal_intakes.show', description: 'Ver detalhes de entrada do portal' },
+  { key: 'portal_intakes.schedule_anamnesis', description: 'Agendar anamnese' },
+  { key: 'portal_intakes.update', description: 'Atualizar entrada do portal' }
 ]
 
 permissions_data.each do |perm_data|
@@ -69,13 +73,17 @@ end
 
 recepcao_group = Group.find_by(name: 'Recepção')
 if recepcao_group
-  # Recepção pode criar profissionais
+  # Recepção pode criar profissionais e gerenciar entradas do portal
   recepcao_permissions = [
     'dashboard.view',
     'professionals.index',
     'professionals.show',
     'professionals.new',
-    'professionals.create'
+    'professionals.create',
+    'portal_intakes.index',
+    'portal_intakes.show',
+    'portal_intakes.schedule_anamnesis',
+    'portal_intakes.update'
   ]
 
   recepcao_permissions.each do |perm_key|

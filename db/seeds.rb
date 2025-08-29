@@ -119,3 +119,6 @@ Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id) 
 
 # Carrega seeds para usuários externos (operadoras)
 load(Rails.root.join('db/seeds/external_users.rb'))
+
+# Carrega seeds para entradas do portal
+load(Rails.root.join('db/seeds/portal_intakes.rb'))

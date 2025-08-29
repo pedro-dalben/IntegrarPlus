@@ -1,0 +1,48 @@
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6 mb-6">
+  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Filtros</h3>
+
+  <%= form_with url: request.path, method: :get, local: true, class: "space-y-4" do |form| %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Operadora -->
+      <% if operators.any? %>
+        <div>
+          <%= form.label :operator_id, "Operadora", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.select :operator_id,
+                         options_for_select([['Todas', '']] + operator_options, selected_operator),
+                         {},
+                         { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" } %>
+        </div>
+      <% end %>
+
+      <!-- Status -->
+      <div>
+        <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.select :status,
+                       options_for_select([['Todos', '']] + status_options, selected_status),
+                       {},
+                       { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" } %>
+      </div>
+
+      <!-- Data início -->
+      <div>
+        <%= form.label :start_date, "Data início", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.date_field :start_date,
+                           value: start_date,
+                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- Data fim -->
+      <div>
+        <%= form.label :end_date, "Data fim", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.date_field :end_date,
+                           value: end_date,
+                           class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+    </div>
+
+    <div class="flex space-x-3">
+      <%= form.submit "Filtrar", class: "ta-btn ta-btn-primary" %>
+      <%= link_to "Limpar", request.path, class: "ta-btn ta-btn-secondary" %>
+    </div>
+  <% end %>
+</div>

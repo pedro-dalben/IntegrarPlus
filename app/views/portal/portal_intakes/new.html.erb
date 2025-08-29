@@ -1,0 +1,121 @@
+<% content_for(:title, "Nova Solicitação - Portal de Operadoras") %>
+
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center space-x-4">
+    <%= link_to portal_portal_intakes_path,
+                class: "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" do %>
+      <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    <% end %>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Nova Solicitação
+      </h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Envie os dados do beneficiário para agendamento de anamnese
+      </p>
+    </div>
+  </div>
+
+  <!-- Formulário -->
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+      <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+        Dados do Beneficiário
+      </h2>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Preencha as informações do beneficiário que será encaminhado
+      </p>
+    </div>
+
+    <div class="p-6">
+      <%= form_with model: [@portal_intake], url: portal_portal_intakes_path, local: true, class: "space-y-6" do |form| %>
+        <% if @portal_intake.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="size-4 text-red-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
+                  Foram encontrados <%= pluralize(@portal_intake.errors.count, "erro") %>:
+                </h3>
+                <div class="mt-2">
+                  <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+                    <% @portal_intake.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Nome do Beneficiário -->
+          <div class="md:col-span-2">
+            <%= form.label :beneficiary_name, "Nome do Beneficiário *",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_field :beneficiary_name,
+                               placeholder: "Nome completo do beneficiário",
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+          </div>
+
+          <!-- Plano Médico -->
+          <div>
+            <%= form.label :plan_name, "Plano Médico *",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_field :plan_name,
+                               placeholder: "Nome do plano médico",
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+          </div>
+
+          <!-- Código da Carteirinha -->
+          <div>
+            <%= form.label :card_code, "Código da Carteirinha *",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_field :card_code,
+                               placeholder: "Código da carteirinha do plano",
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+          </div>
+        </div>
+
+        <!-- Informações adicionais -->
+        <div class="bg-blue-50 border border-blue-200 rounded-md p-4 dark:bg-blue-800/10 dark:border-blue-900">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="size-4 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800 dark:text-blue-400">
+                Informações importantes
+              </h3>
+              <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                <ul class="list-disc list-inside space-y-1">
+                  <li>Após o envio, sua solicitação ficará com status "Aguardando Agendamento"</li>
+                  <li>Nossa equipe entrará em contato para agendar a anamnese</li>
+                  <li>Você pode acompanhar o progresso na lista de solicitações</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-end space-x-3">
+          <%= link_to "Cancelar", portal_portal_intakes_path,
+                      class: "ta-btn ta-btn-secondary" %>
+          <%= form.submit "Enviar Solicitação",
+                         class: "ta-btn ta-btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,7 @@ class ExternalUser < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :service_requests, dependent: :destroy
+  has_many :portal_intakes, foreign_key: 'operator_id', dependent: :destroy
 
   validates :name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :company_name, presence: true, length: { minimum: 2, maximum: 100 }

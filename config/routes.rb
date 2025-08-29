@@ -65,6 +65,7 @@ Rails.application.routes.draw do
     resources :service_requests do
       resources :service_request_referrals, only: [:create, :destroy], path: 'encaminhamentos'
     end
+    resources :portal_intakes, only: [:index, :new, :create, :show]
     root to: 'service_requests#index'
   end
   get 'styleguide' => 'styleguide#index'
@@ -134,6 +135,12 @@ Rails.application.routes.draw do
         member do
           get :download
         end
+      end
+    end
+
+    resources :portal_intakes, only: [:index, :show, :update] do
+      member do
+        post :schedule_anamnesis
       end
     end
 
