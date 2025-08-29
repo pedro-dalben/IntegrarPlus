@@ -1,4 +1,4 @@
-import { Diagram } from 'dhx-suite';
+import { OrgChart } from 'dhx-suite';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -10,7 +10,7 @@ interface OrganogramData {
   published_at?: string;
 }
 
-let diagram: any = null;
+let orgChart: any = null;
 let organogramId: number;
 
 export function initOrganogramViewer(data: OrganogramData, id: number) {
@@ -23,7 +23,7 @@ export function initOrganogramViewer(data: OrganogramData, id: number) {
   }
 
   // Inicializar o DHX Diagram em modo somente leitura
-  diagram = new Diagram(container, {
+  orgChart = new Diagram(container, {
     type: 'org',
     defaultShapeType: 'card',
     toolbar: false,
@@ -42,16 +42,16 @@ export function initOrganogramViewer(data: OrganogramData, id: number) {
 }
 
 function loadDiagramData(data: OrganogramData) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     // Limpar dados existentes
-    diagram.data.removeAll();
+    orgChart.data.removeAll();
 
     // Carregar nós
     if (data.nodes && data.nodes.length > 0) {
       data.nodes.forEach((node: any) => {
-        diagram.data.add({
+        orgChart.data.add({
           id: node.id || generateId(),
           text: node.text || node.name || '',
           title: node.title || node.role_title || '',
@@ -86,11 +86,11 @@ function loadDiagramData(data: OrganogramData) {
 
     // Ajustar visualização
     setTimeout(() => {
-      diagram.zoomToFit();
+      orgChart.zoomToFit();
     }, 100);
 
   } catch (error) {
-    console.error('Erro ao carregar dados do diagrama:', error);
+    console.error('Erro ao carregar dados do orgCharta:', error);
     showToast('Erro ao carregar organograma', 'error');
   }
 }
@@ -103,39 +103,39 @@ function setupEventListeners() {
   }
 
   // Eventos de seleção para mostrar informações do nó
-  if (diagram) {
-    diagram.events.on('itemSelect', (id: string) => {
+  if (orgChart) {
+    orgChart.events.on('itemSelect', (id: string) => {
       showNodeInfo(id);
     });
 
-    diagram.events.on('itemUnselect', () => {
+    orgChart.events.on('itemUnselect', () => {
       hideNodeInfo();
     });
   }
 }
 
 function disableEditing() {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     // Desabilitar todas as interações de edição
-    diagram.config.editor = false;
+    orgChart.config.editor = false;
 
     // Remover toolbar se existir
-    if (diagram.toolbar) {
-      diagram.toolbar.hide();
+    if (orgChart.toolbar) {
+      orgChart.toolbar.hide();
     }
 
     // Prevenir ações de contexto
-    diagram.events.on('itemContextMenu', (e: Event) => {
+    orgChart.events.on('itemContextMenu', (e: Event) => {
       e.preventDefault();
       return false;
     });
 
     // Prevenir drag and drop
-    diagram.events.on('beforeItemMove', () => false);
-    diagram.events.on('beforeItemAdd', () => false);
-    diagram.events.on('beforeItemRemove', () => false);
+    orgChart.events.on('beforeItemMove', () => false);
+    orgChart.events.on('beforeItemAdd', () => false);
+    orgChart.events.on('beforeItemRemove', () => false);
 
   } catch (error) {
     console.warn('Erro ao desabilitar edição:', error);
@@ -143,9 +143,9 @@ function disableEditing() {
 }
 
 function showNodeInfo(nodeId: string) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
-  const item = diagram.data.getItem(nodeId);
+  const item = orgChart.data.getItem(nodeId);
   if (!item) return;
 
   // Criar tooltip ou modal com informações do nó
@@ -210,15 +210,15 @@ function updateTooltipPosition(e: MouseEvent) {
 }
 
 async function exportToPdf() {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     showToast('Gerando PDF...', 'info');
 
-    // Ajustar o diagrama para caber na tela
-    diagram.zoomToFit();
+    // Ajustar o orgCharta para caber na tela
+    orgChart.zoomToFit();
 
-    // Aguardar um pouco para o diagrama se ajustar
+    // Aguardar um pouco para o orgCharta se ajustar
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const container = document.getElementById('orgchart-view');
@@ -309,11 +309,11 @@ async function exportToPdf() {
 }
 
 function applyDiagramSettings(settings: any) {
-  if (!diagram || !settings) return;
+  if (!orgChart || !settings) return;
 
   try {
     if (settings.zoom) {
-      diagram.zoom = settings.zoom;
+      orgChart.zoom = settings.zoom;
     }
   } catch (error) {
     console.warn('Erro ao aplicar configurações:', error);

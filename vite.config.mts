@@ -14,5 +14,17 @@ export default defineConfig({
       },
     }),
   ],
-  build: { sourcemap: false },
+  build: { 
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'dhx-suite': ['dhx-suite'],
+          'pdf-libs': ['jspdf', 'html2canvas'],
+          'csv-libs': ['papaparse']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
 });

@@ -1,5 +1,5 @@
 // DHX Suite styles
-import "dhx-suite/codebase/suite.css";
+import "dhx-suite/codebase/suite.min.css";
 
 // Import organogram modules
 export { initOrganogramEditor } from "../organograms/editor.ts";

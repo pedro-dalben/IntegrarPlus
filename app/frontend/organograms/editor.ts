@@ -1,4 +1,4 @@
-import { Diagram } from 'dhx-suite';
+import { OrgChart } from 'dhx-suite';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -16,7 +16,7 @@ interface EditorConfig {
   exportJsonUrl: string;
 }
 
-let diagram: any = null;
+let orgChart: any = null;
 let editorConfig: EditorConfig;
 let autoSaveTimeout: NodeJS.Timeout | null = null;
 let isUnsaved = false;
@@ -30,8 +30,8 @@ export function initOrganogramEditor(data: OrganogramData, config: EditorConfig)
     return;
   }
 
-  // Inicializar o DHX Diagram
-  diagram = new Diagram(container, {
+  // Inicializar o DHX OrgChart
+  orgChart = new OrgChart(container, {
     type: 'org',
     defaultShapeType: 'card'
   });
@@ -49,16 +49,16 @@ export function initOrganogramEditor(data: OrganogramData, config: EditorConfig)
 }
 
 function loadDiagramData(data: OrganogramData) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     // Limpar dados existentes
-    diagram.data.removeAll();
+    orgChart.data.removeAll();
 
     // Carregar nós
     if (data.nodes && data.nodes.length > 0) {
       data.nodes.forEach((node: any) => {
-        diagram.data.add({
+        orgChart.data.add({
           id: node.id || generateId(),
           text: node.text || node.name || '',
           title: node.title || node.role_title || '',
@@ -69,7 +69,7 @@ function loadDiagramData(data: OrganogramData) {
       });
     } else {
       // Criar nó raiz padrão se não houver dados
-      diagram.data.add({
+      orgChart.data.add({
         id: 'root',
         text: 'Organização',
         title: 'Raiz',
@@ -84,36 +84,36 @@ function loadDiagramData(data: OrganogramData) {
 
     // Ajustar visualização
     setTimeout(() => {
-      diagram.zoomToFit();
+      orgChart.zoomToFit();
     }, 100);
 
   } catch (error) {
-    console.error('Erro ao carregar dados do diagrama:', error);
+    console.error('Erro ao carregar dados do orgCharta:', error);
     showToast('Erro ao carregar dados do organograma', 'error');
   }
 }
 
 function setupEventListeners() {
-  if (!diagram) return;
+  if (!orgChart) return;
 
-  // Eventos do diagrama
-  diagram.events.on('afterAdd', () => {
+  // Eventos do orgCharta
+  orgChart.events.on('afterAdd', () => {
     markAsUnsaved();
   });
 
-  diagram.events.on('afterRemove', () => {
+  orgChart.events.on('afterRemove', () => {
     markAsUnsaved();
   });
 
-  diagram.events.on('afterUpdate', () => {
+  orgChart.events.on('afterUpdate', () => {
     markAsUnsaved();
   });
 
-  diagram.events.on('itemSelect', (id: string) => {
+  orgChart.events.on('itemSelect', (id: string) => {
     showNodeProperties(id);
   });
 
-  diagram.events.on('itemUnselect', () => {
+  orgChart.events.on('itemUnselect', () => {
     hideNodeProperties();
   });
 
@@ -128,21 +128,21 @@ function setupEventListeners() {
   const zoomInBtn = document.getElementById('zoom-in-btn');
   if (zoomInBtn) {
     zoomInBtn.addEventListener('click', () => {
-      diagram.zoomIn();
+      orgChart.zoomIn();
     });
   }
 
   const zoomOutBtn = document.getElementById('zoom-out-btn');
   if (zoomOutBtn) {
     zoomOutBtn.addEventListener('click', () => {
-      diagram.zoomOut();
+      orgChart.zoomOut();
     });
   }
 
   const fitBtn = document.getElementById('fit-btn');
   if (fitBtn) {
     fitBtn.addEventListener('click', () => {
-      diagram.zoomToFit();
+      orgChart.zoomToFit();
     });
   }
 
@@ -172,10 +172,10 @@ function setupEventListeners() {
     }
 
     if (e.key === 'Delete') {
-      const selectedId = diagram.selection.getId();
+      const selectedId = orgChart.selection.getId();
       if (selectedId) {
         if (confirm('Deseja remover este nó?')) {
-          diagram.data.remove(selectedId);
+          orgChart.data.remove(selectedId);
         }
       }
     }
@@ -212,7 +212,7 @@ function markAsSaved() {
 }
 
 async function saveDiagram(showNotification = true) {
-  if (!diagram || !isUnsaved) return;
+  if (!orgChart || !isUnsaved) return;
 
   try {
     // Mostrar indicador de salvamento
@@ -225,9 +225,9 @@ async function saveDiagram(showNotification = true) {
       savingText.classList.remove('hidden');
     }
 
-    // Coletar dados do diagrama
+    // Coletar dados do orgCharta
     const nodes: any[] = [];
-    diagram.data.eachItem((item: any) => {
+    orgChart.data.eachItem((item: any) => {
       nodes.push({
         id: item.id,
         text: item.text,
@@ -287,9 +287,9 @@ async function saveDiagram(showNotification = true) {
 
 function showNodeProperties(nodeId: string) {
   const container = document.getElementById('node-properties');
-  if (!container || !diagram) return;
+  if (!container || !orgChart) return;
 
-  const item = diagram.data.getItem(nodeId);
+  const item = orgChart.data.getItem(nodeId);
   if (!item) return;
 
   container.innerHTML = `
@@ -370,7 +370,7 @@ function hideNodeProperties() {
 }
 
 function updateNode(nodeId: string) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   const container = document.getElementById('node-properties');
   if (!container) return;
@@ -383,7 +383,7 @@ function updateNode(nodeId: string) {
 
   if (!textInput || !titleInput) return;
 
-  diagram.data.update(nodeId, {
+  orgChart.data.update(nodeId, {
     text: textInput.value,
     title: titleInput.value,
     data: {
@@ -397,10 +397,10 @@ function updateNode(nodeId: string) {
 }
 
 function addChildNode(parentId: string) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   const newId = generateId();
-  diagram.data.add({
+  orgChart.data.add({
     id: newId,
     text: 'Novo Nó',
     title: 'Cargo',
@@ -410,25 +410,25 @@ function addChildNode(parentId: string) {
 
   // Selecionar o novo nó
   setTimeout(() => {
-    diagram.selection.add(newId);
+    orgChart.selection.add(newId);
   }, 100);
 }
 
 function removeNode(nodeId: string) {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   if (confirm('Deseja remover este nó? Esta ação não pode ser desfeita.')) {
-    diagram.data.remove(nodeId);
+    orgChart.data.remove(nodeId);
     hideNodeProperties();
   }
 }
 
 function exportToJson() {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     const nodes: any[] = [];
-    diagram.data.eachItem((item: any) => {
+    orgChart.data.eachItem((item: any) => {
       nodes.push({
         id: item.id,
         text: item.text,
@@ -466,15 +466,15 @@ function exportToJson() {
 }
 
 async function exportToPdf() {
-  if (!diagram) return;
+  if (!orgChart) return;
 
   try {
     showToast('Gerando PDF...', 'info');
 
-    // Ajustar o diagrama para caber na tela
-    diagram.zoomToFit();
+    // Ajustar o orgCharta para caber na tela
+    orgChart.zoomToFit();
 
-    // Aguardar um pouco para o diagrama se ajustar
+    // Aguardar um pouco para o orgCharta se ajustar
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const container = document.getElementById('orgchart-editor');
@@ -566,21 +566,21 @@ async function exportToPdf() {
 }
 
 function getCurrentSettings() {
-  if (!diagram) return {};
+  if (!orgChart) return {};
 
   return {
-    zoom: diagram.zoom || 1,
+    zoom: orgChart.zoom || 1,
     theme: 'default',
     layout: 'org'
   };
 }
 
 function applyDiagramSettings(settings: any) {
-  if (!diagram || !settings) return;
+  if (!orgChart || !settings) return;
 
   try {
     if (settings.zoom) {
-      diagram.zoom = settings.zoom;
+      orgChart.zoom = settings.zoom;
     }
   } catch (error) {
     console.warn('Erro ao aplicar configurações:', error);
