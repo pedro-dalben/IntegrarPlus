@@ -151,7 +151,31 @@ class Professional < ApplicationRecord
   end
 
   # Métodos públicos para criação de usuário
+  def create_user_automatically
+    begin
+      temp_password = SecureRandom.hex(12)
+      new_user = User.create!(
+        name: full_name,
+        email: email,
+        password: temp_password,
+        password_confirmation: temp_password
+      )
 
+      update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
+
+      # Associar grupos do profissional ao usuário
+      groups.each do |group|
+        new_user.memberships.create!(group: group)
+        Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
+      end
+
+      Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
+      new_user
+    rescue StandardError => e
+      Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
+      nil
+    end
+  end
 
   private
 
@@ -273,35 +297,11 @@ class Professional < ApplicationRecord
     Rails.logger.info "Grupos sincronizados para usuário #{user.email}: #{groups.pluck(:name).join(', ')}"
   end
 
-    def create_user_if_needed
+  def create_user_if_needed
     return if user.present?
 
     create_user_automatically
   end
 
-      def create_user_automatically
-    begin
-      temp_password = SecureRandom.hex(12)
-      new_user = User.create!(
-        name: full_name,
-        email: email,
-        password: temp_password,
-        password_confirmation: temp_password
-      )
 
-      update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
-
-      # Associar grupos do profissional ao usuário
-      groups.each do |group|
-        new_user.memberships.create!(group: group)
-        Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
-      end
-
-      Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
-      new_user
-    rescue StandardError => e
-      Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
-      nil
-    end
-  end
 end
