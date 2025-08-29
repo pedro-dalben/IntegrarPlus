@@ -110,11 +110,7 @@
                   icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
                   description: 'Visualização e geração de relatórios'
                 },
-                'organograms' => {
-                  name: 'Organogramas',
-                  icon: 'M3 3h6v6H3zM15 3h6v6h-6zM9 15h6v6H9zM6 9v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9M12 12v3',
-                  description: 'Gestão de organogramas e estruturas organizacionais'
-                }
+
               } %>
 
               <% @permissions.group_by { |p| p.key.split('.').first }.each do |module_name, permissions| %>

@@ -144,18 +144,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :organograms do
-      member do
-        get :editor
-        get :export_json
-        get :export_png
-        get :export_pdf
-        post :import_json
-        post :import_csv
-        patch :publish
-        patch :unpublish
-      end
-    end
+
 
     get '/', to: 'dashboard#index'
     get '/dashboard', to: 'dashboard#index'

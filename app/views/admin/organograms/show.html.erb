@@ -120,10 +120,12 @@
   </div>
 <% end %>
 
-<%= content_for :javascript do %>
-  <script type="module">
-    import { initOrganogramViewer } from '<%= vite_asset_url("organograms.js") %>';
+<%= content_for :head do %>
+  <%= vite_javascript_tag "entrypoints/organograms" %>
+<% end %>
 
+<%= content_for :javascript do %>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       const organogramData = <%= raw @organogram.to_export_data.to_json %>;
       initOrganogramViewer(organogramData, <%= @organogram.id %>);
