@@ -320,6 +320,39 @@ Permissões configuradas no sistema:
 - **Feedback visual**: Menu ativo quando na seção
 - **Responsivo**: Interface adaptável a todos dispositivos
 
+## 🔧 Histórico de Correções
+
+### ✅ **Problemas Resolvidos**
+
+**1. Sidebar ocupando tela toda**:
+- ❌ Problema: `<aside>` duplicado causando layout quebrado
+- ✅ Solução: Removido `<aside>` do layout, mantido apenas no componente
+- ✅ Resultado: Largura correta de ~290px
+
+**2. Erro de build Vite - CSS não encontrado**:
+- ❌ Problema: Import `dhx-suite/codebase/suite.css` não encontrado
+- ✅ Solução: Corrigido para `dhx-suite/codebase/suite.min.css`
+- ✅ Resultado: Build funcionando perfeitamente
+
+**3. Bundle muito pesado (1.6MB)**:
+- ❌ Problema: Bibliotecas pesadas no bundle principal
+- ✅ Solução: Code splitting no `vite.config.mts`
+- ✅ Resultado:
+  - **dhx-suite**: 979kB (separado)
+  - **pdf-libs**: 590kB (separado)
+  - **csv-libs**: 19kB (separado)
+  - **organograms**: 0.1kB (código da aplicação)
+
+**4. Erro de sintaxe em groups/edit.html.erb**:
+- ❌ Problema: Linha duplicada no hash de configuração
+- ✅ Solução: Removida linha duplicada + adicionado grupo "Organogramas"
+- ✅ Resultado: Sistema de permissões funcionando
+
+**5. Imports incorretos (Diagram vs OrgChart)**:
+- ❌ Problema: Import genérico `Diagram` do dhx-suite
+- ✅ Solução: Import específico `OrgChart` para organogramas
+- ✅ Resultado: Maior especificidade e potencial otimização
+
 ## 🔄 Próximos Passos (Opcional)
 
 - [ ] Temas customizáveis para organogramas

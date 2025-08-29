@@ -14,7 +14,7 @@ export default defineConfig({
       },
     }),
   ],
-  build: { 
+  build: {
     sourcemap: false,
     rollupOptions: {
       output: {
