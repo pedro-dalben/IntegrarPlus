@@ -15,9 +15,13 @@ export default class extends Controller {
 
     // Aplicar estado inicial com inline styles
     if (isDesktop) {
+      this.element.style.position = 'static';
       this.element.style.transform = '';
+      this.element.classList.remove('fixed');
     } else {
+      this.element.style.position = 'fixed';
       this.element.style.transform = 'translateX(-100%)';
+      this.element.classList.add('fixed');
     }
 
     this.apply(shouldBeOpen);
@@ -113,11 +117,15 @@ export default class extends Controller {
     const isDesktop = window.innerWidth >= 1280;
 
     if (isDesktop) {
-      // Desktop: remover transform
+      // Desktop: aplicar position static para ocupar espaço no layout
+      this.element.style.position = 'static';
       this.element.style.transform = '';
       this.element.classList.remove('translate-x-0');
+      this.element.classList.remove('fixed');
     } else {
-      // Mobile: aplicar transform inline
+      // Mobile: manter position fixed e aplicar transform
+      this.element.style.position = 'fixed';
+      this.element.classList.add('fixed');
       if (open) {
         this.element.style.transform = 'translateX(0)';
         this.element.classList.add('translate-x-0');

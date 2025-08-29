@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title><%= content_for(:title) || "Integrar Plus - Admin" %></title>
-    
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -22,26 +22,16 @@
   <body class="bg-gray-50 dark:bg-gray-900">
     <!-- Skip Link para Acessibilidade -->
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
-    
+
     <!-- Layout Container -->
     <div class="flex h-screen overflow-hidden layout-container">
-      
+
       <!-- Drawer mobile + fixa desktop -->
-      <aside
-        data-controller="sidebar"
-        data-action="click@window->sidebar#outside"
-        class="
-          fixed inset-y-0 left-0 z-[9998] w-72 transform border-r bg-white transition-transform duration-300
-          dark:bg-black dark:border-gray-800
-          xl:static
-        "
-      >
-        <%= render Ui::SidebarComponent.new(current_path: request.path, current_user: current_user) %>
-      </aside>
+      <%= render Ui::SidebarComponent.new(current_path: request.path, current_user: current_user) %>
 
       <!-- Content Area -->
       <div class="flex flex-1 flex-col overflow-hidden content-area">
-        
+
         <!-- Header -->
         <%= render Ui::HeaderComponent.new(user: current_user) %>
 
@@ -50,7 +40,7 @@
           <div class="mx-auto w-full p-2 sm:p-4 lg:p-6">
             <!-- Breadcrumb -->
             <%= render Ui::BreadcrumbComponent.new(current_path: request.path) %>
-            
+
             <!-- Flash Messages -->
             <% if notice %>
               <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">
@@ -92,11 +82,7 @@
         </main>
       </div>
 
-      <!-- Mobile Overlay -->
-      <div
-        data-sidebar-target="overlay"
-        class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
-      ></div>
+
     </div>
   </body>
 </html>

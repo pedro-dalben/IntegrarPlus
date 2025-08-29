@@ -1,4 +1,7 @@
-<aside class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black">
+<aside
+  data-controller="sidebar"
+  data-action="click@window->sidebar#outside"
+  class="sidebar fixed top-0 left-0 z-[9998] w-72 transform border-r bg-white transition-transform duration-300 dark:bg-black dark:border-gray-800 xl:static xl:transform-none flex h-screen flex-col overflow-y-auto px-5">
   <!-- SIDEBAR HEADER -->
   <div class="sidebar-header flex items-center justify-center pt-8 pb-7">
     <a href="/admin">
@@ -41,3 +44,9 @@
 
   </div>
 </aside>
+
+<!-- Mobile Overlay -->
+<div
+  data-sidebar-target="overlay"
+  class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
+></div>
