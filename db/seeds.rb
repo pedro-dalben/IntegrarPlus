@@ -122,3 +122,6 @@ load(Rails.root.join('db/seeds/external_users.rb'))
 
 # Carrega seeds para entradas do portal
 load(Rails.root.join('db/seeds/portal_intakes.rb'))
+
+# Carrega seeds para organogramas
+load(Rails.root.join('db/seeds/organograms.rb'))

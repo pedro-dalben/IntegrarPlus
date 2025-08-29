@@ -1,0 +1,155 @@
+{
+  "name": "Organograma Exemplo - Empresa de Software",
+  "nodes": [
+    {
+      "id": "ceo",
+      "text": "João Silva",
+      "title": "CEO",
+      "type": "card",
+      "data": {
+        "department": "Diretoria",
+        "email": "joao.silva@exemplo.com",
+        "phone": "11999990001"
+      }
+    },
+    {
+      "id": "cto",
+      "text": "Maria Santos",
+      "title": "CTO",
+      "parent": "ceo",
+      "type": "card",
+      "data": {
+        "department": "Tecnologia",
+        "email": "maria.santos@exemplo.com",
+        "phone": "11999990002"
+      }
+    },
+    {
+      "id": "cfo",
+      "text": "Pedro Oliveira",
+      "title": "CFO",
+      "parent": "ceo",
+      "type": "card",
+      "data": {
+        "department": "Financeiro",
+        "email": "pedro.oliveira@exemplo.com",
+        "phone": "11999990003"
+      }
+    },
+    {
+      "id": "dev_manager",
+      "text": "Ana Costa",
+      "title": "Gerente de Desenvolvimento",
+      "parent": "cto",
+      "type": "card",
+      "data": {
+        "department": "Desenvolvimento",
+        "email": "ana.costa@exemplo.com",
+        "phone": "11999990004"
+      }
+    },
+    {
+      "id": "qa_manager",
+      "text": "Carlos Lima",
+      "title": "Gerente de QA",
+      "parent": "cto",
+      "type": "card",
+      "data": {
+        "department": "Qualidade",
+        "email": "carlos.lima@exemplo.com",
+        "phone": "11999990005"
+      }
+    },
+    {
+      "id": "dev_senior",
+      "text": "Fernanda Rocha",
+      "title": "Desenvolvedora Sênior",
+      "parent": "dev_manager",
+      "type": "card",
+      "data": {
+        "department": "Desenvolvimento",
+        "email": "fernanda.rocha@exemplo.com",
+        "phone": "11999990006"
+      }
+    },
+    {
+      "id": "dev_pleno",
+      "text": "Roberto Alves",
+      "title": "Desenvolvedor Pleno",
+      "parent": "dev_manager",
+      "type": "card",
+      "data": {
+        "department": "Desenvolvimento",
+        "email": "roberto.alves@exemplo.com",
+        "phone": "11999990007"
+      }
+    },
+    {
+      "id": "dev_junior",
+      "text": "Juliana Mendes",
+      "title": "Desenvolvedora Júnior",
+      "parent": "dev_manager",
+      "type": "card",
+      "data": {
+        "department": "Desenvolvimento",
+        "email": "juliana.mendes@exemplo.com",
+        "phone": "11999990008"
+      }
+    },
+    {
+      "id": "qa_analyst",
+      "text": "Marcos Fernandes",
+      "title": "Analista de QA",
+      "parent": "qa_manager",
+      "type": "card",
+      "data": {
+        "department": "Qualidade",
+        "email": "marcos.fernandes@exemplo.com",
+        "phone": "11999990009"
+      }
+    },
+    {
+      "id": "qa_tester",
+      "text": "Luciana Gomes",
+      "title": "Testadora",
+      "parent": "qa_manager",
+      "type": "card",
+      "data": {
+        "department": "Qualidade",
+        "email": "luciana.gomes@exemplo.com",
+        "phone": "11999990010"
+      }
+    },
+    {
+      "id": "finance_analyst",
+      "text": "Ricardo Torres",
+      "title": "Analista Financeiro",
+      "parent": "cfo",
+      "type": "card",
+      "data": {
+        "department": "Financeiro",
+        "email": "ricardo.torres@exemplo.com",
+        "phone": "11999990011"
+      }
+    },
+    {
+      "id": "hr_manager",
+      "text": "Sandra Pereira",
+      "title": "Gerente de RH",
+      "parent": "ceo",
+      "type": "card",
+      "data": {
+        "department": "Recursos Humanos",
+        "email": "sandra.pereira@exemplo.com",
+        "phone": "11999990012"
+      }
+    }
+  ],
+  "links": [],
+  "settings": {
+    "layout": "org",
+    "theme": "default",
+    "zoom": 1
+  },
+  "exported_at": "2024-12-29T12:00:00Z"
+}

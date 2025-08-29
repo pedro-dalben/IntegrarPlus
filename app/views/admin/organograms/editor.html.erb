@@ -1,0 +1,149 @@
+<%= render ::Layouts::AdminComponent.new(title: "Editor - #{@organogram.name}") do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_organogram_path(@organogram), class: "bg-gray-500 hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
+
+  <div class="flex gap-6 h-[calc(100vh-12rem)]">
+    <!-- Sidebar Esquerda - Controles -->
+    <div class="w-80 flex-shrink-0 space-y-4">
+      <!-- Informações Básicas -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Informações</h3>
+        <%= form_with model: [:admin, @organogram], local: false, id: "organogram-form", class: "space-y-3" do |form| %>
+          <div>
+            <%= form.label :name, "Nome", class: "block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_field :name, class: "block w-full text-sm rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Controles do Editor -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Controles</h3>
+        <div class="space-y-2">
+          <button id="save-btn" class="w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="save-text">Salvar</span>
+            <span class="saving-text hidden">Salvando...</span>
+          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="zoom-in-btn" class="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+              Zoom +
+            </button>
+            <button id="zoom-out-btn" class="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+              Zoom -
+            </button>
+          </div>
+
+          <button id="fit-btn" class="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+            Ajustar à Tela
+          </button>
+        </div>
+      </div>
+
+      <!-- Importação/Exportação -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Importar/Exportar</h3>
+        <div class="space-y-2">
+          <button id="export-json-btn" class="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+            Exportar JSON
+          </button>
+
+          <button id="export-pdf-btn" class="w-full px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+            Exportar PDF
+          </button>
+
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
+            <%= form_with url: import_json_admin_organogram_path(@organogram), method: :post, multipart: true, local: true, class: "space-y-2" do |form| %>
+              <div>
+                <%= form.file_field :file, accept: ".json", class: "block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300" %>
+              </div>
+              <%= form.submit "Importar JSON", class: "w-full px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700" %>
+            <% end %>
+          </div>
+
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-2">
+            <%= form_with url: import_csv_admin_organogram_path(@organogram), method: :post, multipart: true, local: true, class: "space-y-2" do |form| %>
+              <div>
+                <%= form.file_field :file, accept: ".csv", class: "block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300" %>
+              </div>
+              <%= form.submit "Importar CSV", class: "w-full px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Publicação -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Publicação</h3>
+        <div class="space-y-2">
+          <% if @organogram.published? %>
+            <div class="text-xs text-green-600 dark:text-green-400 mb-2 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Publicado em <%= l(@organogram.published_at, format: :short) %>
+            </div>
+            <%= link_to unpublish_admin_organogram_path(@organogram), method: :patch, class: "w-full px-3 py-2 text-sm font-medium text-orange-700 bg-orange-100 rounded-md hover:bg-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:hover:bg-orange-800 block text-center" do %>
+              Despublicar
+            <% end %>
+          <% else %>
+            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">Status: Rascunho</div>
+            <%= link_to publish_admin_organogram_path(@organogram), method: :patch, class: "w-full px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 block text-center" do %>
+              Publicar
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas Central -->
+    <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="h-full">
+        <div id="orgchart-editor" class="w-full h-full">
+          <!-- O editor do organograma será renderizado aqui pelo JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Direita - Propriedades -->
+    <div class="w-80 flex-shrink-0">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 h-full">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Propriedades do Nó</h3>
+        <div id="node-properties" class="space-y-3">
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            Selecione um nó para editar suas propriedades
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de notificação -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2">
+    <!-- Toasts serão inseridos aqui pelo JavaScript -->
+  </div>
+<% end %>
+
+<%= content_for :javascript do %>
+  <script type="module">
+    import { initOrganogramEditor } from '<%= vite_asset_url("organograms.js") %>';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const organogramData = <%= raw @organogram.to_export_data.to_json %>;
+      const updateUrl = '<%= admin_organogram_path(@organogram) %>';
+      const exportJsonUrl = '<%= export_json_admin_organogram_path(@organogram) %>';
+
+      initOrganogramEditor(organogramData, {
+        organogramId: <%= @organogram.id %>,
+        updateUrl: updateUrl,
+        exportJsonUrl: exportJsonUrl
+      });
+    });
+  </script>
+<% end %>

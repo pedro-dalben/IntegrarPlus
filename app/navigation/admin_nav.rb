@@ -15,6 +15,7 @@ module AdminNav
           required_permission: 'professionals.read' },
         { label: 'Grupos', path: '/admin/groups', icon: 'bi-collection', required_permission: 'groups.manage' }
       ] },
+      { label: 'Organogramas', path: '/admin/organograms', icon: 'bi-diagram-3', required_permission: 'organograms.index' },
       { label: 'Configurações', icon: 'bi-gear', required_permission: 'settings.read', children: [
         { label: 'Formas de Contratação', path: '/admin/contract_types', icon: 'bi-briefcase',
           required_permission: 'settings.read' },

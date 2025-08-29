@@ -35,7 +35,16 @@ permissions_data = [
   { key: 'portal_intakes.index', description: 'Listar entradas do portal' },
   { key: 'portal_intakes.show', description: 'Ver detalhes de entrada do portal' },
   { key: 'portal_intakes.schedule_anamnesis', description: 'Agendar anamnese' },
-  { key: 'portal_intakes.update', description: 'Atualizar entrada do portal' }
+  { key: 'portal_intakes.update', description: 'Atualizar entrada do portal' },
+  { key: 'organograms.index', description: 'Listar organogramas' },
+  { key: 'organograms.show', description: 'Visualizar organogramas' },
+  { key: 'organograms.create', description: 'Criar organogramas' },
+  { key: 'organograms.update', description: 'Editar organogramas' },
+  { key: 'organograms.destroy', description: 'Excluir organogramas' },
+  { key: 'organograms.editor', description: 'Usar editor de organogramas' },
+  { key: 'organograms.publish', description: 'Publicar organogramas' },
+  { key: 'organograms.export', description: 'Exportar organogramas' },
+  { key: 'organograms.import', description: 'Importar dados para organogramas' }
 ]
 
 permissions_data.each do |perm_data|

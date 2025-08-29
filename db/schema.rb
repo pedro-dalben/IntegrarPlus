@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_29_114728) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_122119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -244,6 +244,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_114728) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
+  create_table "organogram_members", force: :cascade do |t|
+    t.bigint "organogram_id", null: false
+    t.string "external_id"
+    t.string "name", null: false
+    t.string "role_title"
+    t.string "department"
+    t.string "email"
+    t.string "phone"
+    t.jsonb "meta", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_organogram_members_on_email"
+    t.index ["external_id"], name: "index_organogram_members_on_external_id"
+    t.index ["name"], name: "index_organogram_members_on_name"
+    t.index ["organogram_id", "external_id"], name: "index_organogram_members_on_organogram_id_and_external_id", unique: true
+    t.index ["organogram_id"], name: "index_organogram_members_on_organogram_id"
+  end
+
+  create_table "organograms", force: :cascade do |t|
+    t.string "name", null: false
+    t.jsonb "data", default: {"links" => [], "nodes" => []}
+    t.jsonb "settings", default: {}
+    t.datetime "published_at"
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_organograms_on_created_by_id"
+    t.index ["name"], name: "index_organograms_on_name"
+    t.index ["published_at"], name: "index_organograms_on_published_at"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description"
@@ -450,6 +481,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_114728) do
   add_foreign_key "journey_events", "portal_intakes"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
+  add_foreign_key "organogram_members", "organograms"
+  add_foreign_key "organograms", "users", column: "created_by_id"
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"

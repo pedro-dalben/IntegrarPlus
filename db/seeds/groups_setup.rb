@@ -70,7 +70,7 @@ end
 
 secretarias_group = Group.find_by(name: 'Secretárias')
 if secretarias_group
-  # Secretárias podem criar e gerenciar profissionais
+  # Secretárias podem criar e gerenciar profissionais e organogramas
   secretarias_permissions = [
     'dashboard.view',
     'professionals.index',
@@ -78,7 +78,15 @@ if secretarias_group
     'professionals.new',
     'professionals.create',
     'professionals.edit',
-    'professionals.update'
+    'professionals.update',
+    'organograms.index',
+    'organograms.show',
+    'organograms.create',
+    'organograms.update',
+    'organograms.editor',
+    'organograms.publish',
+    'organograms.export',
+    'organograms.import'
   ]
 
   secretarias_permissions.each do |perm_key|
@@ -89,12 +97,15 @@ end
 
 terapeutas_group = Group.find_by(name: 'Terapeutas')
 if terapeutas_group
-  # Terapeutas podem ver profissionais e relatórios
+  # Terapeutas podem ver profissionais, relatórios e visualizar organogramas
   terapeutas_permissions = [
     'dashboard.view',
     'professionals.index',
     'professionals.show',
-    'reports.view'
+    'reports.view',
+    'organograms.index',
+    'organograms.show',
+    'organograms.export'
   ]
 
   terapeutas_permissions.each do |perm_key|
@@ -105,11 +116,13 @@ end
 
 recepcao_group = Group.find_by(name: 'Recepção')
 if recepcao_group
-  # Recepção tem acesso básico
+  # Recepção tem acesso básico + visualização de organogramas
   recepcao_permissions = [
     'dashboard.view',
     'professionals.index',
-    'professionals.show'
+    'professionals.show',
+    'organograms.index',
+    'organograms.show'
   ]
 
   recepcao_permissions.each do |perm_key|
