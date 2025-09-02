@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get 'cep/:cep', to: 'cep#buscar', as: :buscar_cep
 
   # Demonstração do componente de CEP
-  resources :cep_demo, only: [:index, :create]
+  resources :cep_demo, only: %i[index create]
   get '/address_demo', to: 'cep_demo#address_demo'
 
   devise_for :users
@@ -63,9 +63,9 @@ Rails.application.routes.draw do
   # Portal de operadoras
   namespace :portal do
     resources :service_requests do
-      resources :service_request_referrals, only: [:create, :destroy], path: 'encaminhamentos'
+      resources :service_request_referrals, only: %i[create destroy], path: 'encaminhamentos'
     end
-    resources :portal_intakes, only: [:index, :new, :create, :show]
+    resources :portal_intakes, only: %i[index new create show]
     root to: 'service_requests#index'
   end
   get 'styleguide' => 'styleguide#index'
@@ -138,13 +138,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :portal_intakes, only: [:index, :show, :update] do
+    resources :portal_intakes, only: %i[index show update] do
       member do
         post :schedule_anamnesis
       end
     end
-
-
 
     get '/', to: 'dashboard#index'
     get '/dashboard', to: 'dashboard#index'

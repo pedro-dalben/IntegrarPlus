@@ -34,9 +34,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          if request.xhr?
-            render partial: 'search_results', layout: false
-          end
+          render partial: 'search_results', layout: false if request.xhr?
         end
         format.json { render json: { results: @groups, count: @pagy.count } }
       end
@@ -97,9 +95,7 @@ module Admin
       filters = {}
 
       # Filtros adicionais podem ser adicionados aqui
-      if params[:is_admin].present?
-        filters[:is_admin] = params[:is_admin] == 'true'
-      end
+      filters[:is_admin] = params[:is_admin] == 'true' if params[:is_admin].present?
 
       filters
     end

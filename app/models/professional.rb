@@ -176,9 +176,9 @@ class Professional < ApplicationRecord
       errors.add(:company_name, 'é obrigatório para este tipo de contratação')
     end
 
-    if contract_type.requires_cnpj? && cnpj.blank?
-      errors.add(:cnpj, 'é obrigatório para este tipo de contratação')
-    end
+    return unless contract_type.requires_cnpj? && cnpj.blank?
+
+    errors.add(:cnpj, 'é obrigatório para este tipo de contratação')
   end
 
   def specialization_consistency

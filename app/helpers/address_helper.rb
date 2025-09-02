@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module AddressHelper
-  def address_form(form, **options)
-    render AddressFormComponent.new(form: form, **options)
+  def address_form(form, **)
+    render AddressFormComponent.new(form: form, **)
   end
 
   def brazilian_states

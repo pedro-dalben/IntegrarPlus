@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-puts "Criando usuários externos (operadoras)..."
+Rails.logger.debug 'Criando usuários externos (operadoras)...'
 
 # Operadora exemplo
 external_user = ExternalUser.find_or_create_by(email: 'operadora@exemplo.com') do |user|
@@ -11,7 +11,7 @@ external_user = ExternalUser.find_or_create_by(email: 'operadora@exemplo.com') d
   user.active = true
 end
 
-puts "Usuário externo criado: #{external_user.email} (#{external_user.company_name})"
+Rails.logger.debug { "Usuário externo criado: #{external_user.email} (#{external_user.company_name})" }
 
 # Criar algumas solicitações exemplo (comentado para evitar conflitos)
 # 5.times do |i|
@@ -44,4 +44,4 @@ puts "Usuário externo criado: #{external_user.email} (#{external_user.company_n
 #   puts "Solicitação criada: #{service_request.nome} (#{service_request.status})"
 # end
 
-puts "Seeds de usuários externos concluídas!"
+Rails.logger.debug 'Seeds de usuários externos concluídas!'

@@ -86,17 +86,11 @@ module Admin
       filters[:status] = 'liberado'
 
       # Filtros adicionais
-      if params[:document_type].present?
-        filters[:document_type] = params[:document_type]
-      end
+      filters[:document_type] = params[:document_type] if params[:document_type].present?
 
-      if params[:category].present?
-        filters[:category] = params[:category]
-      end
+      filters[:category] = params[:category] if params[:category].present?
 
-      if params[:author_id].present?
-        filters[:author_professional_id] = params[:author_id]
-      end
+      filters[:author_professional_id] = params[:author_id] if params[:author_id].present?
 
       filters
     end

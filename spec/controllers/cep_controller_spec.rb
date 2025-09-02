@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe CepController, type: :controller do
   include Devise::Test::ControllerHelpers
+
   describe 'GET #buscar' do
     context 'com CEP válido' do
       let(:cep) { '89010025' }
@@ -29,7 +30,7 @@ RSpec.describe CepController, type: :controller do
         get :buscar, params: { cep: cep }
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to eq(endereco_data.deep_stringify_keys)
+        expect(response.parsed_body).to eq(endereco_data.deep_stringify_keys)
       end
     end
 
@@ -44,7 +45,7 @@ RSpec.describe CepController, type: :controller do
         get :buscar, params: { cep: cep }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to eq({ 'error' => 'CEP inválido' })
+        expect(response.parsed_body).to eq({ 'error' => 'CEP inválido' })
       end
     end
 
@@ -53,7 +54,7 @@ RSpec.describe CepController, type: :controller do
         get :buscar, params: { cep: '' }
 
         expect(response).to have_http_status(:bad_request)
-        expect(JSON.parse(response.body)).to eq({ 'error' => 'CEP é obrigatório' })
+        expect(response.parsed_body).to eq({ 'error' => 'CEP é obrigatório' })
       end
     end
   end

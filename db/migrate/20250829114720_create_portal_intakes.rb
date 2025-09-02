@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePortalIntakes < ActiveRecord::Migration[8.0]
   def change
     create_table :portal_intakes do |t|

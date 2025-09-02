@@ -36,16 +36,16 @@ RSpec.describe CepService do
         resultado = described_class.buscar(cep)
 
         expect(resultado).to eq({
-          cep: '89010025',
-          logradouro: 'Rua Doutor Luiz de Freitas Melro',
-          bairro: 'Centro',
-          cidade: 'Blumenau',
-          uf: 'SC',
-          coordenadas: {
-            latitude: '-26.9244749',
-            longitude: '-49.0629788'
-          }
-        })
+                                  cep: '89010025',
+                                  logradouro: 'Rua Doutor Luiz de Freitas Melro',
+                                  bairro: 'Centro',
+                                  cidade: 'Blumenau',
+                                  uf: 'SC',
+                                  coordenadas: {
+                                    latitude: '-26.9244749',
+                                    longitude: '-49.0629788'
+                                  }
+                                })
       end
 
       it 'funciona com CEP formatado' do

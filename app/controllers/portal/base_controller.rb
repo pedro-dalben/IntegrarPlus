@@ -12,11 +12,7 @@ module Portal
     def current_external_user
       return @current_external_user if defined?(@current_external_user)
 
-      @current_external_user = if session[:external_user_id]
-                                  ExternalUser.find_by(id: session[:external_user_id])
-                                else
-                                  nil
-                                end
+      @current_external_user = (ExternalUser.find_by(id: session[:external_user_id]) if session[:external_user_id])
     end
 
     def external_user_signed_in?
@@ -36,7 +32,8 @@ module Portal
       return if user.is_a?(ExternalUser) && user.active?
 
       sign_out(:external_user) if external_user_signed_in?
-      redirect_to new_external_user_session_path, alert: 'Sua conta foi desativada. Entre em contato com o administrador.'
+      redirect_to new_external_user_session_path,
+                  alert: 'Sua conta foi desativada. Entre em contato com o administrador.'
     end
   end
 end

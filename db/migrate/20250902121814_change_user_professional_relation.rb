@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeUserProfessionalRelation < ActiveRecord::Migration[8.0]
   def up
     # Remover a foreign key atual se existir
@@ -10,7 +12,7 @@ class ChangeUserProfessionalRelation < ActiveRecord::Migration[8.0]
     drop_table :memberships if table_exists?(:memberships)
 
     # Migrar dados: cada User deve apontar para seu Professional
-    execute <<-SQL
+    execute <<-SQL.squish
       UPDATE users#{' '}
       SET professional_id = (
         SELECT professionals.id#{' '}
@@ -46,7 +48,7 @@ class ChangeUserProfessionalRelation < ActiveRecord::Migration[8.0]
     add_index :memberships, %i[user_id group_id], unique: true
 
     # Migrar dados de volta
-    execute <<-SQL
+    execute <<-SQL.squish
       UPDATE professionals#{' '}
       SET user_id = (
         SELECT users.id#{' '}

@@ -16,7 +16,7 @@ class CepDemoController < ApplicationController
     if @dados[:cep].present?
       flash[:success] = "Dados recebidos com sucesso! CEP: #{@dados[:cep]}"
     else
-      flash[:error] = "CEP é obrigatório"
+      flash[:error] = 'CEP é obrigatório'
     end
 
     redirect_to cep_demo_index_path

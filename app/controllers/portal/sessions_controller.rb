@@ -28,7 +28,7 @@ module Portal
     private
 
     def external_user_params
-      params.require(:external_user).permit(:email, :password, :remember_me)
+      params.expect(external_user: %i[email password remember_me])
     end
   end
 end

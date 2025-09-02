@@ -2,6 +2,7 @@
 
 class CepService
   include HTTParty
+
   base_uri 'https://brasilapi.com.br/api/cep/v2'
 
   def self.search(zip_code)
@@ -27,8 +28,6 @@ class CepService
   def self.buscar(cep)
     search(cep)
   end
-
-  private
 
   def self.valid_zip_code?(zip_code)
     return false if zip_code.blank?

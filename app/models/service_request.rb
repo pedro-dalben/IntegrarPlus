@@ -12,9 +12,9 @@ class ServiceRequest < ApplicationRecord
   validates :status, presence: true, inclusion: { in: %w[aguardando processado] }
 
   scope :by_status, ->(status) { where(status: status) if status.present? }
-  scope :by_date_range, ->(start_date, end_date) do
+  scope :by_date_range, lambda { |start_date, end_date|
     where(data_encaminhamento: start_date..end_date) if start_date.present? && end_date.present?
-  end
+  }
   scope :recent, -> { order(data_encaminhamento: :desc) }
 
   accepts_nested_attributes_for :service_request_referrals, allow_destroy: true, reject_if: :all_blank
@@ -29,8 +29,6 @@ class ServiceRequest < ApplicationRecord
       status.humanize
     end
   end
-
-
 
   def telefone_formatado
     return telefone_responsavel if telefone_responsavel.blank?

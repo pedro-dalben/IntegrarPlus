@@ -106,9 +106,9 @@ RSpec.describe Addressable, type: :concern do
 
     context 'without existing address' do
       it 'creates new address' do
-        expect {
+        expect do
           professional.create_address_from_cep(cep_data)
-        }.to change(professional.addresses, :count).by(1)
+        end.to change(professional.addresses, :count).by(1)
 
         address = professional.primary_address
         expect(address.zip_code).to eq('01310-100')
@@ -120,9 +120,9 @@ RSpec.describe Addressable, type: :concern do
       let!(:existing_address) { create(:address, addressable: professional, address_type: 'primary') }
 
       it 'updates existing address' do
-        expect {
+        expect do
           professional.create_address_from_cep(cep_data)
-        }.not_to change(professional.addresses, :count)
+        end.not_to change(professional.addresses, :count)
 
         existing_address.reload
         expect(existing_address.zip_code).to eq('01310-100')
@@ -147,16 +147,15 @@ RSpec.describe Addressable, type: :concern do
   describe 'delegated methods' do
     let!(:primary_address) do
       create(:address,
-        addressable: professional,
-        address_type: 'primary',
-        zip_code: '01310-100',
-        street: 'Avenida Paulista',
-        neighborhood: 'Bela Vista',
-        city: 'São Paulo',
-        state: 'SP',
-        latitude: -23.5505,
-        longitude: -46.6333
-      )
+             addressable: professional,
+             address_type: 'primary',
+             zip_code: '01310-100',
+             street: 'Avenida Paulista',
+             neighborhood: 'Bela Vista',
+             city: 'São Paulo',
+             state: 'SP',
+             latitude: -23.5505,
+             longitude: -46.6333)
     end
 
     it 'delegates zip_code to primary address' do

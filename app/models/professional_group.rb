@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfessionalGroup < ApplicationRecord
   belongs_to :professional
   belongs_to :group

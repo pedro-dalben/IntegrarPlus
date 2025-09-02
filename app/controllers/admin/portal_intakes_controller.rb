@@ -2,12 +2,12 @@
 
 module Admin
   class PortalIntakesController < BaseController
-    before_action :set_portal_intake, only: [:show, :update, :schedule_anamnesis]
+    before_action :set_portal_intake, only: %i[show update schedule_anamnesis]
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: Admin::PortalIntakePolicy::Scope)
-                          .includes(:operator, :journey_events)
-                          .recent
+                        .includes(:operator, :journey_events)
+                        .recent
 
       @portal_intakes = apply_filters(@portal_intakes)
       @pagy, @portal_intakes = pagy(@portal_intakes, items: 20)
@@ -50,7 +50,7 @@ module Admin
         rescue Date::Error
           redirect_to admin_portal_intake_path(@portal_intake),
                       alert: 'Data inválida fornecida.'
-        rescue => e
+        rescue StandardError => e
           redirect_to admin_portal_intake_path(@portal_intake),
                       alert: "Erro ao agendar anamnese: #{e.message}"
         end
@@ -67,7 +67,7 @@ module Admin
     end
 
     def portal_intake_params
-      params.require(:portal_intake).permit(:beneficiary_name, :plan_name, :card_code)
+      params.expect(portal_intake: %i[beneficiary_name plan_name card_code])
     end
 
     def apply_filters(scope)

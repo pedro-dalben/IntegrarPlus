@@ -32,9 +32,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          if request.xhr?
-            render partial: 'search_results', layout: false
-          end
+          render partial: 'search_results', layout: false if request.xhr?
         end
         format.json { render json: { results: @contract_types, count: @pagy.count } }
       end
@@ -92,17 +90,11 @@ module Admin
       filters = {}
 
       # Filtros adicionais podem ser adicionados aqui
-      if params[:active].present?
-        filters[:active] = params[:active] == 'true'
-      end
+      filters[:active] = params[:active] == 'true' if params[:active].present?
 
-      if params[:requires_company].present?
-        filters[:requires_company] = params[:requires_company] == 'true'
-      end
+      filters[:requires_company] = params[:requires_company] == 'true' if params[:requires_company].present?
 
-      if params[:requires_cnpj].present?
-        filters[:requires_cnpj] = params[:requires_cnpj] == 'true'
-      end
+      filters[:requires_cnpj] = params[:requires_cnpj] == 'true' if params[:requires_cnpj].present?
 
       filters
     end
@@ -135,7 +127,7 @@ module Admin
     end
 
     def contract_type_params
-      params.require(:contract_type).permit(:name, :description, :requires_company, :requires_cnpj, :active)
+      params.expect(contract_type: %i[name description requires_company requires_cnpj active])
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateJourneyEvents < ActiveRecord::Migration[8.0]
   def change
     create_table :journey_events do |t|

@@ -38,9 +38,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          if request.xhr?
-            render partial: 'search_results', layout: false
-          end
+          render partial: 'search_results', layout: false if request.xhr?
         end
         format.json { render json: { results: @documents, count: @pagy.count } }
       end
@@ -151,21 +149,13 @@ module Admin
       end
 
       # Filtros adicionais
-      if params[:status].present?
-        filters[:status] = params[:status]
-      end
+      filters[:status] = params[:status] if params[:status].present?
 
-      if params[:document_type].present?
-        filters[:document_type] = params[:document_type]
-      end
+      filters[:document_type] = params[:document_type] if params[:document_type].present?
 
-      if params[:category].present?
-        filters[:category] = params[:category]
-      end
+      filters[:category] = params[:category] if params[:category].present?
 
-      if params[:author_id].present?
-        filters[:author_professional_id] = params[:author_id]
-      end
+      filters[:author_professional_id] = params[:author_id] if params[:author_id].present?
 
       filters
     end

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :professional do
     full_name { 'João Silva' }
     sequence(:email) { |n| "professional#{n}@example.com" }
-    sequence(:cpf) { |n| "#{n.to_s.rjust(11, '0')}" }
+    sequence(:cpf) { |n| n.to_s.rjust(11, '0').to_s }
     phone { '(11) 99999-9999' }
     birth_date { 30.years.ago.to_date }
     active { true }

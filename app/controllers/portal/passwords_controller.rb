@@ -6,7 +6,7 @@ module Portal
 
     private
 
-    def after_resetting_password_path_for(resource)
+    def after_resetting_password_path_for(_resource)
       portal_root_path
     end
   end

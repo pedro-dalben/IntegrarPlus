@@ -41,9 +41,9 @@ module Addressable
     existing_address = address_by_type(type)
     if existing_address
       existing_address.update!(address_data.except(:coordinates).merge(
-        latitude: cep_data.dig(:coordinates, :latitude),
-        longitude: cep_data.dig(:coordinates, :longitude)
-      ))
+                                 latitude: cep_data.dig(:coordinates, :latitude),
+                                 longitude: cep_data.dig(:coordinates, :longitude)
+                               ))
       existing_address
     else
       Address.create_from_cep_data(self, cep_data, address_type: type)

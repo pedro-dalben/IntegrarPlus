@@ -63,10 +63,10 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'webmock'
   gem 'factory_bot_rails'
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers'
+  gem 'webmock'
 end
 
 gem 'tzinfo-data', platforms: %i[windows jruby]

@@ -2,7 +2,7 @@
 
 module Portal
   class ServiceRequestsController < BaseController
-    before_action :set_service_request, only: [:show, :edit, :update, :destroy]
+    before_action :set_service_request, only: %i[show edit update destroy]
 
     def index
       @service_requests = current_external_user.service_requests
@@ -30,6 +30,15 @@ module Portal
       @service_request.service_request_referrals.build
     end
 
+    def edit
+      if @service_request.status == 'processado'
+        return redirect_to portal_service_request_path(@service_request),
+                           alert: 'Solicitação já foi processada e não pode ser editada.'
+      end
+
+      @service_request.service_request_referrals.build if @service_request.service_request_referrals.empty?
+    end
+
     def create
       @service_request = current_external_user.service_requests.build(service_request_params)
       @service_request.data_encaminhamento = Date.current if @service_request.data_encaminhamento.blank?
@@ -44,14 +53,11 @@ module Portal
       end
     end
 
-    def edit
-      return redirect_to portal_service_request_path(@service_request), alert: 'Solicitação já foi processada e não pode ser editada.' if @service_request.status == 'processado'
-
-      @service_request.service_request_referrals.build if @service_request.service_request_referrals.empty?
-    end
-
     def update
-      return redirect_to portal_service_request_path(@service_request), alert: 'Solicitação já foi processada e não pode ser editada.' if @service_request.status == 'processado'
+      if @service_request.status == 'processado'
+        return redirect_to portal_service_request_path(@service_request),
+                           alert: 'Solicitação já foi processada e não pode ser editada.'
+      end
 
       if @service_request.update(service_request_params)
         redirect_to portal_service_request_path(@service_request),
@@ -63,7 +69,10 @@ module Portal
     end
 
     def destroy
-      return redirect_to portal_service_requests_path, alert: 'Solicitação já foi processada e não pode ser excluída.' if @service_request.status == 'processado'
+      if @service_request.status == 'processado'
+        return redirect_to portal_service_requests_path,
+                           alert: 'Solicitação já foi processada e não pode ser excluída.'
+      end
 
       @service_request.destroy
       redirect_to portal_service_requests_path, notice: 'Solicitação excluída com sucesso.'
@@ -78,11 +87,11 @@ module Portal
     end
 
     def service_request_params
-      params.require(:service_request).permit(
-        :convenio, :carteira_codigo, :nome, :telefone_responsavel, :data_encaminhamento,
-        service_request_referrals_attributes: [
-          :id, :cid, :encaminhado_para, :medico, :medico_crm, :data_encaminhamento, :descricao, :_destroy
-        ]
+      params.expect(
+        service_request: [:convenio, :carteira_codigo, :nome, :telefone_responsavel, :data_encaminhamento,
+                          { service_request_referrals_attributes: %i[
+                            id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
+                          ] }]
       )
     end
 

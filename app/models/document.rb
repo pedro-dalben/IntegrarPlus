@@ -165,17 +165,18 @@ class Document < ApplicationRecord
     raise ArgumentError, 'Professional ou grupo deve ser especificado' if professional_or_group.nil?
     raise ArgumentError, 'Nível de acesso deve ser especificado' if access_level.nil?
 
-    if professional_or_group.is_a?(Professional)
+    case professional_or_group
+    when Professional
       document_permissions.find_or_initialize_by(professional: professional_or_group).tap do |permission|
         permission.access_level = access_level
         permission.save!
       end
-    elsif professional_or_group.is_a?(Group)
+    when Group
       document_permissions.find_or_initialize_by(group: professional_or_group).tap do |permission|
         permission.access_level = access_level
         permission.save!
       end
-    elsif professional_or_group.is_a?(User)
+    when User
       # Compatibilidade com User (deprecated)
       return grant_permission(professional_or_group.professional, access_level) if professional_or_group.professional
 
@@ -186,11 +187,12 @@ class Document < ApplicationRecord
   end
 
   def revoke_permission(professional_or_group)
-    if professional_or_group.is_a?(Professional)
+    case professional_or_group
+    when Professional
       document_permissions.where(professional: professional_or_group).destroy_all
-    elsif professional_or_group.is_a?(Group)
+    when Group
       document_permissions.where(group: professional_or_group).destroy_all
-    elsif professional_or_group.is_a?(User)
+    when User
       # Compatibilidade com User (deprecated)
       revoke_permission(professional_or_group.professional) if professional_or_group.professional
     end
@@ -514,7 +516,7 @@ class Document < ApplicationRecord
 
   def self.generate_phonetic_query(query)
     require 'text'
-    words = query.split(' ')
+    words = query.split
     phonetic_words = words.map { |word| Text::Metaphone.metaphone(word) }
     phonetic_words.join(' ')
   rescue LoadError, StandardError
@@ -532,7 +534,7 @@ class Document < ApplicationRecord
   end
 
   def self.search_partial_words(query, filters)
-    words = query.split(' ')
+    words = query.split
     return [] if words.empty?
 
     # Buscar por cada palavra individualmente
@@ -550,7 +552,7 @@ class Document < ApplicationRecord
 
   def self.calculate_relevance_score(document, query)
     score = 0
-    query_words = query.split(' ')
+    query_words = query.split
 
     # Pontuação baseada na posição dos termos
     query_words.each do |word|

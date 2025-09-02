@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAddresses < ActiveRecord::Migration[8.0]
   def change
     create_table :addresses do |t|
@@ -17,12 +19,12 @@ class CreateAddresses < ActiveRecord::Migration[8.0]
     end
 
     # Indexes for better performance
-    add_index :addresses, [:addressable_type, :addressable_id]
-    add_index :addresses, [:addressable_type, :addressable_id, :address_type],
+    add_index :addresses, %i[addressable_type addressable_id]
+    add_index :addresses, %i[addressable_type addressable_id address_type],
               name: 'index_addresses_on_addressable_and_type'
     add_index :addresses, :zip_code
     add_index :addresses, :city
     add_index :addresses, :state
-    add_index :addresses, [:latitude, :longitude], name: 'index_addresses_on_coordinates'
+    add_index :addresses, %i[latitude longitude], name: 'index_addresses_on_coordinates'
   end
 end

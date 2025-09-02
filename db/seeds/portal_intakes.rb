@@ -3,7 +3,7 @@
 Rails.logger.debug '🏥 Criando dados de exemplo para Portal Intakes...'
 
 # Verificar se existem external_users (operadoras)
-if ExternalUser.count == 0
+if ExternalUser.none?
   Rails.logger.debug '⚠️  Nenhuma operadora encontrada. Execute seeds/external_users.rb primeiro.'
   return
 end
@@ -105,7 +105,7 @@ portal_intakes_data.each_with_index do |intake_data, index|
   )
 
   if portal_intake.save
-    Rails.logger.debug "  ✅ Entrada criada: #{portal_intake.beneficiary_name} (#{operadora.company_name})"
+    Rails.logger.debug { "  ✅ Entrada criada: #{portal_intake.beneficiary_name} (#{operadora.company_name})" }
 
     # Para entradas que já foram agendadas, criar evento de agendamento
     if portal_intake.aguardando_anamnese? || portal_intake.anamnese_concluida?
@@ -145,12 +145,12 @@ aguardando_anamnese = PortalIntake.aguardando_anamnese.count
 concluidas = PortalIntake.anamnese_concluida.count
 
 Rails.logger.debug "\n📊 Estatísticas das Entradas do Portal:"
-Rails.logger.debug "  Total de entradas: #{total_intakes}"
-Rails.logger.debug "  Aguardando agendamento: #{aguardando_agendamento}"
-Rails.logger.debug "  Aguardando anamnese: #{aguardando_anamnese}"
-Rails.logger.debug "  Concluídas: #{concluidas}"
+Rails.logger.debug { "  Total de entradas: #{total_intakes}" }
+Rails.logger.debug { "  Aguardando agendamento: #{aguardando_agendamento}" }
+Rails.logger.debug { "  Aguardando anamnese: #{aguardando_anamnese}" }
+Rails.logger.debug { "  Concluídas: #{concluidas}" }
 
 operadoras.each do |operadora|
   count = operadora.portal_intakes.count
-  Rails.logger.debug "  #{operadora.company_name}: #{count} entradas"
+  Rails.logger.debug { "  #{operadora.company_name}: #{count} entradas" }
 end

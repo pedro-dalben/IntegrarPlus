@@ -9,7 +9,8 @@ module AdminNav
       { label: 'Workspace', path: '/admin/workspace', icon: 'bi-folder2-open', required_permission: 'documents.read' },
       { label: 'Documentos Liberados', path: '/admin/released_documents', icon: 'bi-check-circle',
         required_permission: 'documents.read' },
-      { label: 'Portal Operadoras', path: '/admin/portal_intakes', icon: 'bi-hospital', required_permission: 'portal_intakes.index' },
+      { label: 'Portal Operadoras', path: '/admin/portal_intakes', icon: 'bi-hospital',
+        required_permission: 'portal_intakes.index' },
       { label: 'Cadastros', icon: 'bi-people', required_permission: 'professionals.read', children: [
         { label: 'Profissionais', path: '/admin/professionals', icon: 'bi-person',
           required_permission: 'professionals.read' },

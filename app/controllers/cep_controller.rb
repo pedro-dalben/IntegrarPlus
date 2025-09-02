@@ -19,5 +19,5 @@ class CepController < ApplicationController
   end
 
   # Keep legacy method for backward compatibility
-  alias_method :buscar, :search
+  alias buscar search
 end

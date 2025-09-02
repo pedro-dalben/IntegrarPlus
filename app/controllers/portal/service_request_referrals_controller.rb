@@ -11,12 +11,17 @@ module Portal
 
       if @service_request_referral.save
         respond_to do |format|
-          format.html { redirect_to edit_portal_service_request_path(@service_request), notice: 'Encaminhamento adicionado com sucesso.' }
+          format.html do
+            redirect_to edit_portal_service_request_path(@service_request),
+                        notice: 'Encaminhamento adicionado com sucesso.'
+          end
           format.turbo_stream
         end
       else
         respond_to do |format|
-          format.html { redirect_to edit_portal_service_request_path(@service_request), alert: 'Erro ao adicionar encaminhamento.' }
+          format.html do
+            redirect_to edit_portal_service_request_path(@service_request), alert: 'Erro ao adicionar encaminhamento.'
+          end
           format.turbo_stream { render :create_error }
         end
       end
@@ -26,7 +31,9 @@ module Portal
       @service_request_referral.destroy
 
       respond_to do |format|
-        format.html { redirect_to edit_portal_service_request_path(@service_request), notice: 'Encaminhamento removido com sucesso.' }
+        format.html do
+          redirect_to edit_portal_service_request_path(@service_request), notice: 'Encaminhamento removido com sucesso.'
+        end
         format.turbo_stream
       end
     end
@@ -53,7 +60,7 @@ module Portal
     end
 
     def service_request_referral_params
-      params.require(:service_request_referral).permit(:cid, :encaminhado_para, :medico, :descricao)
+      params.expect(service_request_referral: %i[cid encaminhado_para medico descricao])
     end
   end
 end

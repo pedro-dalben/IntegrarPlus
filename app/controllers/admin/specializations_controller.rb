@@ -32,9 +32,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          if request.xhr?
-            render partial: 'search_results', layout: false
-          end
+          render partial: 'search_results', layout: false if request.xhr?
         end
         format.json { render json: { results: @specializations, count: @pagy.count } }
       end
@@ -96,9 +94,7 @@ module Admin
       filters = {}
 
       # Filtros adicionais podem ser adicionados aqui
-      if params[:speciality_id].present?
-        filters[:speciality_id] = params[:speciality_id]
-      end
+      filters[:speciality_id] = params[:speciality_id] if params[:speciality_id].present?
 
       filters
     end

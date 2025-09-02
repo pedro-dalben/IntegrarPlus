@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateServiceRequestsStructure < ActiveRecord::Migration[8.0]
   def change
     # Remove colunas que não são mais usadas

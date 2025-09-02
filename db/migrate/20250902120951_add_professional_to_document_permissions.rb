@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class AddProfessionalToDocumentPermissions < ActiveRecord::Migration[8.0]
   def up
     # Adicionar coluna professional_id (nullable inicialmente)
     add_reference :document_permissions, :professional, null: true, foreign_key: true
 
     # Migrar dados existentes de user_id para professional_id
-    execute <<-SQL
+    execute <<-SQL.squish
       UPDATE document_permissions#{' '}
       SET professional_id = (
         SELECT professionals.id#{' '}
@@ -37,7 +39,7 @@ class AddProfessionalToDocumentPermissions < ActiveRecord::Migration[8.0]
     add_reference :document_permissions, :user, null: true, foreign_key: true
 
     # Migrar dados de volta
-    execute <<-SQL
+    execute <<-SQL.squish
       UPDATE document_permissions#{' '}
       SET user_id = (
         SELECT professionals.user_id#{' '}

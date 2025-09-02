@@ -6,8 +6,8 @@ module Portal
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: PortalIntakePolicy::Scope)
-                          .includes(:journey_events)
-                          .recent
+                        .includes(:journey_events)
+                        .recent
 
       @portal_intakes = apply_filters(@portal_intakes)
       @pagy, @portal_intakes = pagy(@portal_intakes, items: 20)
@@ -45,12 +45,15 @@ module Portal
     end
 
     def portal_intake_params
-      params.require(:portal_intake).permit(:beneficiary_name, :plan_name, :card_code)
+      params.expect(portal_intake: %i[beneficiary_name plan_name card_code])
     end
 
     def apply_filters(scope)
       scope = scope.by_status(params[:status]) if params[:status].present?
-      scope = scope.requested_between(Date.parse(params[:start_date]), Date.parse(params[:end_date])) if params[:start_date].present? && params[:end_date].present?
+      if params[:start_date].present? && params[:end_date].present?
+        scope = scope.requested_between(Date.parse(params[:start_date]),
+                                        Date.parse(params[:end_date]))
+      end
       scope
     rescue Date::Error
       scope

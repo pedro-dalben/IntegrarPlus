@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class InvitesController < ApplicationController
-
   before_action :set_invite, only: %i[show accept]
   before_action :check_invite_validity, only: %i[show accept]
 
@@ -45,7 +44,7 @@ class InvitesController < ApplicationController
             Rails.logger.error "Erro de validação: #{user.errors.full_messages.join(', ')}"
             redirect_to invite_path(@invite.token), alert: "Erro de validação: #{user.errors.full_messages.join(', ')}"
           end
-        rescue => e
+        rescue StandardError => e
           Rails.logger.error "Erro ao ativar conta: #{e.message}"
           flash.now[:alert] = 'Erro ao ativar conta. Tente novamente.'
           render :show

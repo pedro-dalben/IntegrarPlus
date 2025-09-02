@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MigrateAddressDataFromProfessionals < ActiveRecord::Migration[8.0]
   def up
     # First, ensure addresses table exists
@@ -21,15 +23,14 @@ class MigrateAddressDataFromProfessionals < ActiveRecord::Migration[8.0]
           longitude: professional.longitude
         )
       end
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Failed to migrate address for Professional #{professional.id}: #{e.message}"
     end
 
     # Remove old address columns from professionals table
     remove_columns_if_exist(:professionals,
-      :zip_code, :street, :number, :complement,
-      :neighborhood, :city, :state, :latitude, :longitude
-    )
+                            :zip_code, :street, :number, :complement,
+                            :neighborhood, :city, :state, :latitude, :longitude)
 
     # Remove old indexes
     remove_index_if_exists(:professionals, :zip_code)

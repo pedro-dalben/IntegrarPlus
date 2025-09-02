@@ -13,12 +13,10 @@ class AddressFormComponent < ViewComponent::Base
 
   attr_reader :form, :address_type, :nested, :required, :show_coordinates
 
-  def address_form
+  def address_form(&)
     if nested
       # Use nested attributes for the address
-      form.fields_for address_association_name, address_object do |address_form|
-        yield address_form
-      end
+      form.fields_for(address_association_name, address_object, &)
     else
       # Direct form for Address model
       yield form
@@ -60,10 +58,10 @@ class AddressFormComponent < ViewComponent::Base
   end
 
   def input_classes
-    "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+    'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
   end
 
   def label_classes
-    "block text-sm font-medium text-gray-700 dark:text-gray-300"
+    'block text-sm font-medium text-gray-700 dark:text-gray-300'
   end
 end

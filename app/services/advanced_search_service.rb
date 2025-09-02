@@ -35,14 +35,10 @@ class AdvancedSearchService
     }
 
     # Adicionar filtros se fornecidos
-    if filters.any?
-      search_options[:filter] = build_filter_string(filters)
-    end
+    search_options[:filter] = build_filter_string(filters) if filters.any?
 
     # Adicionar ordenação se fornecida
-    if options[:sort]
-      search_options[:sort] = options[:sort]
-    end
+    search_options[:sort] = options[:sort] if options[:sort]
 
     search_options
   end
@@ -55,7 +51,7 @@ class AdvancedSearchService
       when :status
         if value.is_a?(String) && value.start_with?('!')
           # Filtro de exclusão
-          status_value = value[1..-1]
+          status_value = value[1..]
           filter_parts << "status != #{@model_class.statuses[status_value]}" if @model_class.statuses[status_value]
         else
           filter_parts << "status = #{value}"
@@ -81,7 +77,7 @@ class AdvancedSearchService
   end
 
   def perform_local_search(query, filters)
-    Rails.logger.info "AdvancedSearchService: Performing local search fallback"
+    Rails.logger.info 'AdvancedSearchService: Performing local search fallback'
 
     # Busca local simples
     base_query = @model_class.all
@@ -91,7 +87,7 @@ class AdvancedSearchService
       case key
       when :status
         if value.is_a?(String) && value.start_with?('!')
-          status_value = value[1..-1]
+          status_value = value[1..]
           base_query = base_query.where.not(status: status_value)
         else
           base_query = base_query.where(status: value)
@@ -107,7 +103,7 @@ class AdvancedSearchService
       end
     end
 
-        # Busca por texto baseada no modelo
+    # Busca por texto baseada no modelo
     normalized_query = query.downcase.strip
 
     case @model_class.name

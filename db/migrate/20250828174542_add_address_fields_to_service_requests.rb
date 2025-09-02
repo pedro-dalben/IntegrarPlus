@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAddressFieldsToServiceRequests < ActiveRecord::Migration[8.0]
   def change
     add_column :service_requests, :rua, :string

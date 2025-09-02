@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PortalIntake < ApplicationRecord
-  belongs_to :operator, class_name: 'ExternalUser', foreign_key: 'operator_id'
+  belongs_to :operator, class_name: 'ExternalUser'
   has_many :journey_events, dependent: :destroy
 
   validates :beneficiary_name, presence: true, length: { minimum: 2, maximum: 100 }

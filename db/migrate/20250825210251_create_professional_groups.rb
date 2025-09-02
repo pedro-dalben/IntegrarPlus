@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateProfessionalGroups < ActiveRecord::Migration[8.0]
   def change
     create_table :professional_groups do |t|
@@ -7,6 +9,6 @@ class CreateProfessionalGroups < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :professional_groups, [:professional_id, :group_id], unique: true
+    add_index :professional_groups, %i[professional_id group_id], unique: true
   end
 end
