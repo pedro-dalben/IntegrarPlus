@@ -39,7 +39,7 @@ module Admin
 
     def update
       if @professional.update(professional_params)
-        redirect_to admin_professional_path(@professional), 
+        redirect_to admin_professional_path(@professional),
                     notice: t('admin.professionals.messages.updated')
       else
         load_form_data
@@ -49,29 +49,29 @@ module Admin
 
     def destroy
       if @professional.documents.exists?
-        redirect_to admin_professional_path(@professional), 
+        redirect_to admin_professional_path(@professional),
                     alert: t('admin.professionals.messages.cannot_delete_with_documents')
         return
       end
 
       @professional.destroy
-      redirect_to admin_professionals_path, 
+      redirect_to admin_professionals_path,
                   notice: t('admin.professionals.messages.deleted')
     end
 
     def create_user
       if @professional.user.present?
-        redirect_to admin_professional_path(@professional), 
+        redirect_to admin_professional_path(@professional),
                     alert: t('admin.professionals.messages.user_already_exists')
         return
       end
 
       user = @professional.create_user_for_authentication!
       if user
-        redirect_to admin_professional_path(@professional), 
+        redirect_to admin_professional_path(@professional),
                     notice: t('admin.professionals.messages.user_created')
       else
-        redirect_to admin_professional_path(@professional), 
+        redirect_to admin_professional_path(@professional),
                     alert: t('admin.professionals.messages.user_creation_failed')
       end
     end
@@ -136,7 +136,7 @@ module Admin
     end
 
     def handle_successful_creation
-      redirect_to admin_professional_path(@professional), 
+      redirect_to admin_professional_path(@professional),
                   notice: t('admin.professionals.messages.created')
     end
 
@@ -155,7 +155,7 @@ module Admin
       params.expect(
         professional: [
           :full_name, :birth_date, :cpf, :phone, :email, :active,
-          :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes, 
+          :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes,
           :council_code, :company_name, :cnpj,
           { primary_address_attributes: %i[
               id zip_code street number complement

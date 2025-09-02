@@ -6,8 +6,6 @@ class Group < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
-  has_many :memberships, dependent: :destroy
-  has_many :users, through: :memberships
   has_many :professional_groups, dependent: :destroy
   has_many :professionals, through: :professional_groups
   has_many :group_permissions, dependent: :destroy
@@ -45,5 +43,9 @@ class Group < ApplicationRecord
   def remove_permission(permission_key)
     permission = permissions.find_by(key: permission_key)
     permissions.delete(permission) if permission
+  end
+
+  def users
+    User.joins(:professional).where(professional: professionals)
   end
 end
