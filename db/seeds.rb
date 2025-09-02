@@ -94,28 +94,31 @@ groups_data.each do |group_data|
   end
 end
 
-# Usuário admin padrão
-admin_user = User.find_or_create_by!(email: 'admin@integrarplus.com') do |user|
-  user.name = 'Administrador'
-  user.password = 'password123'
-  user.password_confirmation = 'password123'
-  user.confirmed_at = Time.current
+# Profissional admin padrão (fonte única de verdade)
+admin_professional = Professional.find_or_create_by!(email: 'admin@integrarplus.com') do |professional|
+  professional.full_name = 'Administrador do Sistema'
+  professional.cpf = '11111111111'
+  professional.phone = '(11) 99999-9999'
+  professional.active = true
 end
 
-# Cria profissional para o usuário admin se não existir
-unless admin_user.professional
-  Professional.find_or_create_by!(email: 'admin@integrarplus.com') do |professional|
-    professional.full_name = 'Administrador do Sistema'
-    professional.cpf = '11111111111'
-    professional.phone = '(11) 99999-9999'
-    professional.active = true
-    professional.user = admin_user
-  end
+# Cria usuário para o profissional admin se não existir
+unless admin_professional.user
+  admin_user = User.create!(
+    email: admin_professional.email,
+    password: '123456',
+    password_confirmation: '123456',
+    professional: admin_professional
+  )
+  puts "Usuário criado para admin: #{admin_user.email} com senha: 123456"
 end
 
-# Associa o usuário admin ao grupo Administradores
+# Associa o profissional admin ao grupo Administradores
 admin_group = Group.find_by(name: 'Administradores')
-Membership.find_or_create_by!(user_id: admin_user.id, group_id: admin_group.id) if admin_group
+if admin_group && !admin_professional.groups.include?(admin_group)
+  admin_professional.professional_groups.create!(group: admin_group)
+  puts "Profissional admin associado ao grupo: #{admin_group.name}"
+end
 
 # Carrega seeds para usuários externos (operadoras)
 load(Rails.root.join('db/seeds/external_users.rb'))
