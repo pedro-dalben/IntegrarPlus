@@ -35,6 +35,8 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/credentials.yml.enc
+/config/credentials/*.yml.enc
 
 # Vite Ruby
 /public/vite*
@@ -53,3 +55,4 @@ node_modules
 # MeiliSearch data directory
 data.ms/
 vendor/bundle/
+config/credentials.yml.enc
