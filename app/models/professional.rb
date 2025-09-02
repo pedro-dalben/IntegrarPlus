@@ -5,13 +5,9 @@ class Professional < ApplicationRecord
   include MeiliSearch::Rails
   include Addressable
 
-  # Removido Devise - o Professional não precisa de autenticação
-  # A autenticação é feita através do User associado
-
   belongs_to :contract_type, optional: true
-  belongs_to :user, optional: true
+  has_one :user, dependent: :destroy
 
-  # Associações diretas com grupos
   has_many :professional_groups, dependent: :destroy
   has_many :groups, through: :professional_groups
 
@@ -20,7 +16,6 @@ class Professional < ApplicationRecord
   has_many :professional_specializations, dependent: :destroy
   has_many :specializations, through: :professional_specializations
 
-  # Document associations
   has_many :documents, foreign_key: :author_professional_id, dependent: :destroy
   has_many :document_versions, foreign_key: :created_by_professional_id, dependent: :destroy
   has_many :document_responsibles, dependent: :destroy
@@ -30,24 +25,16 @@ class Professional < ApplicationRecord
   has_many :document_status_logs, dependent: :destroy
   has_many :document_releases, foreign_key: :released_by_professional_id, dependent: :destroy
 
-  validates :full_name, presence: true
+  validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :cpf, presence: true, uniqueness: { case_sensitive: false }
-  validates :email, presence: true, uniqueness: { case_sensitive: false }
-  # validates :phone, phone: true, allow_blank: true
-  # validates :cnpj, cnpj: true, allow_blank: true
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :workload_minutes, numericality: { greater_than_or_equal_to: 0 }
-  # validates :birth_date, date: { after: Date.new(1900, 1, 1), before_or_equal_to: Date.current }, allow_blank: true
-
-  # Address validations are now handled by the Address model
 
   validate :contract_type_consistency
   validate :specialization_consistency
   validate :email_not_used_by_other_user
 
-  after_create :create_user_if_needed, if: :active?
-  # Callbacks para sincronizar dados com User
-  after_update :sync_user_data, if: :should_sync_user_data?
-  after_update :sync_groups_with_user, if: :saved_change_to_group_ids?
+  after_create :create_user_for_authentication, if: :active?
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:full_name) }
@@ -89,6 +76,17 @@ class Professional < ApplicationRecord
 
   def has_any_document_permission?
     system_permissions.any?
+  end
+
+  # Métodos de permissões de grupos (fonte única)
+  def permit?(permission_key)
+    return true if admin?
+
+    groups.any? { |group| group.has_permission?(permission_key) }
+  end
+
+  def admin?
+    groups.any?(&:admin?)
   end
 
   def active_for_authentication?
@@ -150,31 +148,23 @@ class Professional < ApplicationRecord
     end
   end
 
-  # Métodos públicos para criação de usuário
-  def create_user_automatically
-    begin
-      temp_password = SecureRandom.hex(12)
-      new_user = User.create!(
-        name: full_name,
-        email: email,
-        password: temp_password,
-        password_confirmation: temp_password
-      )
+  # Método simplificado para criação de usuário
+  def create_user_for_authentication!
+    return user if user.present?
 
-      update_column(:user_id, new_user.id) # Usar update_column para evitar callbacks infinitos
+    temp_password = SecureRandom.hex(12)
+    new_user = User.create!(
+      email: email,
+      password: temp_password,
+      password_confirmation: temp_password,
+      professional: self
+    )
 
-      # Associar grupos do profissional ao usuário
-      groups.each do |group|
-        new_user.memberships.create!(group: group)
-        Rails.logger.info "Grupo '#{group.name}' associado ao usuário #{new_user.email}"
-      end
-
-      Rails.logger.info "Usuário criado automaticamente para profissional #{id}: #{email}"
-      new_user
-    rescue StandardError => e
-      Rails.logger.error "Erro ao criar usuário automaticamente para profissional #{id}: #{e.message}"
-      nil
-    end
+    Rails.logger.info "Usuário de autenticação criado para profissional #{id}: #{email}"
+    new_user
+  rescue StandardError => e
+    Rails.logger.error "Erro ao criar usuário para profissional #{id}: #{e.message}"
+    nil
   end
 
   private
@@ -186,9 +176,9 @@ class Professional < ApplicationRecord
       errors.add(:company_name, 'é obrigatório para este tipo de contratação')
     end
 
-    return unless contract_type.requires_cnpj? && cnpj.blank?
-
-    errors.add(:cnpj, 'é obrigatório para este tipo de contratação')
+    if contract_type.requires_cnpj? && cnpj.blank?
+      errors.add(:cnpj, 'é obrigatório para este tipo de contratação')
+    end
   end
 
   def specialization_consistency
@@ -203,23 +193,12 @@ class Professional < ApplicationRecord
   end
 
   def email_not_used_by_other_user
-    return if email.blank?
-    return unless email_changed?
+    return if email.blank? || !email_changed?
 
-    # Verificar se existe outro usuário com este email (exceto o usuário associado a este profissional)
-    existing_user = User.where(email: email).where.not(id: user_id).first
-
+    existing_user = User.where(email: email).where.not(professional: self).first
     return if existing_user.blank?
 
-    # Se estamos criando um novo profissional, permitir que o email seja usado
-    # O usuário será criado automaticamente com o mesmo email
-    return if new_record?
-
     errors.add(:email, 'já está sendo usado por outro usuário')
-  end
-
-  def ensure_user_exists!
-    create_user! if user.blank?
   end
 
   def user_status
@@ -230,25 +209,10 @@ class Professional < ApplicationRecord
     'Ativo'
   end
 
-  def create_user!
-    return user if user.present?
-
-    new_user = User.create!(
-      name: full_name,
-      email: email,
-      password: SecureRandom.hex(8)
-    )
-
-    update!(user: new_user)
-    new_user
-  end
-
   def name
     full_name
   end
 
-  # Address methods are now provided by the Addressable concern
-  # Legacy compatibility
   def has_coordinates?
     coordinates.present?
   end
@@ -261,47 +225,9 @@ class Professional < ApplicationRecord
     has_coordinates?
   end
 
-  # Métodos para sincronização com User
-  def should_sync_user_data?
-    user.present? && (saved_change_to_full_name? || saved_change_to_email?)
-  end
-
-  def sync_user_data
-    return if user.blank?
-
-    user_updates = {}
-
-    # Sincronizar nome se mudou
-    user_updates[:name] = full_name if saved_change_to_full_name?
-
-    # Sincronizar email se mudou
-    user_updates[:email] = email if saved_change_to_email?
-
-    return unless user_updates.any?
-
-    user.update!(user_updates)
-    Rails.logger.info "Dados do usuário sincronizados para profissional #{id}: #{user_updates}"
-  end
-
-  def sync_groups_with_user
-    return if user.blank?
-
-    # Remover grupos que não estão mais associados ao profissional
-    user.memberships.where.not(group: groups).destroy_all
-
-    # Adicionar grupos que estão associados ao profissional mas não ao usuário
-    groups.each do |group|
-      user.memberships.find_or_create_by!(group: group)
-    end
-
-    Rails.logger.info "Grupos sincronizados para usuário #{user.email}: #{groups.pluck(:name).join(', ')}"
-  end
-
-  def create_user_if_needed
+  def create_user_for_authentication
     return if user.present?
 
-    create_user_automatically
+    create_user_for_authentication!
   end
-
-
 end

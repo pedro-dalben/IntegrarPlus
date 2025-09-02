@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_02_121814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -232,16 +232,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
     t.index ["portal_intake_id"], name: "index_journey_events_on_portal_intake_id"
   end
 
-  create_table "memberships", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "group_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_memberships_on_group_id"
-    t.index ["user_id", "group_id"], name: "index_memberships_on_user_id_and_group_id", unique: true
-    t.index ["user_id"], name: "index_memberships_on_user_id"
-  end
-
   create_table "permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description"
@@ -311,13 +301,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
     t.string "cnpj"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
     t.integer "system_permissions", default: [], array: true
     t.index ["contract_type_id"], name: "index_professionals_on_contract_type_id"
     t.index ["cpf"], name: "index_professionals_on_cpf", unique: true
     t.index ["email"], name: "index_professionals_on_email", unique: true
     t.index ["system_permissions"], name: "index_professionals_on_system_permissions", using: :gin
-    t.index ["user_id"], name: "index_professionals_on_user_id"
   end
 
   create_table "service_request_referrals", force: :cascade do |t|
@@ -395,8 +383,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "name"
+    t.bigint "professional_id", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["professional_id"], name: "index_users_on_professional_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -444,8 +434,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"
   add_foreign_key "journey_events", "portal_intakes"
-  add_foreign_key "memberships", "groups"
-  add_foreign_key "memberships", "users"
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"
@@ -454,11 +442,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_120951) do
   add_foreign_key "professional_specializations", "professionals"
   add_foreign_key "professional_specializations", "specializations"
   add_foreign_key "professionals", "contract_types"
-  add_foreign_key "professionals", "users"
   add_foreign_key "service_request_referrals", "service_requests"
   add_foreign_key "service_requests", "external_users"
   add_foreign_key "specialization_specialities", "specialities"
   add_foreign_key "specialization_specialities", "specializations"
+  add_foreign_key "users", "professionals"
   add_foreign_key "version_comments", "document_versions"
   add_foreign_key "version_comments", "users"
 end

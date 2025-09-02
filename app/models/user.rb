@@ -3,42 +3,24 @@
 class User < ApplicationRecord
   include DashboardCache
 
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  belongs_to :professional
   has_one_attached :avatar
-  has_one :professional, dependent: :nullify
   has_many :invites, dependent: :destroy
-  has_many :memberships, dependent: :destroy
-  has_many :groups, through: :memberships
-
-  has_many :document_permissions, dependent: :destroy
   has_many :version_comments, dependent: :destroy
 
-  validates :name, presence: true, length: { minimum: 2, maximum: 100 }
+  delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true
 
-  def full_name
-    name.presence || email.split('@').first.titleize
+  validates :professional, presence: true
+
+  def name
+    professional&.full_name || email.split('@').first.titleize
   end
 
   def professional_full_name
-    if professional&.full_name.present?
-      professional.full_name
-    else
-      full_name
-    end
-  end
-
-  def permit?(permission_key)
-    return true if admin?
-
-    groups.any? { |group| group.has_permission?(permission_key) }
-  end
-
-  def admin?
-    groups.any?(&:admin?)
+    full_name
   end
 
   def pending_invite?

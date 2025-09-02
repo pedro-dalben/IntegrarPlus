@@ -24,7 +24,6 @@ class DocumentPermission < ApplicationRecord
     where(professional: professional).or(where(group: professional.groups))
   }
 
-  # Métodos de compatibilidade com User (deprecated)
   scope :for_user, ->(user) { for_professional(user&.professional) }
   scope :for_user_and_groups, lambda { |user|
     for_professional_and_groups(user&.professional)
@@ -38,7 +37,6 @@ class DocumentPermission < ApplicationRecord
     professional_id.present? ? 'professional' : 'group'
   end
 
-  # Método de compatibilidade (deprecated)
   def user
     professional&.user
   end
