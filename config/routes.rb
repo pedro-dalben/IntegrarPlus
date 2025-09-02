@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   get 'test/search_test', to: 'test#search_test'
 
   # API para busca de CEP
-  get 'cep/:cep', to: 'cep#buscar', as: :buscar_cep
+  get 'cep/:cep', to: 'cep#search', as: :buscar_cep
 
   # Demonstração do componente de CEP
   resources :cep_demo, only: %i[index create]

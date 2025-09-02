@@ -38,6 +38,42 @@ module Admin
       end
     end
 
+    def by_speciality
+      speciality_ids = params[:speciality_ids] || []
+
+      Rails.logger.info "Buscando especializações para especialidades: #{speciality_ids}"
+
+      if speciality_ids.empty?
+        Rails.logger.info 'Nenhuma especialidade selecionada, retornando array vazio'
+        render json: []
+        return
+      end
+
+      begin
+        specializations = Specialization.joins(:specialities)
+                                        .where(specialities: { id: speciality_ids })
+                                        .includes(:specialities)
+                                        .order(:name)
+
+        Rails.logger.info "Encontradas #{specializations.count} especializações"
+
+        result = specializations.map do |spec|
+          {
+            id: spec.id,
+            name: spec.name,
+            speciality_name: spec.specialities.first&.name || 'N/A'
+          }
+        end
+
+        Rails.logger.info "Resultado: #{result.inspect}"
+        render json: result
+      rescue StandardError => e
+        Rails.logger.error "Erro ao buscar especializações: #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
+        render json: { error: 'Erro interno do servidor' }, status: :internal_server_error
+      end
+    end
+
     def show; end
 
     def new
@@ -67,7 +103,7 @@ module Admin
       authorize @specialization, :update?
 
       if @specialization.update(specialization_params)
-        redirect_to admin_specialization_path(@specialization), notice: 'Especialização atualizada com sucesso.'
+        redirect_to admin_specializations_path, notice: 'Especialização atualizada com sucesso.'
       else
         @specialities = Speciality.order(:name)
         render :edit, status: :unprocessable_entity
@@ -127,7 +163,7 @@ module Admin
     end
 
     def specialization_params
-      params.expect(specialization: [:name, { speciality_ids: [] }])
+      params.require(:specialization).permit(:name, { speciality_ids: [] })
     end
   end
 end

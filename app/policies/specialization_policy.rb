@@ -21,6 +21,10 @@ class SpecializationPolicy < ApplicationPolicy
     user.permit?('settings.read')
   end
 
+  def by_speciality?
+    user.permit?('settings.read')
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       scope.all
