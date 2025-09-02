@@ -107,11 +107,13 @@ class Document < ApplicationRecord
     document_versions.order(:version_number).last
   end
 
-  def user_can_access?(user, required_level = :visualizar)
-    return true if user&.professional == author
-    return true if user&.admin?
+  # Métodos que trabalham com Professional (correto)
+  def professional_can_access?(professional, required_level = :visualizar)
+    return false if professional.blank?
+    return true if professional == author
+    return true if professional.user&.admin?
 
-    permission = find_user_permission(user)
+    permission = find_professional_permission(professional)
     return false unless permission
 
     required_level_index = self.class.access_levels[required_level.to_s]
@@ -120,46 +122,77 @@ class Document < ApplicationRecord
     permission_level_index >= required_level_index
   end
 
+  def professional_can_view?(professional)
+    professional_can_access?(professional, :visualizar)
+  end
+
+  def professional_can_comment?(professional)
+    professional_can_access?(professional, :comentar)
+  end
+
+  def professional_can_edit?(professional)
+    professional_can_access?(professional, :editar)
+  end
+
+  def find_professional_permission(professional)
+    return nil if professional.blank?
+
+    document_permissions.for_professional_and_groups(professional).order(:access_level).last
+  end
+
+  # Métodos de compatibilidade com User (deprecated - usar professional_can_*)
+  def user_can_access?(user, required_level = :visualizar)
+    professional_can_access?(user&.professional, required_level)
+  end
+
   def user_can_view?(user)
-    user_can_access?(user, :visualizar)
+    professional_can_view?(user&.professional)
   end
 
   def user_can_comment?(user)
-    user_can_access?(user, :comentar)
+    professional_can_comment?(user&.professional)
   end
 
   def user_can_edit?(user)
-    user_can_access?(user, :editar)
+    professional_can_edit?(user&.professional)
   end
 
   def find_user_permission(user)
-    document_permissions.for_user_and_groups(user).order(:access_level).last
+    find_professional_permission(user&.professional)
   end
 
-  def grant_permission(user_or_group, access_level)
-    raise ArgumentError, 'Usuário ou grupo deve ser especificado' if user_or_group.nil?
+  def grant_permission(professional_or_group, access_level)
+    raise ArgumentError, 'Professional ou grupo deve ser especificado' if professional_or_group.nil?
     raise ArgumentError, 'Nível de acesso deve ser especificado' if access_level.nil?
 
-    if user_or_group.is_a?(User)
-      document_permissions.find_or_initialize_by(user: user_or_group).tap do |permission|
+    if professional_or_group.is_a?(Professional)
+      document_permissions.find_or_initialize_by(professional: professional_or_group).tap do |permission|
         permission.access_level = access_level
         permission.save!
       end
-    elsif user_or_group.is_a?(Group)
-      document_permissions.find_or_initialize_by(group: user_or_group).tap do |permission|
+    elsif professional_or_group.is_a?(Group)
+      document_permissions.find_or_initialize_by(group: professional_or_group).tap do |permission|
         permission.access_level = access_level
         permission.save!
       end
+    elsif professional_or_group.is_a?(User)
+      # Compatibilidade com User (deprecated)
+      return grant_permission(professional_or_group.professional, access_level) if professional_or_group.professional
+
+      raise ArgumentError, 'User deve ter um Professional associado'
     else
-      raise ArgumentError, 'Tipo inválido. Deve ser User ou Group'
+      raise ArgumentError, 'Tipo inválido. Deve ser Professional ou Group'
     end
   end
 
-  def revoke_permission(user_or_group)
-    if user_or_group.is_a?(User)
-      document_permissions.where(user: user_or_group).destroy_all
-    elsif user_or_group.is_a?(Group)
-      document_permissions.where(group: user_or_group).destroy_all
+  def revoke_permission(professional_or_group)
+    if professional_or_group.is_a?(Professional)
+      document_permissions.where(professional: professional_or_group).destroy_all
+    elsif professional_or_group.is_a?(Group)
+      document_permissions.where(group: professional_or_group).destroy_all
+    elsif professional_or_group.is_a?(User)
+      # Compatibilidade com User (deprecated)
+      revoke_permission(professional_or_group.professional) if professional_or_group.professional
     end
   end
 
@@ -305,14 +338,18 @@ class Document < ApplicationRecord
     status == 'aguardando_liberacao'
   end
 
-  def release_document!(user)
+  def release_document!(professional_or_user)
     return false unless can_be_released?
+
+    # Aceita tanto Professional quanto User (para compatibilidade)
+    professional = professional_or_user.is_a?(Professional) ? professional_or_user : professional_or_user&.professional
+    return false unless professional
 
     ActiveRecord::Base.transaction do
       # Criar release
       release = document_releases.create!(
         version: latest_version,
-        released_by: user,
+        released_by: professional,
         released_at: Time.current
       )
 
@@ -320,7 +357,7 @@ class Document < ApplicationRecord
       copy_file_to_released_folder(release)
 
       # Atualizar status para liberado
-      update_status!('liberado', user.professional, 'Documento liberado como versão final')
+      update_status!('liberado', professional, 'Documento liberado como versão final')
 
       # Atualizar versão liberada
       update!(released_version: latest_version.version_number)
@@ -518,25 +555,17 @@ class Document < ApplicationRecord
     # Pontuação baseada na posição dos termos
     query_words.each do |word|
       # Título tem peso maior
-      if document.title&.downcase&.include?(word)
-        score += 10
-      end
+      score += 10 if document.title&.downcase&.include?(word)
 
       # Descrição tem peso médio
-      if document.description&.downcase&.include?(word)
-        score += 5
-      end
+      score += 5 if document.description&.downcase&.include?(word)
 
       # Autor tem peso menor
-      if document.author&.full_name&.downcase&.include?(word)
-        score += 3
-      end
+      score += 3 if document.author&.full_name&.downcase&.include?(word)
     end
 
     # Bônus para correspondência exata
-    if document.title&.downcase == query
-      score += 50
-    end
+    score += 50 if document.title&.downcase == query
 
     score
   end

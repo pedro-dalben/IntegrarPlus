@@ -2,7 +2,7 @@
 
 class DocumentPermission < ApplicationRecord
   belongs_to :document
-  belongs_to :user, optional: true
+  belongs_to :professional, optional: true
   belongs_to :group, optional: true
 
   enum :access_level, {
@@ -12,31 +12,48 @@ class DocumentPermission < ApplicationRecord
   }
 
   validates :access_level, presence: true
-  validates :user_id, uniqueness: { scope: :document_id }, allow_nil: true
+  validates :professional_id, uniqueness: { scope: :document_id }, allow_nil: true
   validates :group_id, uniqueness: { scope: :document_id }, allow_nil: true
-  validate :user_or_group_present
+  validate :professional_or_group_present
 
-  scope :for_user, ->(user) { where(user: user) }
+  scope :for_professional, ->(professional) { where(professional: professional) }
   scope :for_group, ->(group) { where(group: group) }
+  scope :for_professional_and_groups, lambda { |professional|
+    return none if professional.blank?
+
+    where(professional: professional).or(where(group: professional.groups))
+  }
+
+  # Métodos de compatibilidade com User (deprecated)
+  scope :for_user, ->(user) { for_professional(user&.professional) }
   scope :for_user_and_groups, lambda { |user|
-    where(user: user).or(where(group: user.groups))
+    for_professional_and_groups(user&.professional)
   }
 
   def grantee_name
-    user&.full_name || group&.name
+    professional&.full_name || group&.name
   end
 
   def grantee_type
-    user_id.present? ? 'user' : 'group'
+    professional_id.present? ? 'professional' : 'group'
+  end
+
+  # Método de compatibilidade (deprecated)
+  def user
+    professional&.user
+  end
+
+  def user_id
+    professional&.user_id
   end
 
   private
 
-  def user_or_group_present
-    errors.add(:base, 'Deve especificar um usuário ou grupo') if user_id.blank? && group_id.blank?
+  def professional_or_group_present
+    errors.add(:base, 'Deve especificar um profissional ou grupo') if professional_id.blank? && group_id.blank?
 
-    return unless user_id.present? && group_id.present?
+    return unless professional_id.present? && group_id.present?
 
-    errors.add(:base, 'Não pode especificar usuário e grupo simultaneamente')
+    errors.add(:base, 'Não pode especificar profissional e grupo simultaneamente')
   end
 end

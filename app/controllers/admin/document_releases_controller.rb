@@ -20,7 +20,7 @@ module Admin
       end
 
       begin
-        @release = @document.release_document!(current_user)
+        @release = @document.release_document!(current_user.professional)
         redirect_to admin_released_documents_path,
                     notice: 'Documento liberado com sucesso! Agora está disponível na seção de Documentos Liberados.'
       rescue StandardError => e

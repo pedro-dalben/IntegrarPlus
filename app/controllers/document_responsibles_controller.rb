@@ -38,7 +38,7 @@ class DocumentResponsiblesController < ApplicationController
   end
 
   def ensure_can_edit_document
-    return if @document.user_can_edit?(current_user)
+    return if @document.professional_can_edit?(current_user.professional)
 
     redirect_to @document, alert: 'Você não tem permissão para gerenciar responsáveis deste documento.'
   end

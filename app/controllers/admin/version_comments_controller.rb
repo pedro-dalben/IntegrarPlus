@@ -88,7 +88,7 @@ module Admin
     end
 
     def ensure_can_comment
-      return if @document_version.document.user_can_comment?(current_user)
+      return if @document_version.document.professional_can_comment?(current_user.professional)
 
       respond_to do |format|
         format.html do

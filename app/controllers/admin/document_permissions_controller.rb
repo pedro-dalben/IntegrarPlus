@@ -118,7 +118,7 @@ module Admin
     end
 
     def ensure_can_manage_permissions
-      return if @document.user_can_edit?(current_user)
+      return if @document.professional_can_edit?(current_user.professional)
 
       respond_to do |format|
         format.html do

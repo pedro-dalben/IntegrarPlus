@@ -11,10 +11,10 @@ class VersionComment < ApplicationRecord
   delegate :document, to: :document_version
 
   def can_be_edited_by?(user)
-    user == self.user || document.user_can_edit?(user)
+    user == self.user || document.professional_can_edit?(user.professional)
   end
 
   def can_be_deleted_by?(user)
-    user == self.user || document.user_can_edit?(user)
+    user == self.user || document.professional_can_edit?(user.professional)
   end
 end

@@ -14,7 +14,7 @@
         Voltar
       <% end %>
 
-      <% if @document.user_can_edit?(current_user) %>
+      <% if @document.professional_can_edit?(current_user.professional) %>
         <div class="flex flex-wrap gap-2">
           <%= link_to admin_document_document_permissions_path(@document), class: "px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" do %>
             Permissões
@@ -38,7 +38,7 @@
         <%= link_to edit_admin_document_path(@document), class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700" do %>
           Editar
         <% end %>
-        <% if @document.user_can_edit?(current_user) %>
+        <% if @document.professional_can_edit?(current_user.professional) %>
           <%= link_to "#", onclick: "document.getElementById('upload-version-form').classList.toggle('hidden')", class: "px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700" do %>
             Nova Versão
           <% end %>
@@ -88,7 +88,7 @@
                 <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full text-yellow-600 bg-yellow-50 border-yellow-200">
                   🔍 <%= @document.status.humanize %>
                 </span>
-                <% if @document.user_can_edit?(current_user) %>
+                <% if @document.professional_can_edit?(current_user.professional) %>
                   <%= link_to new_admin_document_document_status_change_path(@document),
                       class: "text-blue-600 hover:text-blue-900 text-xs" do %>
                     Alterar
@@ -156,7 +156,7 @@
         </div>
 
         <!-- Chat de Comentários -->
-        <% if @document.user_can_comment?(current_user) %>
+        <% if @document.professional_can_comment?(current_user.professional) %>
           <div class="bg-white shadow-md rounded-lg p-6 mt-6" data-controller="comments">
             <h2 class="text-xl font-semibold text-gray-900 mb-4">Comentários da Versão</h2>
 
@@ -208,7 +208,7 @@
 
     <div class="lg:col-span-1">
       <!-- Resumo das Tarefas -->
-      <% if @document.user_can_edit?(current_user) %>
+      <% if @document.professional_can_edit?(current_user.professional) %>
         <div class="bg-white shadow-md rounded-lg p-6 mb-6">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-gray-900">Tarefas</h2>
@@ -265,7 +265,7 @@
       <% end %>
 
       <!-- Resumo das Releases -->
-      <% if @document.user_can_edit?(current_user) %>
+      <% if @document.professional_can_edit?(current_user.professional) %>
         <div class="bg-white shadow-md rounded-lg p-6 mb-6">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-gray-900">Versões Liberadas</h2>
@@ -337,7 +337,7 @@
                         </svg>
                       <% end %>
                     <% end %>
-                    <% if @document.user_can_comment?(current_user) %>
+                    <% if @document.professional_can_comment?(current_user.professional) %>
                       <button onclick="showVersionComments('<%= version.id %>')" class="text-green-600 hover:text-green-900" title="Ver comentários">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>

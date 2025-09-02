@@ -31,7 +31,7 @@ export default class extends Controller {
     const parts = value.split(':');
 
     if (parts.length === 1) {
-      const hours = parseInt(parts[0]) || 0;
+      let hours = parseInt(parts[0]) || 0;
       if (hours > 99) {
         hours = 99;
       }

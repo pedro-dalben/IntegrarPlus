@@ -38,9 +38,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          if request.xhr?
-            render partial: 'search_results', layout: false
-          end
+          render partial: 'search_results', layout: false if request.xhr?
         end
         format.json { render json: { results: @documents, count: @pagy.count } }
       end
@@ -189,13 +187,13 @@ module Admin
     end
 
     def ensure_can_view
-      return if @document.user_can_view?(current_user)
+      return if @document.professional_can_view?(current_user.professional)
 
       redirect_to admin_documents_path, alert: 'Você não tem permissão para visualizar este documento.'
     end
 
     def ensure_can_edit
-      return if @document.user_can_edit?(current_user)
+      return if @document.professional_can_edit?(current_user.professional)
 
       redirect_to admin_document_path(@document), alert: 'Você não tem permissão para editar este documento.'
     end
