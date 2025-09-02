@@ -15,10 +15,9 @@
         </th>
       </tr>
     </thead>
-    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800" data-search-target="results">
+    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
       <% specialities.each do |speciality| %>
-        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900"
-            data-search-target="row">
+        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
           <td class="px-5 py-4 whitespace-nowrap">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center dark:bg-green-900/20">
@@ -65,10 +64,3 @@
     </tbody>
   </table>
 </div>
-
-<!-- Paginação -->
-<% if pagy.pages > 1 %>
-  <div class="mt-6">
-    <%= render Ui::PaginationComponent.new(pagy: pagy) %>
-  </div>
-<% end %>

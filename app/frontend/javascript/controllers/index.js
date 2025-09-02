@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import AdvancedSearchController from "./advanced_search_controller"
+application.register("advanced-search", AdvancedSearchController)
+
 import CommentsController from "./comments_controller"
 application.register("comments", CommentsController)
 
