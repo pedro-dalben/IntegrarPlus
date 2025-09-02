@@ -108,7 +108,8 @@ unless admin_professional.user
     email: admin_professional.email,
     password: '123456',
     password_confirmation: '123456',
-    professional: admin_professional
+    professional: admin_professional,
+    confirmed_at: Time.current
   )
   puts "Usuário criado para admin: #{admin_user.email} com senha: 123456"
 end
