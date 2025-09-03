@@ -6,12 +6,12 @@ export default class extends Controller {
   static targets = ['overlay'];
 
   connect() {
-    // estado inicial baseado no tamanho da tela
+    // estado inicial baseado no tamanho da tela e preferência salva
     const isDesktop = window.innerWidth >= 1280;
     const savedState = localStorage.getItem(K.SIDEBAR) === 'true';
 
-    // Em desktop: sempre aberta, em mobile: fechada inicialmente
-    const shouldBeOpen = isDesktop ? true : false;
+    // Em desktop: usar estado salvo ou padrão aberto, em mobile: fechada inicialmente
+    const shouldBeOpen = isDesktop ? (savedState !== null ? savedState : true) : false;
 
     // Aplicar estado inicial com inline styles
     if (isDesktop) {
@@ -41,7 +41,7 @@ export default class extends Controller {
     };
     window.addEventListener('ui:sidebar', this._sync);
 
-    // Ao navegar, feche em mobile
+    // Ao navegar, feche apenas em mobile
     document.addEventListener('turbo:load', () => {
       if (window.innerWidth < 1280) this.apply(false);
     });
@@ -62,7 +62,15 @@ export default class extends Controller {
     this._resizeHandler = () => {
       const isDesktop = window.innerWidth >= 1280;
       const currentState = localStorage.getItem(K.SIDEBAR) === 'true';
-      const shouldBeOpen = isDesktop ? true : currentState;
+      
+      // Em desktop: manter estado atual, em mobile: fechar se estiver aberto
+      let shouldBeOpen;
+      if (isDesktop) {
+        shouldBeOpen = currentState;
+      } else {
+        shouldBeOpen = false;
+      }
+      
       this.apply(shouldBeOpen);
     };
 
@@ -113,15 +121,25 @@ export default class extends Controller {
   apply(open) {
     localStorage.setItem(K.SIDEBAR, String(open));
 
-    // Em desktop: sempre visível, em mobile: controlar com transform
+    // Em desktop: permitir ocultar/mostrar, em mobile: controlar com transform
     const isDesktop = window.innerWidth >= 1280;
 
     if (isDesktop) {
-      // Desktop: aplicar position static para ocupar espaço no layout
-      this.element.style.position = 'static';
-      this.element.style.transform = '';
-      this.element.classList.remove('translate-x-0');
-      this.element.classList.remove('fixed');
+      if (open) {
+        // Desktop: sidebar visível - position static para ocupar espaço no layout
+        this.element.style.position = 'static';
+        this.element.style.transform = '';
+        this.element.classList.remove('translate-x-0');
+        this.element.classList.remove('fixed');
+        this.element.classList.remove('hidden');
+      } else {
+        // Desktop: sidebar oculto - position fixed para não ocupar espaço
+        this.element.style.position = 'fixed';
+        this.element.style.transform = 'translateX(-100%)';
+        this.element.classList.add('fixed');
+        this.element.classList.remove('translate-x-0');
+        this.element.classList.remove('hidden');
+      }
     } else {
       // Mobile: manter position fixed e aplicar transform
       this.element.style.position = 'fixed';

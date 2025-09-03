@@ -60,10 +60,15 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) !important;
 }
 
-/* Garantir que a sidebar seja visível em desktop */
+/* Desktop: permitir que a sidebar seja ocultada */
 @media (min-width: 1280px) {
   [data-controller="sidebar"] {
     transform: none !important;
+  }
+  
+  /* Quando oculto no desktop, usar position fixed para não ocupar espaço */
+  [data-controller="sidebar"][style*="position: fixed"] {
+    transform: translateX(-100%) !important;
   }
 }
 
