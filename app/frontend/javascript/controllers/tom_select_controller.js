@@ -6,6 +6,7 @@ export default class extends Controller {
   static values = { options: Object };
 
   connect() {
+    this.hideOriginalSelect();
     this.tomSelect = new TomSelect(this.selectTarget, {
       plugins: ['remove_button'],
       render: {
@@ -16,13 +17,23 @@ export default class extends Controller {
           return `<div class="item-tag">${escape(data.text)}</div>`;
         },
       },
+      itemClass: 'ts-item-integrated',
       ...this.optionsValue,
     });
+  }
+
+  hideOriginalSelect() {
+    if (this.hasSelectTarget) {
+      this.selectTarget.style.display = 'none';
+    }
   }
 
   disconnect() {
     if (this.tomSelect) {
       this.tomSelect.destroy();
+    }
+    if (this.hasSelectTarget) {
+      this.selectTarget.style.display = '';
     }
   }
 }

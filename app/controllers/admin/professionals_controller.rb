@@ -30,18 +30,26 @@ module Admin
     def create
       @professional = Professional.new(professional_params)
 
+      Rails.logger.info "Parâmetros recebidos: #{params[:professional].inspect}"
+      Rails.logger.info "Parâmetros processados: #{professional_params.inspect}"
+
       if @professional.save
         handle_successful_creation
       else
+        Rails.logger.error "Erros de validação: #{@professional.errors.full_messages}"
         handle_failed_creation
       end
     end
 
     def update
+      Rails.logger.info "Parâmetros de atualização: #{params[:professional].inspect}"
+      Rails.logger.info "Parâmetros processados: #{professional_params.inspect}"
+
       if @professional.update(professional_params)
         redirect_to admin_professional_path(@professional),
                     notice: t('admin.professionals.messages.updated')
       else
+        Rails.logger.error "Erros de validação na atualização: #{@professional.errors.full_messages}"
         load_form_data
         render :edit, status: :unprocessable_entity
       end
@@ -152,22 +160,27 @@ module Admin
     end
 
     def professional_params
-      params.expect(
-        professional: [
-          :full_name, :birth_date, :cpf, :phone, :email, :active,
-          :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes,
-          :council_code, :company_name, :cnpj,
-          { primary_address_attributes: %i[
-              id zip_code street number complement
-              neighborhood city state latitude longitude _destroy
-            ],
-            secondary_address_attributes: %i[
-              id zip_code street number complement
-              neighborhood city state latitude longitude _destroy
-            ],
-            group_ids: [], speciality_ids: [], specialization_ids: [] }
-        ]
+      Rails.logger.info "Parâmetros brutos: #{params.inspect}"
+
+      permitted_params = params.require(:professional).permit(
+        :full_name, :birth_date, :cpf, :phone, :email, :active,
+        :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes,
+        :council_code, :company_name, :cnpj,
+        { primary_address_attributes: %i[
+            id zip_code street number complement
+            neighborhood city state latitude longitude _destroy
+          ],
+          secondary_address_attributes: %i[
+            id zip_code street number complement
+            neighborhood city state latitude longitude _destroy
+          ],
+          group_ids: [],
+          speciality_ids: [],
+          specialization_ids: [] }
       )
+
+      Rails.logger.info "Parâmetros permitidos: #{permitted_params.inspect}"
+      permitted_params
     end
 
     def load_form_data

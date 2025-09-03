@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Atualização do Tom Select</title>
+    <script src="https://unpkg.com/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <link href="https://unpkg.com/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .debug { background: #f5f5f5; padding: 10px; border-radius: 4px; margin-top: 20px; }
+        .debug h3 { margin-top: 0; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; background: #007bff; color: white; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Teste - Atualização do Tom Select</h1>
+    
+    <div class="form-group">
+        <label for="specialities">Especialidades:</label>
+        <select id="specialities" multiple>
+            <option value="1">Cardiologia</option>
+            <option value="2">Neurologia</option>
+            <option value="3">Ortopedia</option>
+            <option value="4">Pediatria</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="specializations">Especializações:</label>
+        <select id="specializations" multiple>
+            <option value="">Selecione as especializações...</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <button onclick="testUpdateOptions()">Testar Atualização de Opções</button>
+        <button onclick="testClearOptions()">Limpar Opções</button>
+        <button onclick="testAddOptions()">Adicionar Opções de Exemplo</button>
+        <button onclick="checkTomSelectState()">Verificar Estado do Tom Select</button>
+    </div>
+    
+    <div class="debug">
+        <h3>Debug Console:</h3>
+        <div id="debug-output"></div>
+    </div>
+
+    <script>
+        let specialityTomSelect;
+        let specializationTomSelect;
+        let debugOutput;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            debugOutput = document.getElementById('debug-output');
+            initializeTomSelects();
+        });
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            debugOutput.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            console.log(message);
+        }
+        
+        function initializeTomSelects() {
+            log('Inicializando Tom Selects...');
+            
+            // Tom Select para especialidades
+            specialityTomSelect = new TomSelect('#specialities', {
+                plugins: ['remove_button'],
+                placeholder: "Selecione as especialidades...",
+                maxItems: null,
+                create: false
+            });
+            
+            // Tom Select para especializações
+            specializationTomSelect = new TomSelect('#specializations', {
+                plugins: ['remove_button'],
+                placeholder: "Selecione as especializações...",
+                maxItems: null,
+                create: false
+            });
+            
+            log('Tom Selects inicializados com sucesso', 'success');
+            
+            // Adicionar listeners para especialidades
+            specialityTomSelect.on('change', () => {
+                log('Especialidades alteradas, simulando atualização de especializações', 'info');
+                simulateSpecializationUpdate();
+            });
+        }
+        
+        function simulateSpecializationUpdate() {
+            const selectedSpecialities = specialityTomSelect.getValue();
+            log(`Especialidades selecionadas: ${selectedSpecialities.join(', ')}`);
+            
+            if (selectedSpecialities.length === 0) {
+                log('Nenhuma especialidade selecionada, limpando especializações');
+                clearSpecializationOptions();
+                return;
+            }
+            
+            // Simular dados baseados nas especialidades selecionadas
+            const mockData = getMockSpecializations(selectedSpecialities);
+            log(`Dados simulados: ${mockData.length} especializações encontradas`);
+            
+            updateSpecializationOptions(mockData);
+        }
+        
+        function getMockSpecializations(specialityIds) {
+            const allSpecializations = {
+                1: [ // Cardiologia
+                    { id: 101, name: 'Cardiologia Intervencionista', speciality_name: 'Cardiologia' },
+                    { id: 102, name: 'Eletrofisiologia Cardíaca', speciality_name: 'Cardiologia' },
+                    { id: 103, name: 'Cardiologia Pediátrica', speciality_name: 'Cardiologia' }
+                ],
+                2: [ // Neurologia
+                    { id: 201, name: 'Neurocirurgia', speciality_name: 'Neurologia' },
+                    { id: 202, name: 'Neurologia Pediátrica', speciality_name: 'Neurologia' },
+                    { id: 203, name: 'Neurofisiologia', speciality_name: 'Neurologia' }
+                ],
+                3: [ // Ortopedia
+                    { id: 301, name: 'Ortopedia Pediátrica', speciality_name: 'Ortopedia' },
+                    { id: 302, name: 'Traumatologia', speciality_name: 'Ortopedia' },
+                    { id: 303, name: 'Cirurgia da Coluna', speciality_name: 'Ortopedia' }
+                ],
+                4: [ // Pediatria
+                    { id: 401, name: 'Neonatologia', speciality_name: 'Pediatria' },
+                    { id: 402, name: 'Cardiologia Pediátrica', speciality_name: 'Pediatria' },
+                    { id: 403, name: 'Neurologia Pediátrica', speciality_name: 'Pediatria' }
+                ]
+            };
+            
+            const result = [];
+            specialityIds.forEach(id => {
+                if (allSpecializations[id]) {
+                    result.push(...allSpecializations[id]);
+                }
+            });
+            
+            return result;
+        }
+        
+        function updateSpecializationOptions(specializations) {
+            log('Atualizando opções de especializações...');
+            
+            // Limpar seleções atuais
+            specializationTomSelect.clear();
+            
+            // Limpar opções existentes
+            specializationTomSelect.clearOptions();
+            
+            // Adicionar opção padrão
+            specializationTomSelect.addOption({
+                value: '',
+                text: 'Selecione as especializações...'
+            });
+            
+            // Adicionar novas opções
+            specializations.forEach(spec => {
+                specializationTomSelect.addOption({
+                    value: spec.id,
+                    text: `${spec.name} (${spec.speciality_name})`
+                });
+            });
+            
+            // Forçar atualização da interface
+            specializationTomSelect.refreshOptions();
+            specializationTomSelect.refreshItems();
+            
+            log(`Opções atualizadas: ${specializations.length} especializações adicionadas`, 'success');
+        }
+        
+        function clearSpecializationOptions() {
+            log('Limpando opções de especializações...');
+            
+            specializationTomSelect.clear();
+            specializationTomSelect.clearOptions();
+            specializationTomSelect.addOption({
+                value: '',
+                text: 'Selecione as especializações...'
+            });
+            specializationTomSelect.refreshOptions();
+            specializationTomSelect.refreshItems();
+            
+            log('Opções limpas com sucesso', 'success');
+        }
+        
+        function testUpdateOptions() {
+            log('Testando atualização de opções...', 'info');
+            const mockData = [
+                { id: 1, name: 'Teste 1', speciality_name: 'Teste' },
+                { id: 2, name: 'Teste 2', speciality_name: 'Teste' },
+                { id: 3, name: 'Teste 3', speciality_name: 'Teste' }
+            ];
+            updateSpecializationOptions(mockData);
+        }
+        
+        function testClearOptions() {
+            log('Testando limpeza de opções...', 'info');
+            clearSpecializationOptions();
+        }
+        
+        function testAddOptions() {
+            log('Testando adição de opções de exemplo...', 'info');
+            const mockData = [
+                { id: 101, name: 'Cardiologia Intervencionista', speciality_name: 'Cardiologia' },
+                { id: 102, name: 'Eletrofisiologia Cardíaca', speciality_name: 'Cardiologia' },
+                { id: 201, name: 'Neurocirurgia', speciality_name: 'Neurologia' },
+                { id: 202, name: 'Neurologia Pediátrica', speciality_name: 'Neurologia' }
+            ];
+            updateSpecializationOptions(mockData);
+        }
+        
+        function checkTomSelectState() {
+            log('Verificando estado do Tom Select de especializações...', 'info');
+            
+            const options = specializationTomSelect.options;
+            const items = specializationTomSelect.items;
+            const value = specializationTomSelect.getValue();
+            
+            log(`Opções disponíveis: ${Object.keys(options).length}`, 'info');
+            log(`Itens selecionados: ${items.length}`, 'info');
+            log(`Valor atual: ${value.join(', ')}`, 'info');
+            
+            // Mostrar opções disponíveis
+            Object.keys(options).forEach(key => {
+                if (key !== '') {
+                    log(`Opção: ${key} = ${options[key]}`, 'info');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

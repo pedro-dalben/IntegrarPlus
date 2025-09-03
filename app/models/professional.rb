@@ -25,6 +25,13 @@ class Professional < ApplicationRecord
   has_many :document_status_logs, dependent: :destroy
   has_many :document_releases, foreign_key: :released_by_professional_id, dependent: :destroy
 
+  # Nested attributes for form handling
+  accepts_nested_attributes_for :primary_address, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :secondary_address, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :groups, allow_destroy: true
+  accepts_nested_attributes_for :specialities, allow_destroy: true
+  accepts_nested_attributes_for :specializations, allow_destroy: true
+
   validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :cpf, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -118,8 +125,20 @@ class Professional < ApplicationRecord
   def workload_hhmm=(hhmm)
     return if hhmm.blank?
 
-    hours, minutes = hhmm.split(':').map(&:to_i)
-    self.workload_minutes = (hours * 60) + minutes
+    begin
+      hours, minutes = hhmm.to_s.split(':').map(&:to_i)
+      hours ||= 0
+      minutes ||= 0
+
+      hours = 99 if hours > 99
+
+      minutes = 59 if minutes > 59
+
+      self.workload_minutes = (hours * 60) + minutes
+    rescue StandardError => e
+      Rails.logger.error "Erro ao processar workload_hhmm '#{hhmm}': #{e.message}"
+      self.workload_minutes = 0
+    end
   end
 
   meilisearch do
@@ -161,6 +180,10 @@ class Professional < ApplicationRecord
     )
 
     Rails.logger.info "Usuário de autenticação criado para profissional #{id}: #{email}"
+
+    # Criar convite automaticamente
+    create_invite_for_user(new_user)
+
     new_user
   rescue StandardError => e
     Rails.logger.error "Erro ao criar usuário para profissional #{id}: #{e.message}"
@@ -184,12 +207,28 @@ class Professional < ApplicationRecord
   def specialization_consistency
     return unless specializations.any?
 
-    specializations.each do |specialization|
-      next if specialization.speciality.in?(specialities)
+    Rails.logger.info 'Validando consistência de especializações...'
+    Rails.logger.info "Especialidades selecionadas: #{speciality_ids.inspect}"
+    Rails.logger.info "Especializações selecionadas: #{specialization_ids.inspect}"
 
-      errors.add(:specializations,
-                 "especialização '#{specialization.name}' não pertence a nenhuma especialidade selecionada")
+    specializations.each do |specialization|
+      Rails.logger.info "Verificando especialização: #{specialization.name} (ID: #{specialization.id})"
+
+      # Verificar se a especialização tem alguma especialidade em comum com as selecionadas
+      specialization_speciality_ids = specialization.specialities.pluck(:id)
+      Rails.logger.info "Especialidades da especialização #{specialization.name}: #{specialization_speciality_ids.inspect}"
+
+      common_specialities = speciality_ids & specialization_speciality_ids
+      Rails.logger.info "Especialidades em comum: #{common_specialities.inspect}"
+
+      next unless common_specialities.empty?
+
+      error_msg = "especialização '#{specialization.name}' não pertence a nenhuma especialidade selecionada"
+      Rails.logger.warn "Erro de validação: #{error_msg}"
+      errors.add(:specializations, error_msg)
     end
+
+    Rails.logger.info 'Validação de especializações concluída'
   end
 
   def email_not_used_by_other_user
@@ -229,5 +268,23 @@ class Professional < ApplicationRecord
     return if user.present?
 
     create_user_for_authentication!
+  end
+
+  def create_invite_for_user(user)
+    return unless user.present?
+
+    begin
+      invite = Invite.create!(user: user)
+      Rails.logger.info "Convite criado para usuário #{user.email}: #{invite.token}"
+
+      # Enviar email de convite
+      InviteMailer.invite_email(invite).deliver_now
+      Rails.logger.info "Email de convite enviado para #{user.email}"
+
+      invite
+    rescue StandardError => e
+      Rails.logger.error "Erro ao criar convite para usuário #{user.email}: #{e.message}"
+      nil
+    end
   end
 end

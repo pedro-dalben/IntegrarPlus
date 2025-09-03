@@ -7,7 +7,7 @@
 # Carregar seeds específicos
 load(Rails.root.join('db/seeds/permissionamento_setup.rb'))
 load(Rails.root.join('db/seeds/groups_setup.rb'))
-#
+
 # Tipos de contratação padrão
 contract_types = [
   {
@@ -102,23 +102,63 @@ admin_professional = Professional.find_or_create_by!(email: 'admin@integrarplus.
   professional.active = true
 end
 
-# Cria usuário para o profissional admin se não existir
-unless admin_professional.user
+# Cria ou atualiza usuário para o profissional admin
+admin_user = User.find_by(email: 'admin@integrarplus.com')
+
+if admin_user
+  # Se o usuário existe, atualiza a senha e confirma
+  admin_user.update!(
+    password: '123456',
+    password_confirmation: '123456',
+    professional: admin_professional,
+    active: true,
+    confirmed_at: Time.current
+  )
+  puts "✅ Usuário admin atualizado: #{admin_user.email} com senha: 123456"
+else
+  # Se não existe, cria novo usuário
   admin_user = User.create!(
     email: admin_professional.email,
     password: '123456',
     password_confirmation: '123456',
     professional: admin_professional,
+    active: true,
     confirmed_at: Time.current
   )
-  puts "Usuário criado para admin: #{admin_user.email} com senha: 123456"
+  puts "✅ Usuário admin criado: #{admin_user.email} com senha: 123456"
+end
+
+# Verifica se a senha está funcionando
+if admin_user.valid_password?('123456')
+  puts '✅ Senha do usuário admin validada com sucesso'
+else
+  puts '❌ ERRO: Senha do usuário admin não está funcionando!'
+  puts '   Tentando recriar usuário...'
+
+  # Força recriação do usuário
+  admin_user.destroy!
+  admin_user = User.create!(
+    email: admin_professional.email,
+    password: '123456',
+    password_confirmation: '123456',
+    professional: admin_professional,
+    active: true,
+    confirmed_at: Time.current
+  )
+
+  if admin_user.valid_password?('123456')
+    puts '✅ Usuário admin recriado com sucesso'
+  else
+    puts '❌ ERRO CRÍTICO: Não foi possível criar usuário admin válido!'
+    raise 'Falha na criação do usuário admin'
+  end
 end
 
 # Associa o profissional admin ao grupo Administradores
 admin_group = Group.find_by(name: 'Administradores')
 if admin_group && !admin_professional.groups.include?(admin_group)
   admin_professional.professional_groups.create!(group: admin_group)
-  puts "Profissional admin associado ao grupo: #{admin_group.name}"
+  puts "✅ Profissional admin associado ao grupo: #{admin_group.name}"
 end
 
 # Carrega seeds para usuários externos (operadoras)
@@ -126,3 +166,11 @@ load(Rails.root.join('db/seeds/external_users.rb'))
 
 # Carrega seeds para entradas do portal
 load(Rails.root.join('db/seeds/portal_intakes.rb'))
+
+puts "\n🎉 Seeds executados com sucesso!"
+puts '📋 Usuário admin disponível:'
+puts '   Email: admin@integrarplus.com'
+puts '   Senha: 123456'
+puts "   Status: #{admin_user.active ? 'Ativo' : 'Inativo'}"
+puts "   Confirmado: #{admin_user.confirmed_at ? 'Sim' : 'Não'}"
+puts "   Senha válida: #{admin_user.valid_password?('123456') ? 'Sim' : 'Não'}"

@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   get 'test/search_test', to: 'test#search_test'
 
   # API para busca de CEP
-  get 'cep/:cep', to: 'cep#buscar', as: :buscar_cep
+  get 'cep/:cep', to: 'cep#search', as: :buscar_cep
 
   # Demonstração do componente de CEP
   resources :cep_demo, only: %i[index create]
@@ -34,7 +34,8 @@ Rails.application.routes.draw do
 
   # Rotas para convites
   get 'invite/:token', to: 'invites#show', as: :invite
-  post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite
+  get 'invite/:token/accept', to: 'invites#show', as: :accept_invite
+  post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite_post
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
