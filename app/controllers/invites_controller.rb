@@ -15,7 +15,12 @@ class InvitesController < ApplicationController
     end
 
     if @invite.max_attempts_reached?
-      redirect_to new_user_session_path, alert: 'Número máximo de tentativas excedido.'
+      redirect_to invite_path(@invite.token), alert: 'Número máximo de tentativas excedido.'
+      return
+    end
+
+    if @invite.expired?
+      redirect_to invite_path(@invite.token), alert: 'Este convite expirou.'
       return
     end
 
@@ -28,6 +33,11 @@ class InvitesController < ApplicationController
       @invite.increment_attempts!
 
       if params[:password] == params[:password_confirmation]
+        if params[:password].length < 6
+          redirect_to invite_path(@invite.token), alert: 'A senha deve ter pelo menos 6 caracteres.'
+          return
+        end
+
         begin
           user = @invite.user
           user.password = params[:password]
@@ -46,14 +56,14 @@ class InvitesController < ApplicationController
           end
         rescue StandardError => e
           Rails.logger.error "Erro ao ativar conta: #{e.message}"
-          flash.now[:alert] = 'Erro ao ativar conta. Tente novamente.'
-          render :show
+          Rails.logger.error e.backtrace.join("\n")
+          redirect_to invite_path(@invite.token), alert: 'Erro ao ativar conta. Tente novamente.'
         end
       else
         redirect_to invite_path(@invite.token), alert: 'As senhas não coincidem.'
       end
     else
-      redirect_to invite_path(@invite.token)
+      redirect_to invite_path(@invite.token), alert: 'Senha e confirmação são obrigatórias.'
     end
   end
 

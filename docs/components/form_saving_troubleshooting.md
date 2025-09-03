@@ -336,3 +336,102 @@ Para resolver problemas de salvamento de formulários:
 6. **Testar isoladamente** cada parte do formulário
 
 **Regra de Ouro**: Sempre verificar os logs do Rails para entender o que está sendo recebido e processado.
+
+### 7. **Problemas de Tradução (Translation Missing)**
+**Problema**: Mensagens de tradução não encontradas.
+
+**Solução**: Adicionar as traduções faltantes nos arquivos de localização.
+
+```yaml
+# config/locales/admin/professionals.pt-BR.yml
+pt-BR:
+  admin:
+    professionals:
+      messages:
+        created: "Profissional criado com sucesso."
+        updated: "Profissional atualizado com sucesso."
+        deleted: "Profissional removido com sucesso."
+        not_found: "Profissional não encontrado."
+        user_created: "Usuário criado com sucesso."
+        user_creation_failed: "Erro ao criar usuário para o profissional."
+        user_already_exists: "Usuário já existe para este profissional."
+```
+
+### 8. **Problemas com Sistema de Convites**
+**Problema**: Links de convite não funcionam ou retornam erro de rota.
+
+**Solução**: Verificar e corrigir rotas, URLs e controllers.
+
+```ruby
+# config/routes.rb - Rotas corretas para convites
+get 'invite/:token', to: 'invites#show', as: :invite
+get 'invite/:token/accept', to: 'invites#show', as: :accept_invite
+post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite_post
+
+# app/models/invite.rb - URL correta do convite
+def invite_url
+  host = ENV.fetch('APP_HOST', 'localhost:3001')
+  protocol = ENV.fetch('APP_PROTOCOL', 'http')
+  Rails.application.routes.url_helpers.invite_url(token: token, host: host, protocol: protocol)
+end
+
+# app/views/invites/show.html.erb - Formulário correto
+<%= form_with url: accept_invite_post_path(@invite.token), method: :post, local: true, data: { turbo: false } do |form| %>
+```
+
+**Verificações importantes**:
+- ✅ Rotas configuradas corretamente
+- ✅ URLs dos convites usando `invite_url` (não `accept_invite_url`)
+- ✅ Formulário apontando para `accept_invite_post_path`
+- ✅ Controller `accept` configurado para POST
+- ✅ Variáveis de ambiente `APP_HOST` e `APP_PROTOCOL` configuradas
+
+### 9. **Criação Automática de Usuários e Convites**
+**Problema**: Usuários não são criados automaticamente ao criar profissionais.
+
+**Solução**: Configurar callback automático no modelo Professional.
+
+```ruby
+# app/models/professional.rb
+after_create :create_user_for_authentication, if: :active?
+
+def create_user_for_authentication!
+  return user if user.present?
+
+  temp_password = SecureRandom.hex(12)
+  new_user = User.create!(
+    email: email,
+    password: temp_password,
+    password_confirmation: temp_password,
+    professional: self
+  )
+
+  # Criar convite automaticamente
+  create_invite_for_user(new_user)
+  
+  new_user
+rescue StandardError => e
+  Rails.logger.error "Erro ao criar usuário para profissional #{id}: #{e.message}"
+  nil
+end
+
+private
+
+def create_invite_for_user(user)
+  return unless user.present?
+
+  begin
+    invite = Invite.create!(user: user)
+    Rails.logger.info "Convite criado para usuário #{user.email}: #{invite.token}"
+    
+    # Enviar email de convite
+    InviteMailer.invite_email(invite).deliver_now
+    Rails.logger.info "Email de convite enviado para #{user.email}"
+    
+    invite
+  rescue StandardError => e
+    Rails.logger.error "Erro ao criar convite para usuário #{user.email}: #{e.message}"
+    nil
+  end
+end
+```

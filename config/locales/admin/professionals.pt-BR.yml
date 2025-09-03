@@ -17,3 +17,13 @@ pt-BR:
         show:
           title: "Detalhes do Profissional"
           subtitle: "Visualize as informações do profissional"
+    professionals:
+      messages:
+        created: "Profissional criado com sucesso."
+        updated: "Profissional atualizado com sucesso."
+        deleted: "Profissional removido com sucesso."
+        not_found: "Profissional não encontrado."
+        cannot_delete_with_documents: "Não é possível remover o profissional pois existem documentos associados."
+        user_created: "Usuário criado com sucesso."
+        user_creation_failed: "Erro ao criar usuário para o profissional."
+        user_already_exists: "Usuário já existe para este profissional."

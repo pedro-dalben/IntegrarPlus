@@ -180,6 +180,10 @@ class Professional < ApplicationRecord
     )
 
     Rails.logger.info "Usuário de autenticação criado para profissional #{id}: #{email}"
+
+    # Criar convite automaticamente
+    create_invite_for_user(new_user)
+
     new_user
   rescue StandardError => e
     Rails.logger.error "Erro ao criar usuário para profissional #{id}: #{e.message}"
@@ -264,5 +268,23 @@ class Professional < ApplicationRecord
     return if user.present?
 
     create_user_for_authentication!
+  end
+
+  def create_invite_for_user(user)
+    return unless user.present?
+
+    begin
+      invite = Invite.create!(user: user)
+      Rails.logger.info "Convite criado para usuário #{user.email}: #{invite.token}"
+
+      # Enviar email de convite
+      InviteMailer.invite_email(invite).deliver_now
+      Rails.logger.info "Email de convite enviado para #{user.email}"
+
+      invite
+    rescue StandardError => e
+      Rails.logger.error "Erro ao criar convite para usuário #{user.email}: #{e.message}"
+      nil
+    end
   end
 end
