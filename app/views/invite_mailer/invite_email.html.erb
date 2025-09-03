@@ -1,100 +1,387 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Convite IntegrarPlus</title>
   <style>
+    /* Reset e configurações base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      color: #111827;
+      background-color: #F6F8FB;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    
+    /* Container principal */
+    .email-container {
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
+      background-color: #FFFFFF;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
+    
+    /* Header compacto */
     .header {
-      background-color: #3b82f6;
-      color: white;
-      padding: 20px;
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      padding: 24px 32px;
       text-align: center;
-      border-radius: 8px 8px 0 0;
+      position: relative;
     }
-    .content {
-      background-color: #f9fafb;
-      padding: 30px;
-      border-radius: 0 0 8px 8px;
-    }
-    .button {
-      display: inline-block;
-      background-color: #3b82f6;
+    
+    .logo {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
       color: white;
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 6px;
-      margin: 20px 0;
     }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
+    
+    .header h1 {
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+      font-weight: 400;
+    }
+    
+    /* Conteúdo principal */
+    .content {
+      padding: 32px;
+      background-color: #FFFFFF;
+    }
+    
+    .greeting {
+      margin-bottom: 24px;
+    }
+    
+    .greeting h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+    
+    .greeting p {
+      color: #374151;
+      font-size: 16px;
+    }
+    
+    /* Cartão de informações */
+    .info-card {
+      background-color: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    
+    .info-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 16px;
+    }
+    
+    .info-list {
+      list-style: none;
+    }
+    
+    .info-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      color: #374151;
+    }
+    
+    .info-list li:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      min-width: 80px;
+      margin-right: 12px;
+    }
+    
+    /* Callout de aviso */
+    .warning-callout {
+      background-color: #FEF3C7;
+      border: 1px solid #F59E0B;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 24px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .warning-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .warning-content h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #92400E;
+      margin-bottom: 8px;
+    }
+    
+    .warning-content ul {
+      list-style: none;
+      color: #92400E;
+    }
+    
+    .warning-content li {
+      margin-bottom: 4px;
       font-size: 14px;
-      color: #6b7280;
     }
-    .info-box {
-      background-color: #dbeafe;
-      border: 1px solid #93c5fd;
+    
+    /* Botão principal */
+    .cta-section {
+      text-align: center;
+      margin: 32px 0;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+      color: white;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      min-height: 44px;
+      line-height: 1.2;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+    }
+    
+    .cta-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* Link alternativo */
+    .alternative-link {
+      background-color: #F3F4F6;
+      border: 1px solid #D1D5DB;
       border-radius: 6px;
-      padding: 15px;
-      margin: 20px 0;
+      padding: 16px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    
+    .alternative-link p {
+      color: #374151;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .link-text {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 13px;
+      color: #2563EB;
+      word-break: break-all;
+      background-color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #E5E7EB;
+    }
+    
+    /* Rodapé */
+    .footer {
+      background-color: #F9FAFB;
+      border-top: 1px solid #E5E7EB;
+      padding: 24px 32px;
+      text-align: center;
+    }
+    
+    .footer p {
+      color: #6B7280;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .footer p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .company-info {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #E5E7EB;
+    }
+    
+    /* Responsividade */
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        margin: 0;
+        border-radius: 0;
+      }
+      
+      .header, .content, .footer {
+        padding: 20px;
+      }
+      
+      .cta-button {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #1F2937;
+        color: #F9FAFB;
+      }
+      
+      .email-container {
+        background-color: #374151;
+      }
+      
+      .content {
+        background-color: #374151;
+      }
+      
+      .info-card {
+        background-color: #4B5563;
+        border-color: #6B7280;
+      }
+      
+      .warning-callout {
+        background-color: #78350F;
+        border-color: #F59E0B;
+      }
+      
+      .warning-content h4,
+      .warning-content li {
+        color: #FEF3C7;
+      }
+      
+      .alternative-link {
+        background-color: #4B5563;
+        border-color: #6B7280;
+      }
+      
+      .link-text {
+        background-color: #374151;
+        border-color: #6B7280;
+        color: #60A5FA;
+      }
+      
+      .footer {
+        background-color: #4B5563;
+        border-color: #6B7280;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>IntegrarPlus</h1>
-    <p>Convite para Acesso ao Sistema</p>
-  </div>
+  <div class="email-container">
+    <!-- Header compacto -->
+    <div class="header">
+      <div class="logo">IP</div>
+      <h1>IntegrarPlus</h1>
+      <p>Convite para Acesso ao Sistema</p>
+    </div>
 
-  <div class="content">
-    <h2>Olá <%= @professional&.full_name || @user.email %>!</h2>
+    <!-- Conteúdo principal -->
+    <div class="content">
+      <div class="greeting">
+        <h2>Olá <%= @professional&.full_name || @user.email %>!</h2>
+        <p>Você foi convidado para acessar o sistema <strong>IntegrarPlus</strong>.</p>
+      </div>
 
-    <p>Você foi convidado para acessar o sistema <strong>IntegrarPlus</strong>.</p>
-
-    <div class="info-box">
-      <p><strong>Informações do seu acesso:</strong></p>
-      <ul>
-        <li><strong>E-mail:</strong> <%= @user.email %></li>
-        <% if @professional %>
-          <li><strong>Nome:</strong> <%= @professional.full_name %></li>
-          <% if @professional.specialities.any? %>
-            <li><strong>Função:</strong> <%= @professional.specialities.map(&:name).join(', ') %></li>
+      <!-- Cartão de informações -->
+      <div class="info-card">
+        <h3>📋 Informações do seu acesso</h3>
+        <ul class="info-list">
+          <li>
+            <span class="info-label">E-mail:</span>
+            <span><%= @user.email %></span>
+          </li>
+          <% if @professional %>
+            <li>
+              <span class="info-label">Nome:</span>
+              <span><%= @professional.full_name %></span>
+            </li>
+            <% if @professional.specialities.any? %>
+              <li>
+                <span class="info-label">Função:</span>
+                <span><%= @professional.specialities.map(&:name).join(', ') %></span>
+              </li>
+            <% end %>
           <% end %>
-        <% end %>
-      </ul>
+        </ul>
+      </div>
+
+      <!-- Callout de aviso -->
+      <div class="warning-callout">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-content">
+          <h4>Importante</h4>
+          <ul>
+            <li>Este link é válido por 7 dias</li>
+            <li>Após definir sua senha, você poderá acessar o sistema normalmente</li>
+            <li>Se você não solicitou este convite, ignore este e-mail</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Botão de ação -->
+      <div class="cta-section">
+        <a href="<%= @invite.invite_url %>" class="cta-button">
+          Definir Senha e Acessar Sistema
+        </a>
+      </div>
+
+      <!-- Link alternativo -->
+      <div class="alternative-link">
+        <p><strong>Se o botão não funcionar, copie e cole este link no seu navegador:</strong></p>
+        <div class="link-text"><%= @invite.invite_url %></div>
+      </div>
     </div>
 
-    <p>Para acessar o sistema, clique no botão abaixo e defina sua senha:</p>
-
-    <div style="text-align: center;">
-      <a href="<%= @invite.invite_url %>" class="button">
-        Definir Senha e Acessar Sistema
-      </a>
-    </div>
-
-    <p><strong>Importante:</strong></p>
-    <ul>
-      <li>Este link é válido por 7 dias</li>
-      <li>Após definir sua senha, você poderá acessar o sistema normalmente</li>
-      <li>Se você não solicitou este convite, ignore este e-mail</li>
-    </ul>
-
-    <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
-    <p style="word-break: break-all; background-color: #f3f4f6; padding: 10px; border-radius: 4px;">
-      <%= @invite.invite_url %>
-    </p>
-
+    <!-- Rodapé -->
     <div class="footer">
       <p>Este é um e-mail automático do sistema IntegrarPlus.</p>
-      <p>Se você tiver dúvidas, entre em contato com o administrador do sistema.</p>
+      <p>Você recebeu este convite porque foi adicionado ao sistema por um administrador.</p>
+      <div class="company-info">
+        <p><strong>IntegrarPlus</strong> - Sistema de Gestão Integrada</p>
+        <p>Para suporte técnico, entre em contato com o administrador do sistema.</p>
+      </div>
     </div>
   </div>
 </body>
