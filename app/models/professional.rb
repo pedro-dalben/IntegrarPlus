@@ -3,7 +3,7 @@
 class Professional < ApplicationRecord
   include DashboardCache
   include MeiliSearch::Rails
-  include Addressable
+  include AddressableConcern
 
   belongs_to :contract_type, optional: true
   has_one :user, dependent: :destroy
@@ -26,8 +26,6 @@ class Professional < ApplicationRecord
   has_many :document_releases, foreign_key: :released_by_professional_id, dependent: :destroy
 
   # Nested attributes for form handling
-  accepts_nested_attributes_for :primary_address, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :secondary_address, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :groups, allow_destroy: true
   accepts_nested_attributes_for :specialities, allow_destroy: true
   accepts_nested_attributes_for :specializations, allow_destroy: true

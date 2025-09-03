@@ -3,6 +3,25 @@
 ## Visão Geral
 Este documento descreve as melhorias implementadas no design dos emails do sistema IntegrarPlus, especificamente no email de convite para acesso ao sistema.
 
+## Correções de Bugs Implementadas
+
+### 1. Conflito de Namespace Addressable
+- **Problema**: Conflito entre o concern `Addressable` e a gem `addressable` (URI)
+- **Solução**: Renomeado o concern para `AddressableConcern`
+- **Arquivos modificados**:
+  - `app/models/concerns/addressable.rb` → `app/models/concerns/addressable_concern.rb`
+  - `app/models/professional.rb` - Atualizado include para `AddressableConcern`
+
+### 2. Ordem de Carregamento de Associações
+- **Problema**: `accepts_nested_attributes_for :primary_address` sendo chamado antes da associação ser definida
+- **Solução**: Movidas as declarações para dentro do concern `AddressableConcern`
+- **Resultado**: Modelo Professional carrega corretamente sem erros
+
+### 3. Integração Meilisearch
+- **Status**: Funcionando corretamente após correções
+- **Modelos reindexados**: Professional, Document, ContractType, Specialization, Group, Speciality
+- **Método correto**: `Model.reindex!` em vez de `Model.meilisearch_index.reindex`
+
 ## Principais Melhorias Implementadas
 
 ### 1. Design Moderno e Elegante
