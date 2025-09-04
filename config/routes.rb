@@ -41,6 +41,18 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get 'up' => 'rails/health#show', as: :rails_health_check
 
+  # Rotas para eventos e agenda (movidas para admin)
+  # resources :events
+  # get 'events/calendar_data', to: 'events#calendar_data'
+
+  # Rotas para agenda institucional
+  resources :professional_agendas, only: %i[index show] do
+    member do
+      get :availability
+      get :events_data
+    end
+  end
+
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
@@ -144,6 +156,14 @@ Rails.application.routes.draw do
         post :schedule_anamnesis
       end
     end
+
+    # Rotas para eventos e agenda
+    resources :events do
+      collection do
+        get :test_calendar
+      end
+    end
+    get 'events/calendar_data', to: 'events#calendar_data'
 
     get '/', to: 'dashboard#index'
     get '/dashboard', to: 'dashboard#index'

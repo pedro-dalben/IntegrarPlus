@@ -3,10 +3,6 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def permit?(_permission_key)
-    true
-  end
-
   def generate_pagination_series(pagy)
     return [] if pagy.pages <= 1
 

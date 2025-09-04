@@ -23,6 +23,8 @@ import DependentSpecializationsController from './dependent_specializations_cont
 import NestedFormController from './nested_form_controller';
 import AddressBuilderController from './address_builder_controller';
 import InputMaskController from './input_mask_controller';
+import CalendarController from './calendar_controller';
+import DashboardCalendarController from './dashboard_calendar_controller';
 
 application.register('header', HeaderController);
 application.register('sidebar', SidebarController);
@@ -40,5 +42,7 @@ application.register('dependent-specializations', DependentSpecializationsContro
 application.register('nested-form', NestedFormController);
 application.register('address-builder', AddressBuilderController);
 application.register('input-mask', InputMaskController);
+application.register('calendar', CalendarController);
+application.register('dashboard-calendar', DashboardCalendarController);
 
 export { application };

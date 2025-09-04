@@ -9,6 +9,8 @@ class User < ApplicationRecord
   belongs_to :professional
   has_one_attached :avatar
   has_many :invites, dependent: :destroy
+  has_many :document_permissions, dependent: :destroy
+  has_many :document_status_changes, dependent: :destroy
   has_many :version_comments, dependent: :destroy
 
   delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true

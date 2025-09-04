@@ -1,0 +1,96 @@
+<div class="mx-auto max-w-7xl p-4 md:p-6 2xl:p-10">
+  <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-title-md2 font-bold text-black dark:text-white">
+        Minha Agenda
+      </h2>
+      <p class="text-sm text-bodydark2">
+        Gerencie seus compromissos e horários pessoais e institucionais
+      </p>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <%= link_to new_admin_event_path, 
+          class: "inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" do %>
+        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+        </svg>
+        Novo Evento
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <%= render CalendarComponent.new(
+        events: @events,
+        view_type: 'week',
+        read_only: false
+      ) %>
+    </div>
+    
+    <div class="space-y-6">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Próximos Eventos
+        </h3>
+        
+        <div class="space-y-3">
+          <% @events.limit(5).each do |event| %>
+            <div class="flex items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800/50">
+              <div class="h-3 w-3 rounded-full" style="background-color: <%= event_color(event.event_type) %>"></div>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  <%= event.title %>
+                </h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <%= event.start_time.strftime("%d/%m %H:%M") %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Estatísticas
+        </h3>
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Total de Eventos</span>
+            <span class="text-lg font-semibold text-gray-900 dark:text-white">
+              <%= @events.count %>
+            </span>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Este Mês</span>
+            <span class="text-lg font-semibold text-gray-900 dark:text-white">
+              <%= @events.where(start_time: Time.current.beginning_of_month..Time.current.end_of_month).count %>
+            </span>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Esta Semana</span>
+            <span class="text-lg font-semibold text-gray-900 dark:text-white">
+              <%= @events.where(start_time: Time.current.beginning_of_week..Time.current.end_of_week).count %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Paginação -->
+  <% if @pagy.pages > 1 %>
+    <div class="mt-8 flex justify-center">
+      <%= pagy_nav(@pagy) %>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :styles do %>
+  <!-- Estilos específicos da página de eventos -->
+<% end %>

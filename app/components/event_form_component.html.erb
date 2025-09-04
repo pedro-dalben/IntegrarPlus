@@ -1,0 +1,120 @@
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+  <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+    <%= form_title %>
+  </h2>
+
+  <%= form_with model: event, url: form_url, method: form_method, 
+      class: "space-y-6", data: { controller: "event-modal" } do |form| %>
+    
+    <!-- Título -->
+    <div>
+      <%= form.label :title, "Título", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.text_field :title, 
+          class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+          placeholder: "Digite o título do evento" %>
+      <% if event.errors[:title].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:title].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Descrição -->
+    <div>
+      <%= form.label :description, "Descrição", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.text_area :description, rows: 3,
+          class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+          placeholder: "Descreva o evento (opcional)" %>
+      <% if event.errors[:description].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:description].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Data e Hora -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :start_time, "Início", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= form.datetime_local_field :start_time,
+            value: default_start_time.strftime("%Y-%m-%dT%H:%M"),
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" %>
+        <% if event.errors[:start_time].any? %>
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:start_time].join(', ') %></p>
+        <% end %>
+      </div>
+
+      <div>
+        <%= form.label :end_time, "Fim", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+        <%= form.datetime_local_field :end_time,
+            value: default_end_time.strftime("%Y-%m-%dT%H:%M"),
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" %>
+        <% if event.errors[:end_time].any? %>
+          <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:end_time].join(', ') %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Tipo de Evento -->
+    <div>
+      <%= form.label :event_type, "Tipo de Evento", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.select :event_type, 
+          event_types.map { |type| [type[:label], type[:value]] },
+          { prompt: "Selecione o tipo" },
+          { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" } %>
+      <% if event.errors[:event_type].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:event_type].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Nível de Visibilidade -->
+    <div>
+      <%= form.label :visibility_level, "Visibilidade", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.select :visibility_level,
+          visibility_levels.map { |level| [level[:label], level[:value]] },
+          { prompt: "Selecione a visibilidade" },
+          { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" } %>
+      <% if event.errors[:visibility_level].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:visibility_level].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Contexto da Fonte -->
+    <div>
+      <%= form.label :source_context, "Contexto da Fonte", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.text_field :source_context,
+          class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+          placeholder: "Ex: appointment_id=123 (opcional)" %>
+      <% if event.errors[:source_context].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:source_context].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Status -->
+    <div>
+      <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= form.select :status,
+          Event.statuses.keys.map { |status| [status.humanize, status] },
+          { prompt: "Selecione o status" },
+          { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" } %>
+      <% if event.errors[:status].any? %>
+        <p class="mt-1 text-sm text-red-600 dark:text-red-400"><%= event.errors[:status].join(', ') %></p>
+      <% end %>
+    </div>
+
+    <!-- Erros Gerais -->
+    <% if event.errors[:base].any? %>
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+        <p class="text-sm text-red-600 dark:text-red-400"><%= event.errors[:base].join(', ') %></p>
+      </div>
+    <% end %>
+
+    <!-- Botões de Ação -->
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button type="button" 
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-action="click->event-modal#closeModal">
+        Cancelar
+      </button>
+      
+      <%= form.submit submit_text,
+          class: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  <% end %>
+</div>

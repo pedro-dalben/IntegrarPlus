@@ -1,0 +1,136 @@
+<div class="mx-auto max-w-4xl p-4 md:p-6 2xl:p-10">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h2 class="text-title-md2 font-bold text-black dark:text-white">
+        Detalhes do Evento
+      </h2>
+      <p class="text-sm text-bodydark2">
+        Visualize as informações completas do evento
+      </p>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <%= link_to edit_admin_event_path(@event), 
+          class: "inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" do %>
+        <svg class="mr-2 h-4 w-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        Editar
+      <% end %>
+      
+      <%= link_to admin_events_path, 
+          class: "inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]" do %>
+        Voltar
+      <% end %>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+    <div class="mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="h-4 w-4 rounded-full" style="background-color: <%= event_color(@event.event_type) %>"></div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <%= @event.title %>
+        </h3>
+      </div>
+      
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium <%= event_badge_class(@event.event_type) %>">
+          <%= @event.event_type.humanize %>
+        </span>
+        
+        <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium <%= visibility_badge_class(@event.visibility_level) %>">
+          <%= @event.visibility_level.humanize %>
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div>
+        <h4 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Informações do Evento</h4>
+        
+        <div class="space-y-4">
+          <% if @event.description.present? %>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Descrição</label>
+              <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                <%= @event.description %>
+              </p>
+            </div>
+          <% end %>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Data e Hora de Início</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.start_time.strftime("%d/%m/%Y às %H:%M") %>
+            </p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Data e Hora de Fim</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.end_time.strftime("%d/%m/%Y às %H:%M") %>
+            </p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Duração</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.duration_minutes %> minutos
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h4 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Detalhes do Sistema</h4>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Criado por</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.created_by.full_name %>
+            </p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Data de Criação</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.created_at.strftime("%d/%m/%Y às %H:%M") %>
+            </p>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Última Atualização</label>
+            <p class="mt-1 text-sm text-gray-900 dark:text-white">
+              <%= @event.updated_at.strftime("%d/%m/%Y às %H:%M") %>
+            </p>
+          </div>
+          
+          <% if @event.source_context.present? %>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Contexto da Fonte</label>
+              <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                <%= @event.source_context %>
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :styles do %>
+  <style>
+    .event-badge-personal { @apply bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300; }
+    .event-badge-consulta { @apply bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300; }
+    .event-badge-atendimento { @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300; }
+    .event-badge-reuniao { @apply bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300; }
+    .event-badge-outro { @apply bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300; }
+    
+    .visibility-badge-private { @apply bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300; }
+    .visibility-badge-restricted { @apply bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300; }
+    .visibility-badge-public { @apply bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300; }
+  </style>
+<% end %>

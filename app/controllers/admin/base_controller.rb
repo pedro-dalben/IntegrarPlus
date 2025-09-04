@@ -8,6 +8,7 @@ module Admin
     before_action :check_permissions
 
     helper_method :admin_nav
+    include EventsHelper
 
     private
 

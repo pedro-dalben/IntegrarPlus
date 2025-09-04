@@ -1,0 +1,72 @@
+<div class="mx-auto max-w-7xl p-4 md:p-6 2xl:p-10">
+  <h1 class="text-2xl font-bold mb-6">Teste do Calendário</h1>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+    <h2 class="text-lg font-semibold mb-4">Calendário de Teste</h2>
+    
+    <!-- Teste simples do calendário -->
+    <div id="test-calendar" 
+         data-controller="calendar"
+         data-calendar-events-url-value="/admin/events/calendar_data"
+         data-calendar-read-only-value="false"
+         data-calendar-professional-id-value="1"
+         data-calendar-target="calendar"
+         style="min-height: 400px; border: 2px solid red;">
+      <p class="text-center text-gray-500">Carregando calendário...</p>
+    </div>
+  </div>
+  
+  <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <h3 class="text-lg font-semibold text-blue-900 mb-2">Debug Info:</h3>
+    <ul class="text-sm text-blue-800 space-y-1">
+      <li>• Controller Stimulus: <span id="stimulus-status">Verificando...</span></li>
+      <li>• FullCalendar: <span id="fullcalendar-status">Verificando...</span></li>
+      <li>• CSS: <span id="css-status">Verificando...</span></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Verificar se Stimulus está funcionando
+  const stimulusStatus = document.getElementById('stimulus-status');
+  if (window.Stimulus) {
+    stimulusStatus.textContent = '✅ Funcionando';
+    stimulusStatus.className = 'text-green-600 font-semibold';
+  } else {
+    stimulusStatus.textContent = '❌ Não encontrado';
+    stimulusStatus.className = 'text-red-600 font-semibold';
+  }
+  
+  // Verificar se FullCalendar está disponível
+  const fullcalendarStatus = document.getElementById('fullcalendar-status');
+  if (window.FullCalendar && window.FullCalendar.Calendar) {
+    fullcalendarStatus.textContent = '✅ Funcionando';
+    fullcalendarStatus.className = 'text-green-600 font-semibold';
+  } else {
+    fullcalendarStatus.textContent = '❌ Não encontrado';
+    fullcalendarStatus.className = 'text-red-600 font-semibold';
+  }
+  
+  // Verificar se o CSS está carregado
+  const cssStatus = document.getElementById('css-status');
+  const testElement = document.createElement('div');
+  testElement.className = 'fc';
+  document.body.appendChild(testElement);
+  const computedStyle = window.getComputedStyle(testElement);
+  if (computedStyle.fontFamily) {
+    cssStatus.textContent = '✅ Carregado';
+    cssStatus.className = 'text-green-600 font-semibold';
+  } else {
+    cssStatus.textContent = '❌ Não carregado';
+    cssStatus.className = 'text-red-600 font-semibold';
+  }
+  document.body.removeChild(testElement);
+  
+  // Log para debug
+  console.log('🔍 Debug do Calendário:');
+  console.log('Stimulus:', window.Stimulus);
+  console.log('FullCalendar:', window.FullCalendar);
+  console.log('Calendar Controller:', window.Stimulus?.getControllerForElementAndIdentifier?.call(window.Stimulus, document.getElementById('test-calendar'), 'calendar'));
+});
+</script>

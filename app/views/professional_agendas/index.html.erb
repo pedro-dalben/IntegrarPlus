@@ -1,0 +1,59 @@
+<div class="mx-auto max-w-7xl p-4 md:p-6 2xl:p-10">
+  <div class="mb-6">
+    <h2 class="text-title-md2 font-bold text-black dark:text-white">
+      Consulta de Agendas
+    </h2>
+    <p class="text-sm text-bodydark2">
+      Visualize a disponibilidade dos profissionais para agendamentos
+    </p>
+  </div>
+
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Selecione um Profissional
+      </h3>
+      
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <% @professionals.each do |professional| %>
+          <div class="rounded-lg border border-gray-200 p-4 hover:border-primary hover:shadow-md transition-all dark:border-gray-700">
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0">
+                <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span class="text-lg font-semibold text-primary">
+                    <%= professional.full_name.first.upcase %>
+                  </span>
+                </div>
+              </div>
+              
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  <%= professional.full_name %>
+                </h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <%= professional.email %>
+                </p>
+                
+                <% if professional.contract_type.present? %>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    <%= professional.contract_type.name %>
+                  </p>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <%= link_to professional_agenda_path(professional), 
+                  class: "w-full inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" do %>
+                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Ver Agenda
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

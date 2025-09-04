@@ -24,6 +24,7 @@ class Professional < ApplicationRecord
   has_many :completed_tasks, class_name: 'DocumentTask', foreign_key: :completed_by_professional_id, dependent: :destroy
   has_many :document_status_logs, dependent: :destroy
   has_many :document_releases, foreign_key: :released_by_professional_id, dependent: :destroy
+  has_many :events, dependent: :destroy
 
   # Nested attributes for form handling
   accepts_nested_attributes_for :groups, allow_destroy: true

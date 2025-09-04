@@ -1,0 +1,12 @@
+<div class="mx-auto max-w-4xl p-4 md:p-6 2xl:p-10">
+  <div class="mb-6">
+    <h2 class="text-title-md2 font-bold text-black dark:text-white">
+      Novo Evento
+    </h2>
+    <p class="text-sm text-bodydark2">
+      Crie um novo evento na sua agenda
+    </p>
+  </div>
+
+  <%= render EventFormComponent.new(event: @event) %>
+</div>

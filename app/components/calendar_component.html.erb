@@ -1,0 +1,131 @@
+<div class="space-y-6">
+  <!-- Header do Calendário -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Calendário de Eventos
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Visualize e gerencie sua agenda
+      </p>
+    </div>
+    
+    <% unless read_only %>
+      <button type="button" 
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-action="click->event-modal#openModal">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+        </svg>
+        Novo Evento
+      </button>
+    <% end %>
+  </div>
+
+  <!-- Controles do Calendário -->
+  <div class="flex flex-wrap items-center gap-4">
+    <!-- Seletor de Visualização -->
+    <div class="flex items-center gap-2">
+      <label for="view-selector" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Visualização:
+      </label>
+      <select id="view-selector" 
+          class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          data-calendar-target="viewSelector">
+        <option value="timeGridWeek">Semana</option>
+        <option value="timeGridDay">Dia</option>
+        <option value="dayGridMonth">Mês</option>
+        <option value="listWeek">Lista</option>
+      </select>
+    </div>
+
+    <!-- Filtro por Tipo de Evento -->
+    <div class="flex items-center gap-2">
+      <label for="event-type-filter" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Tipo:
+      </label>
+      <select id="event-type-filter" 
+          class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          data-calendar-target="eventTypeFilter">
+        <option value="all">Todos os tipos</option>
+        <option value="personal">Pessoal</option>
+        <option value="consulta">Consulta</option>
+        <option value="atendimento">Atendimento</option>
+        <option value="reuniao">Reunião</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+
+    <!-- Botões de Navegação -->
+    <div class="flex items-center gap-2">
+      <button type="button" 
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-action="click->calendar#prev">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      
+      <button type="button" 
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-action="click->calendar#today">
+        Hoje
+      </button>
+      
+      <button type="button" 
+          class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          data-action="click->calendar#next">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Botão de Atualizar -->
+    <button type="button" 
+        class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        data-action="click->calendar#refreshEvents">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Calendário -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+    <div id="<%= calendar_id %>" 
+        data-controller="calendar"
+        data-calendar-events-url-value="<%= events_url %>"
+        data-calendar-read-only-value="<%= read_only %>"
+        data-calendar-professional-id-value="<%= professional&.id %>"
+        data-calendar-target="calendar">
+    </div>
+  </div>
+
+  <!-- Legenda de Cores -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+    <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Legenda de Eventos</h4>
+    <div class="flex flex-wrap gap-3">
+      <% event_types.each do |type| %>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full" style="background-color: <%= type[:color] %>"></div>
+          <span class="text-sm text-gray-600 dark:text-gray-400"><%= type[:label] %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Legenda de Visibilidade -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+    <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Níveis de Visibilidade</h4>
+    <div class="flex flex-wrap gap-3">
+      <% visibility_scopes.each do |scope| %>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= visibility_badge_class(scope[:value]) %>">
+            <%= scope[:label] %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

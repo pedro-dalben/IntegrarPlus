@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_02_121814) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_214149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -172,6 +172,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_121814) do
     t.index ["category"], name: "index_documents_on_category"
     t.index ["document_type"], name: "index_documents_on_document_type"
     t.index ["status"], name: "index_documents_on_status"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.integer "event_type", default: 0, null: false
+    t.integer "visibility_level", default: 0, null: false
+    t.string "source_context"
+    t.bigint "professional_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "resource_type"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_events_on_created_by_id"
+    t.index ["professional_id", "event_type"], name: "index_events_on_professional_id_and_event_type"
+    t.index ["professional_id", "start_time", "end_time"], name: "index_events_on_professional_id_and_start_time_and_end_time"
+    t.index ["professional_id", "visibility_level"], name: "index_events_on_professional_id_and_visibility_level"
+    t.index ["professional_id"], name: "index_events_on_professional_id"
+    t.index ["resource_type"], name: "index_events_on_resource_type"
+    t.index ["source_context"], name: "index_events_on_source_context"
+    t.index ["start_time", "end_time"], name: "index_events_on_start_time_and_end_time"
+    t.check_constraint "end_time > start_time", name: "check_end_time_after_start_time"
   end
 
   create_table "external_users", force: :cascade do |t|
@@ -430,6 +455,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_02_121814) do
   add_foreign_key "document_versions", "documents"
   add_foreign_key "document_versions", "professionals", column: "created_by_professional_id"
   add_foreign_key "documents", "professionals", column: "author_professional_id"
+  add_foreign_key "events", "professionals"
+  add_foreign_key "events", "users", column: "created_by_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"

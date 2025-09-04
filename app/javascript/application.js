@@ -1,5 +1,6 @@
-import '@hotwired/turbo-rails';
-import './controllers';
+import "@hotwired/turbo-rails"
+import "controllers"
+import "tailwindcss/tailwind.css"
 
 // FullCalendar imports
 import { Calendar } from '@fullcalendar/core'

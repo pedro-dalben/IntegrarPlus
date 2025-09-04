@@ -1,0 +1,152 @@
+<div class="mx-auto max-w-7xl p-4 md:p-6 2xl:p-10">
+  <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-title-md2 font-bold text-black dark:text-white">
+        Agenda de <%= @professional.full_name %>
+      </h2>
+      <p class="text-sm text-bodydark2">
+        Visualize a disponibilidade e eventos do profissional
+      </p>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <%= link_to professional_agendas_path, 
+          class: "inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]" do %>
+        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Voltar
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="lg:col-span-2">
+      <%= render CalendarComponent.new(
+        events: [],
+        professional: @professional,
+        view_type: @view_type,
+        read_only: true
+      ) %>
+    </div>
+    
+    <div class="space-y-6">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Informações do Profissional
+        </h3>
+        
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="text-lg font-semibold text-primary">
+                <%= @professional.full_name.first.upcase %>
+              </span>
+            </div>
+            
+            <div>
+              <h4 class="text-sm font-medium text-gray-900 dark:text-white">
+                <%= @professional.full_name %>
+              </h4>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                <%= @professional.email %>
+              </p>
+            </div>
+          </div>
+          
+          <% if @professional.contract_type.present? %>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Tipo de Contrato</label>
+              <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                <%= @professional.contract_type.name %>
+              </p>
+            </div>
+          <% end %>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-400">Status</label>
+            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium <%= @professional.active? ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300' %>">
+              <%= @professional.active? ? 'Ativo' : 'Inativo' %>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Consulta de Disponibilidade
+        </h3>
+        
+        <form class="space-y-4" data-controller="availability-check">
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Data e Hora de Início
+            </label>
+            <input
+              type="datetime-local"
+              class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+              data-availability-check-target="startTime"
+              required
+            />
+          </div>
+          
+          <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Data e Hora de Fim
+            </label>
+            <input
+              type="datetime-local"
+              class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+              data-availability-check-target="endTime"
+              required
+            />
+          </div>
+          
+          <button
+            type="button"
+            class="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            data-action="click->availability-check#checkAvailability"
+          >
+            Verificar Disponibilidade
+          </button>
+        </form>
+        
+        <div class="mt-4" data-availability-check-target="result"></div>
+      </div>
+      
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6">
+        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Legenda
+        </h3>
+        
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <div class="h-3 w-3 rounded-full bg-green-500"></div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Disponível</span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <div class="h-3 w-3 rounded-full bg-gray-500"></div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Ocupado (Detalhes Privados)</span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <div class="h-3 w-3 rounded-full bg-blue-500"></div>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Evento Público</span>
+          </div>
+        </div>
+        
+        <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+          <p class="text-xs text-yellow-800 dark:text-yellow-200">
+            <strong>Nota:</strong> Eventos marcados como "privado" ou "restrito" são exibidos apenas como "ocupado" para preservar a privacidade do profissional.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :styles do %>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<% end %>
