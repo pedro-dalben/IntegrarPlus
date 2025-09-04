@@ -9,3 +9,19 @@ application.register("cep", CepController)
 
 import DashboardCalendarController from "./dashboard_calendar_controller"
 application.register("dashboard-calendar", DashboardCalendarController)
+
+// Agendas controllers
+import WizardController from "./agendas/wizard_controller"
+application.register("agendas-wizard", WizardController)
+
+import MetadataController from "./agendas/metadata_controller"
+application.register("agendas-metadata", MetadataController)
+
+import ProfessionalsController from "./agendas/professionals_controller"
+application.register("agendas-professionals", ProfessionalsController)
+
+import WorkingHoursController from "./agendas/working_hours_controller"
+application.register("agendas-working-hours", WorkingHoursController)
+
+import ReviewController from "./agendas/review_controller"
+application.register("agendas-review", ReviewController)

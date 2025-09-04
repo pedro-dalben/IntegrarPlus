@@ -56,7 +56,14 @@ permissions_data = [
   { key: 'specializations.index', description: 'Listar especializações' },
   { key: 'specializations.manage', description: 'Gerenciar especializações' },
   { key: 'contract_types.index', description: 'Listar tipos de contrato' },
-  { key: 'contract_types.manage', description: 'Gerenciar tipos de contrato' }
+  { key: 'contract_types.manage', description: 'Gerenciar tipos de contrato' },
+  { key: 'agendas.read', description: 'Visualizar agendas' },
+  { key: 'agendas.create', description: 'Criar agendas' },
+  { key: 'agendas.update', description: 'Editar agendas' },
+  { key: 'agendas.destroy', description: 'Excluir agendas' },
+  { key: 'agendas.archive', description: 'Arquivar agendas' },
+  { key: 'agendas.activate', description: 'Ativar agendas' },
+  { key: 'agendas.duplicate', description: 'Duplicar agendas' }
 ]
 
 permissions_data.each do |perm_data|
@@ -94,7 +101,7 @@ end
 
 recepcao_group = Group.find_by(name: 'Recepção')
 if recepcao_group
-  # Recepção pode criar profissionais e gerenciar entradas do portal
+  # Recepção pode criar profissionais, gerenciar entradas do portal e agendas
   recepcao_permissions = [
     'dashboard.view',
     'professionals.index',
@@ -104,7 +111,10 @@ if recepcao_group
     'portal_intakes.index',
     'portal_intakes.show',
     'portal_intakes.schedule_anamnesis',
-    'portal_intakes.update'
+    'portal_intakes.update',
+    'agendas.read',
+    'agendas.create',
+    'agendas.update'
   ]
 
   recepcao_permissions.each do |perm_key|
@@ -115,13 +125,14 @@ end
 
 clinico_group = Group.find_by(name: 'Clínico')
 if clinico_group
-  # Clínicos podem ver e editar profissionais
+  # Clínicos podem ver e editar profissionais e visualizar agendas
   clinico_permissions = [
     'dashboard.view',
     'professionals.index',
     'professionals.show',
     'professionals.edit',
-    'professionals.update'
+    'professionals.update',
+    'agendas.read'
   ]
 
   clinico_permissions.each do |perm_key|

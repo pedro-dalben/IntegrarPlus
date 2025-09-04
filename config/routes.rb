@@ -165,6 +165,16 @@ Rails.application.routes.draw do
     end
     get 'events/calendar_data', to: 'events#calendar_data'
 
+    # Rotas para agendas
+    resources :agendas do
+      member do
+        patch :archive
+        patch :activate
+        post :duplicate
+        get :preview_slots
+      end
+    end
+
     get '/', to: 'dashboard#index'
     get '/dashboard', to: 'dashboard#index'
     get '/ui', to: 'ui#index'

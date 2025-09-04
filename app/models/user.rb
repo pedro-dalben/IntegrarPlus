@@ -15,6 +15,8 @@ class User < ApplicationRecord
 
   delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true
 
+  scope :professionals, -> { joins(:professional) }
+
   def name
     professional&.full_name || email.split('@').first.titleize
   end

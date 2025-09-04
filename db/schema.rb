@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_03_214149) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,44 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_214149) do
     t.index ["latitude", "longitude"], name: "index_addresses_on_coordinates"
     t.index ["state"], name: "index_addresses_on_state"
     t.index ["zip_code"], name: "index_addresses_on_zip_code"
+  end
+
+  create_table "agenda_professionals", force: :cascade do |t|
+    t.bigint "agenda_id", null: false
+    t.bigint "professional_id", null: false
+    t.integer "capacity_per_slot", default: 1
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_agenda_professionals_on_active"
+    t.index ["agenda_id", "professional_id"], name: "index_agenda_professionals_on_agenda_id_and_professional_id", unique: true
+    t.index ["agenda_id"], name: "index_agenda_professionals_on_agenda_id"
+    t.index ["professional_id"], name: "index_agenda_professionals_on_professional_id"
+    t.index ["professional_id"], name: "index_agenda_professionals_on_professional_id_unique"
+  end
+
+  create_table "agendas", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "service_type", default: 0, null: false
+    t.integer "default_visibility", default: 0, null: false
+    t.bigint "unit_id"
+    t.string "color_theme", default: "#3B82F6"
+    t.text "notes"
+    t.json "working_hours", default: {}, null: false
+    t.integer "slot_duration_minutes", default: 50, null: false
+    t.integer "buffer_minutes", default: 10, null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "updated_by_id"
+    t.integer "lock_version", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_agendas_on_created_by_id"
+    t.index ["name", "unit_id", "service_type"], name: "index_agendas_unique_name_per_unit_type", unique: true
+    t.index ["service_type"], name: "index_agendas_on_service_type"
+    t.index ["status"], name: "index_agendas_on_status"
+    t.index ["unit_id"], name: "index_agendas_on_unit_id"
+    t.index ["updated_by_id"], name: "index_agendas_on_updated_by_id"
   end
 
   create_table "contract_types", force: :cascade do |t|
@@ -389,6 +427,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_214149) do
     t.index ["name"], name: "index_specializations_on_name", unique: true
   end
 
+  create_table "units", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_units_on_active"
+    t.index ["name"], name: "index_units_on_name", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -438,6 +486,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_03_214149) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "agenda_professionals", "agendas"
+  add_foreign_key "agenda_professionals", "users", column: "professional_id"
+  add_foreign_key "agendas", "units"
+  add_foreign_key "agendas", "users", column: "created_by_id"
+  add_foreign_key "agendas", "users", column: "updated_by_id"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"

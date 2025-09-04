@@ -1,0 +1,106 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_agendas_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <!-- Wizard -->
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <!-- Progress Steps -->
+      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+        <nav class="flex space-x-8" aria-label="Tabs">
+          <div class="border-b-2 border-blue-500 py-4 px-1">
+            <span class="text-sm font-medium text-blue-600 dark:text-blue-400">1. Metadados</span>
+          </div>
+          <div class="border-b-2 border-transparent py-4 px-1">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">2. Profissionais</span>
+          </div>
+          <div class="border-b-2 border-transparent py-4 px-1">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">3. Grade de Horários</span>
+          </div>
+          <div class="border-b-2 border-transparent py-4 px-1">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">4. Revisão</span>
+          </div>
+        </nav>
+      </div>
+
+      <div class="p-4 sm:p-6">
+      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-wizard" } do |form| %>
+        <% if @agenda.errors.any? %>
+          <div class="ta-alert ta-alert-error mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium">
+                  <%= pluralize(@agenda.errors.count, "erro") %> impediram que esta agenda fosse salva:
+                </h3>
+                <div class="mt-2 text-sm">
+                  <ul class="list-disc list-inside space-y-1">
+                    <% @agenda.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <div data-agendas-wizard-target="step" data-step="metadata">
+          <%= render 'step_metadata', form: form %>
+        </div>
+
+        <div data-agendas-wizard-target="step" data-step="professionals" class="hidden">
+          <%= render 'step_professionals', form: form %>
+        </div>
+
+        <div data-agendas-wizard-target="step" data-step="working_hours" class="hidden">
+          <%= render 'step_working_hours', form: form %>
+        </div>
+
+        <div data-agendas-wizard-target="step" data-step="review" class="hidden">
+          <%= render 'step_review', form: form %>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" 
+                  data-action="click->agendas-wizard#previousStep" 
+                  data-agendas-wizard-target="previousBtn"
+                  class="hidden ta-btn ta-btn-secondary">
+            Anterior
+          </button>
+          
+          <div class="flex gap-3">
+            <%= form.submit "Salvar como Rascunho", 
+                  name: "commit", 
+                  value: "Salvar como Rascunho",
+                  class: "ta-btn ta-btn-secondary" %>
+            
+            <button type="button" 
+                    data-action="click->agendas-wizard#nextStep" 
+                    data-agendas-wizard-target="nextBtn"
+                    class="ta-btn ta-btn-primary">
+              Próximo
+            </button>
+            
+            <%= form.submit "Ativar Agenda", 
+                  name: "commit", 
+                  value: "Ativar Agenda",
+                  data: { agendas_wizard_target: "activateBtn" },
+                  class: "hidden ta-btn ta-btn-success" %>
+          </div>
+        </div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

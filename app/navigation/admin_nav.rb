@@ -11,6 +11,7 @@ module AdminNav
         required_permission: 'documents.read' },
       { label: 'Portal Operadoras', path: '/admin/portal_intakes', icon: 'bi-hospital',
         required_permission: 'portal_intakes.index' },
+      { label: 'Agendas', path: '/admin/agendas', icon: 'bi-calendar3', required_permission: 'agendas.read' },
       { label: 'Cadastros', icon: 'bi-people', required_permission: 'professionals.read', children: [
         { label: 'Profissionais', path: '/admin/professionals', icon: 'bi-person',
           required_permission: 'professionals.read' },
