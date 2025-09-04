@@ -44,7 +44,19 @@ permissions_data = [
   { key: 'organograms.editor', description: 'Usar editor de organogramas' },
   { key: 'organograms.publish', description: 'Publicar organogramas' },
   { key: 'organograms.export', description: 'Exportar organogramas' },
-  { key: 'organograms.import', description: 'Importar dados para organogramas' }
+  { key: 'organograms.import', description: 'Importar dados para organogramas' },
+  { key: 'documents.access', description: 'Acessar área de documentos' },
+  { key: 'documents.create', description: 'Criar novos documentos' },
+  { key: 'documents.view_released', description: 'Ver documentos liberados' },
+  { key: 'documents.manage_permissions', description: 'Gerenciar permissões de documentos' },
+  { key: 'documents.assign_responsibles', description: 'Atribuir responsáveis a documentos' },
+  { key: 'documents.release', description: 'Liberar documentos' },
+  { key: 'specialities.index', description: 'Listar especialidades' },
+  { key: 'specialities.manage', description: 'Gerenciar especialidades' },
+  { key: 'specializations.index', description: 'Listar especializações' },
+  { key: 'specializations.manage', description: 'Gerenciar especializações' },
+  { key: 'contract_types.index', description: 'Listar tipos de contrato' },
+  { key: 'contract_types.manage', description: 'Gerenciar tipos de contrato' }
 ]
 
 permissions_data.each do |perm_data|
