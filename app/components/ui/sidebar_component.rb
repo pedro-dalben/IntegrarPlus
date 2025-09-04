@@ -22,7 +22,7 @@ module Ui
           icon: dashboard_icon,
           active: current_path&.start_with?('/admin/dashboard'),
           badge: nil,
-          visible: nil
+          permission: 'dashboard.view'
         },
         {
           title: 'Profissionais',
@@ -30,7 +30,7 @@ module Ui
           icon: professionals_icon,
           active: current_path&.start_with?('/admin/professionals'),
           badge: nil,
-          visible: nil
+          permission: 'professionals.index'
         },
         {
           title: 'Grupos',
@@ -38,7 +38,7 @@ module Ui
           icon: groups_icon,
           active: current_path&.start_with?('/admin/groups'),
           badge: nil,
-          visible: nil
+          permission: 'groups.manage'
         },
         {
           title: 'Especialidades',
@@ -46,7 +46,7 @@ module Ui
           icon: specialities_icon,
           active: current_path&.start_with?('/admin/specialities'),
           badge: nil,
-          visible: nil
+          permission: 'specialities.index'
         },
         {
           title: 'Especializações',
@@ -54,7 +54,7 @@ module Ui
           icon: specializations_icon,
           active: current_path&.start_with?('/admin/specializations'),
           badge: nil,
-          visible: nil
+          permission: 'specializations.index'
         },
         {
           title: 'Tipos de Contrato',
@@ -62,7 +62,7 @@ module Ui
           icon: contract_types_icon,
           active: current_path&.start_with?('/admin/contract_types'),
           badge: nil,
-          visible: nil
+          permission: 'contract_types.index'
         },
         {
           title: 'Documentos',
@@ -70,7 +70,7 @@ module Ui
           icon: documents_icon,
           active: current_path&.start_with?('/admin/workspace'),
           badge: nil,
-          visible: current_user&.admin? || true
+          permission: 'documents.access'
         },
         {
           title: 'Documentos Liberados',
@@ -78,7 +78,15 @@ module Ui
           icon: released_documents_icon,
           active: current_path&.start_with?('/admin/released_documents'),
           badge: nil,
-          visible: current_user&.admin? || true
+          permission: 'documents.view_released'
+        },
+        {
+          title: 'Portal Intakes',
+          path: '/admin/portal_intakes',
+          icon: portal_intakes_icon,
+          active: current_path&.start_with?('/admin/portal_intakes'),
+          badge: nil,
+          permission: 'portal_intakes.index'
         },
         {
           title: 'Gerenciar Permissões',
@@ -86,13 +94,13 @@ module Ui
           icon: permissions_icon,
           active: current_path&.start_with?('/admin/professional_permissions'),
           badge: nil,
-          visible: current_user&.admin? || true
+          permission: 'documents.manage_permissions'
         }
 
       ]
 
-      # Filtrar itens baseado na visibilidade
-      all_items.select { |item| item[:visible].nil? || item[:visible] }
+      # Filtrar itens baseado nas permissões do usuário
+      all_items.select { |item| user_can_access?(item[:permission]) }
     end
 
     def support_items
@@ -156,6 +164,17 @@ module Ui
 
     def integrations_icon
       '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>'.html_safe
+    end
+
+    def portal_intakes_icon
+      '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>'.html_safe
+    end
+
+    def user_can_access?(permission_key)
+      return false if current_user.blank?
+      return true if current_user.admin?
+
+      current_user.permit?(permission_key)
     end
   end
 end
