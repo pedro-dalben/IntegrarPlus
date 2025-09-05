@@ -27,11 +27,11 @@
             <li>
               <a
                 href="<%= item[:path] %>"
-                class="<%= helpers.sidebar_menu_item_classes(item[:path], 'menu-item group') %>"
+                class="menu-item group <%= 'active' if item[:active] %>"
               >
                 <%= item[:icon].html_safe %>
                 <span class="menu-item-text">
-                  <%= item[:title] %>
+                  <%= item[:name] %>
                 </span>
               </a>
             </li>

@@ -10,7 +10,7 @@
           <p class="text-gray-600"><%= @agenda.service_type.humanize %> • <%= @agenda.default_visibility.humanize %></p>
         </div>
       </div>
-      
+
       <div class="flex items-center gap-3">
         <% case @agenda.status %>
         <% when 'draft' %>
@@ -26,38 +26,38 @@
             Arquivada
           </span>
         <% end %>
-        
+
         <div class="flex gap-2">
-          <%= link_to edit_admin_agenda_path(@agenda), class: "inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" do %>
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <%= link_to edit_admin_agenda_path(@agenda), class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
             </svg>
             Editar
           <% end %>
-          
-          <%= link_to duplicate_admin_agenda_path(@agenda), method: :post, 
-                class: "inline-flex items-center px-3 py-2 text-sm font-medium text-purple-700 bg-purple-100 border border-purple-300 rounded-lg hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2",
+
+          <%= link_to duplicate_admin_agenda_path(@agenda), method: :post,
+                class: "ta-btn ta-btn-secondary inline-flex items-center gap-2",
                 data: { confirm: "Tem certeza que deseja duplicar esta agenda?" } do %>
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>
             Duplicar
           <% end %>
-          
+
           <% if @agenda.status == 'active' %>
-            <%= link_to archive_admin_agenda_path(@agenda), method: :patch, 
-                  class: "inline-flex items-center px-3 py-2 text-sm font-medium text-orange-700 bg-orange-100 border border-orange-300 rounded-lg hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2",
+            <%= link_to archive_admin_agenda_path(@agenda), method: :patch,
+                  class: "ta-btn ta-btn-warning inline-flex items-center gap-2",
                   data: { confirm: "Tem certeza que deseja arquivar esta agenda?" } do %>
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l4 4m0 0l4-4m-4 4V3"></path>
               </svg>
               Arquivar
             <% end %>
           <% elsif @agenda.status == 'archived' %>
-            <%= link_to activate_admin_agenda_path(@agenda), method: :patch, 
-                  class: "inline-flex items-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 border border-green-300 rounded-lg hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2",
+            <%= link_to activate_admin_agenda_path(@agenda), method: :patch,
+                  class: "ta-btn ta-btn-success inline-flex items-center gap-2",
                   data: { confirm: "Tem certeza que deseja ativar esta agenda?" } do %>
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
               Ativar
@@ -72,7 +72,7 @@
     <div class="lg:col-span-2 space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Configurações</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 class="text-sm font-medium text-gray-500 mb-2">Informações Básicas</h3>
@@ -97,7 +97,7 @@
               <% end %>
             </dl>
           </div>
-          
+
           <div>
             <h3 class="text-sm font-medium text-gray-500 mb-2">Configuração de Slots</h3>
             <dl class="space-y-2">
@@ -119,7 +119,7 @@
             </dl>
           </div>
         </div>
-        
+
         <% if @agenda.notes.present? %>
           <div class="mt-6">
             <h3 class="text-sm font-medium text-gray-500 mb-2">Observações</h3>
@@ -130,13 +130,13 @@
 
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Grade de Horários</h2>
-        
+
         <div class="space-y-4">
           <div class="text-sm">
             <span class="text-gray-500">Resumo:</span>
-            <span class="ml-1 font-medium"><%= @agenda.working_hours_summary %></span>
+            <span class="ml-1 font-medium">Não configurado</span>
           </div>
-          
+
           <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
             <div class="space-y-2">
               <% @agenda.working_hours['weekdays'].each do |day| %>
@@ -162,7 +162,7 @@
 
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Eventos Recentes</h2>
-        
+
         <% if @recent_events.any? %>
           <div class="space-y-3">
             <% @recent_events.each do |event| %>
@@ -195,7 +195,7 @@
     <div class="space-y-6">
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Profissionais</h2>
-        
+
         <div class="space-y-3">
           <% @agenda.professionals.each do |professional| %>
             <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
@@ -215,11 +215,11 @@
 
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Previsualização</h2>
-        
+
         <div class="text-sm text-gray-600 mb-4">
           Próximos 7 dias - Slots disponíveis
         </div>
-        
+
         <div class="space-y-2 max-h-64 overflow-y-auto">
           <!-- Preview será carregado via AJAX -->
           <div class="text-center text-gray-500 py-4">

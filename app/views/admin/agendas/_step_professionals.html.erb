@@ -10,15 +10,15 @@
         <h3 class="text-sm font-medium text-gray-900">Buscar Profissionais</h3>
         <p class="text-sm text-gray-600">Digite o nome ou especialidade para filtrar</p>
       </div>
-      <button type="button" 
+      <button type="button"
               data-action="click->agendas-professionals#selectAllApt"
-              class="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              class="ta-btn ta-btn-primary">
         Selecionar Todos Aptos
       </button>
     </div>
-    
+
     <div class="mt-3">
-      <input type="text" 
+      <input type="text"
              data-agendas-professionals-target="searchInput"
              data-action="input->agendas-professionals#filterProfessionals"
              placeholder="Buscar por nome ou especialidade..."
@@ -29,7 +29,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div>
       <h3 class="text-sm font-medium text-gray-900 mb-3">Profissionais Disponíveis</h3>
-      <div data-agendas-professionals-target="availableList" 
+      <div data-agendas-professionals-target="availableList"
            class="border border-gray-200 rounded-lg max-h-96 overflow-y-auto">
         <% User.professionals.includes(professional: :specialities).each do |professional| %>
           <div class="professional-item p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
@@ -45,7 +45,7 @@
                 </div>
               </div>
               <div class="flex items-center">
-                <input type="checkbox" 
+                <input type="checkbox"
                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                        data-agendas-professionals-target="checkbox"
                        data-professional-id="<%= professional.id %>">
@@ -58,7 +58,7 @@
 
     <div>
       <h3 class="text-sm font-medium text-gray-900 mb-3">Profissionais Selecionados</h3>
-      <div data-agendas-professionals-target="selectedList" 
+      <div data-agendas-professionals-target="selectedList"
            class="border border-gray-200 rounded-lg min-h-32 p-3">
         <div class="text-sm text-gray-500 text-center py-8">
           Nenhum profissional selecionado

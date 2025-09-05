@@ -1,20 +1,6 @@
-# frozen_string_literal: true
+require_relative "boot"
 
-require_relative 'boot'
-
-require 'rails'
-# Pick the frameworks you want:
-require 'active_model/railtie'
-require 'active_job/railtie'
-require 'active_record/railtie'
-require 'active_storage/engine'
-require 'action_controller/railtie'
-require 'action_mailer/railtie'
-require 'action_mailbox/engine'
-require 'action_text/engine'
-require 'action_view/railtie'
-require 'action_cable/engine'
-# require "rails/test_unit/railtie"
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -38,17 +24,42 @@ module IntegrarPlus
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Configuração de internacionalização
-    config.i18n.load_path += Rails.root.glob('config/locales/**/*.{rb,yml}')
-    config.i18n.available_locales = %i[en pt-BR]
+    # Set the default locale
     config.i18n.default_locale = :'pt-BR'
+    config.i18n.available_locales = [:pt, :'pt-BR', :en]
 
-    # Meilisearch configuration
-    config.meilisearch = {
-      url: ENV.fetch('MEILISEARCH_URL', 'http://localhost:7700'),
-      api_key: ENV.fetch('MEILISEARCH_API_KEY', ''),
-      per_environment: true,
-      per_index: true
+    # Set time zone
+    config.time_zone = 'America/Sao_Paulo'
+
+    # Active Job adapter
+    config.active_job.queue_adapter = :sidekiq
+
+    # Active Storage
+    config.active_storage.variant_processor = :mini_magick
+
+    # Action Mailer
+    config.action_mailer.default_url_options = { host: ENV.fetch('HOST', 'localhost:3000') }
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV.fetch('SMTP_ADDRESS', 'localhost'),
+      port: ENV.fetch('SMTP_PORT', 587),
+      domain: ENV.fetch('SMTP_DOMAIN', 'localhost'),
+      user_name: ENV.fetch('SMTP_USERNAME', ''),
+      password: ENV.fetch('SMTP_PASSWORD', ''),
+      authentication: ENV.fetch('SMTP_AUTHENTICATION', 'plain'),
+      enable_starttls_auto: ENV.fetch('SMTP_ENABLE_STARTTLS_AUTO', true)
     }
+
+    # Logging
+    config.log_level = :info
+    config.log_formatter = ::Logger::Formatter.new
+
+    # CORS (commented out - requires rack-cors gem)
+    # config.middleware.insert_before 0, Rack::Cors do
+    #   allow do
+    #     origins '*'
+    #     resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
+    #   end
+    # end
   end
 end

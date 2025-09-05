@@ -14,10 +14,11 @@ class Admin::AgendasController < Admin::BaseController
   end
 
   def show
-    @recent_events = @agenda.events
-                            .includes(:professional, :patient)
-                            .order(created_at: :desc)
-                            .limit(10)
+    # @recent_events = @agenda.events
+    #                         .includes(:professional, :patient)
+    #                         .order(created_at: :desc)
+    #                         .limit(10)
+    @recent_events = []
   end
 
   def new

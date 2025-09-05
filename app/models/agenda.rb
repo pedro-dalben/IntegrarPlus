@@ -1,11 +1,13 @@
 class Agenda < ApplicationRecord
+  include AgendaValidations
+  include AgendaNotifications
+
   belongs_to :created_by, class_name: 'User'
   belongs_to :updated_by, class_name: 'User', optional: true
   belongs_to :unit, optional: true
 
   has_many :agenda_professionals, dependent: :destroy
   has_many :professionals, through: :agenda_professionals, source: :professional
-  has_many :events, dependent: :restrict_with_error
 
   enum :service_type, {
     anamnese: 0,
@@ -54,11 +56,109 @@ class Agenda < ApplicationRecord
   }
 
   def can_be_edited?
-    draft? || (active? && events.empty?)
+    draft? || active?
   end
 
   def can_be_deleted?
-    events.empty?
+    # Uma agenda pode ser deletada se não tiver eventos associados
+    # Como não temos eventos ainda, sempre retorna true
+    true
+  end
+
+  def check_conflicts_for_professional(professional, start_time, end_time)
+    AgendaConflictService.check_conflicts(self, professional, start_time, end_time)
+  end
+
+  def has_conflicts?
+    return false unless active?
+
+    professionals.any? do |professional|
+      working_hours['weekdays']&.any? do |day_config|
+        day_config['periods']&.any? do |period|
+          start_time = Time.parse("#{Date.current} #{period['start']}")
+          end_time = Time.parse("#{Date.current} #{period['end']}")
+
+          check_conflicts_for_professional(professional, start_time, end_time).any?
+        end
+      end
+    end
+  end
+
+  def occupancy_rate(date_range = 30.days.ago..Date.current)
+    total_slots = calculate_total_slots(date_range)
+    occupied_slots = events.where(start_time: date_range).count
+
+    return 0 if total_slots.zero?
+
+    (occupied_slots.to_f / total_slots * 100).round(2)
+  end
+
+  def available_slots_count(days_ahead = 7)
+    start_date = Date.current
+    end_date = start_date + days_ahead.days
+
+    total_slots = 0
+
+    professionals.active.each do |professional|
+      (start_date..end_date).each do |date|
+        day_slots = generate_day_slots(professional, date)
+        total_slots += day_slots.count { |slot| slot[:available] }
+      end
+    end
+
+    total_slots
+  end
+
+  def generate_day_slots(professional, date)
+    return [] unless working_hours['weekdays'].present?
+
+    weekday = date.wday
+    day_config = working_hours['weekdays'].find { |d| d['wday'] == weekday }
+    return [] unless day_config&.dig('periods').present?
+
+    slots = []
+    day_config['periods'].each do |period|
+      start_time = Time.parse("#{date} #{period['start']}")
+      end_time = Time.parse("#{date} #{period['end']}")
+
+      current_time = start_time
+      while current_time + slot_duration_minutes.minutes <= end_time
+        slot_end = current_time + slot_duration_minutes.minutes
+
+        conflicts = check_conflicts_for_professional(professional, current_time, slot_end)
+
+        slots << {
+          start_time: current_time,
+          end_time: slot_end,
+          available: conflicts.empty?,
+          conflicts: conflicts
+        }
+
+        current_time = slot_end + buffer_minutes.minutes
+      end
+    end
+
+    slots
+  end
+
+  def slot_summary
+    return 'Não configurado' if slot_duration_minutes.blank? || buffer_minutes.blank?
+    "#{slot_duration_minutes}' + #{buffer_minutes}' buffer"
+  end
+
+  private
+
+  def calculate_total_slots(date_range)
+    total = 0
+
+    professionals.active.each do |professional|
+      date_range.each do |date|
+        day_slots = generate_day_slots(professional, date)
+        total += day_slots.size
+      end
+    end
+
+    total
   end
 
   def duplicate!
@@ -94,10 +194,6 @@ class Agenda < ApplicationRecord
     end
 
     days.join(' | ')
-  end
-
-  def slot_summary
-    "#{slot_duration_minutes}' + #{buffer_minutes}' buffer"
   end
 
   private
@@ -158,6 +254,6 @@ class Agenda < ApplicationRecord
   end
 
   def set_updated_by
-    self.updated_by = Current.user if Current.user
+    self.updated_by = Current.user if defined?(Current) && Current.user
   end
 end

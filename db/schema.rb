@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_05_121045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -80,6 +80,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.index ["professional_id"], name: "index_agenda_professionals_on_professional_id_unique"
   end
 
+  create_table "agenda_templates", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "category", default: 0, null: false
+    t.integer "visibility", default: 0, null: false
+    t.json "template_data", null: false
+    t.integer "usage_count", default: 0
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_agenda_templates_on_category"
+    t.index ["created_by_id", "visibility"], name: "index_agenda_templates_on_created_by_id_and_visibility"
+    t.index ["created_by_id"], name: "index_agenda_templates_on_created_by_id"
+    t.index ["usage_count"], name: "index_agenda_templates_on_usage_count"
+    t.index ["visibility"], name: "index_agenda_templates_on_visibility"
+  end
+
   create_table "agendas", force: :cascade do |t|
     t.string "name", null: false
     t.integer "service_type", default: 0, null: false
@@ -104,6 +121,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.index ["updated_by_id"], name: "index_agendas_on_updated_by_id"
   end
 
+  create_table "appointment_attachments", force: :cascade do |t|
+    t.bigint "medical_appointment_id", null: false
+    t.bigint "uploaded_by_id", null: false
+    t.string "attachment_type", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attachment_type"], name: "index_appointment_attachments_on_attachment_type"
+    t.index ["medical_appointment_id", "created_at"], name: "idx_on_medical_appointment_id_created_at_17577c0f7b"
+    t.index ["medical_appointment_id"], name: "index_appointment_attachments_on_medical_appointment_id"
+    t.index ["uploaded_by_id"], name: "index_appointment_attachments_on_uploaded_by_id"
+  end
+
+  create_table "appointment_notes", force: :cascade do |t|
+    t.bigint "medical_appointment_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "note_type", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_appointment_notes_on_created_by_id"
+    t.index ["medical_appointment_id", "created_at"], name: "idx_on_medical_appointment_id_created_at_e8ef50653d"
+    t.index ["medical_appointment_id"], name: "index_appointment_notes_on_medical_appointment_id"
+    t.index ["note_type"], name: "index_appointment_notes_on_note_type"
+  end
+
   create_table "contract_types", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "requires_company", default: false, null: false
@@ -117,6 +160,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
 
   create_table "document_permissions", force: :cascade do |t|
     t.bigint "document_id", null: false
+    t.bigint "user_id"
     t.bigint "group_id"
     t.integer "access_level", default: 0, null: false
     t.datetime "created_at", null: false
@@ -124,11 +168,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.bigint "professional_id"
     t.index ["access_level"], name: "index_document_permissions_on_access_level"
     t.index ["document_id", "group_id"], name: "index_document_permissions_on_document_id_and_group_id", unique: true, where: "(group_id IS NOT NULL)"
-    t.index ["document_id", "professional_id"], name: "index_document_permissions_on_document_id_and_professional_id", unique: true, where: "(professional_id IS NOT NULL)"
+    t.index ["document_id", "user_id"], name: "index_document_permissions_on_document_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
     t.index ["document_id"], name: "index_document_permissions_on_document_id"
     t.index ["group_id"], name: "index_document_permissions_on_group_id"
     t.index ["professional_id"], name: "index_document_permissions_on_professional_id"
-    t.check_constraint "professional_id IS NOT NULL OR group_id IS NOT NULL", name: "check_professional_or_group_present"
+    t.index ["user_id"], name: "index_document_permissions_on_user_id"
+    t.check_constraint "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
   end
 
   create_table "document_releases", force: :cascade do |t|
@@ -295,6 +340,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.index ["portal_intake_id"], name: "index_journey_events_on_portal_intake_id"
   end
 
+  create_table "medical_appointments", force: :cascade do |t|
+    t.bigint "agenda_id", null: false
+    t.bigint "professional_id", null: false
+    t.bigint "patient_id"
+    t.string "appointment_type", null: false
+    t.string "status", default: "scheduled", null: false
+    t.string "priority", default: "normal", null: false
+    t.datetime "scheduled_at", null: false
+    t.integer "duration_minutes", default: 30, null: false
+    t.text "notes"
+    t.string "cancellation_reason"
+    t.datetime "cancelled_at"
+    t.string "reschedule_reason"
+    t.datetime "rescheduled_at"
+    t.string "no_show_reason"
+    t.datetime "no_show_at"
+    t.text "completion_notes"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agenda_id"], name: "index_medical_appointments_on_agenda_id"
+    t.index ["appointment_type"], name: "index_medical_appointments_on_appointment_type"
+    t.index ["patient_id", "scheduled_at"], name: "index_medical_appointments_on_patient_id_and_scheduled_at"
+    t.index ["patient_id"], name: "index_medical_appointments_on_patient_id"
+    t.index ["priority"], name: "index_medical_appointments_on_priority"
+    t.index ["professional_id", "scheduled_at"], name: "index_medical_appointments_on_professional_id_and_scheduled_at"
+    t.index ["professional_id"], name: "index_medical_appointments_on_professional_id"
+    t.index ["scheduled_at"], name: "index_medical_appointments_on_scheduled_at"
+    t.index ["status"], name: "index_medical_appointments_on_status"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description"
@@ -389,7 +465,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.bigint "external_user_id", null: false
     t.string "convenio", null: false
     t.string "carteira_codigo", null: false
-    t.string "tipo_convenio", null: false
     t.string "nome", null: false
     t.date "data_encaminhamento", null: false
     t.string "status", default: "aguardando", null: false
@@ -469,8 +544,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
     t.text "comment_text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "professional_id"
     t.index ["created_at"], name: "index_version_comments_on_created_at"
     t.index ["document_version_id"], name: "index_version_comments_on_document_version_id"
+    t.index ["professional_id"], name: "index_version_comments_on_professional_id"
     t.index ["user_id"], name: "index_version_comments_on_user_id"
   end
 
@@ -488,12 +565,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agenda_professionals", "agendas"
   add_foreign_key "agenda_professionals", "users", column: "professional_id"
+  add_foreign_key "agenda_templates", "users", column: "created_by_id"
   add_foreign_key "agendas", "units"
   add_foreign_key "agendas", "users", column: "created_by_id"
   add_foreign_key "agendas", "users", column: "updated_by_id"
+  add_foreign_key "appointment_attachments", "medical_appointments"
+  add_foreign_key "appointment_attachments", "users", column: "uploaded_by_id"
+  add_foreign_key "appointment_notes", "medical_appointments"
+  add_foreign_key "appointment_notes", "users", column: "created_by_id"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"
+  add_foreign_key "document_permissions", "users"
   add_foreign_key "document_releases", "document_versions", column: "version_id"
   add_foreign_key "document_releases", "documents"
   add_foreign_key "document_releases", "professionals", column: "released_by_professional_id"
@@ -509,11 +592,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
   add_foreign_key "document_versions", "professionals", column: "created_by_professional_id"
   add_foreign_key "documents", "professionals", column: "author_professional_id"
   add_foreign_key "events", "professionals"
-  add_foreign_key "events", "users", column: "created_by_id"
+  add_foreign_key "events", "professionals", column: "created_by_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"
   add_foreign_key "journey_events", "portal_intakes"
+  add_foreign_key "medical_appointments", "agendas"
+  add_foreign_key "medical_appointments", "users", column: "patient_id"
+  add_foreign_key "medical_appointments", "users", column: "professional_id"
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"
@@ -528,5 +614,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_185945) do
   add_foreign_key "specialization_specialities", "specializations"
   add_foreign_key "users", "professionals"
   add_foreign_key "version_comments", "document_versions"
+  add_foreign_key "version_comments", "professionals"
   add_foreign_key "version_comments", "users"
 end

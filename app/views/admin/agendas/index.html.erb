@@ -1,3 +1,5 @@
+<% content_for :title, "Agendas" %>
+
 <%= render ::Layouts::AdminComponent.new do |c| %>
   <% c.with_actions do %>
     <%= link_to new_admin_agenda_path, class: "ta-btn ta-btn-primary inline-flex items-center gap-2" do %>
@@ -20,15 +22,15 @@
           <div class="grid grid-cols-1 gap-5 md:grid-cols-4">
             <div>
               <%= form.label :search, "Buscar", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.text_field :search, 
-                    value: params[:search], 
+              <%= form.text_field :search,
+                    value: params[:search],
                     placeholder: "Buscar por nome ou descrição...",
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
-            
+
             <div>
               <%= form.label :service_type, "Tipo de Serviço", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.select :service_type, 
+              <%= form.select :service_type,
                     options_for_select([
                       ['Todos os tipos', ''],
                       ['Anamnese', 'anamnese'],
@@ -40,10 +42,10 @@
                     {},
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
-            
+
             <div>
               <%= form.label :status, "Status", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.select :status, 
+              <%= form.select :status,
                     options_for_select([
                       ['Todos os status', ''],
                       ['Rascunho', 'draft'],
@@ -53,7 +55,7 @@
                     {},
                     class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
-            
+
             <div class="flex items-end gap-2">
               <%= form.submit "Filtrar", class: "ta-btn ta-btn-primary" %>
               <%= link_to "Limpar", admin_agendas_path, class: "ta-btn ta-btn-secondary" %>
@@ -68,7 +70,7 @@
       <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
         <h2 class="text-lg font-medium text-gray-800 dark:text-white">Agendas</h2>
       </div>
-      
+
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50 dark:bg-gray-800">
@@ -137,15 +139,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                       </svg>
                     <% end %>
-                    
+
                     <%= link_to edit_admin_agenda_path(agenda), class: "text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
                     <% end %>
-                    
+
                     <% if agenda.status == 'active' %>
-                      <%= link_to archive_admin_agenda_path(agenda), method: :patch, 
+                      <%= link_to archive_admin_agenda_path(agenda), method: :patch,
                             class: "text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300",
                             data: { confirm: "Tem certeza que deseja arquivar esta agenda?" } do %>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +155,7 @@
                         </svg>
                       <% end %>
                     <% elsif agenda.status == 'archived' %>
-                      <%= link_to activate_admin_agenda_path(agenda), method: :patch, 
+                      <%= link_to activate_admin_agenda_path(agenda), method: :patch,
                             class: "text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300",
                             data: { confirm: "Tem certeza que deseja ativar esta agenda?" } do %>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,17 +163,17 @@
                         </svg>
                       <% end %>
                     <% end %>
-                    
-                    <%= link_to duplicate_admin_agenda_path(agenda), method: :post, 
+
+                    <%= link_to duplicate_admin_agenda_path(agenda), method: :post,
                           class: "text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300",
                           data: { confirm: "Tem certeza que deseja duplicar esta agenda?" } do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                       </svg>
                     <% end %>
-                    
+
                     <% if policy(agenda).destroy? %>
-                      <%= link_to admin_agenda_path(agenda), method: :delete, 
+                      <%= link_to admin_agenda_path(agenda), method: :delete,
                             class: "text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300",
                             data: { confirm: "Tem certeza que deseja excluir esta agenda? Esta ação não pode ser desfeita." } do %>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
