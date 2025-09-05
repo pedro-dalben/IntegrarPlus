@@ -123,6 +123,28 @@ Rails.application.routes.draw do
     end
 
     get 'agenda_dashboard', to: 'agenda_dashboard#index'
+    
+    resources :notifications do
+      member do
+        post :mark_as_read
+        post :mark_as_unread
+      end
+      collection do
+        post :mark_all_as_read
+        get :unread_count
+        get :preferences
+        patch :update_preferences
+        get :templates
+        post :create_default_templates
+      end
+    end
+    
+    resources :notification_templates, path: 'notifications/templates', except: [:show] do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

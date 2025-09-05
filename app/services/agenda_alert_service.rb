@@ -157,9 +157,10 @@ class AgendaAlertService
     alerts = check_alerts
     metrics = calculate_weekly_metrics
 
-    admin_users = User.where(role: 'admin')
+    admin_users = User.joins(:professional).where(professionals: { id: Professional.joins(:groups).where(groups: { is_admin: true }) })
 
     admin_users.each do |admin|
+      NotificationService.send_weekly_summary(admin, alerts, metrics)
       AgendaNotificationMailer.weekly_summary(admin, alerts, metrics).deliver_later
     end
   end

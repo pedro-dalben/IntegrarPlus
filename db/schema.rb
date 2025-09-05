@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_05_121045) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -371,6 +371,55 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_121045) do
     t.index ["status"], name: "index_medical_appointments_on_status"
   end
 
+  create_table "notification_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "type", null: false
+    t.boolean "email_enabled", default: true
+    t.boolean "sms_enabled", default: false
+    t.boolean "push_enabled", default: true
+    t.json "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "type"], name: "index_notification_preferences_on_user_id_and_type", unique: true
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id"
+  end
+
+  create_table "notification_templates", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "type", null: false
+    t.string "channel", null: false
+    t.string "subject"
+    t.text "body", null: false
+    t.json "variables"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_notification_templates_on_active"
+    t.index ["type", "channel"], name: "index_notification_templates_on_type_and_channel"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "type", null: false
+    t.string "title", null: false
+    t.text "message", null: false
+    t.json "metadata"
+    t.boolean "read", default: false
+    t.datetime "read_at"
+    t.datetime "scheduled_at"
+    t.string "status", default: "pending"
+    t.string "channel", default: "email"
+    t.datetime "sent_at"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_notifications_on_created_at"
+    t.index ["scheduled_at"], name: "index_notifications_on_scheduled_at"
+    t.index ["type", "status"], name: "index_notifications_on_type_and_status"
+    t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description"
@@ -600,6 +649,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_121045) do
   add_foreign_key "medical_appointments", "agendas"
   add_foreign_key "medical_appointments", "users", column: "patient_id"
   add_foreign_key "medical_appointments", "users", column: "professional_id"
+  add_foreign_key "notification_preferences", "users"
+  add_foreign_key "notifications", "users"
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"

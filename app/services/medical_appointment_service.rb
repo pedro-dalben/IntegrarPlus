@@ -8,6 +8,7 @@ class MedicalAppointmentService
 
     if appointment.save
       appointment.send_notifications
+      NotificationService.send_appointment_notification(appointment, 'scheduled')
       schedule_reminders(appointment)
       appointment
     else
@@ -36,6 +37,7 @@ class MedicalAppointmentService
     )
 
     appointment.send_notifications
+    NotificationService.send_appointment_notification(appointment, 'cancelled')
     cancel_reminders(appointment)
     appointment
   end
@@ -51,6 +53,7 @@ class MedicalAppointmentService
     )
 
     appointment.send_notifications
+    NotificationService.send_appointment_notification(appointment, 'rescheduled')
     reschedule_reminders(appointment, old_time, new_time)
     appointment
   end
@@ -63,6 +66,7 @@ class MedicalAppointmentService
     )
 
     appointment.send_notifications
+    NotificationService.send_appointment_notification(appointment, 'completed')
     appointment
   end
 
@@ -74,6 +78,7 @@ class MedicalAppointmentService
     )
 
     appointment.send_notifications
+    NotificationService.send_appointment_notification(appointment, 'no_show')
     appointment
   end
 
@@ -112,6 +117,7 @@ class MedicalAppointmentService
       ).order(:scheduled_at)
 
       if appointments.any?
+        NotificationService.send_daily_report(professional, appointments)
         MedicalAppointmentMailer.daily_schedule(professional, appointments).deliver_later
       end
     end
@@ -207,6 +213,7 @@ class MedicalAppointmentService
     )
 
     emergency_appointments.each do |appointment|
+      NotificationService.send_emergency_alert(appointment)
       MedicalAppointmentMailer.emergency_alert(appointment).deliver_later
     end
 

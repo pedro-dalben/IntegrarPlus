@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta Agendada</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #10B981;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .content {
+      background-color: #f8f9fa;
+      padding: 30px;
+      border-radius: 0 0 8px 8px;
+    }
+    .appointment-details {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #e5e7eb;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      font-weight: bold;
+      color: #374151;
+    }
+    .detail-value {
+      color: #6B7280;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      color: #666;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✅ Consulta Agendada</h1>
+    <p>Sua consulta foi agendada com sucesso!</p>
+  </div>
+  
+  <div class="content">
+    <h2>Detalhes da Consulta</h2>
+    
+    <div class="appointment-details">
+      <div class="detail-row">
+        <span class="detail-label">Data:</span>
+        <span class="detail-value"><%= @appointment.scheduled_at.strftime('%d/%m/%Y') %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Horário:</span>
+        <span class="detail-value"><%= @appointment.scheduled_at.strftime('%H:%M') %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Profissional:</span>
+        <span class="detail-value"><%= @appointment.professional.full_name %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Agenda:</span>
+        <span class="detail-value"><%= @appointment.agenda.name %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Tipo:</span>
+        <span class="detail-value"><%= @appointment.appointment_type.humanize %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Duração:</span>
+        <span class="detail-value"><%= @appointment.duration_minutes %> minutos</span>
+      </div>
+    </div>
+    
+    <div style="background-color: #FEF3C7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+      <strong>📋 Lembrete:</strong> Chegue com 15 minutos de antecedência para o atendimento.
+    </div>
+    
+    <p style="margin-top: 30px;">
+      <a href="<%= root_url %>" style="background-color: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+        Acessar Sistema
+      </a>
+    </p>
+  </div>
+  
+  <div class="footer">
+    <p>Esta é uma notificação automática do sistema IntegrarPlus.</p>
+    <p>Se você não deseja receber estas notificações, entre em contato com o administrador.</p>
+  </div>
+</body>
+</html>

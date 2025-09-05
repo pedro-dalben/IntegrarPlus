@@ -1,0 +1,157 @@
+<div class="page-header">
+  <div class="page-title">
+    <h1>Notificações</h1>
+    <p>Gerencie suas notificações do sistema</p>
+  </div>
+  <div class="page-actions">
+    <%= link_to 'Preferências', preferences_admin_notifications_path, class: 'btn btn-outline-primary' %>
+    <%= link_to 'Templates', templates_admin_notifications_path, class: 'btn btn-outline-secondary' %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">
+            Notificações 
+            <% if @unread_count > 0 %>
+              <span class="badge bg-danger"><%= @unread_count %></span>
+            <% end %>
+          </h5>
+          <div class="d-flex gap-2">
+            <%= link_to 'Marcar todas como lidas', mark_all_as_read_admin_notifications_path, 
+                        method: :post, class: 'btn btn-sm btn-outline-success' %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <!-- Filtros -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
+              <%= f.select :read, 
+                          options_for_select([
+                            ['Todas', ''],
+                            ['Não lidas', 'false'],
+                            ['Lidas', 'true']
+                          ], params[:read]), 
+                          {}, 
+                          { class: 'form-select' } %>
+            <% end %>
+          </div>
+          <div class="col-md-3">
+            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
+              <%= f.select :type, 
+                          options_for_select([
+                            ['Todos os tipos', ''],
+                            *@notification_types.map { |type| [type.humanize, type] }
+                          ], params[:type]), 
+                          {}, 
+                          { class: 'form-select' } %>
+            <% end %>
+          </div>
+          <div class="col-md-3">
+            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
+              <%= f.select :channel, 
+                          options_for_select([
+                            ['Todos os canais', ''],
+                            *@notification_channels.map { |channel| [channel.humanize, channel] }
+                          ], params[:channel]), 
+                          {}, 
+                          { class: 'form-select' } %>
+            <% end %>
+          </div>
+          <div class="col-md-3">
+            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
+              <%= f.text_field :search, 
+                              placeholder: 'Buscar notificações...', 
+                              value: params[:search], 
+                              class: 'form-control' %>
+              <%= f.submit 'Buscar', class: 'btn btn-primary ms-2' %>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Lista de notificações -->
+        <% if @notifications.any? %>
+          <div class="list-group">
+            <% @notifications.each do |notification| %>
+              <div class="list-group-item <%= 'list-group-item-light' if notification.read? %>">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                      <i class="feather <%= notification.type_icon %> text-<%= notification.type_color %> me-2"></i>
+                      <h6 class="mb-0 <%= 'text-muted' if notification.read? %>">
+                        <%= notification.title %>
+                        <% unless notification.read? %>
+                          <span class="badge bg-primary ms-2">Nova</span>
+                        <% end %>
+                      </h6>
+                    </div>
+                    <p class="mb-2 <%= 'text-muted' if notification.read? %>">
+                      <%= truncate(notification.message, length: 150) %>
+                    </p>
+                    <div class="d-flex align-items-center text-muted small">
+                      <i class="feather <%= notification.channel_icon %> me-1"></i>
+                      <span class="me-3"><%= notification.channel.humanize %></span>
+                      <i class="feather clock me-1"></i>
+                      <span><%= notification.formatted_created_at %></span>
+                      <% if notification.scheduled_at %>
+                        <span class="ms-3">
+                          <i class="feather calendar me-1"></i>
+                          Agendada: <%= notification.formatted_scheduled_at %>
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                      Ações
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <%= link_to 'Ver detalhes', admin_notification_path(notification), class: 'dropdown-item' %>
+                      </li>
+                      <% if notification.read? %>
+                        <li>
+                          <%= link_to 'Marcar como não lida', mark_as_unread_admin_notification_path(notification), 
+                                      method: :post, class: 'dropdown-item' %>
+                        </li>
+                      <% else %>
+                        <li>
+                          <%= link_to 'Marcar como lida', mark_as_read_admin_notification_path(notification), 
+                                      method: :post, class: 'dropdown-item' %>
+                        </li>
+                      <% end %>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <%= link_to 'Remover', admin_notification_path(notification), 
+                                    method: :delete, 
+                                    confirm: 'Tem certeza?', 
+                                    class: 'dropdown-item text-danger' %>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+          <!-- Paginação -->
+          <div class="d-flex justify-content-center mt-4">
+            <!-- Implementar paginação se necessário -->
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="feather bell-off text-muted" style="font-size: 3rem;"></i>
+            <h5 class="text-muted mt-3">Nenhuma notificação encontrada</h5>
+            <p class="text-muted">Você não possui notificações com os filtros aplicados.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

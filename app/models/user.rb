@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :document_permissions, dependent: :destroy
   has_many :document_status_changes, dependent: :destroy
   has_many :version_comments, dependent: :destroy
+  has_many :notifications, dependent: :destroy
+  has_many :notification_preferences, dependent: :destroy
 
   delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true
 

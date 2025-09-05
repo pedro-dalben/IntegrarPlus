@@ -167,6 +167,9 @@ load(Rails.root.join('db/seeds/external_users.rb'))
 # Carrega seeds para entradas do portal
 load(Rails.root.join('db/seeds/portal_intakes.rb'))
 
+# Criar templates de notificação
+load Rails.root.join('db', 'seeds', 'notification_templates.rb')
+
 puts "\n🎉 Seeds executados com sucesso!"
 puts '📋 Usuário admin disponível:'
 puts '   Email: admin@integrarplus.com'
