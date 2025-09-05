@@ -1,0 +1,515 @@
+pt-BR:
+  activerecord:
+    models:
+      agenda:
+        one: Agenda
+        other: Agendas
+      agenda_template:
+        one: Template de Agenda
+        other: Templates de Agenda
+      medical_appointment:
+        one: Consulta Médica
+        other: Consultas Médicas
+      appointment_note:
+        one: Anotação de Consulta
+        other: Anotações de Consulta
+      appointment_attachment:
+        one: Anexo de Consulta
+        other: Anexos de Consulta
+    attributes:
+      agenda:
+        name: Nome
+        service_type: Tipo de Serviço
+        default_visibility: Visibilidade Padrão
+        unit_id: Unidade
+        color_theme: Cor do Marcador
+        notes: Observações
+        working_hours: Horários de Funcionamento
+        slot_duration_minutes: Duração do Slot (minutos)
+        buffer_minutes: Buffer entre Slots (minutos)
+        status: Status
+        created_by: Criado por
+        updated_by: Atualizado por
+      agenda_template:
+        name: Nome
+        description: Descrição
+        category: Categoria
+        visibility: Visibilidade
+        template_data: Dados do Template
+        usage_count: Contador de Uso
+        created_by: Criado por
+      medical_appointment:
+        appointment_type: Tipo de Consulta
+        status: Status
+        priority: Prioridade
+        start_time: Data/Hora de Início
+        end_time: Data/Hora de Fim
+        patient_id: Paciente
+        professional_id: Profissional
+        agenda_id: Agenda
+        description: Descrição
+        created_by: Criado por
+        updated_by: Atualizado por
+      appointment_note:
+        content: Conteúdo
+        note_type: Tipo de Anotação
+        medical_appointment_id: Consulta Médica
+        created_by: Criado por
+      appointment_attachment:
+        file: Arquivo
+        description: Descrição
+        attachment_type: Tipo de Anexo
+        medical_appointment_id: Consulta Médica
+        uploaded_by: Enviado por
+    enums:
+      agenda:
+        service_type:
+          anamnese: Anamnese
+          consulta: Consulta
+          atendimento: Atendimento
+          reuniao: Reunião
+          outro: Outro
+        default_visibility:
+          private_visibility: Privada
+          restricted: Restrita
+          public_visibility: Pública
+        status:
+          draft: Rascunho
+          active: Ativa
+          archived: Arquivada
+      agenda_template:
+        category:
+          consulta_medica: Consulta Médica
+          anamnese: Anamnese
+          atendimento_psicologico: Atendimento Psicológico
+          reabilitacao: Reabilitação
+          reuniao_equipe: Reunião de Equipe
+          treinamento: Treinamento
+          outro: Outro
+        visibility:
+          private_template: Template Privado
+          unit_template: Template da Unidade
+          global_template: Template Global
+      medical_appointment:
+        appointment_type:
+          consulta_inicial: Consulta Inicial
+          consulta_retorno: Consulta de Retorno
+          consulta_emergencia: Consulta de Emergência
+          procedimento: Procedimento
+          exame: Exame
+          terapia: Terapia
+          avaliacao: Avaliação
+          outro: Outro
+        status:
+          agendado: Agendado
+          confirmado: Confirmado
+          em_andamento: Em Andamento
+          concluido: Concluído
+          cancelado: Cancelado
+          nao_compareceu: Não Compareceu
+          reagendado: Reagendado
+        priority:
+          baixa: Baixa
+          normal: Normal
+          alta: Alta
+          urgente: Urgente
+      appointment_note:
+        note_type:
+          geral: Geral
+          sintomas: Sintomas
+          diagnostico: Diagnóstico
+          tratamento: Tratamento
+          prescricao: Prescrição
+          observacoes: Observações
+          conclusao: Conclusão
+          encaminhamento: Encaminhamento
+          retorno: Retorno
+      appointment_attachment:
+        attachment_type:
+          documento: Documento
+          imagem: Imagem
+          exame: Exame
+          receita: Receita
+          atestado: Atestado
+          relatorio: Relatório
+          outro: Outro
+  admin:
+    agendas:
+      index:
+        title: Agendas
+        new_agenda: Nova Agenda
+        filters: Filtros
+        search: Buscar
+        search_placeholder: Buscar por nome ou descrição...
+        service_type: Tipo de Serviço
+        status: Status
+        filter: Filtrar
+        clear: Limpar
+        no_agendas_found: Nenhuma agenda encontrada
+        start_creating: Comece criando sua primeira agenda
+        name: Nome
+        type: Tipo
+        professionals: Profissionais
+        slots: Slots
+        last_update: Última Atualização
+        actions: Ações
+        view: Visualizar
+        edit: Editar
+        archive: Arquivar
+        activate: Ativar
+        duplicate: Duplicar
+        delete: Excluir
+        confirm_archive: Tem certeza que deseja arquivar esta agenda?
+        confirm_activate: Tem certeza que deseja ativar esta agenda?
+        confirm_duplicate: Tem certeza que deseja duplicar esta agenda?
+        confirm_delete: Tem certeza que deseja excluir esta agenda? Esta ação não pode ser desfeita.
+      show:
+        title: Detalhes da Agenda
+        edit: Editar
+        duplicate: Duplicar
+        archive: Arquivar
+        activate: Ativar
+        confirm_duplicate: Tem certeza que deseja duplicar esta agenda?
+        confirm_archive: Tem certeza que deseja arquivar esta agenda?
+        confirm_activate: Tem certeza que deseja ativar esta agenda?
+        configurations: Configurações
+        basic_info: Informações Básicas
+        slot_configuration: Configuração de Slots
+        slot_duration: Duração do Slot
+        buffer_between_slots: Buffer entre Slots
+        marker_color: Cor do Marcador
+        observations: Observações
+        working_hours: Grade de Horários
+        summary: Resumo
+        closed: Fechado
+        recent_events: Eventos Recentes
+        no_events_found: Nenhum evento encontrado
+        patient_not_informed: Paciente não informado
+        professionals: Profissionais
+        active: Ativo
+        preview: Previsualização
+        next_7_days: Próximos 7 dias - Slots disponíveis
+        loading_preview: Carregando preview...
+      new:
+        title: Nova Agenda
+        back: Voltar
+        wizard_steps:
+          metadata: Metadados
+          professionals: Profissionais
+          working_hours: Grade de Horários
+          review: Revisão
+        errors_title: "erro impediram que esta agenda fosse salva:"
+        errors_title_plural: "erros impediram que esta agenda fosse salva:"
+        save_draft: Salvar como Rascunho
+        next: Próximo
+        previous: Anterior
+        activate_agenda: Ativar Agenda
+      edit:
+        title: Editar Agenda
+        back: Voltar
+        wizard_steps:
+          metadata: Metadados
+          professionals: Profissionais
+          working_hours: Grade de Horários
+          review: Revisão
+        errors_title: "erro impediram que esta agenda fosse salva:"
+        errors_title_plural: "erros impediram que esta agenda fosse salva:"
+        save_draft: Salvar como Rascunho
+        next: Próximo
+        previous: Anterior
+        activate_agenda: Ativar Agenda
+      step_metadata:
+        title: Informações Básicas
+        subtitle: Configure os metadados básicos da agenda
+        agenda_name: Nome da Agenda
+        agenda_name_placeholder: "Ex: Anamnese - Unidade Centro"
+        agenda_name_help: Nome único para identificar esta agenda
+        service_type: Tipo de Serviço
+        select_type: Selecione um tipo
+        default_visibility: Visibilidade Padrão
+        private: Privada
+        restricted: Restrita
+        public: Pública
+        visibility_info_private: "Privada: Apenas profissionais vinculados podem ver e agendar"
+        visibility_info_restricted: "Restrita: Profissionais autorizados podem ver e agendar"
+        visibility_info_public: "Pública: Todos os profissionais podem ver e agendar"
+        unit_optional: Unidade (Opcional)
+        select_unit: Selecione uma unidade
+        marker_color: Cor do Marcador
+        marker_color_help: Cor que aparecerá no calendário
+        observations: Observações
+        observations_placeholder: Informações adicionais sobre esta agenda...
+      step_professionals:
+        title: Profissionais Vinculados
+        subtitle: Selecione os profissionais que podem atender nesta agenda
+        search_professionals: Buscar Profissionais
+        search_help: Digite o nome ou especialidade para filtrar
+        select_all_apt: Selecionar Todos Aptos
+        search_placeholder: Buscar por nome ou especialidade...
+        available_professionals: Profissionais Disponíveis
+        selected_professionals: Profissionais Selecionados
+        no_professionals_selected: Nenhum profissional selecionado
+        important: Importante
+        important_message: É necessário selecionar pelo menos um profissional para esta agenda.
+      step_working_hours:
+        title: Grade de Horários
+        subtitle: Configure os horários de funcionamento e duração dos slots
+        slot_configuration: Configuração dos Slots
+        slot_duration: Duração do Slot (minutos)
+        buffer_between_slots: Buffer entre Slots (minutos)
+        preview_info: Isso gera slots de %{duration}' + %{buffer}' buffer
+        hours_by_day: Horários por Dia da Semana
+        add_period: + Adicionar Período
+        copy_to_all_days: Copiar para Todos os Dias
+        generate_preview: Gerar Prévia de Slots
+        exceptions: Exceções
+        exceptions_help: Configure datas especiais ou feriados
+        add_exception: + Adicionar Exceção
+        tips: Dicas
+        tip_1: Marque os dias em que a agenda funcionará
+        tip_2: Adicione múltiplos períodos por dia se necessário
+        tip_3: Use exceções para feriados ou datas especiais
+      step_review:
+        title: Revisão
+        subtitle: Revise as informações antes de salvar
+        basic_info: Informações Básicas
+        professionals: Profissionais
+        working_hours: Horários de Funcionamento
+        slot_configuration: Configuração de Slots
+        preview: Prévia de Slots
+        save_draft: Salvar como Rascunho
+        activate_agenda: Ativar Agenda
+      dashboard:
+        title: Dashboard de Agendas
+        subtitle: Visão geral das métricas e performance das agendas
+        active_agendas: Agendas Ativas
+        active_professionals: Profissionais Ativos
+        available_slots: Slots Disponíveis
+        occupancy_rate: Taxa de Ocupação
+        next_7_days: Próximos 7 dias
+        with_agenda: Com agenda configurada
+        monthly_average: Média mensal
+        vs_previous_month: vs mês anterior
+        occupancy_by_period: Ocupação por Período
+        last_7_days: Últimos 7 dias
+        last_30_days: Últimos 30 dias
+        last_3_months: Últimos 3 meses
+        utilization_by_professional: Utilização por Profissional
+        refresh: Atualizar
+        trends: Tendências
+        last_3_months: Últimos 3 meses
+        last_6_months: Últimos 6 meses
+        last_year: Último ano
+        system_alerts: Alertas do Sistema
+        no_alerts: Nenhum alerta ativo
+        recent_activities: Atividades Recentes
+        new_agenda_created: Nova agenda criada
+        new_event_created: Novo evento criado
+        ago: atrás
+    agenda_templates:
+      index:
+        title: Templates de Agenda
+        new_template: Novo Template
+        filters: Filtros
+        search: Buscar
+        search_placeholder: Buscar por nome ou descrição...
+        category: Categoria
+        visibility: Visibilidade
+        filter: Filtrar
+        clear: Limpar
+        no_templates_found: Nenhum template encontrado
+        start_creating: Comece criando seu primeiro template
+        name: Nome
+        category: Categoria
+        visibility: Visibilidade
+        usage_count: Uso
+        created_by: Criado por
+        actions: Ações
+        view: Visualizar
+        edit: Editar
+        duplicate: Duplicar
+        delete: Excluir
+        confirm_duplicate: Tem certeza que deseja duplicar este template?
+        confirm_delete: Tem certeza que deseja excluir este template? Esta ação não pode ser desfeita.
+      show:
+        title: Detalhes do Template
+        edit: Editar
+        duplicate: Duplicar
+        create_agenda: Criar Agenda
+        confirm_duplicate: Tem certeza que deseja duplicar este template?
+        preview: Prévia
+        basic_info: Informações Básicas
+        template_data: Dados do Template
+        usage_stats: Estatísticas de Uso
+        created_by: Criado por
+        created_at: Criado em
+        updated_at: Atualizado em
+        usage_count: Vezes utilizado
+        last_used: Último uso
+        never_used: Nunca utilizado
+      new:
+        title: Novo Template
+        back: Voltar
+        basic_info: Informações Básicas
+        template_name: Nome do Template
+        template_name_placeholder: "Ex: Template de Consulta Padrão"
+        description: Descrição
+        description_placeholder: Descrição do template...
+        category: Categoria
+        select_category: Selecione uma categoria
+        visibility: Visibilidade
+        private_template: Template Privado
+        unit_template: Template da Unidade
+        global_template: Template Global
+        template_data: Dados do Template
+        save: Salvar
+        cancel: Cancelar
+      edit:
+        title: Editar Template
+        back: Voltar
+        basic_info: Informações Básicas
+        template_name: Nome do Template
+        template_name_placeholder: "Ex: Template de Consulta Padrão"
+        description: Descrição
+        description_placeholder: Descrição do template...
+        category: Categoria
+        select_category: Selecione uma categoria
+        visibility: Visibilidade
+        private_template: Template Privado
+        unit_template: Template da Unidade
+        global_template: Template Global
+        template_data: Dados do Template
+        save: Salvar
+        cancel: Cancelar
+    medical_appointments:
+      index:
+        title: Consultas Médicas
+        new_appointment: Nova Consulta
+        filters: Filtros
+        search: Buscar
+        search_placeholder: Buscar por paciente ou profissional...
+        appointment_type: Tipo de Consulta
+        status: Status
+        priority: Prioridade
+        date_range: Período
+        filter: Filtrar
+        clear: Limpar
+        no_appointments_found: Nenhuma consulta encontrada
+        start_creating: Comece criando sua primeira consulta
+        patient: Paciente
+        professional: Profissional
+        type: Tipo
+        start_time: Data/Hora
+        status: Status
+        priority: Prioridade
+        actions: Ações
+        view: Visualizar
+        edit: Editar
+        cancel: Cancelar
+        reschedule: Reagendar
+        confirm: Confirmar
+        start: Iniciar
+        complete: Concluir
+        mark_no_show: Marcar como Falta
+        confirm_cancel: Tem certeza que deseja cancelar esta consulta?
+        confirm_reschedule: Tem certeza que deseja reagendar esta consulta?
+        confirm_complete: Tem certeza que deseja concluir esta consulta?
+        confirm_no_show: Tem certeza que deseja marcar como falta?
+      show:
+        title: Detalhes da Consulta
+        edit: Editar
+        cancel: Cancelar
+        reschedule: Reagendar
+        confirm: Confirmar
+        start: Iniciar
+        complete: Concluir
+        mark_no_show: Marcar como Falta
+        confirm_cancel: Tem certeza que deseja cancelar esta consulta?
+        confirm_reschedule: Tem certeza que deseja reagendar esta consulta?
+        confirm_complete: Tem certeza que deseja concluir esta consulta?
+        confirm_no_show: Tem certeza que deseja marcar como falta?
+        basic_info: Informações Básicas
+        patient_info: Informações do Paciente
+        professional_info: Informações do Profissional
+        appointment_info: Informações da Consulta
+        notes: Anotações
+        attachments: Anexos
+        add_note: Adicionar Anotação
+        add_attachment: Adicionar Anexo
+        no_notes: Nenhuma anotação encontrada
+        no_attachments: Nenhum anexo encontrado
+      new:
+        title: Nova Consulta
+        back: Voltar
+        basic_info: Informações Básicas
+        patient: Paciente
+        select_patient: Selecione um paciente
+        professional: Profissional
+        select_professional: Selecione um profissional
+        agenda: Agenda
+        select_agenda: Selecione uma agenda
+        appointment_type: Tipo de Consulta
+        select_type: Selecione um tipo
+        priority: Prioridade
+        select_priority: Selecione uma prioridade
+        start_time: Data/Hora de Início
+        end_time: Data/Hora de Fim
+        description: Descrição
+        description_placeholder: Descrição da consulta...
+        save: Salvar
+        cancel: Cancelar
+      edit:
+        title: Editar Consulta
+        back: Voltar
+        basic_info: Informações Básicas
+        patient: Paciente
+        select_patient: Selecione um paciente
+        professional: Profissional
+        select_professional: Selecione um profissional
+        agenda: Agenda
+        select_agenda: Selecione uma agenda
+        appointment_type: Tipo de Consulta
+        select_type: Selecione um tipo
+        priority: Prioridade
+        select_priority: Selecione uma prioridade
+        start_time: Data/Hora de Início
+        end_time: Data/Hora de Fim
+        description: Descrição
+        description_placeholder: Descrição da consulta...
+        save: Salvar
+        cancel: Cancelar
+  flash:
+    agendas:
+      created: Agenda criada com sucesso.
+      updated: Agenda atualizada com sucesso.
+      destroyed: Agenda excluída com sucesso.
+      archived: Agenda arquivada com sucesso.
+      activated: Agenda ativada com sucesso.
+      duplicated: Agenda duplicada com sucesso.
+      cannot_delete: Não é possível excluir uma agenda que possui eventos.
+      cannot_archive: Não é possível arquivar uma agenda que possui eventos.
+      cannot_activate: Não é possível ativar uma agenda que possui eventos.
+    agenda_templates:
+      created: Template criado com sucesso.
+      updated: Template atualizado com sucesso.
+      destroyed: Template excluído com sucesso.
+      duplicated: Template duplicado com sucesso.
+      cannot_delete: Não é possível excluir um template que já foi utilizado.
+      created_from_agenda: Template criado a partir da agenda com sucesso.
+      agenda_created_from_template: Agenda criada a partir do template com sucesso.
+    medical_appointments:
+      created: Consulta agendada com sucesso.
+      updated: Consulta atualizada com sucesso.
+      destroyed: Consulta excluída com sucesso.
+      confirmed: Consulta confirmada com sucesso.
+      cancelled: Consulta cancelada com sucesso.
+      rescheduled: Consulta reagendada com sucesso.
+      started: Consulta iniciada com sucesso.
+      completed: Consulta concluída com sucesso.
+      marked_no_show: Consulta marcada como falta com sucesso.
+      cannot_cancel: Não é possível cancelar esta consulta.
+      cannot_reschedule: Não é possível reagendar esta consulta.
+      cannot_complete: Não é possível concluir esta consulta.
+      cannot_mark_no_show: Não é possível marcar como falta.
+      conflicts_detected: Conflitos de horário detectados.
+      no_slots_available: Nenhum slot disponível para o horário selecionado.
