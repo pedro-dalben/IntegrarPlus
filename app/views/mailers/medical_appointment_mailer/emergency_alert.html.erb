@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ALERTA: Consulta de Emergência</title>
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .header { background-color: #dc2626; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+      .content { background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+      .alert-box { background-color: #fef2f2; border: 2px solid #fecaca; border-radius: 8px; padding: 20px; margin: 20px 0; }
+      .info-box { background-color: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+      .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+      .info-label { font-weight: bold; color: #6b7280; }
+      .info-value { color: #111827; }
+      .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚨 ALERTA: Consulta de Emergência</h1>
+      </div>
+
+      <div class="content">
+        <div class="alert-box">
+          <h2>⚠️ ATENÇÃO: Consulta de Emergência Agendada</h2>
+          <p>Uma consulta de emergência foi agendada e requer sua atenção imediata.</p>
+        </div>
+
+        <p>Olá <%= @professional.name %>,</p>
+
+        <p>Uma consulta de emergência foi agendada para você. Abaixo estão os detalhes:</p>
+
+        <div class="info-box">
+          <div class="info-row">
+            <span class="info-label">Paciente:</span>
+            <span class="info-value"><%= @patient&.name || 'Não informado' %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Agenda:</span>
+            <span class="info-value"><%= @agenda.name %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tipo de Consulta:</span>
+            <span class="info-value"><%= @appointment.appointment_type.humanize %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Data e Hora:</span>
+            <span class="info-value"><%= @appointment.scheduled_at.strftime('%d/%m/%Y às %H:%M') %></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Duração:</span>
+            <span class="info-value"><%= @appointment.duration_minutes %> minutos</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Prioridade:</span>
+            <span class="info-value"><%= @appointment.priority.humanize %></span>
+          </div>
+        </div>
+
+        <% if @appointment.notes.present? %>
+          <div class="info-box">
+            <h3>Observações:</h3>
+            <p><%= simple_format(@appointment.notes) %></p>
+          </div>
+        <% end %>
+
+        <p><strong>Ação Necessária:</strong></p>
+        <ul>
+          <li>Confirme sua disponibilidade imediatamente</li>
+          <li>Prepare-se para a consulta de emergência</li>
+          <li>Entre em contato com o paciente se necessário</li>
+        </ul>
+
+        <p>Se você não puder atender esta consulta de emergência, entre em contato conosco imediatamente.</p>
+
+        <p>Atenciosamente,<br>Equipe IntegrarPlus</p>
+      </div>
+
+      <div class="footer">
+        <p>Este é um email automático, por favor não responda.</p>
+      </div>
+    </div>
+  </body>
+</html>

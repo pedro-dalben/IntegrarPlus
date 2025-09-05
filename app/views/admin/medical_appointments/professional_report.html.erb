@@ -1,0 +1,230 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Relatório do Profissional</h1>
+    <p class="text-gray-600">Análise detalhada das consultas do profissional</p>
+  </div>
+  <div>
+    <%= link_to "Voltar", admin_medical_appointments_path, class: "ta-btn ta-btn-secondary" %>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-lg font-medium text-gray-900">Informações do Profissional</h2>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-sm font-medium text-gray-500">Nome</h3>
+        <p class="mt-1 text-sm text-gray-900">
+          <%= @report[:professional].name %>
+        </p>
+      </div>
+      <div>
+        <h3 class="text-sm font-medium text-gray-500">Período</h3>
+        <p class="mt-1 text-sm text-gray-900">
+          <%= @report[:date_range].first.strftime('%d/%m/%Y') %> a <%= @report[:date_range].last.strftime('%d/%m/%Y') %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-calendar text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Total de Consultas</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= @report[:total_appointments] %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-check-circle text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Consultas Concluídas</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= @report[:completed_appointments] %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-times-circle text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Consultas Canceladas</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= @report[:cancelled_appointments] %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-user-times text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Não Comparecimentos</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= @report[:no_show_appointments] %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-chart-pie text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Taxa de Ocupação</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= number_to_percentage(@report[:occupation_rate], precision: 1) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-check-circle text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Taxa de Conclusão</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= number_to_percentage(@report[:completion_rate], precision: 1) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+            <i class="fas fa-times-circle text-white text-sm"></i>
+          </div>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-500">Taxa de Faltas</p>
+          <p class="text-2xl font-semibold text-gray-900">
+            <%= number_to_percentage(@report[:no_show_rate], precision: 1) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-lg font-medium text-gray-900">Consultas do Período</h2>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paciente</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prioridade</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @appointments.each do |appointment| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">
+                <%= appointment.patient&.name || 'Não informado' %>
+              </div>
+              <div class="text-sm text-gray-500">
+                <%= appointment.patient&.email || 'N/A' %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <i class="fas fa-<%= appointment.type_icon %> text-<%= appointment.type_color %>-500 mr-2"></i>
+                <span class="text-sm text-gray-900">
+                  <%= appointment.appointment_type.humanize %>
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">
+                <%= appointment.scheduled_at.strftime('%d/%m/%Y') %>
+              </div>
+              <div class="text-sm text-gray-500">
+                <%= appointment.scheduled_at.strftime('%H:%M') %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= appointment.status_color %>-100 text-<%= appointment.status_color %>-800">
+                <%= appointment.status.humanize %>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= appointment.priority_color %>-100 text-<%= appointment.priority_color %>-800">
+                <%= appointment.priority.humanize %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if @appointments.empty? %>
+    <div class="text-center py-12">
+      <div class="mx-auto h-12 w-12 text-gray-400">
+        <i class="fas fa-calendar-times text-4xl"></i>
+      </div>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhuma consulta encontrada</h3>
+      <p class="mt-1 text-sm text-gray-500">Não há consultas para este profissional no período selecionado.</p>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,276 @@
+<% content_for :title, "Consulta Médica" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Consulta Médica</h1>
+    <p class="text-gray-600">Detalhes da consulta agendada</p>
+  </div>
+  <div class="flex gap-3">
+    <%= link_to "Voltar", admin_medical_appointments_path, class: "ta-btn ta-btn-secondary" %>
+    <% if @medical_appointment.can_be_edited? %>
+      <%= link_to "Editar", edit_admin_medical_appointment_path(@medical_appointment), class: "ta-btn ta-btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-medium text-gray-900">Informações da Consulta</h2>
+      </div>
+      <div class="p-6">
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Paciente</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.patient&.name || 'Não informado' %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Profissional</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.professional.name %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Agenda</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.agenda.name %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Tipo de Consulta</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <div class="flex items-center">
+                <i class="fas fa-<%= @medical_appointment.type_icon %> text-<%= @medical_appointment.type_color %>-500 mr-2"></i>
+                <%= @medical_appointment.appointment_type.humanize %>
+              </div>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Data e Hora</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.scheduled_at.strftime('%d/%m/%Y às %H:%M') %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Duração</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.duration_minutes %> minutos
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Status</dt>
+            <dd class="mt-1">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= @medical_appointment.status_color %>-100 text-<%= @medical_appointment.status_color %>-800">
+                <%= @medical_appointment.status.humanize %>
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Prioridade</dt>
+            <dd class="mt-1">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= @medical_appointment.priority_color %>-100 text-<%= @medical_appointment.priority_color %>-800">
+                <%= @medical_appointment.priority.humanize %>
+              </span>
+            </dd>
+          </div>
+        </dl>
+
+        <% if @medical_appointment.notes.present? %>
+          <div class="mt-6">
+            <dt class="text-sm font-medium text-gray-500">Observações</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= simple_format(@medical_appointment.notes) %>
+            </dd>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-medium text-gray-900">Anotações</h2>
+          <%= link_to "Nova Anotação", new_admin_medical_appointment_appointment_note_path(@medical_appointment), class: "ta-btn ta-btn-secondary text-sm" %>
+        </div>
+      </div>
+      <div class="p-6">
+        <% if @appointment_notes.any? %>
+          <div class="space-y-4">
+            <% @appointment_notes.each do |note| %>
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center">
+                    <i class="fas fa-<%= note.type_icon %> text-<%= note.type_color %>-500 mr-2"></i>
+                    <span class="text-sm font-medium text-gray-900">
+                      <%= note.note_type.humanize %>
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500">
+                      <%= note.created_at.strftime('%d/%m/%Y às %H:%M') %>
+                    </span>
+                    <% if note.can_be_edited_by?(current_user) %>
+                      <%= link_to "Editar", edit_admin_medical_appointment_appointment_note_path(@medical_appointment, note), class: "text-indigo-600 hover:text-indigo-900 text-xs" %>
+                    <% end %>
+                    <% if note.can_be_deleted_by?(current_user) %>
+                      <%= link_to "Remover", admin_medical_appointment_appointment_note_path(@medical_appointment, note),
+                                  method: :delete,
+                                  class: "text-red-600 hover:text-red-900 text-xs",
+                                  data: { confirm: 'Tem certeza que deseja remover esta anotação?' } %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="mt-2 text-sm text-gray-700">
+                  <%= simple_format(note.formatted_content) %>
+                </div>
+                <div class="mt-2 text-xs text-gray-500">
+                  Por: <%= note.created_by.name %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="mx-auto h-12 w-12 text-gray-400">
+              <i class="fas fa-sticky-note text-4xl"></i>
+            </div>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhuma anotação</h3>
+            <p class="mt-1 text-sm text-gray-500">Adicione anotações para esta consulta.</p>
+            <div class="mt-4">
+              <%= link_to "Nova Anotação", new_admin_medical_appointment_appointment_note_path(@medical_appointment), class: "ta-btn ta-btn-primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-medium text-gray-900">Anexos</h2>
+          <%= link_to "Novo Anexo", new_admin_medical_appointment_appointment_attachment_path(@medical_appointment), class: "ta-btn ta-btn-secondary text-sm" %>
+        </div>
+      </div>
+      <div class="p-6">
+        <% if @appointment_attachments.any? %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <% @appointment_attachments.each do |attachment| %>
+              <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center">
+                    <i class="fas fa-<%= attachment.type_icon %> text-<%= attachment.type_color %>-500 mr-2"></i>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">
+                        <%= attachment.name %>
+                      </div>
+                      <div class="text-xs text-gray-500">
+                        <%= attachment.attachment_type.humanize %> • <%= attachment.file_size_mb %> MB
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <% if attachment.can_be_downloaded_by?(current_user) %>
+                      <%= link_to "Download", download_admin_medical_appointment_appointment_attachment_path(@medical_appointment, attachment),
+                                  class: "text-blue-600 hover:text-blue-900 text-xs" %>
+                    <% end %>
+                    <% if attachment.can_be_deleted_by?(current_user) %>
+                      <%= link_to "Remover", admin_medical_appointment_appointment_attachment_path(@medical_appointment, attachment),
+                                  method: :delete,
+                                  class: "text-red-600 hover:text-red-900 text-xs",
+                                  data: { confirm: 'Tem certeza que deseja remover este anexo?' } %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="mt-2 text-xs text-gray-500">
+                  Enviado por: <%= attachment.uploaded_by.name %> em <%= attachment.created_at.strftime('%d/%m/%Y às %H:%M') %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="mx-auto h-12 w-12 text-gray-400">
+              <i class="fas fa-paperclip text-4xl"></i>
+            </div>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhum anexo</h3>
+            <p class="mt-1 text-sm text-gray-500">Adicione anexos para esta consulta.</p>
+            <div class="mt-4">
+              <%= link_to "Novo Anexo", new_admin_medical_appointment_appointment_attachment_path(@medical_appointment), class: "ta-btn ta-btn-primary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-1">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-medium text-gray-900">Ações</h2>
+      </div>
+      <div class="p-6 space-y-3">
+        <% if @medical_appointment.can_be_cancelled? %>
+          <%= link_to "Cancelar Consulta", cancel_admin_medical_appointment_path(@medical_appointment),
+                      data: { turbo_method: :patch, confirm: 'Tem certeza que deseja cancelar esta consulta?' },
+                      class: "ta-btn ta-btn-warning w-full" %>
+        <% end %>
+
+        <% if @medical_appointment.can_be_rescheduled? %>
+          <%= link_to "Reagendar", reschedule_admin_medical_appointment_path(@medical_appointment),
+                      data: { turbo_method: :patch },
+                      class: "ta-btn ta-btn-secondary w-full" %>
+        <% end %>
+
+        <% if @medical_appointment.scheduled? || @medical_appointment.confirmed? %>
+          <%= link_to "Marcar como Concluída", complete_admin_medical_appointment_path(@medical_appointment),
+                      data: { turbo_method: :patch },
+                      class: "ta-btn ta-btn-success w-full" %>
+          <%= link_to "Não Compareceu", mark_no_show_admin_medical_appointment_path(@medical_appointment),
+                      data: { turbo_method: :patch },
+                      class: "ta-btn ta-btn-danger w-full" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-medium text-gray-900">Informações Adicionais</h2>
+      </div>
+      <div class="p-6">
+        <dl class="space-y-4">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Criado em</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.created_at.strftime('%d/%m/%Y às %H:%M') %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Última atualização</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <%= @medical_appointment.updated_at.strftime('%d/%m/%Y às %H:%M') %>
+            </dd>
+          </div>
+          <% if @medical_appointment.cancelled_at.present? %>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Cancelado em</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                <%= @medical_appointment.cancelled_at.strftime('%d/%m/%Y às %H:%M') %>
+              </dd>
+            </div>
+          <% end %>
+          <% if @medical_appointment.completed_at.present? %>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Concluído em</dt>
+              <dd class="mt-1 text-sm text-gray-900">
+                <%= @medical_appointment.completed_at.strftime('%d/%m/%Y às %H:%M') %>
+              </dd>
+            </div>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

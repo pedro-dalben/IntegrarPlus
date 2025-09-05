@@ -1,0 +1,110 @@
+<% content_for :title, "Nova Consulta Médica" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Nova Consulta Médica</h1>
+    <p class="text-gray-600">Agende uma nova consulta médica</p>
+  </div>
+  <div>
+    <%= link_to "Voltar", admin_medical_appointments_path, class: "ta-btn ta-btn-secondary" %>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h2 class="text-lg font-medium text-gray-900">Informações da Consulta</h2>
+  </div>
+  <div class="p-6">
+    <%= form_with model: [:admin, @medical_appointment], local: true, class: "space-y-6" do |form| %>
+      <% if @medical_appointment.errors.any? %>
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-circle text-red-400"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                <%= pluralize(@medical_appointment.errors.count, 'erro') %> impediram que esta consulta fosse salva:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc pl-5 space-y-1">
+                  <% @medical_appointment.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :agenda_id, "Agenda", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :agenda_id, options_from_collection_for_select(@agendas, :id, :name, @medical_appointment.agenda_id),
+                          { prompt: "Selecione uma agenda" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :professional_id, "Profissional", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :professional_id, options_from_collection_for_select(@professionals, :id, :name, @medical_appointment.professional_id),
+                          { prompt: "Selecione um profissional" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :patient_id, "Paciente", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :patient_id, options_from_collection_for_select(@patients, :id, :name, @medical_appointment.patient_id),
+                          { prompt: "Selecione um paciente" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :appointment_type, "Tipo de Consulta", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :appointment_type, options_for_select(MedicalAppointment.appointment_types.map { |key, value| [key.humanize, key] }, @medical_appointment.appointment_type),
+                          { prompt: "Selecione o tipo" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :status, options_for_select(MedicalAppointment.statuses.map { |key, value| [key.humanize, key] }, @medical_appointment.status),
+                          { prompt: "Selecione o status" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :priority, "Prioridade", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.select :priority, options_for_select(MedicalAppointment.priorities.map { |key, value| [key.humanize, key] }, @medical_appointment.priority),
+                          { prompt: "Selecione a prioridade" },
+                          { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+        </div>
+
+        <div>
+          <%= form.label :scheduled_at, "Data e Hora", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.datetime_local_field :scheduled_at, value: @medical_appointment.scheduled_at&.strftime('%Y-%m-%dT%H:%M'),
+                                        class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+
+        <div>
+          <%= form.label :duration_minutes, "Duração (minutos)", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <%= form.number_field :duration_minutes, value: @medical_appointment.duration_minutes || 30,
+                                class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" %>
+        </div>
+      </div>
+
+      <div>
+        <%= form.label :notes, "Observações", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_area :notes, rows: 4,
+                          class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500",
+                          placeholder: "Observações adicionais sobre a consulta..." %>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+        <%= link_to "Cancelar", admin_medical_appointments_path, class: "ta-btn ta-btn-secondary" %>
+        <%= form.submit "Agendar Consulta", class: "ta-btn ta-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
