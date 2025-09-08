@@ -83,7 +83,7 @@
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
         Agenda Visual Completa
       </h2>
-      <%= link_to admin_events_path, 
+      <%= link_to admin_agendas_path,
           class: "inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" do %>
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -91,7 +91,7 @@
         Gerenciar Eventos
       <% end %>
     </div>
-    
+
     <%= render DashboardCalendarComponent.new(
       events: @agenda_data[:this_week_events],
       view_type: 'month',
@@ -109,7 +109,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Eventos de Hoje
         </h3>
-        
+
         <% if @agenda_data[:today_events].any? %>
           <div class="space-y-3">
             <% @agenda_data[:today_events].each do |event| %>
@@ -138,7 +138,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Próximas 24h
         </h3>
-        
+
         <% if @agenda_data[:next_24h_events].any? %>
           <div class="space-y-3">
             <% @agenda_data[:next_24h_events].each do |event| %>
@@ -167,7 +167,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Eventos por Tipo (Hoje)
         </h3>
-        
+
         <% if @agenda_data[:today_events_by_type].any? %>
           <div class="space-y-3">
             <% @agenda_data[:today_events_by_type].each do |event_type, count| %>
@@ -193,7 +193,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Horários Mais Ocupados
         </h3>
-        
+
         <div class="space-y-2">
           <% if @agenda_data[:busy_hours].any? %>
             <% max_count = @agenda_data[:busy_hours].values.max %>
@@ -232,9 +232,9 @@
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Ações Rápidas
       </h3>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <%= link_to admin_events_path, 
+        <%= link_to admin_agendas_path,
             class: "flex items-center p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" do %>
           <div class="h-10 w-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
             <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@
           </div>
         <% end %>
 
-        <%= link_to professional_agendas_path, 
+        <%= link_to admin_agendas_path,
             class: "flex items-center p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors" do %>
           <div class="h-10 w-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-4">
             <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,7 +260,7 @@
           </div>
         <% end %>
 
-        <%= link_to new_admin_event_path, 
+        <%= link_to new_admin_agenda_path,
             class: "flex items-center p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors" do %>
           <div class="h-10 w-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-4">
             <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

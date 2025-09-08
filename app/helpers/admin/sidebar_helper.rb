@@ -6,7 +6,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Dashboard',
         path: admin_root_path,
-        icon: 'fas fa-tachometer-alt',
+        icon: '<i class="fas fa-tachometer-alt"></i>',
         active: current_page?(admin_root_path)
       }
     end
@@ -15,7 +15,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Profissionais',
         path: admin_professionals_path,
-        icon: 'fas fa-users',
+        icon: '<i class="fas fa-users"></i>',
         active: current_page?(admin_professionals_path)
       }
     end
@@ -24,7 +24,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Grupos',
         path: admin_groups_path,
-        icon: 'fas fa-layer-group',
+        icon: '<i class="fas fa-layer-group"></i>',
         active: current_page?(admin_groups_path)
       }
     end
@@ -33,7 +33,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Especialidades',
         path: admin_specialties_path,
-        icon: 'fas fa-stethoscope',
+        icon: '<i class="fas fa-stethoscope"></i>',
         active: current_page?(admin_specialties_path)
       }
     end
@@ -42,7 +42,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Especializações',
         path: admin_specializations_path,
-        icon: 'fas fa-graduation-cap',
+        icon: '<i class="fas fa-graduation-cap"></i>',
         active: current_page?(admin_specializations_path)
       }
     end
@@ -51,7 +51,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Tipos de Contrato',
         path: admin_contract_types_path,
-        icon: 'fas fa-file-contract',
+        icon: '<i class="fas fa-file-contract"></i>',
         active: current_page?(admin_contract_types_path)
       }
     end
@@ -60,7 +60,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Documentos',
         path: admin_documents_path,
-        icon: 'fas fa-file-alt',
+        icon: '<i class="fas fa-file-alt"></i>',
         active: current_page?(admin_documents_path)
       }
     end
@@ -69,7 +69,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Documentos Liberados',
         path: admin_document_releases_path,
-        icon: 'fas fa-file-export',
+        icon: '<i class="fas fa-file-export"></i>',
         active: current_page?(admin_document_releases_path)
       }
     end
@@ -78,7 +78,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Portal Intakes',
         path: admin_portal_intakes_path,
-        icon: 'fas fa-door-open',
+        icon: '<i class="fas fa-door-open"></i>',
         active: current_page?(admin_portal_intakes_path)
       }
     end
@@ -87,7 +87,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Agendas',
         path: admin_agendas_path,
-        icon: 'fas fa-calendar-alt',
+        icon: '<i class="fas fa-calendar-alt"></i>',
         active: current_page?(admin_agendas_path)
       }
     end
@@ -96,7 +96,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Consultas Médicas',
         path: admin_medical_appointments_path,
-        icon: 'fas fa-user-md',
+        icon: '<i class="fas fa-user-md"></i>',
         active: current_page?(admin_medical_appointments_path)
       }
     end
@@ -105,7 +105,7 @@ module Admin::SidebarHelper
       items << {
         name: 'Gerenciar Permissões',
         path: admin_permissions_path,
-        icon: 'fas fa-shield-alt',
+        icon: '<i class="fas fa-shield-alt"></i>',
         active: current_page?(admin_permissions_path)
       }
     end

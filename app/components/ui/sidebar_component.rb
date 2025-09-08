@@ -18,9 +18,9 @@ module Ui
       all_items = [
         {
           title: 'Dashboard',
-          path: '/admin/dashboard',
+          path: '/admin',
           icon: dashboard_icon,
-          active: current_path&.start_with?('/admin/dashboard'),
+          active: current_path&.start_with?('/admin') && !current_path&.include?('/admin/'),
           badge: nil,
           permission: 'dashboard.view'
         },

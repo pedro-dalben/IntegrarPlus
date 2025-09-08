@@ -8,3 +8,20 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Sidebar Menu Styles */
+.menu-item {
+  @apply flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white;
+}
+
+.menu-item.active {
+  @apply bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400;
+}
+
+.menu-item-text {
+  @apply block;
+}
+
+.menu-group-title {
+  @apply block;
+}

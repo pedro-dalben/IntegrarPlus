@@ -34,7 +34,7 @@
       </div>
 
       <!-- Notifications -->
-      <div data-controller="notification" data-notification-user-id-value="<%= current_user.id %>" class="relative">
+      <div data-controller="notification" data-notification-user-id-value="<%= helpers.current_user.id %>" class="relative">
         <button
           data-action="click->notification#toggleDropdown"
           data-notification-target="bell"
@@ -44,16 +44,16 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
           </svg>
-          <span 
-            data-notification-target="count" 
+          <span
+            data-notification-target="count"
             class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center d-none"
           >
             0
           </span>
         </button>
-        
+
         <!-- Notifications Dropdown -->
-        <div 
+        <div
           data-notification-target="dropdown"
           class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700 z-[10001] hidden"
         >
