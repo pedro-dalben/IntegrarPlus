@@ -25,6 +25,11 @@ import AddressBuilderController from './address_builder_controller';
 import InputMaskController from './input_mask_controller';
 import CalendarController from './calendar_controller';
 import DashboardCalendarController from './dashboard_calendar_controller';
+import WizardController from '../../../javascript/controllers/agendas/wizard_controller';
+import ProfessionalsController from '../../../javascript/controllers/agendas/professionals_controller';
+import WorkingHoursController from '../../../javascript/controllers/agendas/working_hours_controller';
+import ReviewController from '../../../javascript/controllers/agendas/review_controller';
+import AgendaSchedulerController from '../../../javascript/controllers/agenda_scheduler_controller';
 
 application.register('header', HeaderController);
 application.register('sidebar', SidebarController);
@@ -44,5 +49,10 @@ application.register('address-builder', AddressBuilderController);
 application.register('input-mask', InputMaskController);
 application.register('calendar', CalendarController);
 application.register('dashboard-calendar', DashboardCalendarController);
+application.register('agendas-wizard', WizardController);
+application.register('agendas-professionals', ProfessionalsController);
+application.register('agendas-working-hours', WorkingHoursController);
+application.register('agendas-review', ReviewController);
+application.register('agenda-scheduler', AgendaSchedulerController);
 
 export { application };

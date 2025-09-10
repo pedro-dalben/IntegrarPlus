@@ -75,6 +75,9 @@ Rails.application.routes.draw do
       member do
         patch :activate
         patch :deactivate
+        get :schedule_anamnesis
+        post :schedule_anamnesis
+        get :agenda_view
       end
     end
 
@@ -102,8 +105,8 @@ Rails.application.routes.draw do
         patch :mark_no_show
       end
 
-      resources :appointment_notes, except: [:index, :show]
-      resources :appointment_attachments, except: [:index, :show] do
+      resources :appointment_notes, except: %i[index show]
+      resources :appointment_attachments, except: %i[index show] do
         member do
           get :download
         end
@@ -122,8 +125,18 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :users do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+      collection do
+        get :search
+      end
+    end
+
     get 'agenda_dashboard', to: 'agenda_dashboard#index'
-    
+
     resources :notifications do
       member do
         post :mark_as_read
@@ -138,13 +151,17 @@ Rails.application.routes.draw do
         post :create_default_templates
       end
     end
-    
+
     resources :notification_templates, path: 'notifications/templates', except: [:show] do
       member do
         patch :activate
         patch :deactivate
       end
     end
+
+    resources :workspace, only: [:index]
+    resources :released_documents, only: %i[index show]
+    resources :specialities, except: [:show]
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

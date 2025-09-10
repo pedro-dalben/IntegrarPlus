@@ -1,0 +1,337 @@
+<% content_for(:title, "Agendar Anamnese - Entrada ##{@portal_intake.id}") %>
+
+<div class="mb-6">
+  <div class="md:flex md:items-center md:justify-between">
+    <div class="flex-1 min-w-0">
+      <h2 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
+        Agendar Anamnese
+      </h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Entrada #<%= @portal_intake.id %> - <%= @portal_intake.beneficiary_name %>
+      </p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <%= link_to admin_portal_intake_path(@portal_intake), class: "ta-btn ta-btn-secondary" do %>
+        <svg class="size-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Voltar
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="space-y-6">
+  <!-- Informações do Beneficiário -->
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Dados do Beneficiário
+      </h3>
+    </div>
+    <div class="p-6">
+      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.beneficiary_name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Plano</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.plan_name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Carteirinha</dt>
+          <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.card_code %></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <!-- Formulário de Agendamento -->
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Selecionar Agenda e Horário
+      </h3>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        Escolha a agenda de anamnese, o profissional e o horário disponível
+      </p>
+    </div>
+    <div class="p-6">
+      <% if @anamnesis_agendas.any? %>
+        <%= form_with url: schedule_anamnesis_admin_portal_intake_path(@portal_intake),
+                      method: :post, local: true, 
+                      data: { controller: "agenda-scheduler" },
+                      class: "space-y-6" do |form| %>
+          
+          <!-- Seleção da Agenda -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <%= form.label :agenda_id, "Agenda de Anamnese", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
+              <button type="button" 
+                      class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer"
+                      onclick="openAgendaView(); return false;"
+                      id="view-agenda-btn"
+                      style="display: none;">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                Ver Grade de Horários
+              </button>
+            </div>
+            <%= form.select :agenda_id,
+                           options_for_select(@anamnesis_agendas.map { |agenda| [agenda.name, agenda.id] }),
+                           { prompt: "Selecione uma agenda" },
+                           { 
+                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+                             data: { 
+                               action: "change->agenda-scheduler#onAgendaChange",
+                               agenda_scheduler_target: "agendaSelect"
+                             }
+                           } %>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Selecione a agenda que será usada para o agendamento
+            </p>
+          </div>
+
+          <!-- Seleção do Profissional -->
+          <div data-agenda-scheduler-target="professionalSection" class="hidden">
+            <%= form.label :professional_id, "Profissional", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.select :professional_id,
+                           [],
+                           { prompt: "Selecione um profissional" },
+                           { 
+                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+                             data: { 
+                               action: "change->agenda-scheduler#onProfessionalChange",
+                               agenda_scheduler_target: "professionalSelect"
+                             }
+                           } %>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Escolha o profissional que realizará a anamnese
+            </p>
+          </div>
+
+          <!-- Seleção da Data -->
+          <div data-agenda-scheduler-target="dateSection" class="hidden">
+            <%= form.label :scheduled_date, "Data", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.date_field :scheduled_date,
+                               min: Date.current,
+                               class: "block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+                               data: { 
+                                 action: "change->agenda-scheduler#onDateChange",
+                                 agenda_scheduler_target: "dateSelect"
+                               } %>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Selecione a data para a anamnese
+            </p>
+          </div>
+
+          <!-- Seleção do Horário -->
+          <div data-agenda-scheduler-target="timeSection" class="hidden">
+            <%= form.label :scheduled_time, "Horário", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.select :scheduled_time,
+                           [],
+                           { prompt: "Selecione um horário" },
+                           { 
+                             class: "block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+                             data: { 
+                               action: "change->agenda-scheduler#onTimeChange",
+                               agenda_scheduler_target: "timeSelect" 
+                             }
+                           } %>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Escolha o horário disponível
+            </p>
+          </div>
+
+          <!-- Grade de Horários -->
+          <div id="agenda-grid-section" class="hidden">
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-700">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Grade de Horários</h4>
+                <button type="button" 
+                        onclick="hideAgendaGrid()"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div id="agenda-grid-content">
+                <!-- Conteúdo da grade será carregado aqui via AJAX -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview do Agendamento -->
+          <div data-agenda-scheduler-target="previewSection" class="hidden">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-800/10 dark:border-blue-900">
+              <h4 class="text-sm font-medium text-blue-900 dark:text-blue-400 mb-2">Resumo do Agendamento</h4>
+              <div class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                <p><strong>Beneficiário:</strong> <span data-agenda-scheduler-target="beneficiaryName"><%= @portal_intake.beneficiary_name %></span></p>
+                <p><strong>Agenda:</strong> <span data-agenda-scheduler-target="agendaName">-</span></p>
+                <p><strong>Profissional:</strong> <span data-agenda-scheduler-target="professionalName">-</span></p>
+                <p><strong>Data e Horário:</strong> <span data-agenda-scheduler-target="scheduledDateTime">-</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex space-x-3">
+            <%= form.submit "Confirmar Agendamento",
+                           class: "ta-btn ta-btn-primary",
+                           data: { 
+                             confirm: "Confirma o agendamento da anamnese?",
+                             agenda_scheduler_target: "submitButton"
+                           },
+                           disabled: true %>
+            <%= link_to "Cancelar", admin_portal_intake_path(@portal_intake), 
+                        class: "ta-btn ta-btn-secondary" %>
+          </div>
+          
+          <!-- Dados das agendas para JavaScript -->
+          <script type="application/json" data-agenda-scheduler-target="agendasData">
+            <%= @anamnesis_agendas.to_json(include: { professionals: { only: [:id, :name] } }).html_safe %>
+          </script>
+        <% end %>
+      <% else %>
+        <div class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+          <h3 class="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+            Nenhuma agenda de anamnese disponível
+          </h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            É necessário criar uma agenda de anamnese ativa para poder agendar.
+          </p>
+          <div class="mt-4">
+            <%= link_to "Criar Agenda de Anamnese", new_admin_agenda_path, 
+                        class: "ta-btn ta-btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+function openAgendaView(event) {
+  // Prevenir comportamento padrão
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  
+  const agendaSelect = document.querySelector('[data-agenda-scheduler-target="agendaSelect"]');
+  const professionalSelect = document.querySelector('[data-agenda-scheduler-target="professionalSelect"]');
+  const agendaId = agendaSelect.value;
+  const professionalId = professionalSelect ? professionalSelect.value : '';
+  
+  if (!agendaId) {
+    alert('Por favor, selecione uma agenda primeiro.');
+    return false;
+  }
+  
+  const gridSection = document.getElementById('agenda-grid-section');
+  const gridContent = document.getElementById('agenda-grid-content');
+  
+  if (!gridSection || !gridContent) {
+    console.error('Elementos da grade não encontrados');
+    return false;
+  }
+  
+  gridContent.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-sm text-gray-600">Carregando grade de horários...</p></div>';
+  gridSection.classList.remove('hidden');
+  
+  let url = '<%= agenda_view_admin_portal_intake_path(@portal_intake) %>?agenda_id=' + agendaId;
+  if (professionalId) {
+    url += '&professional_id=' + professionalId;
+  }
+  
+  fetch(url)
+    .then(response => response.text())
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const agendaContent = doc.querySelector('.agenda-grid-content');
+      
+      if (agendaContent) {
+        gridContent.innerHTML = agendaContent.innerHTML;
+      } else {
+        gridContent.innerHTML = '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>';
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao carregar grade:', error);
+      gridContent.innerHTML = '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>';
+    });
+  
+  return false;
+}
+
+function hideAgendaGrid() {
+  const gridSection = document.getElementById('agenda-grid-section');
+  gridSection.classList.add('hidden');
+}
+
+function selectSlot(datetime, timeSlot) {
+  if (confirm(`Deseja agendar para ${timeSlot}?`)) {
+    hideAgendaGrid();
+
+    const date = new Date(datetime);
+    const dateString = date.toISOString().split('T')[0];
+    const timeString = timeSlot.split(' - ')[0];
+
+    const dateInput = document.querySelector('[data-agenda-scheduler-target="dateSelect"]');
+    const timeSelect = document.querySelector('[data-agenda-scheduler-target="timeSelect"]');
+
+    if (dateInput) {
+      dateInput.value = dateString;
+      dateInput.dispatchEvent(new Event('change'));
+    }
+
+    if (timeSelect) {
+      const options = timeSelect.querySelectorAll('option');
+      for (let option of options) {
+        if (option.textContent.includes(timeString)) {
+          timeSelect.value = option.value;
+          timeSelect.dispatchEvent(new Event('change'));
+          break;
+        }
+      }
+    }
+  }
+}
+
+// Mostrar botão quando agenda for selecionada
+document.addEventListener('DOMContentLoaded', function() {
+  const agendaSelect = document.querySelector('[data-agenda-scheduler-target="agendaSelect"]');
+  const professionalSelect = document.querySelector('[data-agenda-scheduler-target="professionalSelect"]');
+  const viewBtn = document.getElementById('view-agenda-btn');
+
+  if (agendaSelect && viewBtn) {
+    agendaSelect.addEventListener('change', function() {
+      if (this.value) {
+        viewBtn.style.display = 'block';
+      } else {
+        viewBtn.style.display = 'none';
+        hideAgendaGrid();
+      }
+    });
+  }
+
+  // Atualizar grade quando profissional for alterado (se a grade estiver visível)
+  if (professionalSelect) {
+    professionalSelect.addEventListener('change', function() {
+      const gridSection = document.getElementById('agenda-grid-section');
+      if (gridSection && !gridSection.classList.contains('hidden')) {
+        // Recarregar a grade com o novo profissional
+        openAgendaView();
+      }
+    });
+  }
+});
+</script>

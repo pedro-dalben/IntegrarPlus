@@ -59,12 +59,17 @@
         
         <div class="space-y-3">
           <div class="text-sm">
-            <span class="text-gray-500">Duração dos slots:</span>
-            <span class="ml-1 font-medium"><%= form.object.slot_duration_minutes || 50 %> minutos</span>
+            <span class="text-gray-500">Duração do atendimento:</span>
+            <span class="ml-1 font-medium"><%= form.object.slot_duration_minutes || 50 %> minutos por consulta</span>
           </div>
           <div class="text-sm">
-            <span class="text-gray-500">Buffer entre slots:</span>
-            <span class="ml-1 font-medium"><%= form.object.buffer_minutes || 10 %> minutos</span>
+            <span class="text-gray-500">Intervalo entre consultas:</span>
+            <span class="ml-1 font-medium"><%= form.object.buffer_minutes || 10 %> minutos para preparação</span>
+          </div>
+          <div class="mt-3 p-3 bg-gray-50 rounded-lg">
+            <p class="text-xs text-gray-600">
+              <strong>Exemplo de horários:</strong> 09:00-09:50, 10:00-10:50, 11:00-11:50...
+            </p>
           </div>
           
           <div class="mt-4">

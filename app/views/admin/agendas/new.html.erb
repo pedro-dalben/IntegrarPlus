@@ -32,7 +32,7 @@
       </div>
 
       <div class="p-4 sm:p-6">
-      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-wizard" } do |form| %>
+      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-wizard agendas-professionals" } do |form| %>
         <% if @agenda.errors.any? %>
           <div class="ta-alert ta-alert-error mb-6">
             <div class="flex">
