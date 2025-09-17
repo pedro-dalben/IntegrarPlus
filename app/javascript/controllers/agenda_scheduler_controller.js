@@ -122,13 +122,42 @@ export default class extends Controller {
   }
 
   calculateAvailableSlots(date, agenda) {
-    // Simulação de slots disponíveis
-    // Em uma implementação real, isso verificaria conflitos com outros agendamentos
+    const slots = []
+    const slotDuration = agenda.slot_duration_minutes || 50
+    const buffer = agenda.buffer_minutes || 10
+    const totalMinutes = slotDuration + buffer
+
+    // Verificar se a agenda tem working_hours configurados
+    if (!agenda.working_hours || !agenda.working_hours.weekdays) {
+      console.warn('Agenda sem working_hours configurados, usando horários padrão')
+      return this.getDefaultSlots(slotDuration, buffer)
+    }
+
+    const selectedDate = new Date(date)
+    const weekday = selectedDate.getDay() // 0 = domingo, 1 = segunda, etc.
+    
+    // Encontrar configuração para o dia da semana
+    const dayConfig = agenda.working_hours.weekdays.find(d => d.wday === weekday)
+    
+    if (!dayConfig || !dayConfig.periods || dayConfig.periods.length === 0) {
+      console.log(`Nenhum período configurado para ${this.getDayName(weekday)}`)
+      return []
+    }
+
+    // Gerar slots para cada período configurado
+    dayConfig.periods.forEach(period => {
+      const periodSlots = this.generateSlotsForPeriod(period, slotDuration, buffer, totalMinutes)
+      slots.push(...periodSlots)
+    })
+
+    return slots.sort((a, b) => a.time.localeCompare(b.time))
+  }
+
+  getDefaultSlots(slotDuration, buffer) {
+    // Fallback para horários padrão se não houver working_hours
     const slots = []
     const startHour = 8
     const endHour = 17
-    const slotDuration = agenda.slot_duration_minutes || 50
-    const buffer = agenda.buffer_minutes || 10
     const totalMinutes = slotDuration + buffer
 
     for (let hour = startHour; hour < endHour; hour++) {
@@ -146,6 +175,60 @@ export default class extends Controller {
     }
 
     return slots
+  }
+
+  generateSlotsForPeriod(period, slotDuration, buffer, totalMinutes) {
+    const slots = []
+    const startTime = this.parseTime(period.start)
+    const endTime = this.parseTime(period.end)
+    
+    if (!startTime || !endTime) {
+      console.warn('Período inválido:', period)
+      return []
+    }
+
+    let currentTime = startTime
+    
+    while (currentTime < endTime) {
+      const nextTime = this.addMinutesToTime(currentTime, totalMinutes)
+      
+      // Verificar se o slot cabe no período
+      if (nextTime <= endTime) {
+        const timeString = this.formatTime(currentTime)
+        const endTimeString = this.formatTime(this.addMinutesToTime(currentTime, slotDuration))
+        
+        slots.push({
+          time: timeString,
+          display: `${timeString} - ${endTimeString}`
+        })
+      }
+      
+      currentTime = nextTime
+    }
+
+    return slots
+  }
+
+  parseTime(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number)
+    return { hours, minutes }
+  }
+
+  formatTime(time) {
+    return `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}`
+  }
+
+  addMinutesToTime(time, minutes) {
+    const totalMinutes = time.hours * 60 + time.minutes + minutes
+    return {
+      hours: Math.floor(totalMinutes / 60),
+      minutes: totalMinutes % 60
+    }
+  }
+
+  getDayName(weekday) {
+    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+    return days[weekday]
   }
 
   addMinutes(timeString, minutes) {

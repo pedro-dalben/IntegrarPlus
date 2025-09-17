@@ -15,7 +15,7 @@
       <%= render 'wizard_tabs', current_step: @current_step %>
 
       <div class="p-4 sm:p-6">
-        <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-professionals" } do |form| %>
+        <%= form_with model: [:admin, @agenda], local: true, data: { action: "submit->agendas-wizard#ensureDataPersistence" } do |form| %>
           <% if @agenda.errors.any? %>
             <div class="ta-alert ta-alert-error mb-6">
               <div class="flex">

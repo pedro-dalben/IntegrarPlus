@@ -91,6 +91,7 @@ Rails.application.routes.draw do
       end
       collection do
         get :search_professionals
+        get :preview_slots
         post :configure_schedule
       end
     end

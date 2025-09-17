@@ -5,7 +5,9 @@ export default class extends Controller {
 
   connect() {
     this.selectedProfessionals = new Set()
-    this.updateSelectedList()
+    if (this.hasSelectedListTarget) {
+      this.updateSelectedList()
+    }
     this.loadProfessionals()
   }
 
@@ -119,6 +121,8 @@ export default class extends Controller {
   }
 
   updateSelectedList() {
+    if (!this.hasSelectedListTarget) return
+    
     if (this.selectedProfessionals.size === 0) {
       this.selectedListTarget.innerHTML = `
         <div class="text-sm text-gray-500 text-center py-8">
@@ -158,6 +162,8 @@ export default class extends Controller {
   }
 
   updateHiddenInputs() {
+    if (!this.hasHiddenInputsTarget) return
+    
     // Clear existing hidden inputs
     this.hiddenInputsTarget.innerHTML = ''
     

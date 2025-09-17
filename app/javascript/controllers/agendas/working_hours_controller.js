@@ -103,11 +103,62 @@ export default class extends Controller {
     this.updateWorkingHoursInput()
   }
 
-  generatePreview() {
-    // This would typically make an AJAX call to generate preview
-    console.log('Generating preview with working hours:', this.workingHours)
-    // For now, just show a message
-    alert('Preview gerado! (Implementar chamada AJAX)')
+  async generatePreview() {
+    try {
+      // Mostrar loading
+      this.showLoading()
+      
+      // Mostrar container do preview
+      const previewContainer = document.getElementById('preview-container')
+      if (previewContainer) {
+        previewContainer.classList.remove('hidden')
+      }
+      
+      // Fazer chamada AJAX para gerar preview
+      const params = new URLSearchParams({
+        working_hours: JSON.stringify(this.workingHours)
+      })
+      
+      const response = await fetch(`/admin/agendas/preview_slots?${params}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/vnd.turbo-stream.html',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Processar resposta Turbo Stream
+      const turboStream = await response.text()
+      Turbo.renderStreamMessage(turboStream)
+      
+    } catch (error) {
+      console.error('Erro ao gerar preview:', error)
+      alert('Erro ao gerar preview. Tente novamente.')
+    } finally {
+      this.hideLoading()
+    }
+  }
+
+  showLoading() {
+    // Adicionar indicador de loading se necessário
+    const button = this.element.querySelector('[data-action="click->agendas-working-hours#generatePreview"]')
+    if (button) {
+      button.disabled = true
+      button.textContent = 'Gerando...'
+    }
+  }
+
+  hideLoading() {
+    // Remover indicador de loading
+    const button = this.element.querySelector('[data-action="click->agendas-working-hours#generatePreview"]')
+    if (button) {
+      button.disabled = false
+      button.textContent = 'Gerar Prévia de Slots'
+    }
   }
 
   addException() {

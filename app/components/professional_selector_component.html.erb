@@ -1,4 +1,4 @@
-<div class="professional-selector-component" data-controller="professional-selector" data-multiple="<%= multiple? %>">
+<div class="professional-selector-component" data-controller="professional-selector" data-multiple="<%= multiple? %>" data-action="turbo:load->professional-selector#connect">
   <div class="mb-4">
     <label class="ta-label" for="professional-search">
       <%= multiple? ? "Profissionais" : "Profissional" %>
@@ -12,7 +12,7 @@
           class="ta-input"
           placeholder="Digite para buscar profissionais..."
           data-professional-selector-target="searchInput"
-          data-action="input->professional-selector#search"
+          data-action="input->agendas-wizard#searchProfessionals"
         />
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
           <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,26 +80,26 @@
   </div>
 
   <!-- Hidden inputs para enviar os dados do formulário -->
-  <% if multiple? %>
-    <% selected_professionals.each do |professional| %>
-      <input 
-        type="hidden" 
-        name="agenda[professional_ids][]" 
-        value="<%= professional.id %>"
-        data-professional-selector-target="hiddenInput"
-        data-professional-id="<%= professional.id %>"
-      />
+  <div data-professional-selector-target="hiddenInputs">
+    <% if multiple? %>
+      <% selected_professionals.each do |professional| %>
+        <input 
+          type="hidden" 
+          name="agenda[professional_ids][]" 
+          value="<%= professional.id %>"
+          data-professional-id="<%= professional.id %>"
+        />
+      <% end %>
+    <% else %>
+      <% if selected_professionals.first %>
+        <input 
+          type="hidden" 
+          name="agenda[professional_id]" 
+          value="<%= selected_professionals.first.id %>"
+        />
+      <% end %>
     <% end %>
-  <% else %>
-    <% if selected_professionals.first %>
-      <input 
-        type="hidden" 
-        name="agenda[professional_id]" 
-        value="<%= selected_professionals.first.id %>"
-        data-professional-selector-target="hiddenInput"
-      />
-    <% end %>
-  <% end %>
+  </div>
 
   <!-- Loading indicator -->
   <div class="loading-indicator hidden p-4 text-center" data-professional-selector-target="loadingIndicator">

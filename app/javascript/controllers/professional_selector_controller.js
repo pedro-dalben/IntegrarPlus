@@ -1,10 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator"]
+  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs"]
 
   connect() {
     console.log("ProfessionalSelectorController conectado")
+    this.selectedProfessionals = new Set()
+    this.loadProfessionals()
   }
 
   search(event) {
@@ -18,7 +20,7 @@ export default class extends Controller {
     this.showLoading()
     
     // Fazer requisição AJAX para buscar profissionais
-    fetch(`/api/professionals/search?q=${encodeURIComponent(query)}`, {
+    fetch(`/admin/agendas/search_professionals?search=${encodeURIComponent(query)}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -37,6 +39,17 @@ export default class extends Controller {
     })
   }
 
+  async loadProfessionals() {
+    try {
+      const response = await fetch('/admin/agendas/search_professionals')
+      const data = await response.json()
+      
+      this.renderSearchResults(data.professionals || [])
+    } catch (error) {
+      console.error('Erro ao carregar profissionais:', error)
+    }
+  }
+
   toggleProfessional(event) {
     const professionalId = event.target.dataset.professionalId
     const isChecked = event.target.checked
@@ -46,6 +59,9 @@ export default class extends Controller {
     } else {
       this.removeProfessional(professionalId)
     }
+    
+    // Notificar o wizard controller sobre a mudança
+    this.notifyWizardController()
   }
 
   selectProfessional(event) {
@@ -56,30 +72,28 @@ export default class extends Controller {
     
     // Adicionar nova seleção
     this.addProfessional(professionalId)
+    
+    // Notificar o wizard controller sobre a mudança
+    this.notifyWizardController()
   }
 
   addProfessional(professionalId) {
     // Verificar se já existe
-    const existingInput = this.hiddenInputTargets.find(input => 
-      input.dataset.professionalId === professionalId
-    )
+    const existingInput = this.hiddenInputsTarget.querySelector(`input[data-professional-id="${professionalId}"]`)
     
     if (!existingInput) {
       const hiddenInput = document.createElement('input')
       hiddenInput.type = 'hidden'
       hiddenInput.name = 'agenda[professional_ids][]'
       hiddenInput.value = professionalId
-      hiddenInput.dataset.professionalSelectorTarget = 'hiddenInput'
       hiddenInput.dataset.professionalId = professionalId
       
-      this.element.appendChild(hiddenInput)
+      this.hiddenInputsTarget.appendChild(hiddenInput)
     }
   }
 
   removeProfessional(professionalId) {
-    const inputToRemove = this.hiddenInputTargets.find(input => 
-      input.dataset.professionalId === professionalId
-    )
+    const inputToRemove = this.hiddenInputsTarget.querySelector(`input[data-professional-id="${professionalId}"]`)
     
     if (inputToRemove) {
       inputToRemove.remove()
@@ -87,10 +101,12 @@ export default class extends Controller {
   }
 
   clearSelection() {
-    this.hiddenInputTargets.forEach(input => input.remove())
+    this.hiddenInputsTarget.innerHTML = ''
   }
 
   renderSearchResults(professionals) {
+    if (!this.hasProfessionalListTarget) return
+    
     if (professionals.length === 0) {
       this.professionalListTarget.innerHTML = `
         <div class="p-4 text-center text-gray-500">
@@ -104,18 +120,16 @@ export default class extends Controller {
       <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="${professional.id}">
         <div class="flex items-center space-x-3">
           <div class="flex-shrink-0">
-            <img 
-              src="${professional.avatar_url || '/default-avatar.png'}" 
-              alt="${professional.full_name}"
-              class="h-8 w-8 rounded-full object-cover"
-            />
+            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <span class="text-xs font-medium text-gray-600">${professional.name.charAt(0).toUpperCase()}</span>
+            </div>
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 truncate">
-              ${professional.full_name}
+              ${professional.name}
             </p>
             <p class="text-xs text-gray-500 truncate">
-              ${professional.email}
+              ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
             </p>
           </div>
         </div>
@@ -156,9 +170,7 @@ export default class extends Controller {
   }
 
   isProfessionalSelected(professionalId) {
-    return this.hiddenInputTargets.some(input => 
-      input.dataset.professionalId === professionalId
-    )
+    return this.hiddenInputsTarget.querySelector(`input[data-professional-id="${professionalId}"]`) !== null
   }
 
   isMultiple() {
@@ -166,6 +178,8 @@ export default class extends Controller {
   }
 
   clearResults() {
+    if (!this.hasProfessionalListTarget) return
+    
     this.professionalListTarget.innerHTML = `
       <div class="p-4 text-center text-gray-500">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,21 +191,51 @@ export default class extends Controller {
   }
 
   showLoading() {
-    this.loadingIndicatorTarget.classList.remove('hidden')
-    this.professionalListTarget.style.opacity = '0.5'
+    if (this.hasLoadingIndicatorTarget) {
+      this.loadingIndicatorTarget.classList.remove('hidden')
+    }
+    if (this.hasProfessionalListTarget) {
+      this.professionalListTarget.style.opacity = '0.5'
+    }
   }
 
   hideLoading() {
-    this.loadingIndicatorTarget.classList.add('hidden')
-    this.professionalListTarget.style.opacity = '1'
+    if (this.hasLoadingIndicatorTarget) {
+      this.loadingIndicatorTarget.classList.add('hidden')
+    }
+    if (this.hasProfessionalListTarget) {
+      this.professionalListTarget.style.opacity = '1'
+    }
   }
 
   showError(message) {
+    if (!this.hasProfessionalListTarget) return
+    
     this.professionalListTarget.innerHTML = `
       <div class="p-4 text-center text-red-500">
         <p class="text-sm">${message}</p>
       </div>
     `
+  }
+
+  notifyWizardController() {
+    // Encontrar o controller do wizard no elemento pai
+    const wizardElement = this.element.closest('[data-controller*="agendas-wizard"]')
+    if (wizardElement) {
+      const wizardController = this.application.getControllerForElementAndIdentifier(wizardElement, 'agendas-wizard')
+      if (wizardController) {
+        // Atualizar dados persistentes do wizard
+        const selectedProfessionals = this.getSelectedProfessionalIds()
+        wizardController.persistentData.professionals = selectedProfessionals
+        wizardController.savePersistentData()
+        wizardController.updateHiddenInputs()
+      }
+    }
+  }
+
+  getSelectedProfessionalIds() {
+    const inputs = this.hiddenInputsTarget.querySelectorAll('input[data-professional-id]')
+    return Array.from(inputs).map(input => input.dataset.professionalId)
   }
 }
 

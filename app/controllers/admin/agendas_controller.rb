@@ -37,6 +37,9 @@ class Admin::AgendasController < Admin::BaseController
     @agenda.updated_by = current_user
     authorize @agenda
 
+    # Processar professional_ids se fornecidos
+    @agenda.professional_ids = params[:professional_ids] if params[:professional_ids].present?
+
     if @agenda.save
       redirect_to admin_agenda_path(@agenda), notice: 'Agenda criada com sucesso.'
     else
@@ -90,8 +93,14 @@ class Admin::AgendasController < Admin::BaseController
   end
 
   def preview_slots
-    @agenda = Agenda.find(params[:id])
-    authorize @agenda
+    # Se for uma agenda existente, usar ela
+    if params[:id].present?
+      @agenda = Agenda.find(params[:id])
+      authorize @agenda
+    else
+      # Se for uma nova agenda, criar um objeto temporário com os dados fornecidos
+      @agenda = Agenda.new(working_hours: JSON.parse(params[:working_hours] || '{}'))
+    end
 
     @preview_data = generate_slots_preview(@agenda)
 
@@ -246,7 +255,17 @@ class Admin::AgendasController < Admin::BaseController
     start_date = Date.current
     end_date = start_date + 14.days
 
-    agenda.professionals.active.each do |professional|
+    # Se for uma agenda temporária (nova), usar profissionais padrão
+    professionals = if agenda.persisted?
+                      agenda.professionals.active
+                    else
+                      # Para preview de nova agenda, usar todos os profissionais ativos
+                      User.professionals.includes(professional: :specialities)
+                          .joins(:professional)
+                          .where(professionals: { active: true })
+                    end
+
+    professionals.each do |professional|
       preview_data[professional.id] = {
         name: professional.name,
         slots: []
