@@ -2,7 +2,7 @@
 
 class ContractType < ApplicationRecord
   include DashboardCache
-  include MeiliSearch::Rails
+  include MeiliSearch::Rails unless Rails.env.test?
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :description, presence: true
@@ -13,16 +13,18 @@ class ContractType < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:name) }
 
-  meilisearch do
-    searchable_attributes %i[name description]
-    filterable_attributes %i[active created_at updated_at]
-    sortable_attributes %i[created_at updated_at name]
+  unless Rails.env.test?
+    meilisearch do
+      searchable_attributes %i[name description]
+      filterable_attributes %i[active created_at updated_at]
+      sortable_attributes %i[created_at updated_at name]
 
-    attribute :name
-    attribute :description
-    attribute :active
-    attribute :created_at
-    attribute :updated_at
+      attribute :name
+      attribute :description
+      attribute :active
+      attribute :created_at
+      attribute :updated_at
+    end
   end
 
   private

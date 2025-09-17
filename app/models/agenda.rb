@@ -8,6 +8,8 @@ class Agenda < ApplicationRecord
 
   has_many :agenda_professionals, dependent: :destroy
   has_many :professionals, through: :agenda_professionals, source: :professional
+  has_many :professional_availabilities, dependent: :destroy
+  has_many :availability_exceptions, dependent: :destroy
 
   enum :service_type, {
     anamnese: 0,
@@ -143,6 +145,7 @@ class Agenda < ApplicationRecord
 
   def slot_summary
     return 'Não configurado' if slot_duration_minutes.blank? || buffer_minutes.blank?
+
     "#{slot_duration_minutes}' + #{buffer_minutes}' buffer"
   end
 

@@ -12,27 +12,12 @@
 
   <div class="space-y-6">
     <!-- Wizard -->
-    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" data-controller="agendas-wizard" data-agendas-wizard-current-step-value="metadata">
       <!-- Progress Steps -->
-      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
-        <nav class="flex space-x-8" aria-label="Tabs">
-          <div class="border-b-2 border-blue-500 py-4 px-1">
-            <span class="text-sm font-medium text-blue-600 dark:text-blue-400">1. Metadados</span>
-          </div>
-          <div class="border-b-2 border-transparent py-4 px-1">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">2. Profissionais</span>
-          </div>
-          <div class="border-b-2 border-transparent py-4 px-1">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">3. Grade de Horários</span>
-          </div>
-          <div class="border-b-2 border-transparent py-4 px-1">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">4. Revisão</span>
-          </div>
-        </nav>
-      </div>
+      <%= render 'wizard_tabs', current_step: 'metadata' %>
 
       <div class="p-4 sm:p-6">
-      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-wizard agendas-professionals" } do |form| %>
+      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-professionals" } do |form| %>
         <% if @agenda.errors.any? %>
           <div class="ta-alert ta-alert-error mb-6">
             <div class="flex">
@@ -74,6 +59,7 @@
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+          <%= hidden_field_tag :step, 'metadata', data: { agendas_wizard_target: 'currentStepInput' } %>
           <button type="button"
                   data-action="click->agendas-wizard#previousStep"
                   data-agendas-wizard-target="previousBtn"

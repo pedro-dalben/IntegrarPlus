@@ -100,6 +100,54 @@ class Admin::AgendasController < Admin::BaseController
     end
   end
 
+  def search_professionals
+    @professionals = User.professionals
+                         .includes(professional: :specialities)
+                         .joins(:professional)
+                         .where(professionals: { active: true })
+
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      @professionals = @professionals.where(
+        'users.email ILIKE ? OR professionals.full_name ILIKE ?',
+        search_term, search_term
+      )
+    end
+
+    @professionals = @professionals.limit(20)
+
+    respond_to do |format|
+      format.json do
+        render json: {
+          professionals: @professionals.map do |professional|
+            {
+              id: professional.id,
+              name: professional.name,
+              specialties: professional.professional.specialities.pluck(:name)
+            }
+          end
+        }
+      end
+    end
+  end
+
+  def configure_schedule
+    professional_id = params[:professional_id]
+    agenda_id = params[:agenda_id]
+
+    professional = User.find(professional_id) if professional_id.present?
+    agenda = Agenda.find(agenda_id) if agenda_id.present?
+
+    return render json: { success: false, error: 'Profissional ou agenda não encontrado' } unless professional && agenda
+
+    configuration_service = AvailabilityConfigurationService.new(professional, agenda)
+    result = configuration_service.set_custom_schedule(schedule_params)
+
+    respond_to do |format|
+      format.json { render json: result }
+    end
+  end
+
   private
 
   def set_agenda
@@ -117,6 +165,34 @@ class Admin::AgendasController < Admin::BaseController
       working_hours: {},
       professional_ids: []
     )
+  end
+
+  def schedule_params
+    schedule_data = []
+
+    (0..6).each do |day|
+      day_params = params.dig(:schedule, day.to_s)
+      next unless day_params
+
+      day_data = {
+        day_of_week: day,
+        enabled: day_params[:enabled] == 'true',
+        periods: []
+      }
+
+      if day_params[:periods].present?
+        day_params[:periods].each do |period_key, period_data|
+          day_data[:periods] << {
+            start_time: period_data[:start_time],
+            end_time: period_data[:end_time]
+          }
+        end
+      end
+
+      schedule_data << day_data
+    end
+
+    schedule_data
   end
 
   def apply_filters

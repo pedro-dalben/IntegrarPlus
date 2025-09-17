@@ -41,7 +41,9 @@
       <div class="flex flex-1 flex-col overflow-hidden content-area">
 
         <!-- Header Portal -->
-        <%= render Portal::HeaderComponent.new(external_user: current_external_user) %>
+        <div data-controller="header">
+          <%= render Portal::HeaderComponent.new(external_user: current_external_user) %>
+        </div>
 
         <!-- Main Content -->
         <main id="main-content" class="flex-1 overflow-y-auto main-content">
@@ -88,11 +90,12 @@
         </main>
       </div>
 
-      <!-- Mobile Overlay -->
-      <div
-        data-sidebar-target="overlay"
-        class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
-      ></div>
     </div>
+
+    <!-- Mobile Overlay -->
+    <div
+      data-sidebar-target="overlay"
+      class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
+    ></div>
   </body>
 </html>

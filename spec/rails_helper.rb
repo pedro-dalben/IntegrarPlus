@@ -20,6 +20,12 @@ RSpec.configure do |config|
 
   # Include Factory Bot methods
   config.include FactoryBot::Syntax::Methods
+
+  # Disable Meilisearch for tests
+  config.before(:each) do
+    stub_const('MeiliSearch::Rails', Module.new)
+    stub_const('MeiliSearch', Module.new)
+  end
 end
 
 # Configure Shoulda Matchers

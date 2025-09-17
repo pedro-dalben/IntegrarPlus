@@ -2,7 +2,7 @@
 
 class Specialization < ApplicationRecord
   include DashboardCache
-  include MeiliSearch::Rails
+  include MeiliSearch::Rails unless Rails.env.test?
 
   has_many :specialization_specialities, dependent: :destroy
   has_many :specialities, through: :specialization_specialities
@@ -15,13 +15,15 @@ class Specialization < ApplicationRecord
   scope :ordered, -> { order(:name) }
   scope :by_speciality, ->(speciality_ids) { joins(:specialities).where(specialities: { id: speciality_ids }) }
 
-  meilisearch do
-    searchable_attributes %i[name]
-    filterable_attributes %i[created_at updated_at]
-    sortable_attributes %i[created_at updated_at name]
+  unless Rails.env.test?
+    meilisearch do
+      searchable_attributes %i[name]
+      filterable_attributes %i[created_at updated_at]
+      sortable_attributes %i[created_at updated_at name]
 
-    attribute :name
-    attribute :created_at
-    attribute :updated_at
+      attribute :name
+      attribute :created_at
+      attribute :updated_at
+    end
   end
 end

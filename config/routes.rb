@@ -87,6 +87,11 @@ Rails.application.routes.draw do
         patch :deactivate
         patch :archive
         patch :duplicate
+        get :preview_slots
+      end
+      collection do
+        get :search_professionals
+        post :configure_schedule
       end
     end
 
@@ -162,6 +167,38 @@ Rails.application.routes.draw do
     resources :workspace, only: [:index]
     resources :released_documents, only: %i[index show]
     resources :specialities, except: [:show]
+    resources :calendar, only: [:index]
+  end
+
+  namespace :api do
+    resources :professionals, only: %i[index show] do
+      collection do
+        get :search
+      end
+      member do
+        get :availability
+      end
+    end
+  end
+
+  namespace :portal do
+    root 'portal_intakes#index'
+
+    get 'sign_in', to: 'sessions#new', as: :new_external_user_session
+    post 'sign_in', to: 'sessions#create'
+    delete 'sign_out', to: 'sessions#destroy', as: :destroy_external_user_session
+
+    get 'password/new', to: 'passwords#new', as: :new_external_user_password
+    post 'password', to: 'passwords#create'
+    get 'password/edit', to: 'passwords#edit', as: :edit_external_user_password
+    patch 'password', to: 'passwords#update'
+
+    resources :portal_intakes do
+      member do
+        get :schedule_anamnesis
+        post :schedule_anamnesis
+      end
+    end
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

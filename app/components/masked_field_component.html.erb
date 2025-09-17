@@ -1,0 +1,11 @@
+<div class="field-container">
+  <%= form.label field, label, class: label_classes %>
+  <div data-controller="masked-input" 
+       data-masked-input-type-value="<%= type %>" 
+       data-masked-input-placeholder-value="<%= placeholder %>">
+    <%= form.public_send(input_type, field, 
+        placeholder: placeholder,
+        class: input_classes,
+        **options) %>
+  </div>
+</div>

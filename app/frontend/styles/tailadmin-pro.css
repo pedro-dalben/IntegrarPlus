@@ -2,7 +2,46 @@
 layer(base); */
 
 @import "tailwindcss";
-/* @import "../stylesheets/components/tailadmin.scss"; */
+/* @import "../stylesheets/components/_tailadmin.scss"; */
+
+/* Fallback styles for TailAdmin utility classes used in ERB (ensures buttons render even if SCSS import fails) */
+@layer components {
+  .ta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .ta-btn-primary {
+    background-color: var(--color-brand-500, #465fff);
+    color: var(--color-white, #ffffff);
+    border: 1px solid transparent;
+  }
+  .ta-btn-primary:hover { background-color: var(--color-brand-600, #3641f5); }
+
+  .ta-btn-secondary {
+    background-color: var(--color-white, #ffffff);
+    color: var(--color-gray-700, #344054);
+    border: 1px solid var(--color-gray-300, #d0d5dd);
+  }
+  .ta-btn-secondary:hover { background-color: var(--color-gray-50, #f9fafb); }
+
+  .ta-btn-success {
+    background-color: var(--color-success-500, #12b76a);
+    color: var(--color-white, #ffffff);
+    border: 1px solid transparent;
+  }
+  .ta-btn-success:hover { background-color: var(--color-success-600, #039855); }
+
+  .ta-btn-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
 
 @plugin '@tailwindcss/forms';
 @plugin 'autoprefixer';
@@ -86,6 +125,7 @@ layer(base); */
   --color-gray-900: #101828;
   --color-gray-950: #0c111d;
   --color-gray-dark: #1a2231;
+  --color-dark-900: #1a2231;
 
   --color-orange-25: #fffaf5;
   --color-orange-50: #fff6ed;

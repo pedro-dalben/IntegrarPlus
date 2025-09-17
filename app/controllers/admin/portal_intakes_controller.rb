@@ -56,8 +56,11 @@ module Admin
           agenda = Agenda.find(agenda_id)
           professional = User.find(professional_id)
 
-          # Verificar se o horário está disponível
-          unless is_slot_available?(scheduled_datetime, professional)
+          # Verificar se o horário está disponível usando o service
+          scheduling_service = AppointmentSchedulingService.new(professional, agenda)
+          availability_check = scheduling_service.check_availability(scheduled_datetime, agenda.slot_duration_minutes)
+
+          unless availability_check[:available]
             flash.now[:alert] = 'Este horário já está ocupado. Por favor, selecione outro horário.'
             render :schedule_anamnesis
             return
@@ -66,17 +69,30 @@ module Admin
           # Criar o agendamento no PortalIntake
           @portal_intake.schedule_anamnesis!(scheduled_datetime, current_user)
 
-          # Criar o MedicalAppointment
-          MedicalAppointment.create!(
-            agenda: agenda,
-            professional: professional,
+          # Usar o service de agendamento para criar evento e appointment
+          scheduling_service = AppointmentSchedulingService.new(professional, agenda)
+
+          appointment_data = {
+            scheduled_datetime: scheduled_datetime,
             appointment_type: 'initial_consultation',
-            status: 'scheduled',
             priority: 'normal',
-            scheduled_at: scheduled_datetime,
-            duration_minutes: agenda.slot_duration_minutes,
-            notes: "Anamnese para #{@portal_intake.beneficiary_name} - #{@portal_intake.plan_name}"
-          )
+            notes: "Anamnese para #{@portal_intake.beneficiary_name} - #{@portal_intake.plan_name}",
+            title: "Anamnese - #{@portal_intake.beneficiary_name}",
+            description: "Anamnese para #{@portal_intake.plan_name}",
+            created_by: current_user,
+            source_context: {
+              type: 'portal_intake',
+              id: @portal_intake.id
+            }
+          }
+
+          result = scheduling_service.schedule_appointment(appointment_data)
+
+          unless result[:success]
+            flash.now[:alert] = "Erro ao agendar: #{result[:error]}"
+            render :schedule_anamnesis
+            return
+          end
 
           redirect_to admin_portal_intake_path(@portal_intake),
                       notice: 'Anamnese agendada com sucesso!'
@@ -196,7 +212,14 @@ module Admin
     end
 
     def portal_intake_params
-      params.expect(portal_intake: %i[beneficiary_name plan_name card_code])
+      params.expect(
+        portal_intake: %i[
+          beneficiary_name plan_name card_code
+          convenio carteira_codigo nome telefone_responsavel
+          data_encaminhamento data_nascimento endereco responsavel
+          tipo_convenio cpf
+        ]
+      )
     end
 
     def apply_filters(scope)

@@ -20,60 +20,53 @@
   </div>
 
   <!-- Formulário -->
-  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-      <h2 class="text-lg font-medium text-gray-900 dark:text-white">
-        Dados do Beneficiário
-      </h2>
-      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        Preencha as informações do beneficiário que será encaminhado
-      </p>
-    </div>
-
-    <div class="p-6">
-      <%= form_with model: [@portal_intake], url: portal_portal_intakes_path, local: true, class: "space-y-6" do |form| %>
-        <% if @portal_intake.errors.any? %>
-          <div class="bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <svg class="size-4 text-red-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
-                  Foram encontrados <%= pluralize(@portal_intake.errors.count, "erro") %>:
-                </h3>
-                <div class="mt-2">
-                  <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-300">
-                    <% @portal_intake.errors.full_messages.each do |message| %>
-                      <li><%= message %></li>
-                    <% end %>
-                  </ul>
-                </div>
-              </div>
+  <%= form_with model: [@portal_intake], url: portal_portal_intakes_path, local: true, class: "space-y-6" do |form| %>
+    <% if @portal_intake.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="size-4 text-red-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
+              Foram encontrados <%= pluralize(@portal_intake.errors.count, "erro") %>:
+            </h3>
+            <div class="mt-2">
+              <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+                <% @portal_intake.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
             </div>
           </div>
-        <% end %>
+        </div>
+      </div>
+    <% end %>
 
+    <!-- Dados do Beneficiário -->
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+          Dados do Beneficiário
+        </h2>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Preencha as informações do beneficiário que será encaminhado
+        </p>
+      </div>
+
+      <div class="p-6 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Nome do Beneficiário -->
+          <!-- Nome do Beneficiário (para anamnese) -->
           <div class="md:col-span-2">
-            <%= form.label :beneficiary_name, "Nome do Beneficiário *",
+            <%= form.label :nome, "Nome do Beneficiário *",
                            class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-            <%= form.text_field :beneficiary_name,
+            <%= form.text_field :nome,
                                placeholder: "Nome completo do beneficiário",
                                class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
           </div>
 
-          <!-- Plano Médico -->
-          <div>
-            <%= form.label :plan_name, "Plano Médico *",
-                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-            <%= form.text_field :plan_name,
-                               placeholder: "Nome do plano médico",
-                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
-          </div>
 
           <!-- Código da Carteirinha -->
           <div>
@@ -83,39 +76,330 @@
                                placeholder: "Código da carteirinha do plano",
                                class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
           </div>
-        </div>
 
-        <!-- Informações adicionais -->
-        <div class="bg-blue-50 border border-blue-200 rounded-md p-4 dark:bg-blue-800/10 dark:border-blue-900">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="size-4 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-              </svg>
+          <!-- CPF -->
+          <%= render MaskedFieldComponent.new(
+                form: form,
+                field: :cpf,
+                type: 'cpf',
+                label: 'CPF',
+                placeholder: '000.000.000-00'
+              ) %>
+
+          <!-- Data de Nascimento -->
+          <%= render DateFieldComponent.new(
+                form: form,
+                field: :data_nascimento,
+                label: 'Data de Nascimento'
+              ) %>
+
+          <!-- Endereço -->
+          <div class="md:col-span-2">
+            <%= form.label :endereco, "Endereço",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_area :endereco,
+                              rows: 3,
+                              placeholder: "Endereço completo do beneficiário",
+                              class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+          </div>
+
+          <!-- Responsável -->
+          <div>
+            <%= form.label :responsavel, "Responsável",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.text_field :responsavel,
+                               placeholder: "Nome do responsável (opcional)",
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+          </div>
+
+          <!-- Telefone do Responsável -->
+          <%= render MaskedFieldComponent.new(
+                form: form,
+                field: :telefone_responsavel,
+                type: 'phone',
+                label: 'Telefone do Responsável',
+                placeholder: '(11) 99999-9999'
+              ) %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dados do Convênio -->
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+          Dados do Convênio
+        </h2>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Informações do plano de saúde do beneficiário
+        </p>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Convênio/Plano Médico (não editável) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Convênio/Plano Médico *
+            </label>
+            <div class="block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+              <%= current_external_user.company_name %>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-blue-800 dark:text-blue-400">
-                Informações importantes
-              </h3>
-              <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
-                <ul class="list-disc list-inside space-y-1">
-                  <li>Após o envio, sua solicitação ficará com status "Aguardando Agendamento"</li>
-                  <li>Nossa equipe entrará em contato para agendar a anamnese</li>
-                  <li>Você pode acompanhar o progresso na lista de solicitações</li>
-                </ul>
-              </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Preenchido automaticamente com sua empresa
+            </p>
+            <%= form.hidden_field :convenio, value: current_external_user.company_name %>
+            <%= form.hidden_field :plan_name, value: current_external_user.company_name %>
+          </div>
+
+
+          <!-- Tipo de Convênio -->
+          <div>
+            <%= form.label :tipo_convenio, "Tipo de Convênio",
+                           class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.select :tipo_convenio,
+                            options_for_select([
+                              ['Selecione...', ''],
+                              ['Particular', 'particular'],
+                              ['Empresarial', 'empresarial'],
+                              ['Familiar', 'familiar']
+                            ], @portal_intake.tipo_convenio),
+                            {},
+                            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
+
+          <!-- Data de Encaminhamento (não editável) -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Data de Encaminhamento
+            </label>
+            <div class="block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+              <%= Date.current.strftime('%d/%m/%Y') %>
             </div>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Preenchido automaticamente com a data atual
+            </p>
+            <%= form.hidden_field :data_encaminhamento, value: Date.current %>
           </div>
         </div>
-
-        <!-- Botões -->
-        <div class="flex justify-end space-x-3">
-          <%= link_to "Cancelar", portal_portal_intakes_path,
-                      class: "ta-btn ta-btn-secondary" %>
-          <%= form.submit "Enviar Solicitação",
-                         class: "ta-btn ta-btn-primary" %>
-        </div>
-      <% end %>
+      </div>
     </div>
-  </div>
+
+
+    <!-- Dados dos Encaminhamentos (Opcional) -->
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+          Dados dos Encaminhamentos (Opcional)
+        </h2>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Informações sobre os encaminhamentos para tratamentos especializados
+        </p>
+      </div>
+
+      <div class="p-6">
+        <div id="referrals-container">
+          <%= form.fields_for :portal_intake_referrals do |referral_form| %>
+            <div class="referral-form border border-gray-200 rounded-lg p-4 mb-4 dark:border-gray-700">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-medium text-gray-900 dark:text-white">
+                  Encaminhamento
+                </h3>
+                <button type="button" class="remove-referral text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                  Remover
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- CID -->
+                <div>
+                  <%= referral_form.label :cid, "CID",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.text_field :cid,
+                                             placeholder: "Ex: F84.0",
+                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+                </div>
+
+                <!-- Encaminhado Para -->
+                <div>
+                  <%= referral_form.label :encaminhado_para, "Encaminhado Para",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.select :encaminhado_para,
+                                          options_for_select([
+                                            ['Selecione...', ''],
+                                            ['ABA', 'ABA'],
+                                            ['FONO', 'FONO'],
+                                            ['TO', 'TO'],
+                                            ['PSICOPEDAGOGIA', 'PSICOPEDAGOGIA'],
+                                            ['PSICOLOGIA', 'PSICOLOGIA'],
+                                            ['PSICOMOTRICIDADE', 'PSICOMOTRICIDADE'],
+                                            ['FISIOTERAPIA', 'FISIOTERAPIA'],
+                                            ['EQUOTERAPIA', 'EQUOTERAPIA'],
+                                            ['MUSICOTERAPIA', 'MUSICOTERAPIA']
+                                          ], referral_form.object.encaminhado_para),
+                                          {},
+                                          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+                </div>
+
+                <!-- Médico -->
+                <div>
+                  <%= referral_form.label :medico, "Médico",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.text_field :medico,
+                                             placeholder: "Nome do médico",
+                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+                </div>
+
+                <!-- CRM -->
+                <div>
+                  <%= referral_form.label :medico_crm, "CRM",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.text_field :medico_crm,
+                                             placeholder: "Número do CRM",
+                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+                </div>
+
+                <!-- Data de Encaminhamento -->
+                <div>
+                  <%= referral_form.label :data_encaminhamento, "Data de Encaminhamento",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.date_field :data_encaminhamento,
+                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+                </div>
+
+                <!-- Descrição -->
+                <div class="md:col-span-2">
+                  <%= referral_form.label :descricao, "Descrição",
+                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                  <%= referral_form.text_area :descricao,
+                                            rows: 3,
+                                            placeholder: "Descrição do encaminhamento (opcional)",
+                                            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <button type="button" id="add-referral" class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:text-gray-700 hover:border-gray-400 dark:border-gray-600 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500">
+            <svg class="mx-auto h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <span class="mt-2 block text-sm font-medium">Adicionar Encaminhamento</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações importantes -->
+    <div class="bg-blue-50 border border-blue-200 rounded-md p-4 dark:bg-blue-800/10 dark:border-blue-900">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="size-4 text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-blue-800 dark:text-blue-400">
+            Informações importantes
+          </h3>
+          <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+            <ul class="list-disc list-inside space-y-1">
+              <li>Os campos marcados com * são obrigatórios</li>
+              <li>Os dados de encaminhamento são opcionais</li>
+              <li>Após o envio, sua solicitação ficará com status "Aguardando Agendamento"</li>
+              <li>Nossa equipe entrará em contato para agendar a anamnese</li>
+              <li>Você pode acompanhar o progresso na lista de solicitações</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botões -->
+    <div class="flex justify-end space-x-3">
+      <%= link_to "Cancelar", portal_portal_intakes_path,
+                  class: "ta-btn ta-btn-secondary" %>
+      <%= form.submit "Enviar Solicitação",
+                     class: "ta-btn ta-btn-primary" %>
+    </div>
+  <% end %>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const addReferralBtn = document.getElementById('add-referral');
+  const referralsContainer = document.getElementById('referrals-container');
+  let referralIndex = <%= @portal_intake.portal_intake_referrals.length %>;
+
+  addReferralBtn.addEventListener('click', function() {
+    const newReferral = createReferralForm(referralIndex);
+    referralsContainer.insertBefore(newReferral, addReferralBtn);
+    referralIndex++;
+  });
+
+  referralsContainer.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-referral')) {
+      e.target.closest('.referral-form').remove();
+    }
+  });
+
+  function createReferralForm(index) {
+    const div = document.createElement('div');
+    div.className = 'referral-form border border-gray-200 rounded-lg p-4 mb-4 dark:border-gray-700';
+    div.innerHTML = `
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-md font-medium text-gray-900 dark:text-white">
+          Encaminhamento
+        </h3>
+        <button type="button" class="remove-referral text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+          Remover
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CID</label>
+          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][cid]" placeholder="Ex: F84.0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Encaminhado Para</label>
+          <select name="portal_intake[portal_intake_referrals_attributes][${index}][encaminhado_para]" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="">Selecione...</option>
+            <option value="ABA">ABA</option>
+            <option value="FONO">FONO</option>
+            <option value="TO">TO</option>
+            <option value="PSICOPEDAGOGIA">PSICOPEDAGOGIA</option>
+            <option value="PSICOLOGIA">PSICOLOGIA</option>
+            <option value="PSICOMOTRICIDADE">PSICOMOTRICIDADE</option>
+            <option value="FISIOTERAPIA">FISIOTERAPIA</option>
+            <option value="EQUOTERAPIA">EQUOTERAPIA</option>
+            <option value="MUSICOTERAPIA">MUSICOTERAPIA</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Médico</label>
+          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][medico]" placeholder="Nome do médico" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CRM</label>
+          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][medico_crm]" placeholder="Número do CRM" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data de Encaminhamento</label>
+          <input type="date" name="portal_intake[portal_intake_referrals_attributes][${index}][data_encaminhamento]" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição</label>
+          <textarea name="portal_intake[portal_intake_referrals_attributes][${index}][descricao]" rows="3" placeholder="Descrição do encaminhamento (opcional)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"></textarea>
+        </div>
+      </div>
+    `;
+    return div;
+  }
+});
+</script>

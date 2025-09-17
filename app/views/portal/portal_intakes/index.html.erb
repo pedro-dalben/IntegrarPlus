@@ -102,16 +102,26 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    <%= portal_intake.beneficiary_name %>
+                    <%= portal_intake.nome %>
                   </div>
+                  <% if portal_intake.cpf.present? %>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                      CPF: <%= portal_intake.cpf %>
+                    </div>
+                  <% end %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm text-gray-900 dark:text-gray-100">
-                    <%= portal_intake.plan_name %>
+                    <%= portal_intake.convenio %>
                   </div>
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     <%= portal_intake.card_code %>
                   </div>
+                  <% if portal_intake.portal_intake_referrals.any? %>
+                    <div class="text-xs text-blue-600 dark:text-blue-400">
+                      <%= pluralize(portal_intake.portal_intake_referrals.count, 'encaminhamento') %>
+                    </div>
+                  <% end %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="<%= portal_intake.status_badge_class %>">

@@ -22,7 +22,7 @@ module Portal
 
     def destroy
       session[:external_user_id] = nil
-      redirect_to new_external_user_session_path, notice: 'Logout realizado com sucesso!'
+      redirect_to portal_new_external_user_session_path, notice: 'Logout realizado com sucesso!'
     end
 
     private

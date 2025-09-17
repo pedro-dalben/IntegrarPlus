@@ -14,18 +14,6 @@ module Portal
     def menu_items
       [
         {
-          title: 'Solicitações',
-          path: portal_service_requests_path,
-          icon: 'document-text',
-          active: current_path.start_with?('/portal/service_requests')
-        },
-        {
-          title: 'Nova Solicitação',
-          path: new_portal_service_request_path,
-          icon: 'plus',
-          active: current_path == new_portal_service_request_path
-        },
-        {
           title: 'Entradas Portal',
           path: portal_portal_intakes_path,
           icon: 'hospital',

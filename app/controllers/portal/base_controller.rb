@@ -22,7 +22,7 @@ module Portal
     def authenticate_external_user!
       return if external_user_signed_in?
 
-      redirect_to new_external_user_session_path, alert: 'Você precisa fazer login para acessar esta área.'
+      redirect_to portal_new_external_user_session_path, alert: 'Você precisa fazer login para acessar esta área.'
     end
 
     private
@@ -32,7 +32,7 @@ module Portal
       return if user.is_a?(ExternalUser) && user.active?
 
       sign_out(:external_user) if external_user_signed_in?
-      redirect_to new_external_user_session_path,
+      redirect_to portal_new_external_user_session_path,
                   alert: 'Sua conta foi desativada. Entre em contato com o administrador.'
     end
   end

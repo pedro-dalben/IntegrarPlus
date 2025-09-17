@@ -37,25 +37,152 @@
         </div>
         <div class="p-6">
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Campos obrigatórios para anamnese -->
             <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome do Beneficiário</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.beneficiary_name %></dd>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome do Beneficiário *</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.nome %></dd>
             </div>
             <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Plano Médico</dt>
-              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.plan_name %></dd>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Convênio/Plano Médico *</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.convenio %></dd>
             </div>
             <div>
-              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código da Carteirinha</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código da Carteirinha *</dt>
               <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.card_code %></dd>
             </div>
             <div>
               <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Entrada</dt>
               <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.requested_at.strftime('%d/%m/%Y às %H:%M') %></dd>
             </div>
+            
+            <!-- Campos opcionais -->
+            <% if @portal_intake.cpf.present? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CPF</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.cpf %></dd>
+              </div>
+            <% end %>
+            <% if @portal_intake.data_nascimento.present? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Nascimento</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.data_nascimento.strftime('%d/%m/%Y') %></dd>
+              </div>
+            <% end %>
+            <% if @portal_intake.endereco.present? %>
+              <div class="sm:col-span-2">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Endereço</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.endereco %></dd>
+              </div>
+            <% end %>
+            <% if @portal_intake.responsavel.present? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.responsavel %></dd>
+              </div>
+            <% end %>
+            <% if @portal_intake.telefone_responsavel.present? %>
+              <div>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Telefone do Responsável</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.telefone_formatado %></dd>
+              </div>
+            <% end %>
           </dl>
         </div>
       </div>
+
+      <!-- Dados do Convênio -->
+      <% if @portal_intake.convenio.present? || @portal_intake.carteira_codigo.present? || @portal_intake.tipo_convenio.present? %>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+              Dados do Convênio
+            </h2>
+          </div>
+          <div class="p-6">
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <% if @portal_intake.convenio.present? %>
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Convênio</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.convenio %></dd>
+                </div>
+              <% end %>
+              <% if @portal_intake.carteira_codigo.present? %>
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código da Carteira</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.carteira_codigo %></dd>
+                </div>
+              <% end %>
+              <% if @portal_intake.tipo_convenio.present? %>
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo de Convênio</dt>
+                  <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= @portal_intake.tipo_convenio.humanize %></dd>
+                </div>
+              <% end %>
+              <% if @portal_intake.data_encaminhamento.present? %>
+            <div>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Encaminhamento</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                <%= @portal_intake.data_encaminhamento&.strftime('%d/%m/%Y') || 'Não informado' %>
+              </dd>
+            </div>
+              <% end %>
+            </dl>
+          </div>
+        </div>
+      <% end %>
+
+
+      <!-- Encaminhamentos -->
+      <% if @portal_intake.portal_intake_referrals.any? %>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white">
+              Encaminhamentos (<%= @portal_intake.portal_intake_referrals.count %>)
+            </h2>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              <% @portal_intake.portal_intake_referrals.each_with_index do |referral, index| %>
+                <div class="border border-gray-200 rounded-lg p-4 dark:border-gray-700">
+                  <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-md font-medium text-gray-900 dark:text-white">
+                      Encaminhamento <%= index + 1 %>
+                    </h3>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/20 dark:text-blue-400">
+                      <%= referral.encaminhado_para %>
+                    </span>
+                  </div>
+                  
+                  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CID</dt>
+                      <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= referral.cid %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Médico</dt>
+                      <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= referral.medico %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CRM</dt>
+                      <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= referral.medico_crm %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Encaminhamento</dt>
+                      <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= referral.data_encaminhamento.strftime('%d/%m/%Y') %></dd>
+                    </div>
+                    <% if referral.descricao.present? %>
+                      <div class="sm:col-span-2">
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Descrição</dt>
+                        <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100"><%= referral.descricao %></dd>
+                      </div>
+                    <% end %>
+                  </dl>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
 
       <!-- Status e Agendamento -->
       <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -70,8 +197,8 @@
               <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status Atual</dt>
               <dd class="mt-1">
                 <span class="<%= @portal_intake.status_badge_class %>">
-        <%= @portal_intake.status_label %>
-      </span>
+                  <%= @portal_intake.status_label %>
+                </span>
               </dd>
             </div>
             <div>

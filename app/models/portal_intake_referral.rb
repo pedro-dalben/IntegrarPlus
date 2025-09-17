@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class ServiceRequestReferral < ApplicationRecord
-  belongs_to :service_request
+class PortalIntakeReferral < ApplicationRecord
+  belongs_to :portal_intake
 
   ENCAMINHAMENTO_OPTIONS = %w[
     ABA

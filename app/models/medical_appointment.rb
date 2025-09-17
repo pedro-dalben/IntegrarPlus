@@ -1,7 +1,8 @@
 class MedicalAppointment < ApplicationRecord
   belongs_to :agenda
-  belongs_to :professional, class_name: 'User'
+  belongs_to :professional, class_name: 'Professional'
   belongs_to :patient, class_name: 'User', optional: true
+  belongs_to :event, optional: true
   has_many :appointment_notes, dependent: :destroy
   has_many :appointment_attachments, dependent: :destroy
 
@@ -40,8 +41,8 @@ class MedicalAppointment < ApplicationRecord
   validates :professional, presence: true
 
   scope :today, -> { where(scheduled_at: Date.current.all_day) }
-  scope :this_week, -> { where(scheduled_at: Date.current.beginning_of_week..Date.current.end_of_week) }
-  scope :this_month, -> { where(scheduled_at: Date.current.beginning_of_month..Date.current.end_of_month) }
+  scope :this_week, -> { where(scheduled_at: Date.current.all_week) }
+  scope :this_month, -> { where(scheduled_at: Date.current.all_month) }
   scope :by_professional, ->(professional) { where(professional: professional) }
   scope :by_type, ->(type) { where(appointment_type: type) }
   scope :by_status, ->(status) { where(status: status) }
@@ -53,30 +54,33 @@ class MedicalAppointment < ApplicationRecord
                               .sum(:capacity_per_slot)
 
     occupied_slots = where(professional: professional, scheduled_at: date_range)
-                     .where.not(status: ['cancelled', 'no_show'])
+                     .where.not(status: %w[cancelled no_show])
                      .count
 
     return 0 if total_slots.zero?
+
     (occupied_slots.to_f / total_slots * 100).round(2)
   end
 
   def self.completion_rate(professional, date_range)
     total_appointments = where(professional: professional, scheduled_at: date_range)
-                        .where.not(status: 'cancelled')
+                         .where.not(status: 'cancelled')
 
     completed_appointments = total_appointments.where(status: 'completed')
 
     return 0 if total_appointments.empty?
+
     (completed_appointments.count.to_f / total_appointments.count * 100).round(2)
   end
 
   def self.no_show_rate(professional, date_range)
     total_appointments = where(professional: professional, scheduled_at: date_range)
-                        .where.not(status: 'cancelled')
+                         .where.not(status: 'cancelled')
 
     no_show_appointments = total_appointments.where(status: 'no_show')
 
     return 0 if total_appointments.empty?
+
     (no_show_appointments.count.to_f / total_appointments.count * 100).round(2)
   end
 
@@ -84,6 +88,7 @@ class MedicalAppointment < ApplicationRecord
     completed_appointments = where(professional: professional, scheduled_at: date_range, status: 'completed')
 
     return 0 if completed_appointments.empty?
+
     completed_appointments.average(:duration_minutes).round(2)
   end
 
@@ -113,6 +118,7 @@ class MedicalAppointment < ApplicationRecord
 
   def time_until_appointment
     return nil if scheduled_at < Time.current
+
     ((scheduled_at - Time.current) / 1.hour).round(2)
   end
 
@@ -122,12 +128,12 @@ class MedicalAppointment < ApplicationRecord
 
   def is_this_week?
     scheduled_at.to_date >= Date.current.beginning_of_week &&
-    scheduled_at.to_date <= Date.current.end_of_week
+      scheduled_at.to_date <= Date.current.end_of_week
   end
 
   def is_this_month?
     scheduled_at.to_date >= Date.current.beginning_of_month &&
-    scheduled_at.to_date <= Date.current.end_of_month
+      scheduled_at.to_date <= Date.current.end_of_month
   end
 
   def status_color

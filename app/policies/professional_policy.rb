@@ -1,33 +1,17 @@
-# frozen_string_literal: true
-
 class ProfessionalPolicy < ApplicationPolicy
+  def access?
+    user.present? && user.professional.present?
+  end
+
   def index?
-    user.permit?('professionals.read')
+    access?
   end
 
   def show?
-    user.permit?('professionals.read')
+    access?
   end
 
-  def create?
-    user.permit?('professionals.manage')
-  end
-
-  def update?
-    user.permit?('professionals.manage')
-  end
-
-  def destroy?
-    user.permit?('professionals.manage')
-  end
-
-  def manage?
-    user.permit?('professionals.manage')
-  end
-
-  class Scope < ApplicationPolicy::Scope
-    def resolve
-      scope.all
-    end
+  def availability?
+    access?
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_15_153001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -147,6 +147,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
     t.index ["note_type"], name: "index_appointment_notes_on_note_type"
   end
 
+  create_table "availability_exceptions", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.bigint "agenda_id"
+    t.date "exception_date", null: false
+    t.integer "exception_type", null: false
+    t.time "start_time"
+    t.time "end_time"
+    t.text "reason"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agenda_id"], name: "index_availability_exceptions_on_agenda_id"
+    t.index ["exception_type"], name: "index_availability_exceptions_on_exception_type"
+    t.index ["professional_id", "exception_date"], name: "idx_on_professional_id_exception_date_9761fb9ff6"
+    t.index ["professional_id"], name: "index_availability_exceptions_on_professional_id"
+  end
+
   create_table "contract_types", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "requires_company", default: false, null: false
@@ -269,6 +286,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "agenda_id"
+    t.index ["agenda_id"], name: "index_events_on_agenda_id"
     t.index ["created_by_id"], name: "index_events_on_created_by_id"
     t.index ["professional_id", "event_type"], name: "index_events_on_professional_id_and_event_type"
     t.index ["professional_id", "start_time", "end_time"], name: "index_events_on_professional_id_and_start_time_and_end_time"
@@ -358,8 +377,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "event_id"
     t.index ["agenda_id"], name: "index_medical_appointments_on_agenda_id"
     t.index ["appointment_type"], name: "index_medical_appointments_on_appointment_type"
+    t.index ["event_id"], name: "index_medical_appointments_on_event_id"
     t.index ["patient_id", "scheduled_at"], name: "index_medical_appointments_on_patient_id_and_scheduled_at"
     t.index ["patient_id"], name: "index_medical_appointments_on_patient_id"
     t.index ["priority"], name: "index_medical_appointments_on_priority"
@@ -426,6 +447,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
     t.index ["key"], name: "index_permissions_on_key", unique: true
   end
 
+  create_table "portal_intake_referrals", force: :cascade do |t|
+    t.bigint "portal_intake_id", null: false
+    t.string "cid"
+    t.string "encaminhado_para"
+    t.string "medico"
+    t.string "medico_crm"
+    t.date "data_encaminhamento"
+    t.text "descricao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["portal_intake_id"], name: "index_portal_intake_referrals_on_portal_intake_id"
+  end
+
   create_table "portal_intakes", force: :cascade do |t|
     t.bigint "operator_id", null: false
     t.string "beneficiary_name", null: false
@@ -436,10 +470,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
     t.date "anamnesis_scheduled_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "convenio"
+    t.string "carteira_codigo"
+    t.string "nome"
+    t.string "telefone_responsavel"
+    t.date "data_encaminhamento"
+    t.date "data_nascimento"
+    t.text "endereco"
+    t.string "responsavel"
+    t.string "tipo_convenio"
+    t.string "cpf"
     t.index ["anamnesis_scheduled_on"], name: "index_portal_intakes_on_anamnesis_scheduled_on"
     t.index ["operator_id"], name: "index_portal_intakes_on_operator_id"
     t.index ["requested_at"], name: "index_portal_intakes_on_requested_at"
     t.index ["status"], name: "index_portal_intakes_on_status"
+  end
+
+  create_table "professional_availabilities", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.bigint "agenda_id"
+    t.integer "day_of_week", null: false
+    t.time "start_time", null: false
+    t.time "end_time", null: false
+    t.boolean "active", default: true
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_professional_availabilities_on_active"
+    t.index ["agenda_id"], name: "index_professional_availabilities_on_agenda_id"
+    t.index ["professional_id", "day_of_week"], name: "idx_on_professional_id_day_of_week_c89056fce6"
+    t.index ["professional_id"], name: "index_professional_availabilities_on_professional_id"
   end
 
   create_table "professional_groups", force: :cascade do |t|
@@ -619,6 +679,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
   add_foreign_key "appointment_attachments", "users", column: "uploaded_by_id"
   add_foreign_key "appointment_notes", "medical_appointments"
   add_foreign_key "appointment_notes", "users", column: "created_by_id"
+  add_foreign_key "availability_exceptions", "agendas"
+  add_foreign_key "availability_exceptions", "professionals"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"
@@ -636,18 +698,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_05_181428) do
   add_foreign_key "document_versions", "documents"
   add_foreign_key "document_versions", "professionals", column: "created_by_professional_id"
   add_foreign_key "documents", "professionals", column: "author_professional_id"
+  add_foreign_key "events", "agendas"
   add_foreign_key "events", "professionals"
-  add_foreign_key "events", "users", column: "created_by_id"
+  add_foreign_key "events", "professionals", column: "created_by_id"
   add_foreign_key "group_permissions", "groups"
   add_foreign_key "group_permissions", "permissions"
   add_foreign_key "invites", "users"
   add_foreign_key "journey_events", "portal_intakes"
   add_foreign_key "medical_appointments", "agendas"
+  add_foreign_key "medical_appointments", "events"
+  add_foreign_key "medical_appointments", "professionals"
   add_foreign_key "medical_appointments", "users", column: "patient_id"
-  add_foreign_key "medical_appointments", "users", column: "professional_id"
   add_foreign_key "notification_preferences", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "portal_intake_referrals", "portal_intakes"
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
+  add_foreign_key "professional_availabilities", "agendas"
+  add_foreign_key "professional_availabilities", "professionals"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"
   add_foreign_key "professional_specialities", "professionals"

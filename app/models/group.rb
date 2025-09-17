@@ -2,7 +2,7 @@
 
 class Group < ApplicationRecord
   include DashboardCache
-  include MeiliSearch::Rails
+  include MeiliSearch::Rails unless Rails.env.test?
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
@@ -15,16 +15,18 @@ class Group < ApplicationRecord
   scope :ordered, -> { order(:name) }
   scope :admin, -> { where(is_admin: true) }
 
-  meilisearch do
-    searchable_attributes %i[name description]
-    filterable_attributes %i[is_admin created_at updated_at]
-    sortable_attributes %i[created_at updated_at name]
+  unless Rails.env.test?
+    meilisearch do
+      searchable_attributes %i[name description]
+      filterable_attributes %i[is_admin created_at updated_at]
+      sortable_attributes %i[created_at updated_at name]
 
-    attribute :name
-    attribute :description
-    attribute :is_admin
-    attribute :created_at
-    attribute :updated_at
+      attribute :name
+      attribute :description
+      attribute :is_admin
+      attribute :created_at
+      attribute :updated_at
+    end
   end
 
   def admin?

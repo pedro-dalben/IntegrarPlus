@@ -1,0 +1,25 @@
+<% current = local_assigns[:current_step] || 'metadata' %>
+<% steps = [
+  ['metadata', '1. Metadados'],
+  ['professionals', '2. Profissionais'],
+  ['working_hours', '3. Grade de Horários'],
+  ['review', '4. Revisão']
+] %>
+
+<div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+  <nav class="flex space-x-8" aria-label="Tabs">
+    <% steps.each do |step_key, label| %>
+      <% active = (current == step_key) %>
+      <div
+        class="border-b-2 py-4 px-1 <%= active ? 'border-blue-500' : 'border-transparent' %>"
+        data-agendas-wizard-target="tab"
+        data-step="<%= step_key %>"
+        data-action="click->agendas-wizard#goToStep"
+        role="button"
+        tabindex="0">
+        <span class="text-sm font-medium <%= active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' %>"><%= label %></span>
+      </div>
+    <% end %>
+  </nav>
+</div>
+

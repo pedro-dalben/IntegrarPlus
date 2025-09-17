@@ -21,3 +21,6 @@ application.register("permissions", PermissionsController)
 
 import SelectSearchController from "./select_search_controller"
 application.register("select-search", SelectSearchController)
+
+import MaskedInputController from "./masked_input_controller"
+application.register("masked-input", MaskedInputController)

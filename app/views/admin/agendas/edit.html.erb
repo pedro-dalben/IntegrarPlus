@@ -1,128 +1,96 @@
 <% content_for :title, "Editar Agenda" %>
 
-<div class="max-w-4xl mx-auto">
-  <div class="mb-8">
-    <div class="flex items-center">
-      <div class="w-4 h-4 rounded-full mr-3" style="background-color: <%= @agenda.color_theme %>"></div>
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Editar Agenda</h1>
-        <p class="text-gray-600"><%= @agenda.name %></p>
-      </div>
-    </div>
-  </div>
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_agendas_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
 
-  <%# Temporariamente comentado - método events não existe %>
-  <%# if @agenda.events.any? %>
-    <!-- <div class="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-yellow-800">Atenção</h3>
-          <div class="mt-2 text-sm text-yellow-700">
-            <p>Esta agenda possui eventos. Alterações na grade de horários não afetarão eventos já criados.</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
-  <%# end %>
+  <div class="space-y-6">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" data-controller="agendas-wizard" data-agendas-wizard-current-step-value="<%= @current_step %>">
+      <%= render 'wizard_tabs', current_step: @current_step %>
 
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-    <div class="border-b border-gray-200">
-      <nav class="flex space-x-8 px-6" aria-label="Tabs">
-        <div class="<%= 'border-b-2 border-blue-500' if @current_step == 'metadata' %> border-b-2 border-transparent py-4 px-1">
-          <span class="text-sm font-medium <%= @current_step == 'metadata' ? 'text-blue-600' : 'text-gray-500' %>">1. Metadados</span>
-        </div>
-        <div class="<%= 'border-b-2 border-blue-500' if @current_step == 'professionals' %> border-b-2 border-transparent py-4 px-1">
-          <span class="text-sm font-medium <%= @current_step == 'professionals' ? 'text-blue-600' : 'text-gray-500' %>">2. Profissionais</span>
-        </div>
-        <div class="<%= 'border-b-2 border-blue-500' if @current_step == 'working_hours' %> border-b-2 border-transparent py-4 px-1">
-          <span class="text-sm font-medium <%= @current_step == 'working_hours' ? 'text-blue-600' : 'text-gray-500' %>">3. Grade de Horários</span>
-        </div>
-        <div class="<%= 'border-b-2 border-blue-500' if @current_step == 'review' %> border-b-2 border-transparent py-4 px-1">
-          <span class="text-sm font-medium <%= @current_step == 'review' ? 'text-blue-600' : 'text-gray-500' %>">4. Revisão</span>
-        </div>
-      </nav>
-    </div>
-
-    <div class="p-6">
-      <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-wizard" } do |form| %>
-        <% if @agenda.errors.any? %>
-          <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800">
-                  <%= pluralize(@agenda.errors.count, "erro") %> impediram que esta agenda fosse salva:
-                </h3>
-                <div class="mt-2 text-sm text-red-700">
-                  <ul class="list-disc list-inside space-y-1">
-                    <% @agenda.errors.full_messages.each do |message| %>
-                      <li><%= message %></li>
-                    <% end %>
-                  </ul>
+      <div class="p-4 sm:p-6">
+        <%= form_with model: [:admin, @agenda], local: true, data: { controller: "agendas-professionals" } do |form| %>
+          <% if @agenda.errors.any? %>
+            <div class="ta-alert ta-alert-error mb-6">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium">
+                    <%= pluralize(@agenda.errors.count, "erro") %> impediram que esta agenda fosse salva:
+                  </h3>
+                  <div class="mt-2 text-sm">
+                    <ul class="list-disc list-inside space-y-1">
+                      <% @agenda.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
+          <% end %>
+
+          <div data-agendas-wizard-target="step" data-step="metadata" class="<%= 'hidden' unless @current_step == 'metadata' %>">
+            <%= render 'step_metadata', form: form %>
+          </div>
+
+          <div data-agendas-wizard-target="step" data-step="professionals" class="<%= 'hidden' unless @current_step == 'professionals' %>">
+            <%= render 'step_professionals', form: form %>
+          </div>
+
+          <div data-agendas-wizard-target="step" data-step="working_hours" class="<%= 'hidden' unless @current_step == 'working_hours' %>">
+            <%= render 'step_working_hours', form: form %>
+          </div>
+
+          <div data-agendas-wizard-target="step" data-step="review" class="<%= 'hidden' unless @current_step == 'review' %>">
+            <%= render 'step_review', form: form %>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+            <%= hidden_field_tag :step, @current_step, data: { agendas_wizard_target: 'currentStepInput' } %>
+            <button type="button"
+                    data-action="click->agendas-wizard#previousStep"
+                    data-agendas-wizard-target="previousBtn"
+                    class="<%= 'hidden' if @current_step == 'metadata' %> ta-btn ta-btn-secondary">
+              Anterior
+            </button>
+
+            <div class="flex gap-3">
+              <%= form.submit "Salvar e Continuar",
+                    name: "commit",
+                    value: "Salvar e Continuar",
+                    class: "ta-btn ta-btn-primary" %>
+
+              <% unless @current_step == 'review' %>
+                <button type="button"
+                        data-action="click->agendas-wizard#nextStep"
+                        data-agendas-wizard-target="nextBtn"
+                        class="ta-btn ta-btn-primary">
+                  Próximo
+                </button>
+              <% end %>
+
+              <% if @current_step == 'review' && @agenda.status == 'draft' %>
+                <%= form.submit "Ativar Agenda",
+                      name: "commit",
+                      value: "Ativar Agenda",
+                      data: { "agendas-wizard-target": "activateBtn" },
+                      class: "ta-btn ta-btn-success" %>
+              <% end %>
+            </div>
           </div>
         <% end %>
-
-        <div data-agendas-wizard-target="step" data-step="metadata" class="<%= 'hidden' unless @current_step == 'metadata' %>">
-          <%= render 'step_metadata', form: form %>
-        </div>
-
-        <div data-agendas-wizard-target="step" data-step="professionals" class="<%= 'hidden' unless @current_step == 'professionals' %>">
-          <%= render 'step_professionals', form: form %>
-        </div>
-
-        <div data-agendas-wizard-target="step" data-step="working_hours" class="<%= 'hidden' unless @current_step == 'working_hours' %>">
-          <%= render 'step_working_hours', form: form %>
-        </div>
-
-        <div data-agendas-wizard-target="step" data-step="review" class="<%= 'hidden' unless @current_step == 'review' %>">
-          <%= render 'step_review', form: form %>
-        </div>
-
-        <div class="mt-8 flex justify-between">
-          <button type="button"
-                  data-action="click->agendas-wizard#previousStep"
-                  data-agendas-wizard-target="previousBtn"
-                  class="<%= 'hidden' if @current_step == 'metadata' %> px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Anterior
-          </button>
-
-          <div class="flex gap-3 ml-auto">
-            <%= form.submit "Salvar e Continuar",
-                  name: "commit",
-                  value: "Salvar e Continuar",
-                  class: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
-
-            <% unless @current_step == 'review' %>
-              <button type="button"
-                      data-action="click->agendas-wizard#nextStep"
-                      data-agendas-wizard-target="nextBtn"
-                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                Próximo
-              </button>
-            <% end %>
-
-            <% if @current_step == 'review' && @agenda.status == 'draft' %>
-              <%= form.submit "Ativar Agenda",
-                    name: "commit",
-                    value: "Ativar Agenda",
-                    data: { "agendas-wizard-target": "activateBtn" },
-                    class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
+      </div>
     </div>
   </div>
-</div>
+<% end %>

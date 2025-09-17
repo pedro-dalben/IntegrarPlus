@@ -8,7 +8,7 @@
     </p>
   </div>
 
-    <%= form_with(model: @external_user, as: :external_user, url: external_user_session_path, local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
+    <%= form_with(model: @external_user, as: :external_user, url: portal_new_external_user_session_path, local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
 
       <div>
         <%= form.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>

@@ -3,14 +3,74 @@
 class PortalIntake < ApplicationRecord
   belongs_to :operator, class_name: 'ExternalUser'
   has_many :journey_events, dependent: :destroy
+  has_many :portal_intake_referrals, dependent: :destroy
 
-  validates :beneficiary_name, presence: true, length: { minimum: 2, maximum: 100 }
+  validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
   validates :plan_name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :card_code, presence: true, length: { minimum: 2, maximum: 50 }
   validates :requested_at, presence: true
   validates :status, presence: true
 
+  # Campos opcionais do ServiceRequest
+  validates :convenio, length: { maximum: 100 }
+  validates :carteira_codigo, length: { maximum: 50 }
+  validates :telefone_responsavel, length: { maximum: 20 }
+  validates :responsavel, length: { maximum: 100 }
+  validates :cpf, length: { maximum: 14 }
+  validates :endereco, length: { maximum: 1000 }
+
+  accepts_nested_attributes_for :portal_intake_referrals, allow_destroy: true, reject_if: :all_blank
+
   after_create :create_initial_journey_event
+
+  def telefone_formatado
+    return telefone_responsavel if telefone_responsavel.blank?
+
+    # Remove todos os caracteres não numéricos
+    numbers = telefone_responsavel.gsub(/\D/, '')
+
+    # Formata baseado no tamanho
+    case numbers.length
+    when 10
+      numbers.gsub(/(\d{2})(\d{4})(\d{4})/, '(\1) \2-\3')
+    when 11
+      numbers.gsub(/(\d{2})(\d{5})(\d{4})/, '(\1) \2-\3')
+    else
+      telefone_responsavel
+    end
+  end
+
+  def status_badge_class
+    case status
+    when 'aguardando_agendamento_anamnese'
+      'ta-badge ta-badge-warning'
+    when 'aguardando_anamnese'
+      'ta-badge ta-badge-info'
+    when 'anamnese_concluida'
+      'ta-badge ta-badge-success'
+    else
+      'ta-badge ta-badge-secondary'
+    end
+  end
+
+  def status_label
+    case status
+    when 'aguardando_agendamento_anamnese'
+      'Aguardando Agendamento'
+    when 'aguardando_anamnese'
+      'Aguardando Anamnese'
+    when 'anamnese_concluida'
+      'Anamnese Concluída'
+    else
+      status.humanize
+    end
+  end
+
+  private
+
+  def all_blank(attributes)
+    attributes['cid'].blank? && attributes['encaminhado_para'].blank? && attributes['medico'].blank?
+  end
 
   enum :status, {
     aguardando_agendamento_anamnese: 'aguardando_agendamento_anamnese',
@@ -69,32 +129,6 @@ class PortalIntake < ApplicationRecord
 
   def can_finish_anamnesis?
     aguardando_anamnese?
-  end
-
-  def status_badge_class
-    case status
-    when 'aguardando_agendamento_anamnese'
-      'ta-badge ta-badge-warning'
-    when 'aguardando_anamnese'
-      'ta-badge ta-badge-info'
-    when 'anamnese_concluida'
-      'ta-badge ta-badge-success'
-    else
-      'ta-badge ta-badge-secondary'
-    end
-  end
-
-  def status_label
-    case status
-    when 'aguardando_agendamento_anamnese'
-      'Aguardando Agendamento'
-    when 'aguardando_anamnese'
-      'Aguardando Anamnese'
-    when 'anamnese_concluida'
-      'Anamnese Concluída'
-    else
-      status.humanize
-    end
   end
 
   private

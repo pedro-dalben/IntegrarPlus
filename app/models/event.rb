@@ -2,8 +2,10 @@ class Event < ApplicationRecord
   belongs_to :professional
   belongs_to :created_by, class_name: 'Professional'
   belongs_to :calendar, optional: true
+  belongs_to :agenda, optional: true
+  has_one :medical_appointment, dependent: :nullify
 
-  enum :event_type, { personal: 0, consulta: 1, atendimento: 2, reuniao: 3, outro: 4 }
+  enum :event_type, { personal: 0, consulta: 1, atendimento: 2, reuniao: 3, anamnese: 4, outro: 5 }
   enum :visibility_level, { personal_private: 0, restricted: 1, publicly_visible: 2 }
   enum :status, { active: 0, cancelled: 1, completed: 2 }
 

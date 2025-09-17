@@ -6,22 +6,70 @@ export default class extends Controller {
   connect() {
     this.selectedProfessionals = new Set()
     this.updateSelectedList()
+    this.loadProfessionals()
   }
 
   filterProfessionals() {
     const searchTerm = this.searchInputTarget.value.toLowerCase()
-    const items = this.availableListTarget.querySelectorAll('.professional-item')
     
-    items.forEach(item => {
-      const name = item.dataset.professionalName.toLowerCase()
-      const specialties = item.dataset.professionalSpecialties.toLowerCase()
+    if (searchTerm.length >= 2) {
+      this.searchProfessionals(searchTerm)
+    } else {
+      this.loadProfessionals()
+    }
+  }
+  
+  async searchProfessionals(searchTerm) {
+    try {
+      const response = await fetch(`/admin/agendas/search_professionals?search=${encodeURIComponent(searchTerm)}`)
+      const data = await response.json()
       
-      if (name.includes(searchTerm) || specialties.includes(searchTerm)) {
-        item.style.display = 'block'
-      } else {
-        item.style.display = 'none'
-      }
+      this.renderProfessionals(data.professionals)
+    } catch (error) {
+      console.error('Erro ao buscar profissionais:', error)
+    }
+  }
+  
+  async loadProfessionals() {
+    try {
+      const response = await fetch('/admin/agendas/search_professionals')
+      const data = await response.json()
+      
+      this.renderProfessionals(data.professionals)
+    } catch (error) {
+      console.error('Erro ao carregar profissionais:', error)
+    }
+  }
+  
+  renderProfessionals(professionals) {
+    let html = ''
+    
+    professionals.forEach(professional => {
+      const specialties = professional.specialties.join(', ')
+      
+      html += `
+        <div class="professional-item p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+             data-professional-id="${professional.id}"
+             data-professional-name="${professional.name}"
+             data-professional-specialties="${specialties}"
+             data-action="click->agendas-professionals#selectProfessional">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm font-medium text-gray-900">${professional.name}</div>
+              <div class="text-sm text-gray-500">${specialties}</div>
+            </div>
+            <div class="flex items-center">
+              <input type="checkbox"
+                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                     data-agendas-professionals-target="checkbox"
+                     data-professional-id="${professional.id}">
+            </div>
+          </div>
+        </div>
+      `
     })
+    
+    this.availableListTarget.innerHTML = html
   }
 
   selectProfessional(event) {

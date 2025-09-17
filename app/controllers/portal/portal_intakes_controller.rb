@@ -21,6 +21,9 @@ module Portal
 
     def new
       @portal_intake = PortalIntake.new
+      @portal_intake.data_encaminhamento = Date.current
+      @portal_intake.convenio = current_external_user.company_name
+      @portal_intake.portal_intake_referrals.build
       authorize @portal_intake
     end
 
@@ -28,12 +31,18 @@ module Portal
       @portal_intake = PortalIntake.new(portal_intake_params)
       @portal_intake.operator = current_external_user
       @portal_intake.requested_at = Time.current
+      @portal_intake.data_encaminhamento = Date.current # Sempre usar a data atual
+      @portal_intake.convenio = current_external_user.company_name # Sempre usar o convênio do usuário logado
+      @portal_intake.plan_name = current_external_user.company_name # Plano médico é o mesmo que o convênio
+      @portal_intake.beneficiary_name = @portal_intake.nome # beneficiary_name é o mesmo que nome
       authorize @portal_intake
 
       if @portal_intake.save
         redirect_to portal_portal_intake_path(@portal_intake),
                     notice: 'Solicitação enviada com sucesso! Aguarde o agendamento da anamnese.'
       else
+        # Reconstruir os encaminhamentos em caso de erro
+        @portal_intake.portal_intake_referrals.build if @portal_intake.portal_intake_referrals.empty?
         render :new, status: :unprocessable_entity
       end
     end
@@ -45,7 +54,17 @@ module Portal
     end
 
     def portal_intake_params
-      params.expect(portal_intake: %i[beneficiary_name plan_name card_code])
+      params.expect(
+        portal_intake: [
+          :beneficiary_name, :plan_name, :card_code,
+          :carteira_codigo, :nome, :telefone_responsavel,
+          :data_encaminhamento, :data_nascimento, :endereco, :responsavel,
+          :tipo_convenio, :cpf,
+          { portal_intake_referrals_attributes: %i[
+            id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
+          ] }
+        ]
+      )
     end
 
     def apply_filters(scope)

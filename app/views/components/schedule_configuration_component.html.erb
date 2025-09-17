@@ -1,0 +1,114 @@
+<div class="space-y-6" data-controller="schedule-configuration">
+  <div>
+    <h2 class="text-lg font-medium text-gray-900 mb-4">Configuração de Horários</h2>
+    <p class="text-sm text-gray-600 mb-6">Configure os horários de disponibilidade para <%= professional.name %></p>
+  </div>
+
+  <% unless read_only %>
+    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+      <h3 class="text-sm font-medium text-blue-900 mb-3">Templates de Horário</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <% templates.each do |template| %>
+          <button type="button"
+                  class="p-3 text-left border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+                  data-action="click->schedule-configuration#applyTemplate"
+                  data-template-id="<%= template[:id] %>">
+            <div class="font-medium text-blue-900"><%= template[:name] %></div>
+            <div class="text-sm text-blue-700"><%= template[:description] %></div>
+          </button>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Horários da Semana</h3>
+    
+    <div class="space-y-4">
+      <% weekly_schedule.each_with_index do |day_schedule, index| %>
+        <div class="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
+          <div class="w-24">
+            <label class="flex items-center">
+              <input type="checkbox"
+                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                     data-action="change->schedule-configuration#toggleDay"
+                     data-day="<%= index %>"
+                     <%= 'checked' if day_schedule[:is_available] %>
+                     <%= 'disabled' if read_only %>>
+              <span class="ml-2 text-sm font-medium text-gray-900">
+                <%= day_names[index] %>
+              </span>
+            </label>
+          </div>
+          
+          <div class="flex-1" data-schedule-configuration-target="dayPeriods" data-day="<%= index %>">
+            <% if day_schedule[:is_available] %>
+              <div class="space-y-2">
+                <% day_schedule[:availabilities].each_with_index do |availability, period_index| %>
+                  <div class="flex items-center space-x-2">
+                    <input type="time"
+                           class="px-3 py-1 border border-gray-300 rounded text-sm"
+                           value="<%= availability.start_time.strftime('%H:%M') %>"
+                           data-action="change->schedule-configuration#updatePeriod"
+                           data-day="<%= index %>"
+                           data-period="<%= period_index %>"
+                           data-field="start_time"
+                           <%= 'disabled' if read_only %>>
+                    <span class="text-gray-500">até</span>
+                    <input type="time"
+                           class="px-3 py-1 border border-gray-300 rounded text-sm"
+                           value="<%= availability.end_time.strftime('%H:%M') %>"
+                           data-action="change->schedule-configuration#updatePeriod"
+                           data-day="<%= index %>"
+                           data-period="<%= period_index %>"
+                           data-field="end_time"
+                           <%= 'disabled' if read_only %>>
+                    <% unless read_only %>
+                      <button type="button"
+                              class="text-red-600 hover:text-red-800"
+                              data-action="click->schedule-configuration#removePeriod"
+                              data-day="<%= index %>"
+                              data-period="<%= period_index %>">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                      </button>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <% unless read_only %>
+                  <button type="button"
+                          class="text-blue-600 hover:text-blue-800 text-sm"
+                          data-action="click->schedule-configuration#addPeriod"
+                          data-day="<%= index %>">
+                    + Adicionar período
+                  </button>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="text-sm text-gray-500">Não disponível</div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% unless read_only %>
+    <div class="flex justify-end space-x-3">
+      <button type="button"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              data-action="click->schedule-configuration#resetSchedule">
+        Resetar
+      </button>
+      <button type="button"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+              data-action="click->schedule-configuration#saveSchedule">
+        Salvar Horários
+      </button>
+    </div>
+  <% end %>
+
+  <div data-schedule-configuration-target="hiddenInputs"></div>
+</div>
