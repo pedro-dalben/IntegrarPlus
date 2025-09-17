@@ -66,12 +66,6 @@ class PortalIntake < ApplicationRecord
     end
   end
 
-  private
-
-  def all_blank(attributes)
-    attributes['cid'].blank? && attributes['encaminhado_para'].blank? && attributes['medico'].blank?
-  end
-
   enum :status, {
     aguardando_agendamento_anamnese: 'aguardando_agendamento_anamnese',
     aguardando_anamnese: 'aguardando_anamnese',
@@ -132,6 +126,10 @@ class PortalIntake < ApplicationRecord
   end
 
   private
+
+  def all_blank(attributes)
+    attributes['cid'].blank? && attributes['encaminhado_para'].blank? && attributes['medico'].blank?
+  end
 
   def create_initial_journey_event
     journey_events.create!(

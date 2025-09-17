@@ -30,6 +30,17 @@
           <%= external_user.company_name %>
         </p>
       </div>
+      
+      <!-- Logout Button -->
+      <%= link_to destroy_external_user_session_path, 
+                  method: :delete,
+                  class: "inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200",
+                  data: { confirm: "Tem certeza que deseja sair?" } do %>
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        Sair
+      <% end %>
     </div>
   </div>
 </header>

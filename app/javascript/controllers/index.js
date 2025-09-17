@@ -4,24 +4,41 @@
 
 import { application } from "./application"
 
+import AgendaDashboardController from "./agenda_dashboard_controller"
+application.register("agenda-dashboard", AgendaDashboardController)
+
+import AgendaSchedulerController from "./agenda_scheduler_controller"
+application.register("agenda-scheduler", AgendaSchedulerController)
+
+import Agendas__MetadataController from "./agendas/metadata_controller"
+application.register("agendas--metadata", Agendas__MetadataController)
+
+import Agendas__ProfessionalsController from "./agendas/professionals_controller"
+application.register("agendas--professionals", Agendas__ProfessionalsController)
+
+import Agendas__ReviewController from "./agendas/review_controller"
+application.register("agendas--review", Agendas__ReviewController)
+
+import Agendas__WizardController from "./agendas/wizard_controller"
+application.register("agendas--wizard", Agendas__WizardController)
+
+import Agendas__WorkingHoursController from "./agendas/working_hours_controller"
+application.register("agendas--working-hours", Agendas__WorkingHoursController)
+
 import CepController from "./cep_controller"
 application.register("cep", CepController)
 
-import DashboardCalendarController from "./dashboard_calendar_controller"
-application.register("dashboard-calendar", DashboardCalendarController)
+import HeaderController from "./header_controller"
+application.register("header", HeaderController)
 
-// Agendas controllers
-import WizardController from "./agendas/wizard_controller"
-application.register("agendas-wizard", WizardController)
+import NotificationController from "./notification_controller"
+application.register("notification", NotificationController)
 
-import MetadataController from "./agendas/metadata_controller"
-application.register("agendas-metadata", MetadataController)
+import ProfessionalSelectorController from "./professional_selector_controller"
+application.register("professional-selector", ProfessionalSelectorController)
 
-import ProfessionalsController from "./agendas/professionals_controller"
-application.register("agendas-professionals", ProfessionalsController)
+import ScheduleConfigurationController from "./schedule_configuration_controller"
+application.register("schedule-configuration", ScheduleConfigurationController)
 
-import WorkingHoursController from "./agendas/working_hours_controller"
-application.register("agendas-working-hours", WorkingHoursController)
-
-import ReviewController from "./agendas/review_controller"
-application.register("agendas-review", ReviewController)
+import UnifiedCalendarController from "./unified_calendar_controller"
+application.register("unified-calendar", UnifiedCalendarController)

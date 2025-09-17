@@ -2,22 +2,24 @@
 
 <div class="space-y-6">
   <!-- Header -->
-  <div class="flex items-center space-x-4">
-    <%= link_to portal_portal_intakes_path,
-                class: "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" do %>
-      <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-      </svg>
-    <% end %>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-        Solicitação #<%= @portal_intake.id %>
-      </h1>
-      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        Detalhes da solicitação de entrada do beneficiário
-      </p>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <%= link_to portal_portal_intakes_path,
+                  class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors duration-200" do %>
+        <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Voltar
+      <% end %>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Solicitação #<%= @portal_intake.id %>
+        </h1>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          Detalhes da solicitação de entrada do beneficiário
+        </p>
+      </div>
     </div>
-    <div class="flex-1"></div>
     <div>
       <span class="<%= @portal_intake.status_badge_class %>">
         <%= @portal_intake.status_label %>
