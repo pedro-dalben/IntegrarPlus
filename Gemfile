@@ -7,7 +7,7 @@ gem 'dotenv-rails'
 gem 'pg', '>= 1.1'
 gem 'propshaft'
 gem 'puma', '>= 5.0'
-gem 'rails', '~> 8.0.2'
+gem 'rails', '~> 8.0.3'
 
 gem 'vite_rails'
 
