@@ -14,11 +14,23 @@ class Admin::AgendasController < Admin::BaseController
   end
 
   def show
-    # @recent_events = @agenda.events
-    #                         .includes(:professional, :patient)
-    #                         .order(created_at: :desc)
-    #                         .limit(10)
-    @recent_events = []
+    # Buscar eventos através dos profissionais da agenda
+    @recent_events = Event.joins(:professional)
+                          .where(professional: @agenda.professionals)
+                          .includes(:professional, :medical_appointment)
+                          .order(start_time: :desc)
+                          .limit(10)
+
+    # Buscar appointments que NÃO têm evento associado (para casos especiais)
+    @recent_appointments = MedicalAppointment.joins(:professional)
+                                             .where(professional: @agenda.professionals)
+                                             .where(event: nil)
+                                             .includes(:professional, :patient)
+                                             .order(scheduled_at: :desc)
+                                             .limit(10)
+
+    # Para o calendário, usar apenas os eventos (que já incluem os appointments associados)
+    @all_events = @recent_events
   end
 
   def new

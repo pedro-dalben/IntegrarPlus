@@ -1,0 +1,134 @@
+<div class="daily-agenda">
+  <!-- Header da Agenda -->
+  <div class="mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      Agenda do Dia - <%= date.strftime("%A, %d de %B de %Y") %>
+    </h3>
+    <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+        <span>Consultas</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+        <span>Atendimentos</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+        <span>Reuniões</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-orange-500"></div>
+        <span>Anamneses</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grade de Horários Simplificada -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
+    <div class="grid grid-cols-6 gap-4">
+      <% (8..17).each do |hour| %>
+        <div class="text-center">
+          <div class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
+            <%= hour.to_s.rjust(2, '0') %>:00
+          </div>
+          <div class="space-y-1">
+            <% (0..3).each do |quarter| %>
+              <% time_slot = "#{hour.to_s.rjust(2, '0')}:#{(quarter * 15).to_s.rjust(2, '0')}" %>
+              <% event_at_slot = events.find { |e| e.start_time.in_time_zone.strftime('%H:%M') == time_slot } %>
+              
+              <div class="h-8 rounded-lg border flex items-center justify-center text-xs cursor-pointer transition-all duration-200
+                  <%= if event_at_slot
+                        event_style(event_at_slot)
+                      else
+                        'bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
+                      end %>"
+                  title="<%= if event_at_slot
+                              "#{event_at_slot.title} - #{event_at_slot.professional.full_name}"
+                            else
+                              "Horário livre - #{time_slot}"
+                            end %>">
+                <% if event_at_slot %>
+                  <div class="flex items-center gap-1 min-w-0">
+                    <div class="w-2 h-2 rounded-full flex-shrink-0" 
+                         style="background-color: <%= event_dot_color(event_at_slot) %>"></div>
+                    <span class="truncate font-medium">
+                      <%= event_at_slot.professional.full_name.split.first %>
+                    </span>
+                  </div>
+                <% else %>
+                  <span class="text-gray-400">Livre</span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Lista de Eventos do Dia -->
+  <% if events.any? %>
+    <div class="mt-6">
+      <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">
+        Eventos Agendados (<%= events.count %>)
+      </h4>
+      <div class="space-y-3">
+        <% events.each do |event| %>
+          <div class="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md">
+            <!-- Horário -->
+            <div class="flex-shrink-0 w-20 text-center">
+              <div class="text-lg font-bold text-gray-900 dark:text-white">
+                <%= event.start_time.in_time_zone.strftime("%H:%M") %>
+              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">
+                <%= event.end_time.in_time_zone.strftime("%H:%M") %>
+              </div>
+            </div>
+            
+            <!-- Indicador de Tipo -->
+            <div class="flex-shrink-0">
+              <div class="w-4 h-4 rounded-full" style="background-color: <%= event_dot_color(event) %>"></div>
+            </div>
+            
+            <!-- Detalhes do Evento -->
+            <div class="flex-1 min-w-0">
+              <h5 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                <%= event.title %>
+              </h5>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <%= event.professional.full_name %>
+              </p>
+              <% if event.description.present? %>
+                <p class="text-sm text-gray-500 dark:text-gray-500 mt-1 truncate">
+                  <%= event.description %>
+                </p>
+              <% end %>
+            </div>
+            
+            <!-- Badge de Tipo -->
+            <div class="flex-shrink-0">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <%= event_style(event) %>">
+                <%= event.event_type.humanize %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="mt-6 text-center py-8">
+      <div class="mx-auto h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+        <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+        Nenhum evento agendado para hoje
+      </h4>
+      <p class="text-gray-500 dark:text-gray-400">
+        Que tal criar um novo evento?
+      </p>
+    </div>
+  <% end %>
+</div>

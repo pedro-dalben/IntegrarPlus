@@ -25,8 +25,17 @@ application.register("agendas--wizard", Agendas__WizardController)
 import Agendas__WorkingHoursController from "./agendas/working_hours_controller"
 application.register("agendas--working-hours", Agendas__WorkingHoursController)
 
+import BasicCalendarController from "./basic_calendar_controller"
+application.register("basic-calendar", BasicCalendarController)
+
+import CalendarViewsController from "./calendar_views_controller"
+application.register("calendar-views", CalendarViewsController)
+
 import CepController from "./cep_controller"
 application.register("cep", CepController)
+
+import FullCalendarController from "./full_calendar_controller"
+application.register("full-calendar", FullCalendarController)
 
 import HeaderController from "./header_controller"
 application.register("header", HeaderController)

@@ -57,7 +57,7 @@
             </svg>
             <div>
               <h4 class="text-sm font-medium text-blue-900 dark:text-blue-100">Profissional Selecionado</h4>
-              <p class="text-sm text-blue-700 dark:text-blue-300"><%= @selected_professional.name %></p>
+              <p class="text-sm text-blue-700 dark:text-blue-300"><%= @selected_professional.full_name %></p>
             </div>
           </div>
         </div>
@@ -91,13 +91,13 @@
             <div class="flex-shrink-0">
               <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                 <span class="text-sm font-medium text-white">
-                  <%= professional.name.split.first[0] %>
+                  <%= professional.full_name.split.first[0] %>
                 </span>
               </div>
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                <%= professional.name %>
+                <%= professional.full_name %>
               </p>
               <p class="text-xs text-gray-500 dark:text-gray-400">
                 Disponível
@@ -231,7 +231,7 @@
                     <%= appointment.scheduled_at.strftime("%d/%m/%Y às %H:%M") %>
                   </p>
                   <p class="text-xs text-gray-500 dark:text-gray-400">
-                    Profissional: <%= appointment.professional.name %>
+                    Profissional: <%= appointment.professional.full_name %>
                     <% if appointment.patient.present? %>
                       | Paciente: <%= appointment.patient.name %>
                     <% end %>
@@ -254,7 +254,7 @@
           </h3>
           <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
             <% if @selected_professional.present? %>
-              Não há agendamentos para <%= @selected_professional.name %> nesta semana.
+              Não há agendamentos para <%= @selected_professional.full_name %> nesta semana.
             <% else %>
               Não há agendamentos para esta agenda nesta semana.
             <% end %>
@@ -281,38 +281,4 @@ function changeWeek(direction) {
     `${startDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})} - ${endDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'})}`;
 }
 
-function selectSlot(datetime, timeSlot) {
-  if (confirm(`Deseja agendar para ${timeSlot}?`)) {
-    // Fechar a grade e voltar para o formulário
-    if (window.parent && window.parent.hideAgendaGrid) {
-      window.parent.hideAgendaGrid();
-    }
-    
-    // Preencher automaticamente o formulário de agendamento
-    const date = new Date(datetime);
-    const dateString = date.toISOString().split('T')[0];
-    const timeString = timeSlot.split(' - ')[0];
-    
-    // Preencher os campos do formulário
-    const dateInput = window.parent.document.querySelector('[data-agenda-scheduler-target="dateSelect"]');
-    const timeSelect = window.parent.document.querySelector('[data-agenda-scheduler-target="timeSelect"]');
-    
-    if (dateInput) {
-      dateInput.value = dateString;
-      dateInput.dispatchEvent(new Event('change'));
-    }
-    
-    if (timeSelect) {
-      // Encontrar a opção correspondente ao horário
-      const options = timeSelect.querySelectorAll('option');
-      for (let option of options) {
-        if (option.textContent.includes(timeString)) {
-          timeSelect.value = option.value;
-          timeSelect.dispatchEvent(new Event('change'));
-          break;
-        }
-      }
-    }
-  }
-}
 </script>

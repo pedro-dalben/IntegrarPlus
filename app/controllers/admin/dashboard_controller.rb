@@ -2,6 +2,8 @@
 
 module Admin
   class DashboardController < BaseController
+    include EventsHelper
+
     before_action :authenticate_user!
 
     def index
@@ -13,6 +15,11 @@ module Admin
 
     def agenda_data
       {
+        # Todos os eventos (para o calendário completo)
+        all_events: Event.includes(:professional, :created_by)
+                         .where('start_time >= ?', 1.month.ago)
+                         .order(:start_time),
+
         # Eventos da semana atual
         this_week_events: Event.includes(:professional, :created_by)
                                .where(start_time: Date.current.all_week)

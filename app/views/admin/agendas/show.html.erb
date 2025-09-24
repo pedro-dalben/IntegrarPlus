@@ -134,7 +134,13 @@
         <div class="space-y-4">
           <div class="text-sm">
             <span class="text-gray-500">Resumo:</span>
-            <span class="ml-1 font-medium">Não configurado</span>
+            <span class="ml-1 font-medium">
+              <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
+                Configurado
+              <% else %>
+                Não configurado
+              <% end %>
+            </span>
           </div>
 
           <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
@@ -160,19 +166,32 @@
         </div>
       </div>
 
+      <!-- Calendário de Visualização -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Eventos Recentes</h2>
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Visualização da Agenda</h2>
+        
+        <%= render BasicCalendarComponent.new(
+          events: @all_events
+        ) %>
+      </div>
 
-        <% if @recent_events.any? %>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Eventos e Agendamentos Recentes</h2>
+
+        <% if @all_events.any? %>
           <div class="space-y-3">
-            <% @recent_events.each do |event| %>
+            <% @all_events.each do |event| %>
               <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg">
                 <div>
                   <div class="text-sm font-medium text-gray-900">
-                    <%= event.patient&.name || 'Paciente não informado' %>
+                    <% if event.medical_appointment.present? %>
+                      <%= "#{event.medical_appointment.appointment_type.humanize} - #{event.medical_appointment.patient&.name || 'Paciente não informado'}" %>
+                    <% else %>
+                      <%= event.title %>
+                    <% end %>
                   </div>
                   <div class="text-sm text-gray-500">
-                    <%= event.professional.name %> • <%= event.start_time.strftime('%d/%m/%Y %H:%M') %>
+                    <%= event.professional&.full_name || 'Profissional não informado' %> • <%= event.start_time.strftime('%d/%m/%Y %H:%M') %>
                   </div>
                 </div>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">

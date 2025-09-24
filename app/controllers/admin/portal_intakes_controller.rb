@@ -43,6 +43,8 @@ module Admin
       # Buscar agendas de anamnese ativas
       @anamnesis_agendas = Agenda.active.by_service_type(:anamnese).includes(:professionals)
 
+      Rails.logger.debug { "🔍 schedule_anamnesis: request.post? = #{request.post?}, format = #{request.format}" }
+
       return unless request.post?
 
       agenda_id = params[:agenda_id]
@@ -52,9 +54,25 @@ module Admin
 
       if agenda_id.present? && professional_id.present? && scheduled_date.present? && scheduled_time.present?
         begin
-          scheduled_datetime = DateTime.parse("#{scheduled_date} #{scheduled_time}")
+          Rails.logger.debug do
+            "📅 Iniciando agendamento: agenda_id=#{agenda_id}, professional_id=#{professional_id}, date=#{scheduled_date}, time=#{scheduled_time}"
+          end
+
+          scheduled_datetime = Time.zone.parse("#{scheduled_date} #{scheduled_time}")
           agenda = Agenda.find(agenda_id)
-          professional = User.find(professional_id)
+          professional_user = User.find(professional_id)
+          professional = professional_user.professional
+
+          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
+          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
+          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
+
+          if professional.nil?
+            Rails.logger.error { "❌ Professional é nil para User ID: #{professional_id}" }
+            flash.now[:alert] = 'Profissional não encontrado.'
+            render :schedule_anamnesis
+            return
+          end
 
           # Verificar se o horário está disponível usando o service
           scheduling_service = AppointmentSchedulingService.new(professional, agenda)
@@ -67,6 +85,7 @@ module Admin
           end
 
           # Criar o agendamento no PortalIntake
+          # current_user é um User, mas o método schedule_anamnesis! espera um admin_user (User)
           @portal_intake.schedule_anamnesis!(scheduled_datetime, current_user)
 
           # Usar o service de agendamento para criar evento e appointment
@@ -79,21 +98,28 @@ module Admin
             notes: "Anamnese para #{@portal_intake.beneficiary_name} - #{@portal_intake.plan_name}",
             title: "Anamnese - #{@portal_intake.beneficiary_name}",
             description: "Anamnese para #{@portal_intake.plan_name}",
-            created_by: current_user,
+            created_by: professional,
+            patient: nil, # Portal intake não tem paciente específico
             source_context: {
               type: 'portal_intake',
               id: @portal_intake.id
             }
           }
 
+          Rails.logger.debug { "📋 Dados do agendamento: #{appointment_data}" }
+
           result = scheduling_service.schedule_appointment(appointment_data)
 
+          Rails.logger.debug { "📋 Resultado do agendamento: #{result}" }
+
           unless result[:success]
+            Rails.logger.error "❌ Erro no agendamento: #{result[:error]}"
             flash.now[:alert] = "Erro ao agendar: #{result[:error]}"
             render :schedule_anamnesis
             return
           end
 
+          Rails.logger.debug '✅ Agendamento criado com sucesso, redirecionando...'
           redirect_to admin_portal_intake_path(@portal_intake),
                       notice: 'Anamnese agendada com sucesso!'
         rescue StandardError => e
@@ -121,7 +147,10 @@ module Admin
 
       # Buscar profissional selecionado (se houver)
       @selected_professional = nil
-      @selected_professional = @agenda.professionals.find(params[:professional_id]) if params[:professional_id].present?
+      if params[:professional_id].present?
+        professional_user = User.find(params[:professional_id])
+        @selected_professional = professional_user.professional
+      end
 
       # Buscar agendamentos existentes para esta agenda e profissional
       @existing_appointments = get_existing_appointments(@agenda, @selected_professional)
@@ -138,6 +167,7 @@ module Admin
                                 .where(scheduled_at: Date.current.all_week)
                                 .includes(:professional, :patient)
 
+      # professional é um objeto Professional, não User
       query = query.where(professional: professional) if professional.present?
 
       query
@@ -182,6 +212,7 @@ module Admin
       query = MedicalAppointment.where(scheduled_at: datetime)
 
       # Se um profissional específico foi selecionado, verificar apenas para ele
+      # professional é um objeto Professional, não User
       query = query.where(professional: professional) if professional.present?
 
       # Verificar se há conflitos de horário (considerando duração + buffer)
@@ -205,10 +236,28 @@ module Admin
     def is_working_hour?(date, time_slot)
       # Verificar se é um horário de funcionamento da agenda
       # Por enquanto, consideramos segunda a sexta, 08:00 às 17:00
-      return false if date.saturday? || date.sunday?
+      Rails.logger.debug { "🔍 Verificando horário: #{date} - #{time_slot}" }
+
+      if date.saturday? || date.sunday?
+        Rails.logger.debug { "❌ Fim de semana: #{date.strftime('%A')}" }
+        return false
+      end
 
       hour = time_slot.split(' - ').first.split(':').first.to_i
-      hour >= 8 && hour < 17
+      minute = time_slot.split(' - ').first.split(':').last.to_i
+
+      # Verificar se está dentro do horário de funcionamento (8h às 17h)
+      total_minutes = (hour * 60) + minute
+      start_minutes = 8 * 60  # 8:00
+      end_minutes = 17 * 60   # 17:00
+
+      is_working = total_minutes >= start_minutes && total_minutes < end_minutes
+      Rails.logger.debug do
+        "⏰ Horário #{time_slot} (#{hour}:#{minute.to_s.rjust(2,
+                                                              '0')}) é horário de trabalho: #{is_working}"
+      end
+
+      is_working
     end
 
     def portal_intake_params

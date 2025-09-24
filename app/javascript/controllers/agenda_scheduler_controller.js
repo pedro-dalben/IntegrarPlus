@@ -5,9 +5,8 @@ export default class extends Controller {
     "agendaSelect", 
     "professionalSelect", 
     "professionalSection",
-    "dateSection", 
+    "datetimeSection", 
     "dateSelect",
-    "timeSection", 
     "timeSelect",
     "previewSection",
     "submitButton",
@@ -44,10 +43,12 @@ export default class extends Controller {
         this.populateProfessionals(agenda.professionals)
         this.showSection(this.professionalSectionTarget)
         this.updatePreview('agenda', agenda.name)
+        this.showAgendaGrid(agendaId)
       }
     } else {
       this.hideAllSections()
       this.clearPreview()
+      this.hideAgendaGrid()
     }
   }
 
@@ -57,36 +58,24 @@ export default class extends Controller {
     if (professionalId) {
       const professional = this.getSelectedProfessional()
       if (professional) {
-        this.showSection(this.dateSectionTarget)
         this.updatePreview('professional', professional.name)
+        this.reloadAgendaGrid()
       }
     } else {
       this.hideSectionsAfter('professional')
       this.clearPreview()
+      this.reloadAgendaGrid()
     }
   }
 
-  onDateChange() {
-    const date = this.dateSelectTarget.value
+  onDateTimeSelected(date, time) {
+    console.log("📅 Data e horário selecionados:", date, time)
     
-    if (date) {
-      this.generateTimeSlots(date)
-      this.showSection(this.timeSectionTarget)
-      this.updatePreview('date', this.formatDate(date))
-    } else {
-      this.hideSectionsAfter('date')
-      this.clearPreview()
-    }
-  }
-
-  onTimeChange() {
-    console.log("🕐 onTimeChange chamado")
-    const time = this.timeSelectTarget.value
-    console.log("🕐 Horário selecionado:", time)
-    if (time) {
-      this.updatePreview('time', time)
-    } else {
-      this.clearPreview()
+    if (date && time) {
+      this.dateSelectTarget.value = date
+      this.timeSelectTarget.value = time
+      this.showSection(this.datetimeSectionTarget)
+      this.updatePreview('datetime', `${this.formatDate(date)} às ${time}`)
     }
   }
 
@@ -102,142 +91,7 @@ export default class extends Controller {
     })
   }
 
-  generateTimeSlots(date) {
-    const agenda = this.getSelectedAgenda()
-    if (!agenda) return
 
-    const select = this.timeSelectTarget
-    select.innerHTML = '<option value="">Selecione um horário</option>'
-
-    // Simular horários disponíveis baseados na agenda
-    // Em uma implementação real, isso viria de uma API
-    const slots = this.calculateAvailableSlots(date, agenda)
-    
-    slots.forEach(slot => {
-      const option = document.createElement('option')
-      option.value = slot.time
-      option.textContent = slot.display
-      select.appendChild(option)
-    })
-  }
-
-  calculateAvailableSlots(date, agenda) {
-    const slots = []
-    const slotDuration = agenda.slot_duration_minutes || 50
-    const buffer = agenda.buffer_minutes || 10
-    const totalMinutes = slotDuration + buffer
-
-    // Verificar se a agenda tem working_hours configurados
-    if (!agenda.working_hours || !agenda.working_hours.weekdays) {
-      console.warn('Agenda sem working_hours configurados, usando horários padrão')
-      return this.getDefaultSlots(slotDuration, buffer)
-    }
-
-    const selectedDate = new Date(date)
-    const weekday = selectedDate.getDay() // 0 = domingo, 1 = segunda, etc.
-    
-    // Encontrar configuração para o dia da semana
-    const dayConfig = agenda.working_hours.weekdays.find(d => d.wday === weekday)
-    
-    if (!dayConfig || !dayConfig.periods || dayConfig.periods.length === 0) {
-      console.log(`Nenhum período configurado para ${this.getDayName(weekday)}`)
-      return []
-    }
-
-    // Gerar slots para cada período configurado
-    dayConfig.periods.forEach(period => {
-      const periodSlots = this.generateSlotsForPeriod(period, slotDuration, buffer, totalMinutes)
-      slots.push(...periodSlots)
-    })
-
-    return slots.sort((a, b) => a.time.localeCompare(b.time))
-  }
-
-  getDefaultSlots(slotDuration, buffer) {
-    // Fallback para horários padrão se não houver working_hours
-    const slots = []
-    const startHour = 8
-    const endHour = 17
-    const totalMinutes = slotDuration + buffer
-
-    for (let hour = startHour; hour < endHour; hour++) {
-      for (let minutes = 0; minutes < 60; minutes += totalMinutes) {
-        if (hour === endHour - 1 && minutes + slotDuration > 60) break
-        
-        const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
-        const endTime = this.addMinutes(timeString, slotDuration)
-        
-        slots.push({
-          time: timeString,
-          display: `${timeString} - ${endTime}`
-        })
-      }
-    }
-
-    return slots
-  }
-
-  generateSlotsForPeriod(period, slotDuration, buffer, totalMinutes) {
-    const slots = []
-    const startTime = this.parseTime(period.start)
-    const endTime = this.parseTime(period.end)
-    
-    if (!startTime || !endTime) {
-      console.warn('Período inválido:', period)
-      return []
-    }
-
-    let currentTime = startTime
-    
-    while (currentTime < endTime) {
-      const nextTime = this.addMinutesToTime(currentTime, totalMinutes)
-      
-      // Verificar se o slot cabe no período
-      if (nextTime <= endTime) {
-        const timeString = this.formatTime(currentTime)
-        const endTimeString = this.formatTime(this.addMinutesToTime(currentTime, slotDuration))
-        
-        slots.push({
-          time: timeString,
-          display: `${timeString} - ${endTimeString}`
-        })
-      }
-      
-      currentTime = nextTime
-    }
-
-    return slots
-  }
-
-  parseTime(timeString) {
-    const [hours, minutes] = timeString.split(':').map(Number)
-    return { hours, minutes }
-  }
-
-  formatTime(time) {
-    return `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}`
-  }
-
-  addMinutesToTime(time, minutes) {
-    const totalMinutes = time.hours * 60 + time.minutes + minutes
-    return {
-      hours: Math.floor(totalMinutes / 60),
-      minutes: totalMinutes % 60
-    }
-  }
-
-  getDayName(weekday) {
-    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
-    return days[weekday]
-  }
-
-  addMinutes(timeString, minutes) {
-    const [hours, mins] = timeString.split(':').map(Number)
-    const totalMinutes = hours * 60 + mins + minutes
-    const newHours = Math.floor(totalMinutes / 60)
-    const newMins = totalMinutes % 60
-    return `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}`
-  }
 
   getSelectedAgenda() {
     const agendaId = this.agendaSelectTarget.value
@@ -263,8 +117,7 @@ export default class extends Controller {
 
   hideAllSections() {
     this.hideSection(this.professionalSectionTarget)
-    this.hideSection(this.dateSectionTarget)
-    this.hideSection(this.timeSectionTarget)
+    this.hideSection(this.datetimeSectionTarget)
     this.hideSection(this.previewSectionTarget)
     this.disableSubmit()
   }
@@ -273,17 +126,11 @@ export default class extends Controller {
     switch (sectionName) {
       case 'agenda':
         this.hideSection(this.professionalSectionTarget)
-        this.hideSection(this.dateSectionTarget)
-        this.hideSection(this.timeSectionTarget)
+        this.hideSection(this.datetimeSectionTarget)
         this.hideSection(this.previewSectionTarget)
         break
       case 'professional':
-        this.hideSection(this.dateSectionTarget)
-        this.hideSection(this.timeSectionTarget)
-        this.hideSection(this.previewSectionTarget)
-        break
-      case 'date':
-        this.hideSection(this.timeSectionTarget)
+        this.hideSection(this.datetimeSectionTarget)
         this.hideSection(this.previewSectionTarget)
         break
     }
@@ -299,11 +146,8 @@ export default class extends Controller {
       case 'professional':
         this.professionalNameTarget.textContent = value
         break
-      case 'date':
+      case 'datetime':
         this.scheduledDateTimeTarget.textContent = value
-        break
-      case 'time':
-        console.log("🕐 Atualizando preview com horário:", value)
         break
     }
 
@@ -325,16 +169,9 @@ export default class extends Controller {
       console.log("🎉 Habilitando botão de submit")
       this.showSection(this.previewSectionTarget)
       this.enableSubmit()
-      this.updateFinalPreview()
     }
   }
 
-  updateFinalPreview() {
-    const date = this.dateSelectTarget.value
-    const time = this.timeSelectTarget.value
-    const formattedDate = this.formatDate(date)
-    this.scheduledDateTimeTarget.textContent = `${formattedDate} às ${time}`
-  }
 
   formatDate(dateString) {
     const date = new Date(dateString)
@@ -355,5 +192,62 @@ export default class extends Controller {
 
   disableSubmit() {
     this.submitButtonTarget.disabled = true
+  }
+
+  showAgendaGrid(agendaId) {
+    const gridSection = document.getElementById('agenda-grid-section')
+    const gridContent = document.getElementById('agenda-grid-content')
+    
+    if (!gridSection || !gridContent) {
+      console.error('Elementos da grade não encontrados')
+      return
+    }
+    
+    gridContent.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-sm text-gray-600">Carregando grade de horários...</p></div>'
+    gridSection.classList.remove('hidden')
+    
+    const professionalId = this.professionalSelectTarget ? this.professionalSelectTarget.value : ''
+    let url = `/admin/portal_intakes/${this.getPortalIntakeId()}/agenda_view?agenda_id=${agendaId}`
+    if (professionalId) {
+      url += `&professional_id=${professionalId}`
+    }
+    
+    fetch(url)
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser()
+        const doc = parser.parseFromString(html, 'text/html')
+        const agendaContent = doc.querySelector('.agenda-grid-content')
+        
+        if (agendaContent) {
+          gridContent.innerHTML = agendaContent.innerHTML
+        } else {
+          gridContent.innerHTML = '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>'
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao carregar grade:', error)
+        gridContent.innerHTML = '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>'
+      })
+  }
+
+  hideAgendaGrid() {
+    const gridSection = document.getElementById('agenda-grid-section')
+    if (gridSection) {
+      gridSection.classList.add('hidden')
+    }
+  }
+
+  getPortalIntakeId() {
+    const url = window.location.pathname
+    const matches = url.match(/\/admin\/portal_intakes\/(\d+)/)
+    return matches ? matches[1] : null
+  }
+
+  reloadAgendaGrid() {
+    const agendaId = this.agendaSelectTarget.value
+    if (agendaId) {
+      this.showAgendaGrid(agendaId)
+    }
   }
 }

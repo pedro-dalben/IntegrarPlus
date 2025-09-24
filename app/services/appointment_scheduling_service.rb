@@ -32,6 +32,8 @@ class AppointmentSchedulingService
     duration_minutes ||= @agenda.slot_duration_minutes
     end_time = datetime + duration_minutes.minutes
 
+    Rails.logger.debug { "🔍 Verificando disponibilidade: #{datetime} - #{end_time} (#{duration_minutes} min)" }
+
     conflicts = []
 
     existing_events = Event.where(professional: @professional)
@@ -46,6 +48,7 @@ class AppointmentSchedulingService
 
     conflicts.concat(existing_appointments.map { |appointment| { type: 'appointment', object: appointment } })
 
+    # Buscar exceções de disponibilidade através do Professional
     availability_exceptions = @professional.availability_exceptions
                                            .where(agenda: @agenda)
                                            .for_date(datetime.to_date)
@@ -54,13 +57,17 @@ class AppointmentSchedulingService
 
     conflicts.concat(availability_exceptions.map { |exception| { type: 'exception', object: exception } })
 
-    {
+    result = {
       available: conflicts.empty?,
       conflicts: conflicts,
       datetime: datetime,
       end_time: end_time,
       duration_minutes: duration_minutes
     }
+
+    Rails.logger.debug { "📋 Resultado da verificação: #{result}" }
+
+    result
   end
 
   def get_available_slots(date, duration_minutes = nil)
@@ -146,7 +153,7 @@ class AppointmentSchedulingService
 
   def create_event(appointment_data, scheduled_datetime, duration_minutes)
     Event.create!(
-      title: appointment_data[:title] || "Agendamento - #{@professional.name}",
+      title: appointment_data[:title] || "Agendamento - #{@professional.full_name}",
       description: appointment_data[:description],
       start_time: scheduled_datetime,
       end_time: scheduled_datetime + duration_minutes.minutes,
