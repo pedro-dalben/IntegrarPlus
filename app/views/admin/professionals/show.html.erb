@@ -99,9 +99,11 @@
                 <div class="ml-auto pl-3 flex gap-2">
                   <% unless @professional.user.confirmed_invite? %>
                     <%= link_to admin_user_invites_path(@professional.user), 
-                        method: :post,
                         class: "ta-btn ta-btn-success ta-btn-sm inline-flex items-center gap-2",
-                        data: { confirm: "Gerar novo link de convite para #{@professional.user.email}?" } do %>
+                        data: { 
+                          turbo_method: :post,
+                          confirm: "Gerar novo link de convite para #{@professional.user.email}?" 
+                        } do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
                       </svg>

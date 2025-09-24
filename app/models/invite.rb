@@ -38,9 +38,15 @@ class Invite < ApplicationRecord
   end
 
   def invite_url
-    host = ENV.fetch('APP_HOST', 'localhost:3001')
-    protocol = ENV.fetch('APP_PROTOCOL', 'http')
-    Rails.application.routes.url_helpers.invite_url(token: token, host: host, protocol: protocol)
+    if Rails.env.production?
+      host = ENV.fetch('APP_HOST', 'integrarplus.com.br')
+      protocol = ENV.fetch('APP_PROTOCOL', 'https')
+    else
+      host = 'localhost:3000'
+      protocol = 'http'
+    end
+
+    "#{protocol}://#{host}/invite/#{token}"
   end
 
   private

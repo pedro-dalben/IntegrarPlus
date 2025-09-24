@@ -139,6 +139,11 @@ Rails.application.routes.draw do
       collection do
         get :search
       end
+      resources :invites, only: %i[index create show destroy] do
+        member do
+          post :resend
+        end
+      end
     end
 
     get 'agenda_dashboard', to: 'agenda_dashboard#index'
@@ -201,6 +206,11 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  get 'cep/:cep', to: 'cep#search', as: :buscar_cep
+
+  get 'invite/:token', to: 'invites#show', as: :invite
+  post 'invite/:token/accept', to: 'invites#accept', as: :accept_invite_post
 
   get 'up' => 'rails/health#show', as: :rails_health_check
 end
