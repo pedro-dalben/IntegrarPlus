@@ -153,13 +153,6 @@ export default class extends Controller {
         this.dateSelectTarget.value && 
         this.timeSelectTarget.value
     
-      agenda: this.agendaSelectTarget.value,
-      professional: this.professionalSelectTarget.value,
-      date: this.dateSelectTarget.value,
-      time: this.timeSelectTarget.value,
-      allFilled: allFieldsFilled
-    })
-    
     if (allFieldsFilled) {
       this.showSection(this.previewSectionTarget)
       this.enableSubmit()
