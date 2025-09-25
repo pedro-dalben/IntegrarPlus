@@ -30,7 +30,6 @@ export default class extends Controller {
         }
       })
       .catch(error => {
-        console.error('Erro ao buscar CEP:', error)
         this.showError('Erro ao consultar CEP')
         this.clearFields()
       })

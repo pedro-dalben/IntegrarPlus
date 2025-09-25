@@ -127,7 +127,6 @@ export default class extends Controller {
         this.showErrors(errorData.errors)
       }
     } catch (error) {
-      console.error('Erro ao criar evento:', error)
       this.showError('Erro ao criar evento. Tente novamente.')
     }
   }
@@ -158,7 +157,6 @@ export default class extends Controller {
         this.showErrors(errorData.errors)
       }
     } catch (error) {
-      console.error('Erro ao atualizar evento:', error)
       this.showError('Erro ao atualizar evento. Tente novamente.')
     }
   }

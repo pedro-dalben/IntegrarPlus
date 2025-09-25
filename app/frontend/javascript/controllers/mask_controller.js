@@ -71,7 +71,6 @@ export default class extends Controller {
         break;
 
       default:
-        console.warn(`Tipo de máscara não reconhecido: ${type}`);
         return;
     }
 

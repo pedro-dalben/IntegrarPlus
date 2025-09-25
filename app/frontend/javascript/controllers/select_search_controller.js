@@ -62,7 +62,6 @@ export default class extends Controller {
       this.filteredOptions = [...this.allOptions];
       this.renderOptions();
     } catch (error) {
-      console.error('Erro ao carregar opções:', error);
     }
   }
 

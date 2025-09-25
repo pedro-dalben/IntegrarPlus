@@ -177,12 +177,10 @@ export default class extends Controller {
     .then(response => response.json())
     .then(data => {
       if (data.errors) {
-        console.error('Erro ao atualizar evento:', data.errors)
         this.calendar.refetchEvents()
       }
     })
     .catch(error => {
-      console.error('Erro ao atualizar evento:', error)
       this.calendar.refetchEvents()
     })
   }

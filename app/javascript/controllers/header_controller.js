@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["sidebar"]
 
   connect() {
-    console.log("Header controller conectado")
   }
 
   toggleSidebar() {

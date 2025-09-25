@@ -9,7 +9,6 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log('AdvancedSearchController connected to:', this.urlValue)
 
     this.debouncedSearch = this.debounce(this.performSearch.bind(this), this.debounceMsValue)
     this.isSearching = false
@@ -24,7 +23,6 @@ export default class extends Controller {
 
   search() {
     const query = this.inputTarget.value.trim()
-    console.log('Search triggered with query:', query)
 
     if (query.length === 0) {
       this.clearSearch()
@@ -41,7 +39,6 @@ export default class extends Controller {
 
   async performSearch() {
     const query = this.inputTarget.value.trim()
-    console.log('Performing search for:', query)
 
     if (query.length === 0 || query.length < this.minLengthValue) {
       this.clearSearch()
@@ -62,7 +59,6 @@ export default class extends Controller {
       url.searchParams.set('query', query)
       url.searchParams.set('page', '1')
 
-      console.log('Fetching URL:', url.toString())
 
       const controller = new AbortController()
       this.currentRequest = controller
@@ -78,7 +74,6 @@ export default class extends Controller {
 
       if (response.ok) {
         const html = await response.text()
-        console.log('Search response received, length:', html.length)
         this.updateResults(html)
         this.hideError()
       } else {
@@ -88,7 +83,6 @@ export default class extends Controller {
       if (error.name === 'AbortError') {
         return
       }
-      console.error('Search error:', error)
       this.showError()
     } finally {
       this.isSearching = false
@@ -168,9 +162,7 @@ export default class extends Controller {
         mainList.classList.add('hidden')
       }
 
-      console.log('Results updated successfully')
     } else {
-      console.error('Results target not found!')
       this.showError()
     }
   }

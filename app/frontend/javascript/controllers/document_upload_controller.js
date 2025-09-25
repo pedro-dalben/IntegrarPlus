@@ -86,7 +86,6 @@ export default class extends Controller {
         dataTransfer.items.add(file);
         fileInput.files = dataTransfer.files;
       } catch (error) {
-        console.error('Erro ao associar arquivo:', error);
       }
     }
   }

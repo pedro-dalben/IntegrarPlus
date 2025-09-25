@@ -80,7 +80,6 @@ export default class extends Controller {
           summary = dayNames.join(' | ')
         }
       } catch (e) {
-        console.error('Error parsing working hours:', e)
       }
     }
     

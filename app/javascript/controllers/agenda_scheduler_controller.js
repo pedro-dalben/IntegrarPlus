@@ -18,7 +18,6 @@ export default class extends Controller {
   ]
 
   connect() {
-    console.log("🔧 AgendaSchedulerController conectado")
     this.agendas = this.parseAgendasData()
   }
 
@@ -29,7 +28,6 @@ export default class extends Controller {
         return JSON.parse(dataElement.textContent)
       }
     } catch (error) {
-      console.error("Erro ao parsear dados das agendas:", error)
     }
     return []
   }
@@ -69,7 +67,6 @@ export default class extends Controller {
   }
 
   onDateTimeSelected(date, time) {
-    console.log("📅 Data e horário selecionados:", date, time)
     
     if (date && time) {
       this.dateSelectTarget.value = date
@@ -138,7 +135,6 @@ export default class extends Controller {
   }
 
   updatePreview(field, value) {
-    console.log("📝 updatePreview chamado:", field, value)
     switch (field) {
       case 'agenda':
         this.agendaNameTarget.textContent = value
@@ -157,7 +153,6 @@ export default class extends Controller {
         this.dateSelectTarget.value && 
         this.timeSelectTarget.value
     
-    console.log("✅ Campos preenchidos:", {
       agenda: this.agendaSelectTarget.value,
       professional: this.professionalSelectTarget.value,
       date: this.dateSelectTarget.value,
@@ -166,7 +161,6 @@ export default class extends Controller {
     })
     
     if (allFieldsFilled) {
-      console.log("🎉 Habilitando botão de submit")
       this.showSection(this.previewSectionTarget)
       this.enableSubmit()
     }
@@ -199,7 +193,6 @@ export default class extends Controller {
     const gridContent = document.getElementById('agenda-grid-content')
     
     if (!gridSection || !gridContent) {
-      console.error('Elementos da grade não encontrados')
       return
     }
     
@@ -226,7 +219,6 @@ export default class extends Controller {
         }
       })
       .catch(error => {
-        console.error('Erro ao carregar grade:', error)
         gridContent.innerHTML = '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>'
       })
   }

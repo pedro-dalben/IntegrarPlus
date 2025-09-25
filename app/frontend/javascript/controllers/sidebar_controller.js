@@ -6,8 +6,6 @@ export default class extends Controller {
   static targets = ['overlay'];
 
   connect() {
-    console.log("🔧 SidebarController conectado");
-    
     // estado inicial baseado no tamanho da tela e preferência salva
     const isDesktop = window.innerWidth >= 1280;
     const savedState = localStorage.getItem(K.SIDEBAR) === 'true';
@@ -121,19 +119,15 @@ export default class extends Controller {
   }
 
   toggle() {
-    console.log("🔧 SidebarController toggle chamado");
     const currentState = localStorage.getItem(K.SIDEBAR) === 'true';
-    console.log("🔧 Estado atual:", currentState, "-> Novo estado:", !currentState);
     this.apply(!currentState);
   }
 
   apply(open) {
-    console.log("🔧 SidebarController apply chamado com:", open);
     localStorage.setItem(K.SIDEBAR, String(open));
 
     // Em desktop: permitir ocultar/mostrar, em mobile: controlar com transform
     const isDesktop = window.innerWidth >= 1280;
-    console.log("🔧 É desktop?", isDesktop);
 
     if (isDesktop) {
       if (open) {
@@ -143,7 +137,6 @@ export default class extends Controller {
         this.element.classList.remove('translate-x-0');
         this.element.classList.remove('fixed');
         this.element.classList.remove('hidden');
-        console.log("🔧 Desktop: sidebar visível");
       } else {
         // Desktop: sidebar oculto - position fixed para não ocupar espaço
         this.element.style.position = 'fixed';
@@ -151,7 +144,6 @@ export default class extends Controller {
         this.element.classList.add('fixed');
         this.element.classList.remove('translate-x-0');
         this.element.classList.remove('hidden');
-        console.log("🔧 Desktop: sidebar oculta");
       }
     } else {
       // Mobile: manter position fixed e aplicar transform
@@ -160,18 +152,15 @@ export default class extends Controller {
       if (open) {
         this.element.style.transform = 'translateX(0) !important';
         this.element.classList.add('translate-x-0');
-        console.log("🔧 Mobile: sidebar aberta");
       } else {
         this.element.style.transform = 'translateX(-100%) !important';
         this.element.classList.remove('translate-x-0');
-        console.log("🔧 Mobile: sidebar fechada");
       }
     }
 
     // overlay
     if (this.hasOverlayTarget) {
       this.overlayTarget.classList.toggle('hidden', !open || isDesktop);
-      console.log("🔧 Overlay hidden:", !open || isDesktop);
     }
   }
 }

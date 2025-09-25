@@ -8,7 +8,6 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("🔧 BasicCalendarController conectado")
     this.currentView = 'month'
     this.currentDate = new Date()
     this.renderCalendar()
@@ -16,7 +15,6 @@ export default class extends Controller {
 
   changeView(event) {
     this.currentView = event.target.value
-    console.log(`📅 Mudando visualização para: ${this.currentView}`)
     this.renderCalendar()
   }
 

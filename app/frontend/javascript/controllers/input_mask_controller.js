@@ -6,7 +6,6 @@ export default class extends Controller {
   connect() {
     this.element.addEventListener("input", this.applyMask.bind(this))
     this.element.addEventListener("keydown", this.handleKeydown.bind(this))
-    console.log("Mask controller conectado para:", this.typeValue)
   }
 
   applyMask(event) {

@@ -9,42 +9,30 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log('=== DashboardCalendarController conectado ===')
-    console.log('Elemento:', this.element)
-    console.log('Events URL:', this.eventsUrlValue)
-    console.log('Read Only:', this.readOnlyValue)
-    
     // Verificar se o FullCalendar global está disponível
     if (window.FullCalendar) {
-      console.log('FullCalendar global encontrado:', window.FullCalendar)
       this.initializeCalendar()
     } else {
-      console.error('FullCalendar global não encontrado!')
       this.showError('FullCalendar não está disponível')
     }
   }
 
   disconnect() {
-    console.log('DashboardCalendarController desconectado')
     if (this.calendar) {
       this.calendar.destroy()
     }
   }
 
   initializeCalendar() {
-    console.log('=== Inicializando calendário com FullCalendar global ===')
     const calendarEl = this.calendarTarget
-    console.log('Elemento do calendário:', calendarEl)
     
     if (!calendarEl) {
-      console.error('Elemento do calendário não encontrado!')
       return
     }
     
     try {
       const { Calendar, dayGridPlugin, timeGridPlugin, interactionPlugin, ptBrLocale } = window.FullCalendar
       
-      console.log('Criando instância do FullCalendar...')
       this.calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: ptBrLocale,
@@ -84,16 +72,12 @@ export default class extends Controller {
         }
       })
 
-      console.log('Calendário criado, renderizando...')
       this.calendar.render()
-      console.log('=== Calendário renderizado com sucesso ===')
       
       // Remover o placeholder de carregamento
       this.removeLoadingPlaceholder()
       
     } catch (error) {
-      console.error('Erro ao criar calendário:', error)
-      console.error('Stack trace:', error.stack)
       this.showError('Erro ao inicializar calendário: ' + error.message)
     }
   }
@@ -122,31 +106,25 @@ export default class extends Controller {
   }
 
   handleEventClick(info) {
-    console.log('Evento clicado:', info.event)
     this.showEventModal(info.event)
   }
 
   handleEventDidMount(info) {
-    console.log('Evento montado:', info.event)
   }
 
   handleDateSelect(selectInfo) {
     if (this.readOnlyValue) return
-    console.log('Data selecionada:', selectInfo)
   }
 
   handleEventDrop(dropInfo) {
     if (this.readOnlyValue) return
-    console.log('Evento movido:', dropInfo)
   }
 
   handleEventResize(resizeInfo) {
     if (this.readOnlyValue) return
-    console.log('Evento redimensionado:', resizeInfo)
   }
 
   showEventModal(event) {
-    console.log('Mostrando modal para evento:', event)
     const modal = this.eventModalTarget
     modal.classList.remove('hidden')
   }
@@ -157,7 +135,6 @@ export default class extends Controller {
   }
 
   editEvent() {
-    console.log('Editando evento')
   }
 
   prev() {

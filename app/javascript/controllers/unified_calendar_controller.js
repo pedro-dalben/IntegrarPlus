@@ -75,7 +75,6 @@ export default class extends Controller {
       this.element.innerHTML = html
     })
     .catch(error => {
-      console.error('Erro ao atualizar calendário:', error)
     })
   }
   
@@ -125,23 +124,19 @@ export default class extends Controller {
   
   showEventDetails(eventId) {
     // Implementar modal ou sidebar com detalhes do evento
-    console.log('Mostrar detalhes do evento:', eventId)
   }
   
   createEvent(date, time) {
     // Implementar criação de novo evento
-    console.log('Criar evento para:', date, time)
   }
   
   editEvent(eventId) {
     // Implementar edição de evento
-    console.log('Editar evento:', eventId)
   }
   
   deleteEvent(eventId) {
     if (confirm('Tem certeza que deseja excluir este evento?')) {
       // Implementar exclusão de evento
-      console.log('Excluir evento:', eventId)
     }
   }
 }

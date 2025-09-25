@@ -42,7 +42,6 @@ export default class extends Controller {
         throw new Error('Erro ao verificar disponibilidade')
       }
     } catch (error) {
-      console.error('Erro ao verificar disponibilidade:', error)
       this.showError('Erro ao verificar disponibilidade. Tente novamente.')
     }
   }

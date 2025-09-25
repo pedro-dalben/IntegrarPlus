@@ -136,7 +136,6 @@ export default class extends Controller {
       Turbo.renderStreamMessage(turboStream)
       
     } catch (error) {
-      console.error('Erro ao gerar preview:', error)
       alert('Erro ao gerar preview. Tente novamente.')
     } finally {
       this.hideLoading()

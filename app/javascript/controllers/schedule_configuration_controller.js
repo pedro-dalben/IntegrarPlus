@@ -232,7 +232,6 @@ export default class extends Controller {
       }
     })
     .catch(error => {
-      console.error('Erro:', error)
       this.showNotification('Erro ao salvar horários', 'error')
     })
   }

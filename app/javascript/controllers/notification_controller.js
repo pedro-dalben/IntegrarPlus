@@ -129,7 +129,6 @@ export default class extends Controller {
         this.updateCountDisplay(data.count)
       })
       .catch(error => {
-        console.error('Error loading unread count:', error)
       })
   }
 
@@ -162,7 +161,6 @@ export default class extends Controller {
       }
     })
     .catch(error => {
-      console.error('Error marking notification as read:', error)
     })
   }
 
@@ -184,7 +182,6 @@ export default class extends Controller {
       }
     })
     .catch(error => {
-      console.error('Error marking notification as unread:', error)
     })
   }
 
@@ -228,7 +225,6 @@ export default class extends Controller {
     }
   }
 
-  // Método para testar notificações (apenas em desenvolvimento)
   testNotification() {
     if (Rails.env === 'development') {
       const testNotification = {

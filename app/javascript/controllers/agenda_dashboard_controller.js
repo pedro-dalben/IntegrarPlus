@@ -149,7 +149,6 @@ export default class extends Controller {
         this.occupancyChart.update()
       })
       .catch(error => {
-        console.error('Erro ao carregar dados de ocupação:', error)
       })
   }
 
@@ -164,7 +163,6 @@ export default class extends Controller {
         this.utilizationChart.update()
       })
       .catch(error => {
-        console.error('Erro ao carregar dados de utilização:', error)
       })
   }
 
@@ -181,7 +179,6 @@ export default class extends Controller {
         this.trendsChart.update()
       })
       .catch(error => {
-        console.error('Erro ao carregar dados de tendências:', error)
       })
   }
 

@@ -20,7 +20,6 @@ export default class extends Controller {
   }
 
   async initializeCalendar() {
-    console.log('Inicializando calendário...')
     const calendarEl = this.calendarTarget
     let eventsData = this.eventsDataValue || []
     
@@ -29,13 +28,10 @@ export default class extends Controller {
       try {
         eventsData = JSON.parse(eventsData)
       } catch (e) {
-        console.error('Erro ao fazer parse dos dados dos eventos:', e)
         eventsData = []
       }
     }
     
-    console.log('Elemento do calendário:', calendarEl)
-    console.log('Dados dos eventos:', eventsData)
 
     try {
       // Carregar FullCalendar dinamicamente
@@ -77,11 +73,8 @@ export default class extends Controller {
         nowIndicator: true
       })
 
-      console.log('Calendário criado, renderizando...')
       this.calendar.render()
-      console.log('Calendário renderizado com sucesso!')
     } catch (error) {
-      console.error('Erro ao inicializar calendário:', error)
       // Mostrar mensagem de erro no elemento
       calendarEl.innerHTML = `
         <div class="flex items-center justify-center h-96 text-red-500">
@@ -167,7 +160,6 @@ export default class extends Controller {
     const allDay = selectInfo.allDay
 
     // Aqui você pode implementar a lógica para criar um novo evento
-    console.log('Data selecionada:', { startDate, endDate, allDay })
     
     // Exemplo: abrir modal para criar evento
     this.createNewEvent(startDate, endDate, allDay)
@@ -181,7 +173,6 @@ export default class extends Controller {
     const newEnd = event.end
 
     // Aqui você pode implementar a lógica para atualizar o evento
-    console.log('Evento movido:', { event, newStart, newEnd })
     
     // Exemplo: enviar requisição para atualizar
     this.updateEvent(event.id, { start: newStart, end: newEnd })
@@ -195,7 +186,6 @@ export default class extends Controller {
     const newEnd = event.end
 
     // Aqui você pode implementar a lógica para redimensionar o evento
-    console.log('Evento redimensionado:', { event, newStart, newEnd })
     
     // Exemplo: enviar requisição para atualizar
     this.updateEvent(event.id, { start: newStart, end: newEnd })
@@ -244,18 +234,15 @@ export default class extends Controller {
 
   editEvent() {
     // Implementar lógica de edição
-    console.log('Editar evento')
     this.closeEventModal()
   }
 
   createNewEvent(startDate, endDate, allDay) {
     // Implementar lógica para criar novo evento
-    console.log('Criar novo evento:', { startDate, endDate, allDay })
   }
 
   updateEvent(eventId, eventData) {
     // Implementar lógica para atualizar evento
-    console.log('Atualizar evento:', { eventId, eventData })
   }
 
   formatDate(date) {

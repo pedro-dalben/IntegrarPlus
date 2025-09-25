@@ -184,7 +184,6 @@ export default class extends Controller {
   }
 
   showError() {
-    console.error('Erro na busca. Tente novamente.');
   }
 
   debounce(func, wait) {

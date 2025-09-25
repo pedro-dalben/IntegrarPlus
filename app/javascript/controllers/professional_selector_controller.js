@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs"]
 
   connect() {
-    console.log("ProfessionalSelectorController conectado")
     this.selectedProfessionals = new Set()
     this.loadProfessionals()
   }
@@ -33,7 +32,6 @@ export default class extends Controller {
       this.renderSearchResults(data.professionals || [])
     })
     .catch(error => {
-      console.error('Erro ao buscar profissionais:', error)
       this.hideLoading()
       this.showError('Erro ao buscar profissionais')
     })
@@ -46,7 +44,6 @@ export default class extends Controller {
       
       this.renderSearchResults(data.professionals || [])
     } catch (error) {
-      console.error('Erro ao carregar profissionais:', error)
     }
   }
 

@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-console.log("🔧 Carregando WizardController...")
 
 export default class extends Controller {
   static targets = ["step", "previousBtn", "nextBtn", "activateBtn", "tab", "currentStepInput"]
@@ -8,7 +7,6 @@ export default class extends Controller {
   static values = { currentStep: String }
 
   connect() {
-    console.log("🔧 WizardController conectado")
     // Permite inicializar pelo valor vindo do HTML (ex.: edit com ?step=...)
     if (!this.hasCurrentStepValue || !this.currentStepValue) {
       this.currentStepValue = "metadata"
@@ -17,7 +15,6 @@ export default class extends Controller {
     this.updateNavigation()
     this.updateTabs()
     this.initializeDataPersistence()
-    console.log("🔧 Navegação atualizada, step atual:", this.currentStepValue)
   }
 
   initializeDataPersistence() {
@@ -32,7 +29,6 @@ export default class extends Controller {
       try {
         this.persistentData = JSON.parse(savedData)
       } catch (e) {
-        console.warn('Erro ao carregar dados persistentes:', e)
       }
     }
   }
@@ -97,7 +93,6 @@ export default class extends Controller {
   }
 
   nextStep() {
-    console.log("🔧 nextStep chamado, step atual:", this.currentStepValue)
     const steps = ["metadata", "professionals", "working_hours", "review"]
     const currentIndex = steps.indexOf(this.currentStepValue)
     
@@ -106,7 +101,6 @@ export default class extends Controller {
       this.saveCurrentStepData()
       
       this.currentStepValue = steps[currentIndex + 1]
-      console.log("🔧 Mudando para step:", this.currentStepValue)
       this.showStep(this.currentStepValue)
       this.updateNavigation()
       this.updateTabs()
@@ -185,7 +179,6 @@ export default class extends Controller {
       this.renderProfessionalResults(data.professionals || [])
     })
     .catch(error => {
-      console.error('Erro ao buscar profissionais:', error)
       this.hideProfessionalLoading()
       this.showProfessionalError('Erro ao buscar profissionais')
     })
@@ -377,11 +370,8 @@ export default class extends Controller {
     // Adicionar professional_ids como parâmetro separado
     this.addProfessionalIdsParameter()
     
-    // Log para debug
     const hiddenInputs = this.element.querySelectorAll('input[name="agenda[professional_ids][]"]')
-    console.log('Inputs hidden antes do envio:', hiddenInputs.length)
     hiddenInputs.forEach((input, index) => {
-      console.log(`Input ${index + 1}:`, input.name, input.value)
     })
   }
 
@@ -403,7 +393,6 @@ export default class extends Controller {
           input.value = professionalId
           form.appendChild(input)
         })
-        console.log('Professional IDs adicionados como parâmetros separados:', this.persistentData.professionals)
       }
     }
   }

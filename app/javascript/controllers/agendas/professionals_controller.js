@@ -28,7 +28,6 @@ export default class extends Controller {
       
       this.renderProfessionals(data.professionals)
     } catch (error) {
-      console.error('Erro ao buscar profissionais:', error)
     }
   }
   
@@ -39,7 +38,6 @@ export default class extends Controller {
       
       this.renderProfessionals(data.professionals)
     } catch (error) {
-      console.error('Erro ao carregar profissionais:', error)
     }
   }
   
