@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_15_153001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,7 +177,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
 
   create_table "document_permissions", force: :cascade do |t|
     t.bigint "document_id", null: false
-    t.bigint "user_id"
     t.bigint "group_id"
     t.integer "access_level", default: 0, null: false
     t.datetime "created_at", null: false
@@ -185,12 +184,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
     t.bigint "professional_id"
     t.index ["access_level"], name: "index_document_permissions_on_access_level"
     t.index ["document_id", "group_id"], name: "index_document_permissions_on_document_id_and_group_id", unique: true, where: "(group_id IS NOT NULL)"
-    t.index ["document_id", "user_id"], name: "index_document_permissions_on_document_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["document_id", "professional_id"], name: "index_document_permissions_on_document_id_and_professional_id", unique: true, where: "(professional_id IS NOT NULL)"
     t.index ["document_id"], name: "index_document_permissions_on_document_id"
     t.index ["group_id"], name: "index_document_permissions_on_group_id"
     t.index ["professional_id"], name: "index_document_permissions_on_professional_id"
-    t.index ["user_id"], name: "index_document_permissions_on_user_id"
-    t.check_constraint "user_id IS NOT NULL OR group_id IS NOT NULL", name: "check_user_or_group_present"
+    t.check_constraint "professional_id IS NOT NULL OR group_id IS NOT NULL", name: "check_professional_or_group_present"
   end
 
   create_table "document_releases", force: :cascade do |t|
@@ -392,15 +390,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
     t.index ["status"], name: "index_medical_appointments_on_status"
   end
 
-  create_table "news", force: :cascade do |t|
-    t.string "title"
-    t.text "content"
-    t.boolean "published"
-    t.datetime "published_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "notification_preferences", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "type", null: false
@@ -583,6 +572,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
     t.bigint "external_user_id", null: false
     t.string "convenio", null: false
     t.string "carteira_codigo", null: false
+    t.string "tipo_convenio", null: false
     t.string "nome", null: false
     t.date "data_encaminhamento", null: false
     t.string "status", default: "aguardando", null: false
@@ -662,10 +652,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
     t.text "comment_text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "professional_id"
     t.index ["created_at"], name: "index_version_comments_on_created_at"
     t.index ["document_version_id"], name: "index_version_comments_on_document_version_id"
-    t.index ["professional_id"], name: "index_version_comments_on_professional_id"
     t.index ["user_id"], name: "index_version_comments_on_user_id"
   end
 
@@ -696,7 +684,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"
-  add_foreign_key "document_permissions", "users"
   add_foreign_key "document_releases", "document_versions", column: "version_id"
   add_foreign_key "document_releases", "documents"
   add_foreign_key "document_releases", "professionals", column: "released_by_professional_id"
@@ -741,6 +728,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_17_144716) do
   add_foreign_key "specialization_specialities", "specializations"
   add_foreign_key "users", "professionals"
   add_foreign_key "version_comments", "document_versions"
-  add_foreign_key "version_comments", "professionals"
   add_foreign_key "version_comments", "users"
 end

@@ -57,7 +57,7 @@ export default class extends Controller {
     form.querySelector('[name="event[start_time]"]').value = this.formatDateTimeForInput(eventData.start)
     form.querySelector('[name="event[end_time]"]').value = this.formatDateTimeForInput(eventData.end)
     form.querySelector('[name="event[event_type]"]').value = eventData.event_type || ''
-    form.querySelector('[name="event[visibility_scope]"]').value = eventData.visibility_scope || ''
+    form.querySelector('[name="event[visibility_level]"]').value = eventData.visibility_level || ''
     
     form.dataset.eventId = eventData.id
   }
