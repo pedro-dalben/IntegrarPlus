@@ -108,33 +108,46 @@
 </div>
 
 <script>
-// Dados dos eventos para JavaScript
-const calendarEvents = <%= raw events_data.to_json %>;
-let currentView = 'month';
-let currentDate = new Date();
+// Evitar redeclaração de variáveis com Turbo
+if (typeof window.basicCalendarData === 'undefined') {
+  window.basicCalendarData = {};
+}
 
-// Função global para trocar visualização
+// Dados dos eventos para JavaScript (namespace único)
+window.basicCalendarData['<%= calendar_id %>'] = {
+  events: <%= raw events_data.to_json %>,
+  currentView: 'month',
+  currentDate: new Date()
+};
+
+// Função global para trocar visualização (namespace único)
 window.changeCalendarView = function(view) {
-  currentView = view;
-  renderCalendar();
+  const calendarId = '<%= calendar_id %>';
+  if (window.basicCalendarData[calendarId]) {
+    window.basicCalendarData[calendarId].currentView = view;
+    renderCalendar();
+  }
 }
 
 function renderCalendar() {
   const container = document.getElementById('calendar-container');
-  if (!container) return;
+  const calendarId = '<%= calendar_id %>';
+  const calendarData = window.basicCalendarData[calendarId];
+  
+  if (!container || !calendarData) return;
 
-  if (currentView === 'month') {
-    renderMonthView(container);
-  } else if (currentView === 'week') {
-    renderWeekView(container);
-  } else if (currentView === 'day') {
-    renderDayView(container);
+  if (calendarData.currentView === 'month') {
+    renderMonthView(container, calendarData);
+  } else if (calendarData.currentView === 'week') {
+    renderWeekView(container, calendarData);
+  } else if (calendarData.currentView === 'day') {
+    renderDayView(container, calendarData);
   }
 }
 
-function renderMonthView(container) {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+function renderMonthView(container, calendarData) {
+  const year = calendarData.currentDate.getFullYear();
+  const month = calendarData.currentDate.getMonth();
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
   const startDate = new Date(firstDay);
@@ -144,7 +157,7 @@ function renderMonthView(container) {
     <div class="calendar-container">
       <div class="calendar-header mb-6">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center">
-          ${currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+          ${calendarData.currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
         </h3>
       </div>
       
@@ -163,7 +176,7 @@ function renderMonthView(container) {
     
     const isCurrentMonth = date.getMonth() === month;
     const isToday = isSameDay(date, new Date());
-    const dayEvents = getEventsForDay(date);
+    const dayEvents = getEventsForDay(date, calendarData);
     
     html += `
       <div class="h-24 border border-gray-200 dark:border-gray-700 p-2 text-sm rounded-lg transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700
@@ -190,8 +203,8 @@ function renderMonthView(container) {
   container.innerHTML = html;
 }
 
-function renderWeekView(container) {
-  const weekStart = getWeekStart(currentDate);
+function renderWeekView(container, calendarData) {
+  const weekStart = getWeekStart(calendarData.currentDate);
   const weekDays = [];
   
   for (let i = 0; i < 7; i++) {
@@ -213,7 +226,7 @@ function renderWeekView(container) {
 
   weekDays.forEach(day => {
     const isToday = isSameDay(day, new Date());
-    const dayEvents = getEventsForDay(day);
+    const dayEvents = getEventsForDay(day, calendarData);
     
     html += `
       <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4
@@ -245,9 +258,9 @@ function renderWeekView(container) {
   container.innerHTML = html;
 }
 
-function renderDayView(container) {
-  const isToday = isSameDay(currentDate, new Date());
-  const dayEvents = getEventsForDay(currentDate);
+function renderDayView(container, calendarData) {
+  const isToday = isSameDay(calendarData.currentDate, new Date());
+  const dayEvents = getEventsForDay(calendarData.currentDate, calendarData);
   
   let html = `
     <div class="calendar-container">
@@ -297,8 +310,8 @@ function renderDayView(container) {
   container.innerHTML = html;
 }
 
-function getEventsForDay(date) {
-  return calendarEvents.filter(event => {
+function getEventsForDay(date, calendarData) {
+  return calendarData.events.filter(event => {
     const eventDate = new Date(event.start);
     return isSameDay(eventDate, date);
   });
@@ -320,44 +333,78 @@ function isSameDay(date1, date2) {
 
 // Funções de navegação
 function navigatePrevious() {
-  if (currentView === 'month') {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-  } else if (currentView === 'week') {
-    currentDate.setDate(currentDate.getDate() - 7);
-  } else if (currentView === 'day') {
-    currentDate.setDate(currentDate.getDate() - 1);
+  const calendarId = '<%= calendar_id %>';
+  const calendarData = window.basicCalendarData[calendarId];
+  if (!calendarData) return;
+  
+  if (calendarData.currentView === 'month') {
+    calendarData.currentDate.setMonth(calendarData.currentDate.getMonth() - 1);
+  } else if (calendarData.currentView === 'week') {
+    calendarData.currentDate.setDate(calendarData.currentDate.getDate() - 7);
+  } else if (calendarData.currentView === 'day') {
+    calendarData.currentDate.setDate(calendarData.currentDate.getDate() - 1);
   }
   renderCalendar();
 }
 
 function navigateNext() {
-  if (currentView === 'month') {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  } else if (currentView === 'week') {
-    currentDate.setDate(currentDate.getDate() + 7);
-  } else if (currentView === 'day') {
-    currentDate.setDate(currentDate.getDate() + 1);
+  const calendarId = '<%= calendar_id %>';
+  const calendarData = window.basicCalendarData[calendarId];
+  if (!calendarData) return;
+  
+  if (calendarData.currentView === 'month') {
+    calendarData.currentDate.setMonth(calendarData.currentDate.getMonth() + 1);
+  } else if (calendarData.currentView === 'week') {
+    calendarData.currentDate.setDate(calendarData.currentDate.getDate() + 7);
+  } else if (calendarData.currentView === 'day') {
+    calendarData.currentDate.setDate(calendarData.currentDate.getDate() + 1);
   }
   renderCalendar();
 }
 
 function goToToday() {
-  currentDate = new Date();
-  renderCalendar();
+  const calendarId = '<%= calendar_id %>';
+  const calendarData = window.basicCalendarData[calendarId];
+  if (calendarData) {
+    calendarData.currentDate = new Date();
+    renderCalendar();
+  }
 }
 
-// Inicializar o calendário quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
+// Função de inicialização única
+function initializeBasicCalendar() {
+  const calendarId = '<%= calendar_id %>';
+  const calendarData = window.basicCalendarData[calendarId];
+  
+  if (!calendarData) return;
+  
   renderCalendar();
   
-  // Adicionar event listeners para navegação
+  // Adicionar event listeners para navegação (evitar duplicação)
   const prevButton = document.getElementById('prev-button');
   const nextButton = document.getElementById('next-button');
   const todayButton = document.getElementById('today-button');
   
-  if (prevButton) prevButton.addEventListener('click', navigatePrevious);
-  if (nextButton) nextButton.addEventListener('click', navigateNext);
-  if (todayButton) todayButton.addEventListener('click', goToToday);
-});
+  if (prevButton && !prevButton.hasAttribute('data-listener-added')) {
+    prevButton.addEventListener('click', navigatePrevious);
+    prevButton.setAttribute('data-listener-added', 'true');
+  }
+  
+  if (nextButton && !nextButton.hasAttribute('data-listener-added')) {
+    nextButton.addEventListener('click', navigateNext);
+    nextButton.setAttribute('data-listener-added', 'true');
+  }
+  
+  if (todayButton && !todayButton.hasAttribute('data-listener-added')) {
+    todayButton.addEventListener('click', goToToday);
+    todayButton.setAttribute('data-listener-added', 'true');
+  }
+}
+
+// Inicializar o calendário quando a página carregar (DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', initializeBasicCalendar);
+
+// Inicializar também com Turbo (para navegação SPA)
+document.addEventListener('turbo:load', initializeBasicCalendar);
 </script>
 

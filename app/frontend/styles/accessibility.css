@@ -156,6 +156,395 @@ button:focus,
   outline-color: #60a5fa;
 }
 
+/* Fix para problema de layout no hover do sidebar */
+.sidebar:hover .menu-item-text {
+  display: inline !important;
+}
+
+.sidebar:hover .menu-item-arrow {
+  display: block !important;
+}
+
+.sidebar:hover .menu-dropdown {
+  display: flex !important;
+}
+
+/* Prevenir mudanças de layout no hover */
+.sidebar .menu-item-text,
+.sidebar .menu-item-arrow,
+.sidebar .menu-dropdown {
+  transition: none !important;
+}
+
+/* Sobrescrever estilos problemáticos do TailAdmin */
+[data-controller="dropdown"] .menu-item-text {
+  display: inline !important;
+}
+
+[data-controller="dropdown"] .menu-item-arrow {
+  display: block !important;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] {
+  display: none !important;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+}
+
+/* Garantir que os dropdowns funcionem corretamente */
+[data-controller="dropdown"] [data-dropdown-target="panel"].hidden {
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Posicionamento correto dos dropdowns */
+[data-controller="dropdown"] [data-dropdown-target="panel"] {
+  position: relative;
+  z-index: 50;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Garantir que os elementos do sidebar mantenham suas posições */
+.sidebar .menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.sidebar .menu-item-text {
+  display: inline !important;
+  flex: 1;
+}
+
+.sidebar .menu-item-arrow {
+  display: block !important;
+  margin-left: auto;
+}
+
+/* Prevenir mudanças de layout nos dropdowns */
+[data-controller="dropdown"] {
+  position: relative;
+  width: 100%;
+}
+
+[data-controller="dropdown"] .menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Desabilitar estilos problemáticos do TailAdmin para nossos dropdowns */
+[data-controller="dropdown"] .menu-dropdown {
+  display: none !important;
+}
+
+/* Garantir que nossos dropdowns funcionem independentemente do hover do sidebar */
+[data-controller="dropdown"] [data-dropdown-target="panel"] {
+  position: relative !important;
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Forçar visibilidade dos dropdowns quando não estão hidden */
+[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Garantir que o CSS do TailAdmin não interfira */
+.sidebar:hover [data-controller="dropdown"] [data-dropdown-target="panel"] {
+  display: none !important;
+}
+
+.sidebar:hover [data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+}
+
+/* Prevenir mudanças de layout no hover dos itens do menu */
+.sidebar .menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.75rem 1rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar .menu-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.sidebar .menu-item-text {
+  display: inline !important;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar .menu-item-arrow {
+  display: block !important;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Prevenir mudanças de layout nos dropdowns */
+[data-controller="dropdown"] {
+  position: relative;
+  width: 100%;
+}
+
+[data-controller="dropdown"] .menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.5rem;
+}
+
+/* Garantir que os dropdowns sigam o mesmo padrão do sidebar */
+[data-controller="dropdown"] [data-dropdown-target="panel"] {
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 10 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 1rem !important;
+  transform: none !important;
+  inset: auto !important;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Sobrescrever qualquer estilo de card do TailAdmin */
+[data-controller="dropdown"] [data-dropdown-target="panel"] * {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Garantir que não haja card flutuante */
+[data-controller="dropdown"] [data-dropdown-target="panel"] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  position: relative !important;
+  transform: none !important;
+  inset: auto !important;
+}
+
+/* Sobrescrever qualquer estilo de card do TailAdmin com máxima especificidade */
+.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  position: relative !important;
+  transform: none !important;
+  inset: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+/* CSS de máxima especificidade para sobrescrever TailAdmin */
+aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  position: relative !important;
+  transform: none !important;
+  inset: auto !important;
+  margin: 0 !important;
+  padding: 0 0 0 1rem !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+  z-index: auto !important;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Estilos específicos para os itens do dropdown - seguindo o padrão do sidebar */
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  border-radius: 0;
+  text-decoration: none;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  min-height: 2.5rem;
+  width: 100%;
+  line-height: 1.25;
+  border-left: 3px solid transparent;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #111827;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #1d4ed8;
+  border-left-color: #1d4ed8;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: #6b7280;
+  transition: color 0.2s ease-in-out;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover svg {
+  color: #374151;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active svg {
+  color: #1d4ed8;
+}
+
+[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark mode para itens do dropdown */
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+  color: #d1d5db;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #f9fafb;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-left-color: #60a5fa;
+}
+
+/* Dark mode para ícones dos itens do dropdown */
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+  color: #9ca3af;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover svg {
+  color: #d1d5db;
+}
+
+.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active svg {
+  color: #60a5fa;
+}
+
+/* Garantir alinhamento correto dos itens do dropdown */
+aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+  padding: 0.75rem 1rem !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  min-height: 2.5rem !important;
+  width: 100% !important;
+  border-left: 3px solid transparent !important;
+}
+
+/* Garantir que os ícones dos itens do dropdown tenham o mesmo tamanho */
+aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Garantir que o texto dos itens do dropdown tenha o mesmo alinhamento */
+aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item-text {
+  flex: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 /* Sidebar Design Improvements */
 
 /* Menu items */

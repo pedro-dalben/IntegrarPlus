@@ -5,7 +5,7 @@ module Portal
     layout 'portal'
 
     before_action :authenticate_external_user!
-    # before_action :check_external_user_active
+    before_action :check_external_user_active
 
     helper_method :current_external_user
 
@@ -31,9 +31,10 @@ module Portal
       user = current_external_user
       return if user.is_a?(ExternalUser) && user.active?
 
-      sign_out(:external_user) if external_user_signed_in?
+      # Limpar a sessão do usuário inativo
+      session[:external_user_id] = nil
       redirect_to portal_new_external_user_session_path,
-                  alert: 'Sua conta foi desativada. Entre em contato com o administrador.'
+                  alert: 'Sua conta foi desativada. Entre em contato com o administrador do sistema para reativar seu acesso.'
     end
   end
 end

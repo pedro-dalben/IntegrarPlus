@@ -9,12 +9,14 @@ module Portal
     end
 
     def create
-      @external_user = ExternalUser.find_by(email: params[:external_user][:email])
+      login_params = external_user_params
+      user = ExternalUser.find_by(email: login_params[:email])
 
-      if @external_user&.active? && @external_user.valid_password?(params[:external_user][:password])
-        session[:external_user_id] = @external_user.id
+      if user&.active? && user.valid_password?(login_params[:password])
+        session[:external_user_id] = user.id
         redirect_to portal_root_path, notice: 'Login realizado com sucesso!'
       else
+        @external_user = ExternalUser.new(email: login_params[:email])
         flash.now[:alert] = 'Email ou senha inválidos.'
         render :new, status: :unprocessable_entity
       end

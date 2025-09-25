@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
   end
 
   def pundit_user
-    current_user || current_external_user
+    if respond_to?(:current_external_user) && current_external_user
+      current_external_user
+    else
+      current_user
+    end
   end
 end

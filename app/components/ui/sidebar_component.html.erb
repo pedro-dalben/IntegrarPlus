@@ -1,7 +1,7 @@
 <aside
   data-controller="sidebar"
   data-action="click@window->sidebar#outside"
-  class="sidebar fixed top-0 left-0 z-[9998] w-72 transform border-r bg-white transition-transform duration-300 dark:bg-black dark:border-gray-800 xl:static xl:transform-none flex h-screen flex-col overflow-y-auto px-5">
+  class="sidebar fixed top-0 left-0 z-[9998] w-72 transform border-r bg-white transition-transform duration-300 dark:bg-black dark:border-gray-800 xl:static xl:transform-none flex h-screen flex-col px-5">
   <!-- SIDEBAR HEADER -->
   <div class="sidebar-header flex items-center justify-center pt-8 pb-7">
     <a href="/admin">
@@ -11,7 +11,7 @@
     </a>
   </div>
 
-  <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+  <div class="no-scrollbar flex flex-col duration-300 ease-linear">
     <!-- Sidebar Menu -->
     <nav>
       <!-- Menu Group -->
@@ -44,14 +44,14 @@
                   </button>
 
                   <div
-                    data-dropdown-target="menu"
-                    class="hidden mt-2 ml-4 space-y-1"
+                    data-dropdown-target="panel"
+                    class="hidden"
                   >
                     <% item[:items].each do |subitem| %>
                       <% if user_can_access?(subitem[:permission]) %>
                         <a
                           href="<%= subitem[:path] %>"
-                          class="menu-item group <%= 'active' if subitem[:active] %>"
+                          class="menu-item <%= 'active' if subitem[:active] %>"
                         >
                           <%= subitem[:icon].html_safe %>
                           <span class="menu-item-text">

@@ -4,6 +4,8 @@ class ExternalUser < ApplicationRecord
   devise :database_authenticatable,
          :recoverable, :rememberable, :validatable
 
+  attribute :active, :boolean, default: true
+
   has_many :service_requests, dependent: :destroy
   has_many :portal_intakes, foreign_key: 'operator_id', dependent: :destroy
 
@@ -11,6 +13,10 @@ class ExternalUser < ApplicationRecord
   validates :company_name, presence: true, length: { minimum: 2, maximum: 100 }
 
   scope :active, -> { where(active: true) }
+
+  def active?
+    active
+  end
 
   def full_name
     name.presence || email.split('@').first.titleize

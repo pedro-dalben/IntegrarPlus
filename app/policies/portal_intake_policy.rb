@@ -10,7 +10,10 @@ class PortalIntakePolicy < ApplicationPolicy
   end
 
   def create?
-    user.is_a?(ExternalUser) && user.active?
+    return false unless user.is_a?(ExternalUser)
+    return false unless user.active?
+
+    true
   end
 
   def new?

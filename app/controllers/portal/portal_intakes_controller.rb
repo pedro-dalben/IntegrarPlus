@@ -3,6 +3,7 @@
 module Portal
   class PortalIntakesController < BaseController
     before_action :set_portal_intake, only: [:show]
+    rescue_from Pundit::NotAuthorizedError, with: :handle_authorization_error
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: PortalIntakePolicy::Scope)
@@ -76,6 +77,16 @@ module Portal
       scope
     rescue Date::Error
       scope
+    end
+
+    def handle_authorization_error(_exception)
+      if current_external_user && !current_external_user.active?
+        redirect_to portal_new_external_user_session_path,
+                    alert: 'Sua conta foi desativada. Entre em contato com o administrador do sistema para reativar seu acesso.'
+      else
+        redirect_to portal_root_path,
+                    alert: 'Você não tem permissão para realizar esta ação.'
+      end
     end
   end
 end
