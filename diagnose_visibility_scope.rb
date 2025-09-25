@@ -10,11 +10,25 @@ ENV['RAILS_ENV'] = 'production'
 
 # Verificar se o Rails pode ser carregado
 begin
-  require_relative 'config/environment'
+  # Carregar apenas o que é necessário para verificar o banco
+  require 'active_record'
+  require_relative 'config/database'
+  require_relative 'app/models/application_record'
+  require_relative 'app/models/event'
   puts '✅ Rails carregado com sucesso (ambiente: production)'
 rescue StandardError => e
   puts "❌ Erro ao carregar Rails: #{e.message}"
-  exit 1
+  puts 'Tentando abordagem alternativa...'
+
+  # Tentar carregar apenas o ActiveRecord
+  begin
+    require 'active_record'
+    require_relative 'config/database'
+    puts '✅ ActiveRecord carregado com sucesso'
+  rescue StandardError => e2
+    puts "❌ Erro ao carregar ActiveRecord: #{e2.message}"
+    exit 1
+  end
 end
 
 # Verificar colunas da tabela events
