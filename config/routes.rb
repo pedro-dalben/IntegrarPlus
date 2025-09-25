@@ -146,6 +146,16 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :external_users do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+      collection do
+        get :search
+      end
+    end
+
     get 'agenda_dashboard', to: 'agenda_dashboard#index'
 
     resources :notifications do

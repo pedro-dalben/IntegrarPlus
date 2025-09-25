@@ -25,15 +25,54 @@
         <ul class="flex flex-col gap-2">
           <% menu_items.each do |item| %>
             <li>
-              <a
-                href="<%= item[:path] %>"
-                class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white <%= 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' if item[:active] %>"
-              >
-                <%= item[:icon].html_safe %>
-                <span class="block">
-                  <%= item[:title] %>
-                </span>
-              </a>
+              <% if item[:type] == 'dropdown' %>
+                <div class="dropdown-container" data-controller="dropdown">
+                  <button
+                    type="button"
+                    data-action="click->dropdown#toggle"
+                    class="menu-item group flex items-center justify-between w-full <%= 'active' if item[:active] %>"
+                  >
+                    <div class="flex items-center gap-3">
+                      <%= item[:icon].html_safe %>
+                      <span class="menu-item-text">
+                        <%= item[:title] %>
+                      </span>
+                    </div>
+                    <svg class="w-4 h-4 transition-transform duration-200" data-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+
+                  <div
+                    data-dropdown-target="menu"
+                    class="hidden mt-2 ml-4 space-y-1"
+                  >
+                    <% item[:items].each do |subitem| %>
+                      <% if user_can_access?(subitem[:permission]) %>
+                        <a
+                          href="<%= subitem[:path] %>"
+                          class="menu-item group <%= 'active' if subitem[:active] %>"
+                        >
+                          <%= subitem[:icon].html_safe %>
+                          <span class="menu-item-text">
+                            <%= subitem[:title] %>
+                          </span>
+                        </a>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              <% else %>
+                <a
+                  href="<%= item[:path] %>"
+                  class="menu-item group <%= 'active' if item[:active] %>"
+                >
+                  <%= item[:icon].html_safe %>
+                  <span class="menu-item-text">
+                    <%= item[:title] %>
+                  </span>
+                </a>
+              <% end %>
             </li>
           <% end %>
         </ul>

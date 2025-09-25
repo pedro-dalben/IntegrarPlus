@@ -15,100 +15,150 @@ module Ui
     attr_reader :current_path, :current_user, :options
 
     def menu_items
-      all_items = [
+      [
         {
           title: 'Dashboard',
           path: '/admin',
           icon: dashboard_icon,
           active: current_path&.start_with?('/admin') && !current_path&.include?('/admin/'),
           badge: nil,
-          permission: 'dashboard.view'
-        },
-        {
-          title: 'Profissionais',
-          path: '/admin/professionals',
+          permission: 'dashboard.view',
+          type: 'single'
+        }
+      ] + dropdown_menus
+    end
+
+    def dropdown_menus
+      menus = []
+
+      # Módulo: Cadastro de Profissionais
+      if user_can_access_any?(['professionals.index', 'groups.manage', 'specialities.index', 'specializations.index', 'contract_types.index'])
+        menus << {
+          title: 'Cadastro de Profissionais',
           icon: professionals_icon,
-          active: current_path&.start_with?('/admin/professionals'),
-          badge: nil,
-          permission: 'professionals.index'
-        },
-        {
-          title: 'Grupos',
-          path: '/admin/groups',
-          icon: groups_icon,
-          active: current_path&.start_with?('/admin/groups'),
-          badge: nil,
-          permission: 'groups.manage'
-        },
-        {
-          title: 'Especialidades',
-          path: '/admin/specialities',
-          icon: specialities_icon,
-          active: current_path&.start_with?('/admin/specialities'),
-          badge: nil,
-          permission: 'specialities.index'
-        },
-        {
-          title: 'Especializações',
-          path: '/admin/specializations',
-          icon: specializations_icon,
-          active: current_path&.start_with?('/admin/specializations'),
-          badge: nil,
-          permission: 'specializations.index'
-        },
-        {
-          title: 'Tipos de Contrato',
-          path: '/admin/contract_types',
-          icon: contract_types_icon,
-          active: current_path&.start_with?('/admin/contract_types'),
-          badge: nil,
-          permission: 'contract_types.index'
-        },
-        {
-          title: 'Documentos',
-          path: '/admin/workspace',
-          icon: documents_icon,
-          active: current_path&.start_with?('/admin/workspace'),
-          badge: nil,
-          permission: 'documents.access'
-        },
-        {
-          title: 'Documentos Liberados',
-          path: '/admin/released_documents',
-          icon: released_documents_icon,
-          active: current_path&.start_with?('/admin/released_documents'),
-          badge: nil,
-          permission: 'documents.view_released'
-        },
-        {
-          title: 'Portal Intakes',
-          path: '/admin/portal_intakes',
+          active: any_active?(['/admin/professionals', '/admin/groups', '/admin/specialities', '/admin/specializations', '/admin/contract_types']),
+          type: 'dropdown',
+          items: [
+            {
+              title: 'Profissionais',
+              path: '/admin/professionals',
+              icon: professionals_icon,
+              active: current_path&.start_with?('/admin/professionals'),
+              permission: 'professionals.index'
+            },
+            {
+              title: 'Grupos',
+              path: '/admin/groups',
+              icon: groups_icon,
+              active: current_path&.start_with?('/admin/groups'),
+              permission: 'groups.manage'
+            },
+            {
+              title: 'Especialidades',
+              path: '/admin/specialities',
+              icon: specialities_icon,
+              active: current_path&.start_with?('/admin/specialities'),
+              permission: 'specialities.index'
+            },
+            {
+              title: 'Especializações',
+              path: '/admin/specializations',
+              icon: specializations_icon,
+              active: current_path&.start_with?('/admin/specializations'),
+              permission: 'specializations.index'
+            },
+            {
+              title: 'Tipos de Contrato',
+              path: '/admin/contract_types',
+              icon: contract_types_icon,
+              active: current_path&.start_with?('/admin/contract_types'),
+              permission: 'contract_types.index'
+            }
+          ]
+        }
+      end
+
+      # Módulo: Portal de Operadoras
+      if user_can_access_any?(['portal_intakes.index', 'external_users.index'])
+        menus << {
+          title: 'Portal de Operadoras',
           icon: portal_intakes_icon,
-          active: current_path&.start_with?('/admin/portal_intakes'),
-          badge: nil,
-          permission: 'portal_intakes.index'
-        },
-        {
-          title: 'Agendas',
+          active: any_active?(['/admin/portal_intakes', '/admin/external_users']),
+          type: 'dropdown',
+          items: [
+            {
+              title: 'Entradas do Portal',
+              path: '/admin/portal_intakes',
+              icon: portal_intakes_icon,
+              active: current_path&.start_with?('/admin/portal_intakes'),
+              permission: 'portal_intakes.index'
+            },
+            {
+              title: 'Operadoras',
+              path: '/admin/external_users',
+              icon: groups_icon,
+              active: current_path&.start_with?('/admin/external_users'),
+              permission: 'external_users.index'
+            }
+          ]
+        }
+      end
+
+      # Módulo: Documentos
+      if user_can_access_any?(['documents.access', 'documents.view_released', 'documents.manage_permissions'])
+        menus << {
+          title: 'Documentos',
+          icon: documents_icon,
+          active: any_active?(['/admin/workspace', '/admin/released_documents', '/admin/professional_permissions']),
+          type: 'dropdown',
+          items: [
+            {
+              title: 'Workspace',
+              path: '/admin/workspace',
+              icon: documents_icon,
+              active: current_path&.start_with?('/admin/workspace'),
+              permission: 'documents.access'
+            },
+            {
+              title: 'Documentos Liberados',
+              path: '/admin/released_documents',
+              icon: released_documents_icon,
+              active: current_path&.start_with?('/admin/released_documents'),
+              permission: 'documents.view_released'
+            },
+            {
+              title: 'Gerenciar Permissões',
+              path: '/admin/professional_permissions',
+              icon: permissions_icon,
+              active: current_path&.start_with?('/admin/professional_permissions'),
+              permission: 'documents.manage_permissions'
+            }
+          ]
+        }
+      end
+
+      # Módulo: Agendamentos
+      if user_can_access?('agendas.read')
+        menus << {
+          title: 'Agendamentos',
           path: '/admin/agendas',
           icon: agendas_icon,
           active: current_path&.start_with?('/admin/agendas'),
           badge: nil,
-          permission: 'agendas.read'
-        },
-        {
-          title: 'Gerenciar Permissões',
-          path: '/admin/professional_permissions',
-          icon: permissions_icon,
-          active: current_path&.start_with?('/admin/professional_permissions'),
-          badge: nil,
-          permission: 'documents.manage_permissions'
+          permission: 'agendas.read',
+          type: 'single'
         }
+      end
 
-      ]
+      menus
+    end
 
-      # Filtrar itens baseado nas permissões do usuário
-      all_items.select { |item| user_can_access?(item[:permission]) }
+    def user_can_access_any?(permissions)
+      permissions.any? { |permission| user_can_access?(permission) }
+    end
+
+    def any_active?(paths)
+      paths.any? { |path| current_path&.start_with?(path) }
     end
 
     def support_items

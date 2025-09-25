@@ -1,0 +1,211 @@
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 h-12 w-12">
+          <div class="h-12 w-12 rounded-full bg-brand-100 dark:bg-brand-900 flex items-center justify-center">
+            <span class="text-lg font-medium text-brand-600 dark:text-brand-400">
+              <%= @external_user.company_name.first.upcase %>
+            </span>
+          </div>
+        </div>
+        <div class="ml-4">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <%= @external_user.company_name %>
+          </h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            <%= @external_user.name %>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <% if @external_user.active? %>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            Ativa
+          </span>
+        <% else %>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+            Inativa
+          </span>
+        <% end %>
+
+        <%= link_to edit_admin_external_user_path(@external_user),
+            class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium" do %>
+          Editar
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-6 py-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Informações da Operadora</h3>
+        <dl class="space-y-3">
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome da Empresa</dt>
+            <dd class="text-sm text-gray-900 dark:text-white"><%= @external_user.company_name %></dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome do Responsável</dt>
+            <dd class="text-sm text-gray-900 dark:text-white"><%= @external_user.name %></dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+            <dd class="text-sm text-gray-900 dark:text-white">
+              <a href="mailto:<%= @external_user.email %>" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                <%= @external_user.email %>
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+            <dd class="text-sm">
+              <% if @external_user.active? %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                  Ativa
+                </span>
+              <% else %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                  Inativa
+                </span>
+              <% end %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Criado em</dt>
+            <dd class="text-sm text-gray-900 dark:text-white">
+              <%= @external_user.created_at.strftime("%d/%m/%Y às %H:%M") %>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Última atualização</dt>
+            <dd class="text-sm text-gray-900 dark:text-white">
+              <%= @external_user.updated_at.strftime("%d/%m/%Y às %H:%M") %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Estatísticas</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total de Entradas</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <%= @external_user.portal_intakes.count %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Anamneses Concluídas</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <%= @external_user.portal_intakes.anamnese_concluida.count %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aguardando Anamnese</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                  <%= @external_user.portal_intakes.aguardando_anamnese.count %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @portal_intakes.any? %>
+  <div class="mt-6 bg-white dark:bg-gray-800 shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">Entradas Recentes</h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Beneficiário
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Plano
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Status
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Data
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Ações
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <% @portal_intakes.each do |intake| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                  <%= intake.nome %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900 dark:text-white">
+                  <%= intake.plan_name %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="<%= intake.status_badge_class %>">
+                  <%= intake.status_label %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <%= intake.requested_at.strftime("%d/%m/%Y") %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <%= link_to admin_portal_intake_path(intake),
+                    class: "text-brand-600 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300" do %>
+                  Ver detalhes
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+      <%= link_to admin_portal_intakes_path(operator_id: @external_user.id),
+          class: "text-sm text-brand-600 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300" do %>
+        Ver todas as entradas →
+      <% end %>
+    </div>
+  </div>
+<% end %>

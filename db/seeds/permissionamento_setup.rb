@@ -63,7 +63,14 @@ permissions_data = [
   { key: 'agendas.destroy', description: 'Excluir agendas' },
   { key: 'agendas.archive', description: 'Arquivar agendas' },
   { key: 'agendas.activate', description: 'Ativar agendas' },
-  { key: 'agendas.duplicate', description: 'Duplicar agendas' }
+  { key: 'agendas.duplicate', description: 'Duplicar agendas' },
+  { key: 'external_users.index', description: 'Listar operadoras' },
+  { key: 'external_users.show', description: 'Ver detalhes de operadora' },
+  { key: 'external_users.new', description: 'Criar nova operadora' },
+  { key: 'external_users.create', description: 'Salvar operadora' },
+  { key: 'external_users.edit', description: 'Editar operadora' },
+  { key: 'external_users.update', description: 'Atualizar operadora' },
+  { key: 'external_users.destroy', description: 'Excluir operadora' }
 ]
 
 permissions_data.each do |perm_data|
