@@ -143,31 +143,33 @@ class Professional < ApplicationRecord
     end
   end
 
-  # meilisearch do
-  #   searchable_attributes %i[full_name email cpf phone]
-  #   filterable_attributes %i[active confirmed_at]
-  #   sortable_attributes %i[created_at updated_at full_name]
+  unless Rails.env.test?
+    meilisearch do
+      searchable_attributes %i[full_name email cpf phone]
+      filterable_attributes %i[active created_at updated_at]
+      sortable_attributes %i[created_at updated_at full_name]
 
-  #   attribute :full_name
-  #   attribute :email
-  #   attribute :cpf
-  #   attribute :phone
-  #   attribute :active
-  #   attribute :created_at
-  #   attribute :updated_at
+      attribute :full_name
+      attribute :email
+      attribute :cpf
+      attribute :phone
+      attribute :active
+      attribute :created_at
+      attribute :updated_at
 
-  #   attribute :status do
-  #     if active?
-  #       user&.confirmed_invite? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
-  #     else
-  #       'Inativo'
-  #     end
-  #   end
+      attribute :status do
+        if active?
+          user&.confirmed_invite? ? 'Ativo e Confirmado' : 'Ativo e Pendente'
+        else
+          'Inativo'
+        end
+      end
 
-  #   attribute :groups_names do
-  #     groups.pluck(:name).join(', ')
-  #   end
-  # end
+      attribute :groups_names do
+        groups.pluck(:name).join(', ')
+      end
+    end
+  end
 
   # Método simplificado para criação de usuário
   def create_user_for_authentication!
