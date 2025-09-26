@@ -74,7 +74,7 @@ end
 
 gem 'tzinfo-data', platforms: %i[windows jruby]
 
-gem 'rubocop', '~> 1.79', group: :development
+gem 'rubocop', '~> 1.81', group: :development
 gem 'rubocop-performance', '~> 1.25', group: :development
 gem 'rubocop-rails', '~> 2.33', group: :development
 gem 'standardrb', '~> 1.0', group: :development
