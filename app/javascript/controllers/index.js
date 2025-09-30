@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import AccordionController from "./accordion_controller"
+application.register("accordion", AccordionController)
+
 import AgendaDashboardController from "./agenda_dashboard_controller"
 application.register("agenda-dashboard", AgendaDashboardController)
 
@@ -31,14 +34,23 @@ application.register("basic-calendar", BasicCalendarController)
 import CalendarViewsController from "./calendar_views_controller"
 application.register("calendar-views", CalendarViewsController)
 
+import CarouselController from "./carousel_controller"
+application.register("carousel", CarouselController)
+
 import CepController from "./cep_controller"
 application.register("cep", CepController)
+
+import DropdownController from "./dropdown_controller"
+application.register("dropdown", DropdownController)
 
 import FullCalendarController from "./full_calendar_controller"
 application.register("full-calendar", FullCalendarController)
 
 import HeaderController from "./header_controller"
 application.register("header", HeaderController)
+
+import MobileMenuController from "./mobile_menu_controller"
+application.register("mobile-menu", MobileMenuController)
 
 import NotificationController from "./notification_controller"
 application.register("notification", NotificationController)

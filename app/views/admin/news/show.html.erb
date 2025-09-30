@@ -1,0 +1,74 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Visualizar Notícia</h1>
+          <p class="text-gray-600 mt-2">Detalhes da notícia</p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to edit_admin_news_path(@news), 
+              class: "bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center" do %>
+            <i class="fas fa-edit mr-2"></i>
+            Editar
+          <% end %>
+          <%= link_to admin_news_index_path, 
+              class: "bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center" do %>
+            <i class="fas fa-arrow-left mr-2"></i>
+            Voltar
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-4">
+            <% if @news.published? %>
+              <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                <i class="fas fa-check-circle mr-1"></i>
+                Publicada
+              </span>
+            <% else %>
+              <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                <i class="fas fa-clock mr-1"></i>
+                Rascunho
+              </span>
+            <% end %>
+          </div>
+          <div class="text-sm text-gray-500">
+            Criada em <%= @news.created_at.strftime("%d/%m/%Y às %H:%M") %>
+          </div>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+          <%= @news.title %>
+        </h2>
+        
+        <div class="text-sm text-gray-600 mb-6">
+          <div class="flex items-center space-x-4">
+            <span>
+              <i class="fas fa-user mr-1"></i>
+              Por <%= @news.author %>
+            </span>
+            <% if @news.published_at.present? %>
+              <span>
+                <i class="fas fa-calendar mr-1"></i>
+                Publicada em <%= @news.published_at.strftime("%d/%m/%Y às %H:%M") %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="prose max-w-none">
+        <div class="text-gray-800 leading-relaxed whitespace-pre-wrap">
+          <%= @news.content %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

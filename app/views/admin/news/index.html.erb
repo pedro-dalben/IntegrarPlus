@@ -1,0 +1,108 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Gerenciar Notícias</h1>
+      <p class="text-gray-600 mt-2">Gerencie as notícias que aparecem na homepage</p>
+    </div>
+    <%= link_to new_admin_news_path, 
+        class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center" do %>
+      <i class="fas fa-plus mr-2"></i>
+      Nova Notícia
+    <% end %>
+  </div>
+
+  <% if @news.any? %>
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Título
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Autor
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Data
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @news.each do |news| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">
+                    <%= truncate(news.title, length: 50) %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= news.author %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <% if news.published? %>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                      Publicada
+                    </span>
+                  <% else %>
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      Rascunho
+                    </span>
+                  <% end %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= news.published_at&.strftime("%d/%m/%Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div class="flex space-x-2">
+                    <%= link_to admin_news_path(news), 
+                        class: "text-blue-600 hover:text-blue-900" do %>
+                      <i class="fas fa-eye"></i>
+                    <% end %>
+                    <%= link_to edit_admin_news_path(news), 
+                        class: "text-indigo-600 hover:text-indigo-900" do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+                    <%= link_to admin_news_path(news), 
+                        method: :delete,
+                        data: { confirm: "Tem certeza que deseja excluir esta notícia?" },
+                        class: "text-red-600 hover:text-red-900" do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <%= paginate @news %>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">
+        Nenhuma notícia encontrada
+      </h3>
+      <p class="text-gray-500 mb-6">
+        Comece criando sua primeira notícia
+      </p>
+      <%= link_to new_admin_news_path, 
+          class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center" do %>
+        <i class="fas fa-plus mr-2"></i>
+        Criar Primeira Notícia
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+

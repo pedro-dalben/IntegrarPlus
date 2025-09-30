@@ -1,0 +1,99 @@
+<header class="sticky top-0 z-50 backdrop-blur bg-white/60 supports-[backdrop-filter]:bg-white/40 border-b border-slate-200/60" data-controller="mobile-menu">
+  <div class="w-full px-4">
+    <div class="w-full">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <%= link_to root_path, class: "text-2xl font-bold text-slate-800 hover:text-cyan-600 transition-colors" do %>
+          Integrar<span style="color: #2AA198;">+</span>
+        <% end %>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <%= link_to "#inicio", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Início
+        <% end %>
+        <%= link_to "#especialidades", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Especialidades
+        <% end %>
+        <%= link_to "#profissionais", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Profissionais
+        <% end %>
+        <%= link_to "#estrutura", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Estrutura
+        <% end %>
+        <%= link_to "#blog", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Blog
+        <% end %>
+        <%= link_to "#contato", class: "font-medium transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+          Contato
+        <% end %>
+      </nav>
+
+      <!-- Desktop CTA Buttons -->
+      <div class="hidden md:flex items-center space-x-4">
+        <%= link_to portal_new_external_user_session_path, 
+            class: "rounded-2xl border px-6 py-3 font-semibold focus:outline-none focus:ring-4 transition-all duration-200", 
+            style: "border-color: #4B5563; color: #4B5563; hover:background-color: #E5E7EB; focus:ring-color: rgba(75, 85, 99, 0.3);" do %>
+          Portal da operadora
+        <% end %>
+        <%= link_to new_user_session_path, 
+            class: "inline-flex items-center justify-center rounded-2xl px-6 py-3 font-semibold text-white focus:outline-none focus:ring-4 transition-all duration-200", 
+            style: "background-color: #2AA198; hover:background-color: #1e7a73; focus:ring-color: rgba(42, 161, 152, 0.3);" do %>
+          Área do Profissional
+        <% end %>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="md:hidden p-2 rounded-lg focus:outline-none focus:ring-2" 
+              style="color: #4B5563; hover:background-color: #E5E7EB; focus:ring-color: rgba(42, 161, 152, 0.3);" 
+              data-action="click->mobile-menu#toggle"
+              aria-label="Abrir menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden hidden" data-mobile-menu-target="menu">
+      <div class="py-4 border-t border-slate-200">
+        <nav class="flex flex-col space-y-4">
+          <%= link_to "#inicio", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Início
+          <% end %>
+          <%= link_to "#especialidades", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Especialidades
+          <% end %>
+          <%= link_to "#profissionais", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Profissionais
+          <% end %>
+          <%= link_to "#estrutura", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Estrutura
+          <% end %>
+          <%= link_to "#blog", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Blog
+          <% end %>
+          <%= link_to "#contato", class: "font-medium py-2 transition-colors", style: "color: #4B5563; hover:color: #2AA198;" do %>
+            Contato
+          <% end %>
+        </nav>
+        
+        <div class="mt-6 pt-4 border-t border-slate-200 flex flex-col space-y-3">
+          <%= link_to portal_new_external_user_session_path, 
+              class: "rounded-2xl border px-6 py-3 font-semibold focus:outline-none focus:ring-4 transition-all duration-200 text-center", 
+              style: "border-color: #4B5563; color: #4B5563; hover:background-color: #E5E7EB; focus:ring-color: rgba(75, 85, 99, 0.3);" do %>
+            Portal do Paciente
+          <% end %>
+          <%= link_to new_user_session_path, 
+              class: "inline-flex items-center justify-center rounded-2xl px-6 py-3 font-semibold text-white focus:outline-none focus:ring-4 transition-all duration-200", 
+              style: "background-color: #2AA198; hover:background-color: #1e7a73; focus:ring-color: rgba(42, 161, 152, 0.3);" do %>
+            Área do Profissional
+          <% end %>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</header>

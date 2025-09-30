@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_25_193124) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -388,6 +388,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_193124) do
     t.index ["professional_id"], name: "index_medical_appointments_on_professional_id"
     t.index ["scheduled_at"], name: "index_medical_appointments_on_scheduled_at"
     t.index ["status"], name: "index_medical_appointments_on_status"
+  end
+
+  create_table "news", force: :cascade do |t|
+    t.string "title"
+    t.text "content"
+    t.boolean "published"
+    t.datetime "published_at"
+    t.string "author"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "notification_preferences", force: :cascade do |t|
