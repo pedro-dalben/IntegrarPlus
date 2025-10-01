@@ -1,0 +1,200 @@
+<% content_for :title, "Anamneses" %>
+
+<div class="ta-content-wrapper">
+  <div class="ta-content-header">
+    <div class="ta-content-header-left">
+      <h1 class="ta-content-title">Anamneses</h1>
+      <p class="ta-content-subtitle">Gerencie as anamneses dos beneficiários</p>
+    </div>
+    <div class="ta-content-header-right">
+      <% if current_user.permit?('anamneses.create') %>
+        <%= link_to new_admin_anamnesis_path, class: "ta-btn ta-btn-primary" do %>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Nova Anamnese
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Filtros</h3>
+    </div>
+    <div class="ta-card-body">
+      <%= form_with url: admin_anamneses_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-4 gap-4" do |form| %>
+        <div>
+          <%= form.label :query, "Buscar", class: "ta-form-label" %>
+          <%= form.text_field :query, value: params[:query], placeholder: "Nome do beneficiário, profissional...", class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :status, "Status", class: "ta-form-label" %>
+          <%= form.select :status, 
+              options_for_select([
+                ['Todos', ''],
+                ['Pendente', 'pendente'],
+                ['Em Andamento', 'em_andamento'],
+                ['Concluída', 'concluida']
+              ], params[:status]), 
+              {}, 
+              { class: "ta-form-select" } %>
+        </div>
+
+        <div>
+          <%= form.label :professional_id, "Profissional", class: "ta-form-label" %>
+          <%= form.select :professional_id, 
+              options_from_collection_for_select(User.joins(:professional).where(professionals: { active: true }), :id, :full_name, params[:professional_id]),
+              { prompt: "Todos os profissionais" },
+              { class: "ta-form-select" } %>
+        </div>
+
+        <div class="flex items-end">
+          <%= form.submit "Filtrar", class: "ta-btn ta-btn-primary w-full" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Lista de Anamneses -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Lista de Anamneses</h3>
+      <div class="ta-card-header-right">
+        <span class="ta-badge ta-badge-secondary">
+          <%= @pagy.count %> anamneses encontradas
+        </span>
+      </div>
+    </div>
+    <div class="ta-card-body">
+      <% if @anamneses.any? %>
+        <div class="overflow-x-auto">
+          <table class="ta-table">
+            <thead>
+              <tr>
+                <th class="ta-table-th">Beneficiário</th>
+                <th class="ta-table-th">Profissional</th>
+                <th class="ta-table-th">Data Realizada</th>
+                <th class="ta-table-th">Status</th>
+                <th class="ta-table-th">Motivo</th>
+                <th class="ta-table-th">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @anamneses.each do |anamnesis| %>
+                <tr class="ta-table-tr">
+                  <td class="ta-table-td">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <div class="font-medium text-gray-900 dark:text-gray-100">
+                          <%= anamnesis.beneficiary_name %>
+                        </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                          <%= anamnesis.beneficiary.integrar_code %>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="ta-table-td">
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      <%= anamnesis.professional_name %>
+                    </div>
+                  </td>
+                  <td class="ta-table-td">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                      <%= anamnesis.performed_at.strftime("%d/%m/%Y") %>
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                      <%= anamnesis.performed_at.strftime("%H:%M") %>
+                    </div>
+                  </td>
+                  <td class="ta-table-td">
+                    <span class="<%= anamnesis.status_badge_class %>">
+                      <%= anamnesis.status_label %>
+                    </span>
+                  </td>
+                  <td class="ta-table-td">
+                    <div class="text-sm text-gray-900 dark:text-gray-100">
+                      <%= anamnesis.referral_reason_label %>
+                    </div>
+                  </td>
+                  <td class="ta-table-td">
+                    <div class="flex items-center gap-2">
+                      <%= link_to admin_anamnesis_path(anamnesis), class: "ta-btn ta-btn-sm ta-btn-secondary", title: "Ver detalhes" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                      <% end %>
+
+                      <% if anamnesis.pode_ser_editada? && current_user.permit?('anamneses.edit') %>
+                        <%= link_to edit_admin_anamnesis_path(anamnesis), class: "ta-btn ta-btn-sm ta-btn-primary", title: "Editar" do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                          </svg>
+                        <% end %>
+                      <% end %>
+
+                      <% if anamnesis.pode_ser_concluida? && current_user.permit?('anamneses.complete') %>
+                        <%= link_to complete_admin_anamnesis_path(anamnesis), 
+                            method: :patch,
+                            class: "ta-btn ta-btn-sm ta-btn-success", 
+                            title: "Concluir anamnese",
+                            data: { 
+                              confirm: "Tem certeza que deseja concluir esta anamnese?",
+                              turbo_method: :patch
+                            } do %>
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginação -->
+        <% if @pagy.pages > 1 %>
+          <div class="mt-6">
+            <%= render 'shared/pagination', pagy: @pagy %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Nenhuma anamnese encontrada</h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <% if params[:query].present? || params[:status].present? || params[:professional_id].present? %>
+              Tente ajustar os filtros para encontrar anamneses.
+            <% else %>
+              Comece criando uma nova anamnese.
+            <% end %>
+          </p>
+          <% if current_user.permit?('anamneses.create') && !params[:query].present? && !params[:status].present? && !params[:professional_id].present? %>
+            <div class="mt-6">
+              <%= link_to new_admin_anamnesis_path, class: "ta-btn ta-btn-primary" do %>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Nova Anamnese
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
