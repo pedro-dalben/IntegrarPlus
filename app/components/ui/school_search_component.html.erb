@@ -1,0 +1,34 @@
+<div class="relative" 
+     data-controller="school-search" 
+     data-school-search-url-value="<%= search_url %>"
+     data-school-search-min-length-value="3"
+     data-school-search-debounce-ms-value="300">
+  
+  <%= form.text_field field_name, 
+      class: "ta-form-input", 
+      placeholder: placeholder,
+      value: value,
+      data: { 
+        "school-search-target": "input",
+        "action": "input->school-search#search"
+      } %>
+  
+  <!-- Resultados da busca -->
+  <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg hidden"
+       data-school-search-target="results">
+    <!-- Resultados serão inseridos aqui via JavaScript -->
+  </div>
+  
+  <!-- Escola selecionada -->
+  <div class="mt-2" data-school-search-target="selectedSchool">
+    <!-- Escola selecionada será exibida aqui -->
+  </div>
+  
+  <!-- Link para catálogo completo -->
+  <p class="text-xs text-gray-500 mt-1">
+    <a href="https://anonymousdata.inep.gov.br/analytics/saw.dll?Dashboard&PortalPath=%2Fshared%2FCenso%20da%20Educa%C3%A7%C3%A3o%20B%C3%A1sica%2F_portal%2FCat%C3%A1logo%20de%20Escolas&Page=Lista%20das%20Escolas&P1=dashboard&Action=Navigate&ViewState=rgb26lcqbktgspv2eivlca7lmi&P16=NavRuleDefault&NavFromViewID=d%3Adashboard~p%3Asf156n9k0qs70741" 
+       target="_blank" class="text-blue-600 hover:text-blue-800">
+      Consultar catálogo completo do INEP
+    </a>
+  </p>
+</div>

@@ -208,17 +208,17 @@
           <% end %>
         </div>
         
-        <div id="school-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="<%= 'display: none;' unless anamnesis.attends_school? %>">
+        <div id="school-fields" class="space-y-4" style="<%= 'display: none;' unless anamnesis.attends_school? %>">
           <div>
             <%= form.label :school_name, "Nome da Escola", class: "ta-form-label" %>
-            <%= form.text_field :school_name, class: "ta-form-input", placeholder: "Digite o nome da escola" %>
-            <p class="text-xs text-gray-500 mt-1">
-              <a href="https://anonymousdata.inep.gov.br/analytics/saw.dll?Dashboard&PortalPath=%2Fshared%2FCenso%20da%20Educa%C3%A7%C3%A3o%20B%C3%A1sica%2F_portal%2FCat%C3%A1logo%20de%20Escolas&Page=Lista%20das%20Escolas&P1=dashboard&Action=Navigate&ViewState=rgb26lcqbktgspv2eivlca7lmi&P16=NavRuleDefault&NavFromViewID=d%3Adashboard~p%3Asf156n9k0qs70741" 
-                 target="_blank" class="text-blue-600 hover:text-blue-800">
-                Consultar catálogo de escolas do INEP
-              </a>
-            </p>
+            <%= render Ui::SchoolSearchComponent.new(
+                  form: form, 
+                  field_name: :school_name,
+                  placeholder: "Digite o nome da escola para buscar...",
+                  value: anamnesis.school_name
+                ) %>
           </div>
+          
           <div>
             <%= form.label :school_period, "Período", class: "ta-form-label" %>
             <%= form.select :school_period, 
