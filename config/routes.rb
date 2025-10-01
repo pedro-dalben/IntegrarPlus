@@ -83,6 +83,27 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :beneficiaries do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+      collection do
+        get :search
+      end
+      resources :anamneses, except: [:index]
+    end
+
+    resources :anamneses, only: %i[index show] do
+      member do
+        patch :complete
+      end
+      collection do
+        get :today
+        get :by_professional
+      end
+    end
+
     resources :agendas do
       member do
         patch :activate

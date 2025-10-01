@@ -70,7 +70,22 @@ permissions_data = [
   { key: 'external_users.create', description: 'Salvar operadora' },
   { key: 'external_users.edit', description: 'Editar operadora' },
   { key: 'external_users.update', description: 'Atualizar operadora' },
-  { key: 'external_users.destroy', description: 'Excluir operadora' }
+  { key: 'external_users.destroy', description: 'Excluir operadora' },
+  # Permissões de Beneficiários
+  { key: 'beneficiaries.index', description: 'Listar beneficiários' },
+  { key: 'beneficiaries.show', description: 'Ver detalhes do beneficiário' },
+  { key: 'beneficiaries.create', description: 'Criar novos beneficiários' },
+  { key: 'beneficiaries.edit', description: 'Editar beneficiários' },
+  { key: 'beneficiaries.update', description: 'Atualizar beneficiários' },
+  { key: 'beneficiaries.destroy', description: 'Excluir beneficiários' },
+  # Permissões de Anamnese
+  { key: 'anamneses.index', description: 'Listar anamneses' },
+  { key: 'anamneses.show', description: 'Ver detalhes da anamnese' },
+  { key: 'anamneses.create', description: 'Criar anamnese' },
+  { key: 'anamneses.edit', description: 'Editar anamnese' },
+  { key: 'anamneses.update', description: 'Atualizar anamnese' },
+  { key: 'anamneses.complete', description: 'Concluir anamnese' },
+  { key: 'anamneses.view_all', description: 'Ver todas as anamneses (não apenas próprias)' }
 ]
 
 permissions_data.each do |perm_data|
@@ -97,7 +112,15 @@ if prof_group
   basic_permissions = [
     'dashboard.view',
     'professionals.index',
-    'professionals.show'
+    'professionals.show',
+    'beneficiaries.index',
+    'beneficiaries.show',
+    'anamneses.index',
+    'anamneses.show',
+    'anamneses.create',
+    'anamneses.edit',
+    'anamneses.update',
+    'anamneses.complete'
   ]
 
   basic_permissions.each do |perm_key|
@@ -121,7 +144,15 @@ if recepcao_group
     'portal_intakes.update',
     'agendas.read',
     'agendas.create',
-    'agendas.update'
+    'agendas.update',
+    'beneficiaries.index',
+    'beneficiaries.show',
+    'beneficiaries.create',
+    'beneficiaries.edit',
+    'beneficiaries.update',
+    'anamneses.index',
+    'anamneses.show',
+    'anamneses.view_all'
   ]
 
   recepcao_permissions.each do |perm_key|
@@ -139,7 +170,16 @@ if clinico_group
     'professionals.show',
     'professionals.edit',
     'professionals.update',
-    'agendas.read'
+    'agendas.read',
+    'beneficiaries.index',
+    'beneficiaries.show',
+    'anamneses.index',
+    'anamneses.show',
+    'anamneses.create',
+    'anamneses.edit',
+    'anamneses.update',
+    'anamneses.complete',
+    'anamneses.view_all'
   ]
 
   clinico_permissions.each do |perm_key|

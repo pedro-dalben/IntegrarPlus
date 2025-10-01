@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_01_202800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -121,6 +121,56 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
     t.index ["updated_by_id"], name: "index_agendas_on_updated_by_id"
   end
 
+  create_table "anamneses", force: :cascade do |t|
+    t.bigint "beneficiary_id", null: false
+    t.bigint "professional_id", null: false
+    t.bigint "portal_intake_id"
+    t.datetime "performed_at", null: false
+    t.string "father_name"
+    t.date "father_birth_date"
+    t.string "father_education"
+    t.string "father_profession"
+    t.string "mother_name"
+    t.date "mother_birth_date"
+    t.string "mother_education"
+    t.string "mother_profession"
+    t.string "responsible_name"
+    t.date "responsible_birth_date"
+    t.string "responsible_education"
+    t.string "responsible_profession"
+    t.boolean "attends_school", default: false
+    t.string "school_name"
+    t.string "school_period"
+    t.string "referral_reason"
+    t.boolean "injunction", default: false
+    t.string "treatment_location"
+    t.integer "referral_hours"
+    t.json "specialties"
+    t.boolean "diagnosis_completed", default: false
+    t.string "responsible_doctor"
+    t.boolean "previous_treatment", default: false
+    t.json "previous_treatments"
+    t.boolean "continue_external_treatment", default: false
+    t.json "external_treatments"
+    t.json "preferred_schedule"
+    t.json "unavailable_schedule"
+    t.string "status", default: "pendente"
+    t.bigint "created_by_professional_id"
+    t.bigint "updated_by_professional_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beneficiary_id", "status"], name: "index_anamneses_on_beneficiary_id_and_status"
+    t.index ["beneficiary_id"], name: "index_anamneses_on_beneficiary_id"
+    t.index ["created_at"], name: "index_anamneses_on_created_at"
+    t.index ["created_by_professional_id"], name: "index_anamneses_on_created_by_professional_id"
+    t.index ["performed_at"], name: "index_anamneses_on_performed_at"
+    t.index ["portal_intake_id"], name: "index_anamneses_on_portal_intake_id"
+    t.index ["professional_id", "performed_at"], name: "index_anamneses_on_professional_id_and_performed_at"
+    t.index ["professional_id"], name: "index_anamneses_on_professional_id"
+    t.index ["status"], name: "index_anamneses_on_status"
+    t.index ["updated_by_professional_id"], name: "index_anamneses_on_updated_by_professional_id"
+  end
+
   create_table "appointment_attachments", force: :cascade do |t|
     t.bigint "medical_appointment_id", null: false
     t.bigint "uploaded_by_id", null: false
@@ -162,6 +212,62 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
     t.index ["exception_type"], name: "index_availability_exceptions_on_exception_type"
     t.index ["professional_id", "exception_date"], name: "idx_on_professional_id_exception_date_9761fb9ff6"
     t.index ["professional_id"], name: "index_availability_exceptions_on_professional_id"
+  end
+
+  create_table "beneficiaries", force: :cascade do |t|
+    t.bigint "portal_intake_id"
+    t.bigint "created_by_professional_id"
+    t.bigint "updated_by_professional_id"
+    t.string "name", null: false
+    t.date "birth_date", null: false
+    t.string "cpf", null: false
+    t.string "phone"
+    t.string "secondary_phone"
+    t.string "email"
+    t.string "secondary_email"
+    t.string "whatsapp_number"
+    t.text "address"
+    t.string "address_number"
+    t.string "address_complement"
+    t.string "neighborhood"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "address_reference"
+    t.string "responsible_name"
+    t.string "responsible_phone"
+    t.string "relationship"
+    t.string "responsible_cpf"
+    t.string "responsible_rg"
+    t.string "responsible_profession"
+    t.decimal "family_income", precision: 10, scale: 2
+    t.boolean "attends_school", default: false
+    t.string "school_name"
+    t.string "school_period"
+    t.string "health_plan"
+    t.string "health_card_number"
+    t.text "allergies"
+    t.text "continuous_medications"
+    t.text "special_conditions"
+    t.string "integrar_code", null: false
+    t.string "medical_record_number"
+    t.string "photo"
+    t.string "status", default: "ativo"
+    t.date "treatment_start_date"
+    t.date "treatment_end_date"
+    t.text "inactivation_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["birth_date"], name: "index_beneficiaries_on_birth_date"
+    t.index ["cpf"], name: "index_beneficiaries_on_cpf", unique: true
+    t.index ["created_at"], name: "index_beneficiaries_on_created_at"
+    t.index ["created_by_professional_id"], name: "index_beneficiaries_on_created_by_professional_id"
+    t.index ["integrar_code"], name: "index_beneficiaries_on_integrar_code", unique: true
+    t.index ["medical_record_number"], name: "index_beneficiaries_on_medical_record_number", unique: true
+    t.index ["name"], name: "index_beneficiaries_on_name"
+    t.index ["portal_intake_id"], name: "index_beneficiaries_on_portal_intake_id"
+    t.index ["status"], name: "index_beneficiaries_on_status"
+    t.index ["updated_by_professional_id"], name: "index_beneficiaries_on_updated_by_professional_id"
   end
 
   create_table "contract_types", force: :cascade do |t|
@@ -378,7 +484,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "event_id"
+    t.bigint "anamnesis_id"
     t.index ["agenda_id"], name: "index_medical_appointments_on_agenda_id"
+    t.index ["anamnesis_id"], name: "index_medical_appointments_on_anamnesis_id"
     t.index ["appointment_type"], name: "index_medical_appointments_on_appointment_type"
     t.index ["event_id"], name: "index_medical_appointments_on_event_id"
     t.index ["patient_id", "scheduled_at"], name: "index_medical_appointments_on_patient_id_and_scheduled_at"
@@ -685,12 +793,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
   add_foreign_key "agendas", "units"
   add_foreign_key "agendas", "users", column: "created_by_id"
   add_foreign_key "agendas", "users", column: "updated_by_id"
+  add_foreign_key "anamneses", "beneficiaries"
+  add_foreign_key "anamneses", "portal_intakes"
+  add_foreign_key "anamneses", "users", column: "created_by_professional_id"
+  add_foreign_key "anamneses", "users", column: "professional_id"
+  add_foreign_key "anamneses", "users", column: "updated_by_professional_id"
   add_foreign_key "appointment_attachments", "medical_appointments"
   add_foreign_key "appointment_attachments", "users", column: "uploaded_by_id"
   add_foreign_key "appointment_notes", "medical_appointments"
   add_foreign_key "appointment_notes", "users", column: "created_by_id"
   add_foreign_key "availability_exceptions", "agendas"
   add_foreign_key "availability_exceptions", "professionals"
+  add_foreign_key "beneficiaries", "portal_intakes"
+  add_foreign_key "beneficiaries", "users", column: "created_by_professional_id"
+  add_foreign_key "beneficiaries", "users", column: "updated_by_professional_id"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"
@@ -716,6 +832,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_153605) do
   add_foreign_key "invites", "users"
   add_foreign_key "journey_events", "portal_intakes"
   add_foreign_key "medical_appointments", "agendas"
+  add_foreign_key "medical_appointments", "anamneses", column: "anamnesis_id"
   add_foreign_key "medical_appointments", "events"
   add_foreign_key "medical_appointments", "professionals"
   add_foreign_key "medical_appointments", "users", column: "patient_id"

@@ -3,6 +3,7 @@ class MedicalAppointment < ApplicationRecord
   belongs_to :professional, class_name: 'Professional'
   belongs_to :patient, class_name: 'User', optional: true
   belongs_to :event, optional: true
+  belongs_to :anamnesis, optional: true
   has_many :appointment_notes, dependent: :destroy
   has_many :appointment_attachments, dependent: :destroy
 
