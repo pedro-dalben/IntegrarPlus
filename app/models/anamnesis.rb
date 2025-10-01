@@ -35,7 +35,8 @@ class Anamnesis < ApplicationRecord
 
   enum :school_period, {
     manha: 'manha',
-    tarde: 'tarde'
+    tarde: 'tarde',
+    integral: 'integral'
   }
 
   # Validações

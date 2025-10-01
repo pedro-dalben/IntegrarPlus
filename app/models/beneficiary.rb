@@ -18,9 +18,10 @@ class Beneficiary < ApplicationRecord
     transferido: 'transferido'
   }
 
-  enum :periodo_escola, {
+  enum :school_period, {
     manha: 'manha',
-    tarde: 'tarde'
+    tarde: 'tarde',
+    integral: 'integral'
   }
 
   # Validações

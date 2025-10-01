@@ -1,0 +1,319 @@
+<%= form_with model: [:admin, beneficiary], local: true, class: "space-y-8" do |form| %>
+  <% if beneficiary.errors.any? %>
+    <div class="ta-alert ta-alert-error">
+      <div class="ta-alert-content">
+        <h3 class="ta-alert-title">Erro ao salvar beneficiário</h3>
+        <ul class="list-disc list-inside space-y-1">
+          <% beneficiary.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Informações Pessoais -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Informações Pessoais</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :name, "Nome Completo", class: "ta-form-label" %>
+          <%= form.text_field :name, class: "ta-form-input", required: true %>
+        </div>
+        
+        <div>
+          <%= form.label :birth_date, "Data de Nascimento", class: "ta-form-label" %>
+          <%= form.date_field :birth_date, class: "ta-form-input", required: true %>
+        </div>
+        
+        <div>
+          <%= form.label :cpf, "CPF", class: "ta-form-label" %>
+          <%= form.text_field :cpf, class: "ta-form-input", required: true, placeholder: "000.000.000-00" %>
+        </div>
+        
+        <div>
+          <%= form.label :integrar_code, "Código Integrar", class: "ta-form-label" %>
+          <%= form.text_field :integrar_code, class: "ta-form-input", readonly: true, placeholder: "Será gerado automaticamente" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contato -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Informações de Contato</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :phone, "Telefone", class: "ta-form-label" %>
+          <%= form.text_field :phone, class: "ta-form-input", placeholder: "(11) 99999-9999" %>
+        </div>
+        
+        <div>
+          <%= form.label :secondary_phone, "Telefone Secundário", class: "ta-form-label" %>
+          <%= form.text_field :secondary_phone, class: "ta-form-input", placeholder: "(11) 99999-9999" %>
+        </div>
+        
+        <div>
+          <%= form.label :email, "E-mail", class: "ta-form-label" %>
+          <%= form.email_field :email, class: "ta-form-input", placeholder: "email@exemplo.com" %>
+        </div>
+        
+        <div>
+          <%= form.label :secondary_email, "E-mail Secundário", class: "ta-form-label" %>
+          <%= form.email_field :secondary_email, class: "ta-form-input", placeholder: "email2@exemplo.com" %>
+        </div>
+        
+        <div>
+          <%= form.label :whatsapp_number, "WhatsApp", class: "ta-form-label" %>
+          <%= form.text_field :whatsapp_number, class: "ta-form-input", placeholder: "(11) 99999-9999" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Endereço -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Endereço</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2">
+          <%= form.label :address, "Endereço", class: "ta-form-label" %>
+          <%= form.text_field :address, class: "ta-form-input", placeholder: "Rua, Avenida, etc." %>
+        </div>
+        
+        <div>
+          <%= form.label :address_number, "Número", class: "ta-form-label" %>
+          <%= form.text_field :address_number, class: "ta-form-input", placeholder: "123" %>
+        </div>
+        
+        <div>
+          <%= form.label :address_complement, "Complemento", class: "ta-form-label" %>
+          <%= form.text_field :address_complement, class: "ta-form-input", placeholder: "Apto, Bloco, etc." %>
+        </div>
+        
+        <div>
+          <%= form.label :neighborhood, "Bairro", class: "ta-form-label" %>
+          <%= form.text_field :neighborhood, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :city, "Cidade", class: "ta-form-label" %>
+          <%= form.text_field :city, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :state, "Estado", class: "ta-form-label" %>
+          <%= form.text_field :state, class: "ta-form-input", placeholder: "SP" %>
+        </div>
+        
+        <div>
+          <%= form.label :zip_code, "CEP", class: "ta-form-label" %>
+          <%= form.text_field :zip_code, class: "ta-form-input", placeholder: "00000-000" %>
+        </div>
+        
+        <div>
+          <%= form.label :address_reference, "Referência", class: "ta-form-label" %>
+          <%= form.text_field :address_reference, class: "ta-form-input", placeholder: "Ponto de referência" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsável -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Responsável</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :responsible_name, "Nome do Responsável", class: "ta-form-label" %>
+          <%= form.text_field :responsible_name, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :relationship, "Parentesco", class: "ta-form-label" %>
+          <%= form.select :relationship, 
+              options_for_select([
+                ['Selecione...', ''],
+                ['Pai', 'pai'],
+                ['Mãe', 'mae'],
+                ['Avô', 'avo'],
+                ['Avó', 'ava'],
+                ['Tio(a)', 'tio'],
+                ['Irmão(ã)', 'irmao'],
+                ['Outro', 'outro']
+              ], beneficiary.relationship), 
+              {}, 
+              { class: "ta-form-select" } %>
+        </div>
+        
+        <div>
+          <%= form.label :responsible_phone, "Telefone do Responsável", class: "ta-form-label" %>
+          <%= form.text_field :responsible_phone, class: "ta-form-input", placeholder: "(11) 99999-9999" %>
+        </div>
+        
+        <div>
+          <%= form.label :responsible_cpf, "CPF do Responsável", class: "ta-form-label" %>
+          <%= form.text_field :responsible_cpf, class: "ta-form-input", placeholder: "000.000.000-00" %>
+        </div>
+        
+        <div>
+          <%= form.label :responsible_profession, "Profissão do Responsável", class: "ta-form-label" %>
+          <%= form.text_field :responsible_profession, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :family_income, "Renda Familiar", class: "ta-form-label" %>
+          <%= form.number_field :family_income, class: "ta-form-input", step: 0.01, placeholder: "0.00" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados Escolares -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Dados Escolares</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="space-y-4">
+        <div>
+          <%= form.label :attends_school, class: "flex items-center gap-2" do %>
+            <%= form.check_box :attends_school, class: "ta-form-checkbox" %>
+            <span class="ta-form-label">Frequenta escola?</span>
+          <% end %>
+        </div>
+        
+        <div id="school-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="<%= 'display: none;' unless beneficiary.attends_school? %>">
+          <div>
+            <%= form.label :school_name, "Nome da Escola", class: "ta-form-label" %>
+            <%= form.text_field :school_name, class: "ta-form-input", placeholder: "Nome da escola" %>
+          </div>
+          <div>
+            <%= form.label :school_period, "Período", class: "ta-form-label" %>
+            <%= form.select :school_period, 
+                options_for_select([
+                  ['Selecione...', ''],
+                  ['Manhã', 'manha'],
+                  ['Tarde', 'tarde'],
+                  ['Integral', 'integral']
+                ], beneficiary.school_period),
+                {},
+                { class: "ta-form-select" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados de Saúde -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Dados de Saúde</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :health_plan, "Plano de Saúde", class: "ta-form-label" %>
+          <%= form.text_field :health_plan, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :health_card_number, "Número da Carteirinha", class: "ta-form-label" %>
+          <%= form.text_field :health_card_number, class: "ta-form-input" %>
+        </div>
+        
+        <div class="md:col-span-2">
+          <%= form.label :allergies, "Alergias", class: "ta-form-label" %>
+          <%= form.text_area :allergies, class: "ta-form-textarea", rows: 3, placeholder: "Descreva as alergias conhecidas" %>
+        </div>
+        
+        <div class="md:col-span-2">
+          <%= form.label :continuous_medications, "Medicamentos de Uso Contínuo", class: "ta-form-label" %>
+          <%= form.text_area :continuous_medications, class: "ta-form-textarea", rows: 3, placeholder: "Liste os medicamentos de uso contínuo" %>
+        </div>
+        
+        <div class="md:col-span-2">
+          <%= form.label :special_conditions, "Condições Especiais", class: "ta-form-label" %>
+          <%= form.text_area :special_conditions, class: "ta-form-textarea", rows: 3, placeholder: "Descreva condições especiais ou necessidades" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="ta-card">
+    <div class="ta-card-header">
+      <h3 class="ta-card-title">Status</h3>
+    </div>
+    <div class="ta-card-body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :status, "Status", class: "ta-form-label" %>
+          <%= form.select :status, 
+              options_for_select([
+                ['Ativo', 'ativo'],
+                ['Inativo', 'inativo'],
+                ['Suspenso', 'suspenso'],
+                ['Transferido', 'transferido']
+              ], beneficiary.status || 'ativo'), 
+              {}, 
+              { class: "ta-form-select" } %>
+        </div>
+        
+        <div>
+          <%= form.label :treatment_start_date, "Data de Início do Atendimento", class: "ta-form-label" %>
+          <%= form.date_field :treatment_start_date, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :treatment_end_date, "Data de Fim do Atendimento", class: "ta-form-label" %>
+          <%= form.date_field :treatment_end_date, class: "ta-form-input" %>
+        </div>
+        
+        <div>
+          <%= form.label :medical_record_number, "Número do Prontuário", class: "ta-form-label" %>
+          <%= form.text_field :medical_record_number, class: "ta-form-input" %>
+        </div>
+        
+        <div class="md:col-span-2">
+          <%= form.label :inactivation_reason, "Motivo da Inativação", class: "ta-form-label" %>
+          <%= form.text_area :inactivation_reason, class: "ta-form-textarea", rows: 3, placeholder: "Descreva o motivo da inativação (se aplicável)" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="flex justify-end gap-4">
+    <%= link_to admin_beneficiaries_path, class: "ta-btn ta-btn-secondary" do %>
+      Cancelar
+    <% end %>
+    
+    <%= form.submit beneficiary.persisted? ? "Atualizar Beneficiário" : "Criar Beneficiário", 
+        class: "ta-btn ta-btn-primary" %>
+  </div>
+<% end %>
+
+<script>
+  // Toggle school fields
+  document.addEventListener('DOMContentLoaded', function() {
+    const attendsSchoolCheckbox = document.getElementById('beneficiary_attends_school');
+    const schoolFields = document.getElementById('school-fields');
+    
+    if (attendsSchoolCheckbox) {
+      attendsSchoolCheckbox.addEventListener('change', function() {
+        schoolFields.style.display = this.checked ? 'grid' : 'none';
+      });
+    }
+  });
+</script>
