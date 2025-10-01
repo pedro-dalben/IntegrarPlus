@@ -1,0 +1,22 @@
+<% content_for :title, "Editar Anamnese - #{@anamnesis.beneficiary_name}" %>
+
+<div class="ta-content-wrapper">
+  <div class="ta-content-header">
+    <div class="ta-content-header-left">
+      <h1 class="ta-content-title">Editar Anamnese</h1>
+      <p class="ta-content-subtitle"><%= @anamnesis.beneficiary_name %></p>
+    </div>
+    <div class="ta-content-header-right">
+      <%= link_to admin_anamnesis_path(@anamnesis), class: "ta-btn ta-btn-secondary" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Voltar
+      <% end %>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto">
+    <%= render 'form', anamnesis: @anamnesis, beneficiary: @anamnesis.beneficiary %>
+  </div>
+</div>
