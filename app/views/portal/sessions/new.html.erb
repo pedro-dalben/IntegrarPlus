@@ -8,7 +8,11 @@
     </p>
   </div>
 
-    <%= form_with(model: @external_user, as: :external_user, url: portal_new_external_user_session_path, local: true, data: { turbo: false }, class: "space-y-6") do |form| %>
+    <%= form_with(model: @external_user, as: :external_user, url: portal_new_external_user_session_path, local: true, data: { 
+      turbo: false,
+      controller: "disable-autofill",
+      "disable-autofill-is-production-value": Rails.env.production?
+    }, class: "space-y-6") do |form| %>
 
       <div>
         <%= form.label :email, "E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
@@ -22,6 +26,10 @@
         <%= form.label :password, "Senha", class: "block text-sm font-medium text-gray-700 dark:text-gray-300" %>
         <%= form.password_field :password,
             autocomplete: (Rails.env.production? ? "new-password" : "current-password"),
+            data: { 
+              form: "login",
+              "disable-autofill": Rails.env.production?
+            },
             class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500" %>
       </div>
 

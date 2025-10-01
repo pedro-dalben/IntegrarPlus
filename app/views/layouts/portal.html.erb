@@ -19,7 +19,12 @@
     <%= vite_javascript_tag "entrypoints/application" %>
   </head>
 
-  <body class="bg-gray-50 dark:bg-gray-900">
+  <body class="bg-gray-50 dark:bg-gray-900" 
+        data-controller="session-timeout"
+        data-session-timeout-timeout-minutes-value="<%= Rails.env.production? ? 60 : 60 %>"
+        data-session-timeout-warning-minutes-value="0"
+        data-session-timeout-logout-url-value="<%= portal_new_external_user_session_path %>"
+        data-session-timeout-is-production-value="<%= Rails.env.production? %>">
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
 
     <div class="flex h-screen overflow-hidden layout-container">
@@ -97,5 +102,57 @@
       data-sidebar-target="overlay"
       class="fixed inset-0 z-40 bg-gray-900/50 hidden xl:hidden transition-opacity duration-300"
     ></div>
+
+    <!-- Modal de Aviso de Timeout -->
+    <div data-session-timeout-target="warning" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <!-- Backdrop -->
+      <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"></div>
+      
+      <!-- Modal -->
+      <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto transform transition-all dark:bg-gray-800">
+        <!-- Header -->
+        <div class="flex items-center justify-center p-6 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full dark:bg-red-900">
+            <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="p-6 text-center">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4" id="modal-title">
+            Sessão Expirando
+          </h3>
+          
+          <div class="space-y-3">
+            <p class="text-gray-600 dark:text-gray-300">
+              <strong>Você está inativo há muito tempo!</strong>
+            </p>
+            
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 dark:bg-red-900/20 dark:border-red-800">
+              <p class="text-sm text-red-800 dark:text-red-200">
+                Você será deslogado automaticamente em 
+                <span data-session-timeout-target="countdown" class="font-bold text-red-600 dark:text-red-400 text-lg">30</span> 
+                segundos.
+              </p>
+            </div>
+            
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Clique em "Continuar" para manter sua sessão ativa.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="flex justify-center p-6 bg-gray-50 dark:bg-gray-700 rounded-b-2xl">
+          <button type="button" 
+                  data-action="click->session-timeout#extendSession"
+                  class="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+            Continuar
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

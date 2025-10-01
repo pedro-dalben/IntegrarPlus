@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_paper_trail_whodunnit
+  before_action :enforce_user_timeout, if: -> { user_signed_in? }
 
   helper_method :current_professional
 
@@ -41,5 +42,26 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     admin_root_path
+  end
+
+  private
+
+  def enforce_user_timeout
+    return unless session[:user_id]
+
+    last_seen_at = session[:user_last_seen_at]
+    last_seen_at = Time.zone.parse(last_seen_at) if last_seen_at.is_a?(String)
+    last_seen_at = Time.zone.at(last_seen_at) if last_seen_at.is_a?(Numeric)
+    last_seen_at = last_seen_at.in_time_zone if last_seen_at.respond_to?(:in_time_zone)
+
+    timeout_minutes = Rails.env.production? ? 60 : 60
+    if last_seen_at.present? && last_seen_at < timeout_minutes.minutes.ago
+      session[:user_id] = nil
+      session[:user_last_seen_at] = nil
+      redirect_to new_user_session_path,
+                  alert: 'Sua sessão foi encerrada por inatividade.' and return
+    end
+
+    session[:user_last_seen_at] = Time.current.iso8601
   end
 end

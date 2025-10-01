@@ -45,3 +45,9 @@ application.register("agenda-scheduler", AgendaSchedulerController)
 
 import ProfessionalSelectorController from "../../../javascript/controllers/professional_selector_controller"
 application.register("professional-selector", ProfessionalSelectorController)
+
+import SessionTimeoutController from "./session_timeout_controller"
+application.register("session-timeout", SessionTimeoutController)
+
+import DisableAutofillController from "./disable_autofill_controller"
+application.register("disable-autofill", DisableAutofillController)

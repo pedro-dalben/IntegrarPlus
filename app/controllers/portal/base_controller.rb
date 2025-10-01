@@ -4,7 +4,7 @@ module Portal
   class BaseController < ApplicationController
     layout 'portal'
 
-    before_action :enforce_external_user_timeout, if: -> { Rails.env.production? }
+    before_action :enforce_external_user_timeout
     before_action :authenticate_external_user!
     before_action :check_external_user_active
 
@@ -46,7 +46,8 @@ module Portal
       last_seen_at = Time.zone.at(last_seen_at) if last_seen_at.is_a?(Numeric)
       last_seen_at = last_seen_at.in_time_zone if last_seen_at.respond_to?(:in_time_zone)
 
-      if last_seen_at.present? && last_seen_at < 60.minutes.ago
+      timeout_minutes = Rails.env.production? ? 60 : 60
+      if last_seen_at.present? && last_seen_at < timeout_minutes.minutes.ago
         session[:external_user_id] = nil
         session[:external_user_last_seen_at] = nil
         redirect_to portal_new_external_user_session_path,
