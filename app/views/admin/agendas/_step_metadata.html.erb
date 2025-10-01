@@ -1,4 +1,4 @@
-<div class="space-y-6" data-controller="agendas-metadata">
+<div class="space-y-6" data-controller="agendas--metadata">
   <div>
     <h2 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Informações Básicas</h2>
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Configure os metadados básicos da agenda</p>
@@ -10,7 +10,7 @@
       <%= form.text_field :name, 
             placeholder: "Ex: Anamnese - Unidade Centro",
             class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
-            data: { agendas_metadata_target: "nameInput" } %>
+            data: { 'agendas--metadata-target': "nameInput" } %>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Nome único para identificar esta agenda</p>
     </div>
 
@@ -39,9 +39,9 @@
             ], form.object.default_visibility),
             {},
             class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
-            data: { action: "change->agendas-metadata#updateVisibilityInfo" } %>
+            data: { action: "change->agendas--metadata#updateVisibilityInfo" } %>
       
-      <div data-agendas-metadata-target="visibilityInfo" class="ta-alert ta-alert-info mt-2">
+      <div data-agendas--metadata-target="visibilityInfo" class="ta-alert ta-alert-info mt-2">
         <div class="flex">
           <div class="flex-shrink-0">
             <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
@@ -50,7 +50,7 @@
           </div>
           <div class="ml-3">
             <p class="text-sm text-blue-700 dark:text-blue-300">
-              <span data-agendas-metadata-target="visibilityText">Privada: Apenas profissionais vinculados podem ver e agendar</span>
+              <span data-agendas--metadata-target="visibilityText">Privada: Apenas profissionais vinculados podem ver e agendar</span>
             </p>
           </div>
         </div>

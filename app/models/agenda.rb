@@ -190,8 +190,9 @@ class Agenda < ApplicationRecord
     weekdays = working_hours['weekdays'] || []
     return 'Nenhum dia configurado' if weekdays.empty?
 
+    day_names_pt = %w[Domingo Segunda-feira Terça-feira Quarta-feira Quinta-feira Sexta-feira Sábado]
     days = weekdays.map do |day|
-      day_name = Date::DAYNAMES[day['wday']]
+      day_name = day_names_pt[day['wday']]
       periods = day['periods']&.map { |p| "#{p['start']}-#{p['end']}" }&.join(', ')
       "#{day_name}: #{periods}"
     end

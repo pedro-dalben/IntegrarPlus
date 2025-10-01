@@ -32,18 +32,25 @@ export default class extends Controller {
   toggleDay(event) {
     const checkbox = event.target
     const day = parseInt(checkbox.dataset.day)
-    const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas-working-hours-target="periods"]`)
+    const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas--working-hours-target="periods"]`)
     
     if (checkbox.checked) {
-      this.addPeriod(day)
+      this.addPeriodForDay(day)
     } else {
       periodsContainer.innerHTML = ''
       this.removeDayFromWorkingHours(day)
     }
   }
 
-  addPeriod(day) {
-    const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas-working-hours-target="periods"]`)
+  addPeriod(event) {
+    const day = parseInt(event.currentTarget.dataset.day)
+    this.addPeriodForDay(day)
+  }
+
+  addPeriodForDay(day) {
+    const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas--working-hours-target="periods"]`)
+    
+    if (!periodsContainer) return
     
     const periodHtml = `
       <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
@@ -58,7 +65,7 @@ export default class extends Controller {
                value="12:00">
         <button type="button" 
                 class="text-red-600 hover:text-red-800"
-                data-action="click->agendas-working-hours#removePeriod">
+                data-action="click->agendas--working-hours#removePeriod">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -83,7 +90,7 @@ export default class extends Controller {
     }
     
     const sourceDayValue = parseInt(sourceDay.dataset.day)
-    const sourcePeriods = this.element.querySelector(`[data-day="${sourceDayValue}"] [data-agendas-working-hours-target="periods"]`)
+    const sourcePeriods = this.element.querySelector(`[data-day="${sourceDayValue}"] [data-agendas--working-hours-target="periods"]`)
     
     if (sourcePeriods.children.length === 0) {
       alert('O dia selecionado não possui períodos para copiar')
@@ -95,7 +102,7 @@ export default class extends Controller {
     allCheckboxes.forEach(checkbox => {
       if (checkbox.checked && parseInt(checkbox.dataset.day) !== sourceDayValue) {
         const day = parseInt(checkbox.dataset.day)
-        const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas-working-hours-target="periods"]`)
+        const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas--working-hours-target="periods"]`)
         periodsContainer.innerHTML = sourcePeriods.innerHTML
       }
     })
@@ -175,7 +182,7 @@ export default class extends Controller {
         </select>
         <button type="button" 
                 class="text-red-600 hover:text-red-800"
-                data-action="click->agendas-working-hours#removeException">
+                data-action="click->agendas--working-hours#removeException">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -199,7 +206,7 @@ export default class extends Controller {
     for (let wday = 0; wday < 7; wday++) {
       const checkbox = this.element.querySelector(`input[data-day="${wday}"]`)
       if (checkbox && checkbox.checked) {
-        const periodsContainer = this.element.querySelector(`[data-day="${wday}"] [data-agendas-working-hours-target="periods"]`)
+        const periodsContainer = this.element.querySelector(`[data-day="${wday}"] [data-agendas--working-hours-target="periods"]`)
         const periods = []
         
         periodsContainer.querySelectorAll('.flex').forEach(periodDiv => {

@@ -12,9 +12,9 @@
       <% active = (current == step_key) %>
       <div
         class="border-b-2 py-4 px-1 <%= active ? 'border-blue-500' : 'border-transparent' %>"
-        data-agendas-wizard-target="tab"
+        data-agendas--wizard-target="tab"
         data-step="<%= step_key %>"
-        data-action="click->agendas-wizard#goToStep"
+        data-action="click->agendas--wizard#goToStep"
         role="button"
         tabindex="0">
         <span class="text-sm font-medium <%= active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' %>"><%= label %></span>

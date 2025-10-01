@@ -24,3 +24,24 @@ application.register("select-search", SelectSearchController)
 
 import MaskedInputController from "./masked_input_controller"
 application.register("masked-input", MaskedInputController)
+
+import Agendas__MetadataController from "../../../javascript/controllers/agendas/metadata_controller"
+application.register("agendas--metadata", Agendas__MetadataController)
+
+import Agendas__ProfessionalsController from "../../../javascript/controllers/agendas/professionals_controller"
+application.register("agendas--professionals", Agendas__ProfessionalsController)
+
+import Agendas__ReviewController from "../../../javascript/controllers/agendas/review_controller"
+application.register("agendas--review", Agendas__ReviewController)
+
+import Agendas__WizardController from "../../../javascript/controllers/agendas/wizard_controller"
+application.register("agendas--wizard", Agendas__WizardController)
+
+import Agendas__WorkingHoursController from "../../../javascript/controllers/agendas/working_hours_controller"
+application.register("agendas--working-hours", Agendas__WorkingHoursController)
+
+import AgendaSchedulerController from "../../../javascript/controllers/agenda_scheduler_controller"
+application.register("agenda-scheduler", AgendaSchedulerController)
+
+import ProfessionalSelectorController from "../../../javascript/controllers/professional_selector_controller"
+application.register("professional-selector", ProfessionalSelectorController)

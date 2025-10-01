@@ -14,6 +14,7 @@ module Portal
 
       if user&.active? && user.valid_password?(login_params[:password])
         session[:external_user_id] = user.id
+        session[:external_user_last_seen_at] = Time.current.iso8601
         redirect_to portal_root_path, notice: 'Login realizado com sucesso!'
       else
         @external_user = ExternalUser.new(email: login_params[:email])
@@ -24,13 +25,17 @@ module Portal
 
     def destroy
       session[:external_user_id] = nil
+      session[:external_user_last_seen_at] = nil
       redirect_to portal_new_external_user_session_path, notice: 'Logout realizado com sucesso!'
     end
 
     private
 
     def external_user_params
-      params.expect(external_user: %i[email password remember_me])
+      permitted_fields = %i[email password]
+      permitted_fields << :remember_me unless Rails.env.production?
+
+      params.expect(external_user: permitted_fields)
     end
   end
 end

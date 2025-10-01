@@ -1,4 +1,4 @@
-<div class="space-y-6" data-controller="agendas-working-hours">
+<div class="space-y-6" data-controller="agendas--working-hours">
   <div>
     <h2 class="text-lg font-medium text-gray-900 mb-4">Grade de Horários</h2>
     <p class="text-sm text-gray-600 mb-6">Configure os horários de funcionamento e duração dos slots</p>
@@ -17,7 +17,7 @@
                   value: form.object.slot_duration_minutes || 50,
                   min: 1,
                   class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                  data: { action: "change->agendas-working-hours#updatePreview" } %>
+                  data: { action: "change->agendas--working-hours#updatePreview" } %>
           </div>
 
           <div>
@@ -27,11 +27,11 @@
                   value: form.object.buffer_minutes || 10,
                   min: 0,
                   class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                  data: { action: "change->agendas-working-hours#updatePreview" } %>
+                  data: { action: "change->agendas--working-hours#updatePreview" } %>
           </div>
         </div>
 
-        <div data-agendas-working-hours-target="preview" class="ta-alert ta-alert-info mb-6">
+        <div data-agendas--working-hours-target="preview" class="ta-alert ta-alert-info mb-6">
           <div class="flex items-start">
             <svg class="h-5 w-5 text-blue-400 mr-3 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
@@ -39,8 +39,8 @@
             <div class="flex-1">
               <h4 class="text-sm font-medium text-blue-900 mb-2">Como funcionam os horários:</h4>
               <div class="text-sm text-blue-700 space-y-1">
-                <p>• <strong>Duração do atendimento:</strong> <span data-agendas-working-hours-target="duration">50</span> minutos por consulta</p>
-                <p>• <strong>Intervalo entre consultas:</strong> <span data-agendas-working-hours-target="buffer">10</span> minutos para preparação</p>
+                <p>• <strong>Duração do atendimento:</strong> <span data-agendas--working-hours-target="duration">50</span> minutos por consulta</p>
+                <p>• <strong>Intervalo entre consultas:</strong> <span data-agendas--working-hours-target="buffer">10</span> minutos para preparação</p>
                 <p class="text-xs text-blue-600 mt-2">
                   <strong>Exemplo:</strong> Se a agenda começar às 09:00, os horários serão: 09:00-09:50, 10:00-10:50, 11:00-11:50...
                 </p>
@@ -52,13 +52,13 @@
         <h3 class="text-sm font-medium text-gray-900 mb-4">Horários por Dia da Semana</h3>
 
         <div class="space-y-4">
-          <% Date::DAYNAMES.each_with_index do |day_name, wday| %>
+          <% ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'].each_with_index do |day_name, wday| %>
             <div class="border border-gray-200 rounded-lg p-4" data-day="<%= wday %>">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center">
                   <input type="checkbox"
                          class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                         data-action="change->agendas-working-hours#toggleDay"
+                         data-action="change->agendas--working-hours#toggleDay"
                          data-day="<%= wday %>"
                          id="day_<%= wday %>">
                   <label for="day_<%= wday %>" class="ml-2 text-sm font-medium text-gray-900">
@@ -67,13 +67,13 @@
                 </div>
                 <button type="button"
                         class="ta-btn ta-btn-secondary text-sm"
-                        data-action="click->agendas-working-hours#addPeriod"
+                        data-action="click->agendas--working-hours#addPeriod"
                         data-day="<%= wday %>">
                   + Adicionar Período
                 </button>
               </div>
 
-              <div data-agendas-working-hours-target="periods" data-day="<%= wday %>" class="space-y-2">
+              <div data-agendas--working-hours-target="periods" data-day="<%= wday %>" class="space-y-2">
                 <!-- Períodos serão adicionados dinamicamente -->
               </div>
             </div>
@@ -83,12 +83,12 @@
         <div class="mt-4 flex gap-2">
           <button type="button"
                   class="ta-btn ta-btn-secondary"
-                  data-action="click->agendas-working-hours#copyToAllDays">
+                  data-action="click->agendas--working-hours#copyToAllDays">
             Copiar para Todos os Dias
           </button>
           <button type="button"
                   class="ta-btn ta-btn-primary"
-                  data-action="click->agendas-working-hours#generatePreview">
+                  data-action="click->agendas--working-hours#generatePreview">
             Gerar Prévia de Slots
           </button>
         </div>
@@ -111,13 +111,13 @@
         <h3 class="text-sm font-medium text-gray-900 mb-4">Exceções</h3>
         <p class="text-sm text-gray-600 mb-4">Configure datas especiais ou feriados</p>
 
-        <div data-agendas-working-hours-target="exceptions" class="space-y-2">
+        <div data-agendas--working-hours-target="exceptions" class="space-y-2">
           <!-- Exceções serão adicionadas dinamicamente -->
         </div>
 
         <button type="button"
                 class="ta-btn ta-btn-secondary w-full"
-                data-action="click->agendas-working-hours#addException">
+                data-action="click->agendas--working-hours#addException">
           + Adicionar Exceção
         </button>
       </div>
@@ -144,5 +144,5 @@
     </div>
   </div>
 
-  <%= form.hidden_field :working_hours, data: { agendas_working_hours_target: "workingHoursInput" } %>
+  <%= form.hidden_field :working_hours, data: { 'agendas--working-hours-target': "workingHoursInput" } %>
 </div>

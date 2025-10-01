@@ -80,10 +80,11 @@ class AvailabilityConfigurationService
   end
 
   def get_weekly_schedule
+    day_names_pt = %w[Domingo Segunda-feira Terça-feira Quarta-feira Quinta-feira Sexta-feira Sábado]
     (0..6).map do |day_of_week|
-      day_name = Date::DAYNAMES[day_of_week]
-      # Map Date::DAYNAMES index to ProfessionalAvailability enum
-      # Date::DAYNAMES: [Sunday(0), Monday(1), Tuesday(2), Wednesday(3), Thursday(4), Friday(5), Saturday(6)]
+      day_name = day_names_pt[day_of_week]
+      # Map day_of_week index to ProfessionalAvailability enum
+      # Day index: [Sunday(0), Monday(1), Tuesday(2), Wednesday(3), Thursday(4), Friday(5), Saturday(6)]
       # ProfessionalAvailability: [monday(0), tuesday(1), wednesday(2), thursday(3), friday(4), saturday(5), sunday(6)]
       enum_mapping = { 0 => 'sunday', 1 => 'monday', 2 => 'tuesday', 3 => 'wednesday', 4 => 'thursday', 5 => 'friday',
                        6 => 'saturday' }

@@ -1,11 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs"]
+  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs", "selectedProfessionalsContainer"]
 
   connect() {
     this.selectedProfessionals = new Set()
+    this.professionalsData = {}
     this.loadProfessionals()
+    this.updateSelectedProfessionalsList()
   }
 
   search(event) {
@@ -57,7 +59,8 @@ export default class extends Controller {
       this.removeProfessional(professionalId)
     }
     
-    // Notificar o wizard controller sobre a mudança
+    this.updateSelectedProfessionalsList()
+    
     this.notifyWizardController()
   }
 
@@ -74,8 +77,7 @@ export default class extends Controller {
     this.notifyWizardController()
   }
 
-  addProfessional(professionalId) {
-    // Verificar se já existe
+  addProfessional(professionalId, professionalData = null) {
     const existingInput = this.hiddenInputsTarget.querySelector(`input[data-professional-id="${professionalId}"]`)
     
     if (!existingInput) {
@@ -87,6 +89,10 @@ export default class extends Controller {
       
       this.hiddenInputsTarget.appendChild(hiddenInput)
     }
+    
+    if (professionalData) {
+      this.professionalsData[professionalId] = professionalData
+    }
   }
 
   removeProfessional(professionalId) {
@@ -95,6 +101,21 @@ export default class extends Controller {
     if (inputToRemove) {
       inputToRemove.remove()
     }
+    
+    delete this.professionalsData[professionalId]
+  }
+  
+  removeProfessionalFromSelected(event) {
+    const professionalId = event.currentTarget.dataset.professionalId
+    this.removeProfessional(professionalId)
+    this.updateSelectedProfessionalsList()
+    
+    const checkbox = this.professionalListTarget.querySelector(`input[data-professional-id="${professionalId}"]`)
+    if (checkbox) {
+      checkbox.checked = false
+    }
+    
+    this.notifyWizardController()
   }
 
   clearSelection() {
@@ -103,6 +124,10 @@ export default class extends Controller {
 
   renderSearchResults(professionals) {
     if (!this.hasProfessionalListTarget) return
+    
+    professionals.forEach(prof => {
+      this.professionalsData[prof.id] = prof
+    })
     
     if (professionals.length === 0) {
       this.professionalListTarget.innerHTML = `
@@ -137,6 +162,58 @@ export default class extends Controller {
     `).join('')
 
     this.professionalListTarget.innerHTML = resultsHTML
+  }
+  
+  updateSelectedProfessionalsList() {
+    if (!this.hasSelectedProfessionalsContainerTarget) return
+    
+    const selectedIds = Array.from(this.hiddenInputsTarget.querySelectorAll('input[data-professional-id]'))
+      .map(input => input.dataset.professionalId)
+    
+    if (selectedIds.length === 0) {
+      this.selectedProfessionalsContainerTarget.innerHTML = `
+        <div class="text-sm text-gray-500 text-center py-2">
+          Nenhum profissional selecionado
+        </div>
+      `
+      return
+    }
+    
+    const selectedHTML = selectedIds.map(id => {
+      const professional = this.professionalsData[id]
+      if (!professional) return ''
+      
+      return `
+        <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-200 mb-2">
+          <div class="flex items-center space-x-2 flex-1 min-w-0">
+            <div class="flex-shrink-0">
+              <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <span class="text-xs font-medium text-blue-600">${professional.name.charAt(0).toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">
+                ${professional.name}
+              </p>
+              <p class="text-xs text-gray-500 truncate">
+                ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
+              </p>
+            </div>
+          </div>
+          <button 
+            type="button"
+            class="ml-2 text-red-600 hover:text-red-800 flex-shrink-0"
+            data-action="click->professional-selector#removeProfessionalFromSelected"
+            data-professional-id="${id}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      `
+    }).join('')
+    
+    this.selectedProfessionalsContainerTarget.innerHTML = selectedHTML
   }
 
   getCheckboxHTML(professional) {
@@ -216,12 +293,10 @@ export default class extends Controller {
   }
 
   notifyWizardController() {
-    // Encontrar o controller do wizard no elemento pai
-    const wizardElement = this.element.closest('[data-controller*="agendas-wizard"]')
+    const wizardElement = this.element.closest('[data-controller*="agendas--wizard"]')
     if (wizardElement) {
-      const wizardController = this.application.getControllerForElementAndIdentifier(wizardElement, 'agendas-wizard')
+      const wizardController = this.application.getControllerForElementAndIdentifier(wizardElement, 'agendas--wizard')
       if (wizardController) {
-        // Atualizar dados persistentes do wizard
         const selectedProfessionals = this.getSelectedProfessionalIds()
         wizardController.persistentData.professionals = selectedProfessionals
         wizardController.savePersistentData()

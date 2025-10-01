@@ -7,7 +7,6 @@ export default class extends Controller {
   static values = { currentStep: String }
 
   connect() {
-    // Permite inicializar pelo valor vindo do HTML (ex.: edit com ?step=...)
     if (!this.hasCurrentStepValue || !this.currentStepValue) {
       this.currentStepValue = "metadata"
     }
@@ -15,15 +14,14 @@ export default class extends Controller {
     this.updateNavigation()
     this.updateTabs()
     this.initializeDataPersistence()
+    this.professionalsData = {}
   }
 
   initializeDataPersistence() {
-    // Inicializar dados persistentes
     this.persistentData = {
       professionals: []
     }
     
-    // Verificar se há dados salvos no localStorage
     const savedData = localStorage.getItem('agenda_wizard_data')
     if (savedData) {
       try {
@@ -38,15 +36,17 @@ export default class extends Controller {
   }
 
   addProfessional(professionalId) {
-    if (!this.persistentData.professionals.includes(professionalId)) {
-      this.persistentData.professionals.push(professionalId)
+    const idString = professionalId.toString()
+    if (!this.persistentData.professionals.includes(idString)) {
+      this.persistentData.professionals.push(idString)
       this.savePersistentData()
       this.updateHiddenInputs()
     }
   }
 
   removeProfessional(professionalId) {
-    this.persistentData.professionals = this.persistentData.professionals.filter(id => id !== professionalId)
+    const idString = professionalId.toString()
+    this.persistentData.professionals = this.persistentData.professionals.filter(id => id !== idString)
     this.savePersistentData()
     this.updateHiddenInputs()
   }
@@ -97,7 +97,6 @@ export default class extends Controller {
     const currentIndex = steps.indexOf(this.currentStepValue)
     
     if (currentIndex < steps.length - 1) {
-      // Salvar dados da etapa atual antes de avançar
       this.saveCurrentStepData()
       
       this.currentStepValue = steps[currentIndex + 1]
@@ -106,7 +105,6 @@ export default class extends Controller {
       this.updateTabs()
       this.updateStepInput()
       
-      // Atualizar inputs hidden após mudança de etapa
       this.updateHiddenInputs()
     }
   }
@@ -138,10 +136,11 @@ export default class extends Controller {
 
   restoreStepData(stepName) {
     if (stepName === 'professionals') {
-      // Restaurar seleção de profissionais
       this.restoreProfessionalSelection()
-      // Garantir que os inputs hidden sejam criados
       this.updateHiddenInputs()
+      setTimeout(() => {
+        this.updateSelectedProfessionalsList()
+      }, 100)
     }
   }
 
@@ -155,7 +154,6 @@ export default class extends Controller {
     })
   }
 
-  // Métodos para gerenciar busca de profissionais
   searchProfessionals(event) {
     const query = event.target.value.trim()
     
@@ -177,6 +175,7 @@ export default class extends Controller {
     .then(data => {
       this.hideProfessionalLoading()
       this.renderProfessionalResults(data.professionals || [])
+      this.updateSelectedProfessionalsList()
     })
     .catch(error => {
       this.hideProfessionalLoading()
@@ -188,6 +187,10 @@ export default class extends Controller {
     const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
     if (!professionalList) return
     
+    professionals.forEach(prof => {
+      this.professionalsData[prof.id] = prof
+    })
+    
     if (professionals.length === 0) {
       professionalList.innerHTML = `
         <div class="p-4 text-center text-gray-500">
@@ -197,33 +200,37 @@ export default class extends Controller {
       return
     }
 
-    const resultsHTML = professionals.map(professional => `
-      <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="${professional.id}">
-        <div class="flex items-center space-x-3">
-          <div class="flex-shrink-0">
-            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <span class="text-xs font-medium text-gray-600">${professional.name.charAt(0).toUpperCase()}</span>
+    const resultsHTML = professionals.map(professional => {
+      const isChecked = this.persistentData.professionals.includes(professional.id.toString())
+      return `
+        <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="${professional.id}">
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <span class="text-xs font-medium text-gray-600">${professional.name.charAt(0).toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">
+                ${professional.name}
+              </p>
+              <p class="text-xs text-gray-500 truncate">
+                ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
+              </p>
             </div>
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-900 truncate">
-              ${professional.name}
-            </p>
-            <p class="text-xs text-gray-500 truncate">
-              ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
-            </p>
+          <div class="flex items-center space-x-2">
+            <input 
+              type="checkbox" 
+              class="professional-checkbox rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+              data-professional-id="${professional.id}"
+              data-action="change->agendas-wizard#toggleProfessional"
+              ${isChecked ? 'checked' : ''}
+            />
           </div>
         </div>
-        <div class="flex items-center space-x-2">
-          <input 
-            type="checkbox" 
-            class="professional-checkbox rounded border-gray-300 text-brand-600 focus:ring-brand-500"
-            data-professional-id="${professional.id}"
-            data-action="change->agendas-wizard#toggleProfessional"
-          />
-        </div>
-      </div>
-    `).join('')
+      `
+    }).join('')
 
     professionalList.innerHTML = resultsHTML
   }
@@ -236,6 +243,71 @@ export default class extends Controller {
       this.addProfessional(professionalId)
     } else {
       this.removeProfessional(professionalId)
+    }
+    
+    this.updateSelectedProfessionalsList()
+  }
+  
+  updateSelectedProfessionalsList() {
+    const selectedContainer = this.element.querySelector('[data-professional-selector-target="selectedProfessionalsContainer"]')
+    if (!selectedContainer) return
+    
+    const selectedIds = this.persistentData.professionals
+    
+    if (selectedIds.length === 0) {
+      selectedContainer.innerHTML = `
+        <div class="text-sm text-gray-500 text-center py-2">
+          Nenhum profissional selecionado
+        </div>
+      `
+      return
+    }
+    
+    const selectedHTML = selectedIds.map(id => {
+      const professional = this.professionalsData[id]
+      if (!professional) return ''
+      
+      return `
+        <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-200 mb-2">
+          <div class="flex items-center space-x-2 flex-1 min-w-0">
+            <div class="flex-shrink-0">
+              <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <span class="text-xs font-medium text-blue-600">${professional.name.charAt(0).toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">
+                ${professional.name}
+              </p>
+              <p class="text-xs text-gray-500 truncate">
+                ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
+              </p>
+            </div>
+          </div>
+          <button 
+            type="button"
+            class="ml-2 text-red-600 hover:text-red-800 flex-shrink-0"
+            data-action="click->agendas-wizard#removeProfessionalFromSelected"
+            data-professional-id="${id}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      `
+    }).join('')
+    
+    selectedContainer.innerHTML = selectedHTML
+  }
+  
+  removeProfessionalFromSelected(event) {
+    const professionalId = event.currentTarget.dataset.professionalId
+    this.removeProfessional(professionalId)
+    this.updateSelectedProfessionalsList()
+    
+    const checkbox = this.element.querySelector(`input[type="checkbox"][data-professional-id="${professionalId}"]`)
+    if (checkbox) {
+      checkbox.checked = false
     }
   }
 

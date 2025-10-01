@@ -148,7 +148,7 @@
               <% @agenda.working_hours['weekdays'].each do |day| %>
                 <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
                   <span class="text-sm font-medium text-gray-900">
-                    <%= Date::DAYNAMES[day['wday']] %>
+                    <%= ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'][day['wday']] %>
                   </span>
                   <div class="text-sm text-gray-600">
                     <% if day['periods'].present? %>

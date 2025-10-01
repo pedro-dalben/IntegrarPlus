@@ -1,7 +1,7 @@
 <div class="professional-selector-component" data-controller="professional-selector" data-multiple="<%= multiple? %>" data-action="turbo:load->professional-selector#connect">
   <div class="mb-4">
     <label class="ta-label" for="professional-search">
-      <%= multiple? ? "Profissionais" : "Profissional" %>
+      Buscar <%= multiple? ? "Profissionais" : "Profissional" %>
     </label>
     
     <% if searchable? %>
@@ -12,7 +12,7 @@
           class="ta-input"
           placeholder="Digite para buscar profissionais..."
           data-professional-selector-target="searchInput"
-          data-action="input->agendas-wizard#searchProfessionals"
+          data-action="input->agendas--wizard#searchProfessionals"
         />
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
           <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
     <% end %>
   </div>
 
-  <div class="professional-list border border-gray-200 rounded-lg max-h-64 overflow-y-auto" data-professional-selector-target="professionalList">
+  <div class="professional-list border border-gray-200 rounded-lg max-h-64 overflow-y-auto mb-4" data-professional-selector-target="professionalList">
     <% if selected_professionals.any? %>
       <% selected_professionals.each do |professional| %>
         <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="<%= professional.id %>">
@@ -77,6 +77,15 @@
         <% end %>
       </div>
     <% end %>
+  </div>
+
+  <div class="mt-4" data-professional-selector-target="selectedList">
+    <div class="text-sm font-medium text-gray-700 mb-2">Profissionais Selecionados</div>
+    <div class="border border-gray-200 rounded-lg bg-gray-50 p-3 min-h-[80px]" data-professional-selector-target="selectedProfessionalsContainer">
+      <div class="text-sm text-gray-500 text-center py-2">
+        Nenhum profissional selecionado
+      </div>
+    </div>
   </div>
 
   <!-- Hidden inputs para enviar os dados do formulário -->

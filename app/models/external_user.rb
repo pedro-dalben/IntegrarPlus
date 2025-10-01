@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class ExternalUser < ApplicationRecord
-  devise :database_authenticatable,
-         :recoverable, :rememberable, :validatable
+  devise_modules = %i[database_authenticatable recoverable validatable]
+  devise_modules << :rememberable unless Rails.env.production?
+  devise_modules << :timeoutable if Rails.env.production?
+  devise(*devise_modules)
 
   attribute :active, :boolean, default: true
 

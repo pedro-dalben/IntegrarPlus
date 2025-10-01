@@ -3,8 +3,10 @@
 class User < ApplicationRecord
   include DashboardCache
 
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  devise_modules = %i[database_authenticatable registerable recoverable validatable]
+  devise_modules << :rememberable unless Rails.env.production?
+  devise_modules << :timeoutable if Rails.env.production?
+  devise(*devise_modules)
 
   belongs_to :professional
   has_one_attached :avatar

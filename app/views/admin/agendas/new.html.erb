@@ -12,12 +12,12 @@
 
   <div class="space-y-6">
     <!-- Wizard -->
-    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" data-controller="agendas-wizard" data-agendas-wizard-current-step-value="metadata">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" data-controller="agendas--wizard" data-agendas--wizard-current-step-value="metadata">
       <!-- Progress Steps -->
       <%= render 'wizard_tabs', current_step: 'metadata' %>
 
       <div class="p-4 sm:p-6">
-      <%= form_with model: [:admin, @agenda], local: true, data: { action: "submit->agendas-wizard#ensureDataPersistence" }, multipart: true do |form| %>
+      <%= form_with model: [:admin, @agenda], local: true, data: { action: "submit->agendas--wizard#ensureDataPersistence" }, multipart: true do |form| %>
         <% if @agenda.errors.any? %>
           <div class="ta-alert ta-alert-error mb-6">
             <div class="flex">
@@ -42,27 +42,27 @@
           </div>
         <% end %>
 
-        <div data-agendas-wizard-target="step" data-step="metadata">
+        <div data-agendas--wizard-target="step" data-step="metadata">
           <%= render 'step_metadata', form: form %>
         </div>
 
-        <div data-agendas-wizard-target="step" data-step="professionals" class="hidden">
+        <div data-agendas--wizard-target="step" data-step="professionals" class="hidden">
           <%= render 'step_professionals', form: form %>
         </div>
 
-        <div data-agendas-wizard-target="step" data-step="working_hours" class="hidden">
+        <div data-agendas--wizard-target="step" data-step="working_hours" class="hidden">
           <%= render 'step_working_hours', form: form %>
         </div>
 
-        <div data-agendas-wizard-target="step" data-step="review" class="hidden">
+        <div data-agendas--wizard-target="step" data-step="review" class="hidden">
           <%= render 'step_review', form: form %>
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
-          <%= hidden_field_tag :step, 'metadata', data: { agendas_wizard_target: 'currentStepInput' } %>
+          <%= hidden_field_tag :step, 'metadata', data: { 'agendas--wizard-target': 'currentStepInput' } %>
           <button type="button"
-                  data-action="click->agendas-wizard#previousStep"
-                  data-agendas-wizard-target="previousBtn"
+                  data-action="click->agendas--wizard#previousStep"
+                  data-agendas--wizard-target="previousBtn"
                   class="hidden ta-btn ta-btn-secondary">
             Anterior
           </button>
@@ -74,8 +74,8 @@
                   class: "ta-btn ta-btn-secondary" %>
 
             <button type="button"
-                    data-action="click->agendas-wizard#nextStep"
-                    data-agendas-wizard-target="nextBtn"
+                    data-action="click->agendas--wizard#nextStep"
+                    data-agendas--wizard-target="nextBtn"
                     class="ta-btn ta-btn-primary">
               Próximo
             </button>
@@ -83,7 +83,7 @@
             <%= form.submit "Ativar Agenda",
                   name: "commit",
                   value: "Ativar Agenda",
-                  data: { agendas_wizard_target: "activateBtn" },
+                  data: { 'agendas--wizard-target': "activateBtn" },
                   class: "hidden ta-btn ta-btn-success" %>
           </div>
         </div>
