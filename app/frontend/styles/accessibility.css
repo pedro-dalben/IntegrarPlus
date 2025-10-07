@@ -302,6 +302,14 @@ button:focus,
   transition: background-color 0.2s ease-in-out;
 }
 
+aside.sidebar {
+  width: 18rem;
+}
+
+aside.sidebar:hover {
+  width: 18rem;
+}
+
 .sidebar .menu-item:hover {
   background-color: rgba(59, 130, 246, 0.1);
 }

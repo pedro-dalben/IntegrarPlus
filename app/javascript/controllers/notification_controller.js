@@ -139,7 +139,11 @@ export default class extends Controller {
   updateCountDisplay(count) {
     if (this.hasCountTarget) {
       this.countTarget.textContent = count
-      this.countTarget.classList.toggle('d-none', count === 0)
+      if (count === 0) {
+        this.countTarget.style.display = 'none'
+      } else {
+        this.countTarget.style.display = 'flex'
+      }
     }
   }
 

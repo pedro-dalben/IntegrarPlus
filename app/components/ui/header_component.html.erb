@@ -34,10 +34,9 @@
       </div>
 
       <!-- Notifications -->
-      <div data-controller="notification" data-notification-user-id-value="<%= helpers.current_user.id %>" class="relative">
+      <div data-controller="notification" data-notification-user-id-value="<%= helpers.current_user.id %>" class="relative" id="notification-dropdown">
         <button
-          data-action="click->notification#toggleDropdown"
-          data-notification-target="bell"
+          id="notification-dropdown-button"
           class="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors duration-200"
           aria-label="Notificações"
         >
@@ -46,31 +45,150 @@
           </svg>
           <span
             data-notification-target="count"
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center d-none"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-50"
+            style="display: flex;"
           >
-            0
+            3
           </span>
         </button>
 
         <!-- Notifications Dropdown -->
         <div
-          data-notification-target="dropdown"
-          class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700 z-[10001] hidden"
+          id="notification-dropdown-panel"
+          class="absolute right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700 z-[10001] hidden"
+          style="width: 400px;"
         >
+          <!-- Header -->
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Notificações</h3>
-              <%= link_to admin_notifications_path, class: "text-sm text-blue-600 hover:text-blue-800" do %>
-                Ver todas
-              <% end %>
+              <div class="flex items-center gap-2">
+                <button id="mark-all-read" class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                  Marcar todas como lidas
+                </button>
+                <%= link_to admin_notifications_path, class: "text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400" do %>
+                  Ver todas
+                <% end %>
+              </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="mt-3 flex border-b border-gray-200 dark:border-gray-700">
+              <button id="unread-tab" class="notification-tab px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600 dark:text-blue-400 dark:border-blue-400" data-tab="unread">
+                Não Lidas <span id="unread-count" class="ml-1 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
+              </button>
+              <button id="read-tab" class="notification-tab px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300" data-tab="read">
+                Lidas <span id="read-count" class="ml-1 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-400">0</span>
+              </button>
             </div>
           </div>
-          <div class="max-h-96 overflow-y-auto">
-            <div class="p-4 text-center text-gray-500 dark:text-gray-400">
-              <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
-              </svg>
-              <p>Carregando notificações...</p>
+
+          <!-- Notifications List -->
+          <div class="max-h-96 overflow-y-auto" id="notifications-list">
+            <!-- Unread Notifications -->
+            <div id="unread-notifications" class="p-4">
+              <!-- Notificação de Boas-vindas (sempre presente para novos usuários) -->
+              <div class="notification-item flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer" 
+                   data-notification-id="welcome" 
+                   data-notification-path="/admin"
+                   data-notification-status="unread"
+                   data-notification-date="2025-01-07T10:30:00Z">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">Bem-vindo ao Integrar Plus!</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Clique para acessar o dashboard e conhecer o sistema</p>
+                  <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" data-timestamp="2025-01-07T10:30:00Z">07/01/2025 às 10:30</p>
+                </div>
+                <div class="flex-shrink-0 flex items-center gap-2">
+                  <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <button class="notification-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" data-notification-id="welcome">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notificação de Sistema Atualizado -->
+              <div class="notification-item flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer" 
+                   data-notification-id="system-update" 
+                   data-notification-path="/admin/settings"
+                   data-notification-status="unread"
+                   data-notification-date="2025-01-07T09:15:00Z">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">Sistema atualizado</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Nova versão disponível com melhorias. Clique para ver as configurações</p>
+                  <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" data-timestamp="2025-01-07T09:15:00Z">07/01/2025 às 09:15</p>
+                </div>
+                <div class="flex-shrink-0 flex items-center gap-2">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <button class="notification-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" data-notification-id="system-update">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notificação de Lembrete (sem link) -->
+              <div class="notification-item flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer" 
+                   data-notification-id="security-reminder"
+                   data-notification-status="unread"
+                   data-notification-date="2025-01-07T07:45:00Z">
+                <div class="flex-shrink-0">
+                  <div class="w-8 h-8 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">Lembrete importante</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Verifique suas configurações de segurança regularmente</p>
+                  <p class="text-xs text-gray-400 dark:text-gray-500 mt-1" data-timestamp="2025-01-07T07:45:00Z">07/01/2025 às 07:45</p>
+                </div>
+                <div class="flex-shrink-0 flex items-center gap-2">
+                  <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                  <button class="notification-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" data-notification-id="security-reminder">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Read Notifications -->
+            <div id="read-notifications" class="p-4 hidden">
+              <!-- Notificações lidas aparecerão aqui -->
+              <div class="text-center text-gray-500 dark:text-gray-400 py-8">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm">Nenhuma notificação lida</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="p-3 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-center">
+              <%= link_to admin_notifications_path, class: "text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 font-medium" do %>
+                Ver todas as notificações
+              <% end %>
             </div>
           </div>
         </div>
@@ -88,11 +206,9 @@
       </button>
 
       <!-- User menu -->
-      <div data-controller="dropdown" class="relative">
+      <div class="relative" id="user-dropdown">
         <button
-          data-action="click->dropdown#toggle"
-          data-dropdown-target="button"
-          aria-expanded="false"
+          id="user-dropdown-button"
           class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
         >
           <!-- User Avatar -->
@@ -116,15 +232,21 @@
           </div>
 
           <!-- Dropdown Arrow -->
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg 
+            id="user-dropdown-arrow"
+            class="w-4 h-4 text-gray-400 transition-transform duration-200" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
 
         <!-- Dropdown Menu -->
         <div
-          data-dropdown-target="panel"
-          class="absolute w-64 bg-white border border-gray-200 rounded-lg shadow-xl hidden dark:bg-gray-800 dark:border-gray-700 z-[10001] right-0 mt-2 sm:right-0"
+          id="user-dropdown-panel"
+          class="absolute w-64 bg-white border border-gray-200 rounded-lg shadow-xl hidden dark:bg-gray-800 dark:border-gray-700 z-[10001] right-0 mt-2"
         >
           <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <p class="text-sm font-medium text-gray-900 dark:text-white">
@@ -158,3 +280,290 @@
     </div>
   </div>
 </header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdownButton = document.getElementById('user-dropdown-button');
+  const dropdownPanel = document.getElementById('user-dropdown-panel');
+  const dropdownArrow = document.getElementById('user-dropdown-arrow');
+  
+  if (dropdownButton && dropdownPanel && dropdownArrow) {
+    console.log('Dropdown elements found, setting up event listeners');
+    
+    dropdownButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      console.log('Dropdown button clicked');
+      
+      if (dropdownPanel.classList.contains('hidden')) {
+        dropdownPanel.classList.remove('hidden');
+        dropdownArrow.style.transform = 'rotate(180deg)';
+        console.log('Dropdown opened');
+      } else {
+        dropdownPanel.classList.add('hidden');
+        dropdownArrow.style.transform = 'rotate(0deg)';
+        console.log('Dropdown closed');
+      }
+    });
+    
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      if (!dropdownButton.contains(e.target) && !dropdownPanel.contains(e.target)) {
+        dropdownPanel.classList.add('hidden');
+        dropdownArrow.style.transform = 'rotate(0deg)';
+        console.log('Dropdown closed by outside click');
+      }
+    });
+  } else {
+    console.log('Dropdown elements not found');
+  }
+});
+
+        // Notification dropdown controller
+        document.addEventListener('DOMContentLoaded', function() {
+          const notificationButton = document.getElementById('notification-dropdown-button');
+          const notificationPanel = document.getElementById('notification-dropdown-panel');
+
+          if (notificationButton && notificationPanel) {
+            console.log("Notification dropdown elements found, setting up event listeners");
+
+            notificationButton.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              console.log("Notification dropdown button clicked");
+
+              if (notificationPanel.classList.contains('hidden')) {
+                notificationPanel.classList.remove('hidden');
+                console.log("Notification dropdown opened");
+              } else {
+                notificationPanel.classList.add('hidden');
+                console.log("Notification dropdown closed");
+              }
+            });
+
+            // Fechar dropdown ao clicar fora
+            document.addEventListener('click', function(e) {
+              if (!notificationButton.contains(e.target) && !notificationPanel.contains(e.target)) {
+                notificationPanel.classList.add('hidden');
+                console.log("Notification dropdown closed by outside click");
+              }
+            });
+
+            // Funcionalidade das abas
+            const unreadTab = document.getElementById('unread-tab');
+            const readTab = document.getElementById('read-tab');
+            const unreadNotifications = document.getElementById('unread-notifications');
+            const readNotifications = document.getElementById('read-notifications');
+
+            if (unreadTab && readTab && unreadNotifications && readNotifications) {
+              unreadTab.addEventListener('click', function() {
+                switchTab('unread');
+              });
+
+              readTab.addEventListener('click', function() {
+                switchTab('read');
+              });
+            }
+
+            // Botão "Marcar todas como lidas"
+            const markAllReadButton = document.getElementById('mark-all-read');
+            if (markAllReadButton) {
+              markAllReadButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log("Marking all notifications as read");
+
+                // Mover todas as notificações não lidas para lidas
+                const unreadItems = unreadNotifications.querySelectorAll('.notification-item');
+                unreadItems.forEach(item => {
+                  markAsRead(item);
+                });
+
+                // Adicionar feedback visual
+                markAllReadButton.textContent = 'Marcadas como lidas!';
+                markAllReadButton.classList.add('text-green-600');
+
+                setTimeout(() => {
+                  markAllReadButton.textContent = 'Marcar todas como lidas';
+                  markAllReadButton.classList.remove('text-green-600');
+                }, 2000);
+              });
+            }
+
+            // Funcionalidade de clique nas notificações
+            const notificationItems = notificationPanel.querySelectorAll('.notification-item');
+            notificationItems.forEach(item => {
+              item.addEventListener('click', function(e) {
+                // Evitar clique se for no botão de fechar
+                if (e.target.closest('.notification-close')) {
+                  return;
+                }
+
+                const notificationId = this.getAttribute('data-notification-id');
+                const notificationPath = this.getAttribute('data-notification-path');
+                const notificationStatus = this.getAttribute('data-notification-status');
+
+                console.log("Notification clicked:", notificationId, notificationPath, notificationStatus);
+
+                // Marcar como lida se não estiver lida
+                if (notificationStatus === 'unread') {
+                  markAsRead(this);
+                }
+
+                if (notificationPath) {
+                  // Se tem path, navegar para a página
+                  console.log("Navigating to:", notificationPath);
+                  window.location.href = notificationPath;
+                } else {
+                  // Se não tem path, apenas fechar a notificação
+                  console.log("Closing notification:", notificationId);
+                  closeNotification(notificationId);
+                }
+              });
+            });
+
+            // Funcionalidade de fechamento individual
+            const closeButtons = notificationPanel.querySelectorAll('.notification-close');
+            closeButtons.forEach(button => {
+              button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const notificationId = this.getAttribute('data-notification-id');
+                console.log("Close button clicked for notification:", notificationId);
+                closeNotification(notificationId);
+              });
+            });
+
+            // Função para alternar entre abas
+            function switchTab(tab) {
+              if (tab === 'unread') {
+                unreadTab.classList.add('text-blue-600', 'border-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+                unreadTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+                readTab.classList.remove('text-blue-600', 'border-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+                readTab.classList.add('text-gray-500', 'dark:text-gray-400');
+                
+                unreadNotifications.classList.remove('hidden');
+                readNotifications.classList.add('hidden');
+              } else {
+                readTab.classList.add('text-blue-600', 'border-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+                readTab.classList.remove('text-gray-500', 'dark:text-gray-400');
+                unreadTab.classList.remove('text-blue-600', 'border-blue-600', 'dark:text-blue-400', 'dark:border-blue-400');
+                unreadTab.classList.add('text-gray-500', 'dark:text-gray-400');
+                
+                readNotifications.classList.remove('hidden');
+                unreadNotifications.classList.add('hidden');
+              }
+            }
+
+            // Função para marcar notificação como lida
+            function markAsRead(notificationItem) {
+              const notificationId = notificationItem.getAttribute('data-notification-id');
+              
+              // Remover indicador de não lido
+              const unreadIndicator = notificationItem.querySelector('.bg-blue-500, .bg-green-500, .bg-yellow-500');
+              if (unreadIndicator) {
+                unreadIndicator.style.display = 'none';
+              }
+
+              // Atualizar status
+              notificationItem.setAttribute('data-notification-status', 'read');
+              
+              // Mover para seção de lidas
+              const readContainer = document.getElementById('read-notifications');
+              const emptyState = readContainer.querySelector('.text-center');
+              
+              if (emptyState) {
+                emptyState.remove();
+              }
+              
+              // Ordenar por data antes de adicionar
+              const existingReadItems = readContainer.querySelectorAll('.notification-item');
+              const newItemDate = new Date(notificationItem.getAttribute('data-notification-date'));
+              
+              let inserted = false;
+              existingReadItems.forEach(item => {
+                const itemDate = new Date(item.getAttribute('data-notification-date'));
+                if (newItemDate > itemDate && !inserted) {
+                  readContainer.insertBefore(notificationItem, item);
+                  inserted = true;
+                }
+              });
+              
+              if (!inserted) {
+                readContainer.appendChild(notificationItem);
+              }
+
+              // Atualizar contadores
+              updateTabCounts();
+            }
+
+            // Função para fechar notificação individual
+            function closeNotification(notificationId) {
+              const notificationItem = notificationPanel.querySelector(`[data-notification-id="${notificationId}"]`);
+              if (notificationItem) {
+                // Animação de fade out
+                notificationItem.style.transition = 'opacity 0.3s ease';
+                notificationItem.style.opacity = '0';
+                
+                setTimeout(() => {
+                  notificationItem.remove();
+                  updateTabCounts();
+                  
+                  // Se não há mais notificações, fechar o dropdown
+                  const remainingNotifications = notificationPanel.querySelectorAll('.notification-item');
+                  if (remainingNotifications.length === 0) {
+                    notificationPanel.classList.add('hidden');
+                  }
+                }, 300);
+              }
+            }
+
+            // Função para atualizar contadores das abas
+            function updateTabCounts() {
+              const unreadCount = unreadNotifications.querySelectorAll('.notification-item').length;
+              const readCount = readNotifications.querySelectorAll('.notification-item').length;
+              
+              // Atualizar contadores das abas
+              const unreadCountElement = document.getElementById('unread-count');
+              const readCountElement = document.getElementById('read-count');
+              
+              if (unreadCountElement) {
+                unreadCountElement.textContent = unreadCount;
+                if (unreadCount === 0) {
+                  unreadCountElement.classList.add('hidden');
+                } else {
+                  unreadCountElement.classList.remove('hidden');
+                }
+              }
+              
+              if (readCountElement) {
+                readCountElement.textContent = readCount;
+                if (readCount === 0) {
+                  readCountElement.classList.add('hidden');
+                } else {
+                  readCountElement.classList.remove('hidden');
+                }
+              }
+
+              // Atualizar contador principal
+              const countElement = document.querySelector('[data-notification-target="count"]');
+              if (countElement) {
+                if (unreadCount === 0) {
+                  countElement.style.display = 'none';
+                  countElement.textContent = '0';
+                } else {
+                  countElement.style.display = 'flex';
+                  countElement.textContent = unreadCount;
+                }
+              }
+            }
+
+            // Inicializar contadores
+            updateTabCounts();
+          } else {
+            console.log("Notification dropdown elements not found");
+          }
+        });
+</script>

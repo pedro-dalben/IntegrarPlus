@@ -1,10 +1,21 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["menu", "arrow"]
+  static targets = ["panel", "arrow"]
+
+  connect() {
+    console.log("Dropdown controller connected")
+    document.addEventListener("click", this.outside.bind(this))
+  }
+
+  disconnect() {
+    console.log("Dropdown controller disconnected")
+    document.removeEventListener("click", this.outside.bind(this))
+  }
 
   toggle() {
-    if (this.menuTarget.classList.contains("hidden")) {
+    console.log("Dropdown toggle clicked")
+    if (this.panelTarget.classList.contains("hidden")) {
       this.open()
     } else {
       this.close()
@@ -12,16 +23,21 @@ export default class extends Controller {
   }
 
   open() {
-    this.menuTarget.classList.remove("hidden")
-    this.arrowTarget.style.transform = "rotate(180deg)"
+    console.log("Opening dropdown")
+    this.panelTarget.classList.remove("hidden")
+    if (this.hasArrowTarget) {
+      this.arrowTarget.style.transform = "rotate(180deg)"
+    }
   }
 
   close() {
-    this.menuTarget.classList.add("hidden")
-    this.arrowTarget.style.transform = "rotate(0deg)"
+    console.log("Closing dropdown")
+    this.panelTarget.classList.add("hidden")
+    if (this.hasArrowTarget) {
+      this.arrowTarget.style.transform = "rotate(0deg)"
+    }
   }
 
-  // Fechar dropdown quando clicar fora
   outside(event) {
     if (!this.element.contains(event.target)) {
       this.close()
