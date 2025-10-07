@@ -1,0 +1,240 @@
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white"><%= t('admin.notifications.show.title') %></h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1"><%= t('admin.notifications.show.description') %></p>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= link_to admin_notifications_path, 
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <%= t('admin.notifications.show.back') %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Notification Details Card -->
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-start justify-between">
+      <div class="flex items-start gap-4">
+        <!-- Icon -->
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 rounded-lg flex items-center justify-center <%= case @notification.type_color
+            when 'success' then 'bg-green-100 dark:bg-green-900'
+            when 'info' then 'bg-blue-100 dark:bg-blue-900'
+            when 'warning' then 'bg-yellow-100 dark:bg-yellow-900'
+            when 'danger' then 'bg-red-100 dark:bg-red-900'
+            when 'primary' then 'bg-purple-100 dark:bg-purple-900'
+            else 'bg-gray-100 dark:bg-gray-900'
+          end %>">
+            <svg class="w-6 h-6 <%= case @notification.type_color
+              when 'success' then 'text-green-600 dark:text-green-400'
+              when 'info' then 'text-blue-600 dark:text-blue-400'
+              when 'warning' then 'text-yellow-600 dark:text-yellow-400'
+              when 'danger' then 'text-red-600 dark:text-red-400'
+              when 'primary' then 'text-purple-600 dark:text-purple-400'
+              else 'text-gray-600 dark:text-gray-400'
+            end %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <% case @notification.type_icon %>
+              <% when 'calendar' %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              <% when 'clock' %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              <% when 'alert-triangle' %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+              <% when 'trending-down' %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+              <% when 'file-text' %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              <% else %>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
+              <% end %>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Title and Status -->
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+              <%= @notification.title %>
+            </h3>
+            <% unless @notification.read? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                Nova
+              </span>
+            <% end %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= case @notification.status
+              when 'sent' then 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+              when 'pending' then 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+              when 'failed' then 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+              when 'cancelled' then 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+              else 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+            end %>">
+              <%= t("admin.notifications.statuses.#{@notification.status}") %>
+            </span>
+          </div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            <%= t('admin.notifications.show.type') %>: <%= t("admin.notifications.types.#{@notification.type}") %> • <%= t('admin.notifications.show.channel') %>: <%= t("admin.notifications.channels.#{@notification.channel}") %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <% if @notification.read? %>
+          <%= link_to mark_as_unread_admin_notification_path(@notification), 
+              method: :post,
+              data: { turbo_method: :post },
+              class: "inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <%= t('admin.notifications.show.mark_as_unread') %>
+          <% end %>
+        <% else %>
+          <%= link_to mark_as_read_admin_notification_path(@notification), 
+              method: :post,
+              data: { turbo_method: :post },
+              class: "inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" do %>
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <%= t('admin.notifications.show.mark_as_read') %>
+          <% end %>
+        <% end %>
+        
+        <%= link_to admin_notification_path(@notification), 
+            method: :delete, 
+            data: { turbo_method: :delete, confirm: t('admin.notifications.show.remove_confirm') }, 
+            class: "inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 focus:ring-4 focus:ring-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30 dark:focus:ring-red-800" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          <%= t('admin.notifications.show.remove') %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="px-6 py-6">
+    <!-- Message -->
+    <div class="mb-6">
+      <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2"><%= t('admin.notifications.show.message') %></h4>
+      <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+        <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap"><%= @notification.message %></p>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Left Column -->
+      <div class="space-y-4">
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2"><%= t('admin.notifications.show.basic_info') %></h4>
+          <dl class="space-y-2">
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.id') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white font-mono"><%= @notification.id %></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.type') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= t("admin.notifications.types.#{@notification.type}") %></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.channel') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= t("admin.notifications.channels.#{@notification.channel}") %></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.status') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= t("admin.notifications.statuses.#{@notification.status}") %></dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.read') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white">
+                <% if @notification.read? %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                    <%= t('admin.notifications.show.yes') %>
+                  </span>
+                <% else %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+                    <%= t('admin.notifications.show.no') %>
+                  </span>
+                <% end %>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-4">
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2"><%= t('admin.notifications.show.dates_times') %></h4>
+          <dl class="space-y-2">
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.created_at') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @notification.formatted_created_at %></dd>
+            </div>
+            <% if @notification.read_at %>
+              <div class="flex justify-between">
+                <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.read_at') %>:</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @notification.read_at.strftime('%d/%m/%Y às %H:%M') %></dd>
+              </div>
+            <% end %>
+            <% if @notification.scheduled_at %>
+              <div class="flex justify-between">
+                <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.scheduled_at') %>:</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @notification.formatted_scheduled_at %></dd>
+              </div>
+            <% end %>
+            <div class="flex justify-between">
+              <dt class="text-sm text-gray-500 dark:text-gray-400"><%= t('admin.notifications.show.updated_at') %>:</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @notification.updated_at.strftime('%d/%m/%Y às %H:%M') %></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Data -->
+    <% if @notification.respond_to?(:data) && @notification.data.present? %>
+      <div class="mt-6">
+        <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2"><%= t('admin.notifications.show.additional_data') %></h4>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <pre class="text-sm text-gray-700 dark:text-gray-300 overflow-x-auto"><%= JSON.pretty_generate(@notification.data) %></pre>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="mt-6 flex justify-between">
+  <div>
+    <% if @notification.id > 1 %>
+      <%= link_to admin_notification_path(@notification.id - 1), 
+          class: "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" do %>
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        <%= t('admin.notifications.show.previous') %>
+      <% end %>
+    <% end %>
+  </div>
+  
+  <div>
+    <%= link_to admin_notification_path(@notification.id + 1), 
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" do %>
+      <%= t('admin.notifications.show.next') %>
+      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    <% end %>
+  </div>
+</div>

@@ -1,16 +1,16 @@
 class Admin::NotificationsController < Admin::BaseController
-  before_action :set_notification, only: [:show, :mark_as_read, :mark_as_unread, :destroy]
+  before_action :set_notification, only: %i[show mark_as_read mark_as_unread destroy]
   before_action :authorize_notification
 
   def index
     @notifications = current_user.notifications
-                                .includes(:user)
-                                .order(created_at: :desc)
-    
+                                 .includes(:user)
+                                 .order(created_at: :desc)
+
     @notifications = @notifications.where(read: params[:read]) if params[:read].present?
     @notifications = @notifications.by_type(params[:type]) if params[:type].present?
     @notifications = @notifications.by_channel(params[:channel]) if params[:channel].present?
-    
+
     if params[:search].present?
       search_term = "%#{params[:search]}%"
       @notifications = @notifications.where(
@@ -18,8 +18,12 @@ class Admin::NotificationsController < Admin::BaseController
         search_term, search_term
       )
     end
-    
-    @unread_count = current_user.notifications.unread.count
+
+    # Calcular contadores baseados nas notificações filtradas
+    @unread_count = @notifications.unread.count
+    @read_count = @notifications.read.count
+    @total_count = @notifications.count
+
     @notification_types = Notification.types.keys
     @notification_channels = Notification.channels.keys
   end
@@ -29,7 +33,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def mark_as_read
     @notification.mark_as_read!
-    
+
     respond_to do |format|
       format.html { redirect_to admin_notifications_path, notice: 'Notificação marcada como lida.' }
       format.json { render json: { status: 'success' } }
@@ -38,7 +42,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def mark_as_unread
     @notification.mark_as_unread!
-    
+
     respond_to do |format|
       format.html { redirect_to admin_notifications_path, notice: 'Notificação marcada como não lida.' }
       format.json { render json: { status: 'success' } }
@@ -47,7 +51,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def mark_all_as_read
     current_user.notifications.unread.update_all(read: true, read_at: Time.current)
-    
+
     respond_to do |format|
       format.html { redirect_to admin_notifications_path, notice: 'Todas as notificações foram marcadas como lidas.' }
       format.json { render json: { status: 'success' } }
@@ -56,7 +60,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def destroy
     @notification.destroy!
-    
+
     respond_to do |format|
       format.html { redirect_to admin_notifications_path, notice: 'Notificação removida.' }
       format.json { render json: { status: 'success' } }
@@ -65,7 +69,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def unread_count
     count = current_user.notifications.unread.count
-    
+
     render json: { count: count }
   end
 
@@ -83,7 +87,7 @@ class Admin::NotificationsController < Admin::BaseController
         push_enabled: channels[:push] == '1'
       )
     end
-    
+
     redirect_to preferences_admin_notifications_path, notice: 'Preferências atualizadas com sucesso.'
   end
 
@@ -100,7 +104,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def create_template
     @template = NotificationTemplate.new(template_params)
-    
+
     if @template.save
       redirect_to templates_admin_notifications_path, notice: 'Template criado com sucesso.'
     else
@@ -114,7 +118,7 @@ class Admin::NotificationsController < Admin::BaseController
 
   def update_template
     @template = NotificationTemplate.find(params[:template_id])
-    
+
     if @template.update(template_params)
       redirect_to templates_admin_notifications_path, notice: 'Template atualizado com sucesso.'
     else
@@ -125,7 +129,7 @@ class Admin::NotificationsController < Admin::BaseController
   def destroy_template
     @template = NotificationTemplate.find(params[:template_id])
     @template.destroy!
-    
+
     redirect_to templates_admin_notifications_path, notice: 'Template removido com sucesso.'
   end
 

@@ -1,157 +1,374 @@
-<div class="page-header">
-  <div class="page-title">
-    <h1>Notificações</h1>
-    <p>Gerencie suas notificações do sistema</p>
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Notificações</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Gerencie suas notificações do sistema</p>
   </div>
-  <div class="page-actions">
-    <%= link_to 'Preferências', preferences_admin_notifications_path, class: 'btn btn-outline-primary' %>
-    <%= link_to 'Templates', templates_admin_notifications_path, class: 'btn btn-outline-secondary' %>
+  <div class="flex items-center gap-3">
+    <%= link_to preferences_admin_notifications_path, 
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Preferências
+    <% end %>
+    <%= link_to templates_admin_notifications_path, 
+        class: "inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Templates
+    <% end %>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="card-title mb-0">
-            Notificações 
-            <% if @unread_count > 0 %>
-              <span class="badge bg-danger"><%= @unread_count %></span>
-            <% end %>
-          </h5>
-          <div class="d-flex gap-2">
-            <%= link_to 'Marcar todas como lidas', mark_all_as_read_admin_notifications_path, 
-                        method: :post, class: 'btn btn-sm btn-outline-success' %>
-          </div>
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
+          </svg>
         </div>
       </div>
-      
-      <div class="card-body">
-        <!-- Filtros -->
-        <div class="row mb-4">
-          <div class="col-md-3">
-            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
-              <%= f.select :read, 
-                          options_for_select([
-                            ['Todas', ''],
-                            ['Não lidas', 'false'],
-                            ['Lidas', 'true']
-                          ], params[:read]), 
-                          {}, 
-                          { class: 'form-select' } %>
-            <% end %>
-          </div>
-          <div class="col-md-3">
-            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
-              <%= f.select :type, 
-                          options_for_select([
-                            ['Todos os tipos', ''],
-                            *@notification_types.map { |type| [type.humanize, type] }
-                          ], params[:type]), 
-                          {}, 
-                          { class: 'form-select' } %>
-            <% end %>
-          </div>
-          <div class="col-md-3">
-            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
-              <%= f.select :channel, 
-                          options_for_select([
-                            ['Todos os canais', ''],
-                            *@notification_channels.map { |channel| [channel.humanize, channel] }
-                          ], params[:channel]), 
-                          {}, 
-                          { class: 'form-select' } %>
-            <% end %>
-          </div>
-          <div class="col-md-3">
-            <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'd-flex' do |f| %>
-              <%= f.text_field :search, 
-                              placeholder: 'Buscar notificações...', 
-                              value: params[:search], 
-                              class: 'form-control' %>
-              <%= f.submit 'Buscar', class: 'btn btn-primary ms-2' %>
-            <% end %>
-          </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total</p>
+        <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @total_count %></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div class="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
         </div>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Não Lidas</p>
+        <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @unread_count %></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="ml-4">
+        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Lidas</p>
+        <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @read_count %></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <!-- Lista de notificações -->
-        <% if @notifications.any? %>
-          <div class="list-group">
-            <% @notifications.each do |notification| %>
-              <div class="list-group-item <%= 'list-group-item-light' if notification.read? %>">
-                <div class="d-flex w-100 justify-content-between align-items-start">
-                  <div class="flex-grow-1">
-                    <div class="d-flex align-items-center mb-2">
-                      <i class="feather <%= notification.type_icon %> text-<%= notification.type_color %> me-2"></i>
-                      <h6 class="mb-0 <%= 'text-muted' if notification.read? %>">
-                        <%= notification.title %>
-                        <% unless notification.read? %>
-                          <span class="badge bg-primary ms-2">Nova</span>
-                        <% end %>
-                      </h6>
-                    </div>
-                    <p class="mb-2 <%= 'text-muted' if notification.read? %>">
-                      <%= truncate(notification.message, length: 150) %>
-                    </p>
-                    <div class="d-flex align-items-center text-muted small">
-                      <i class="feather <%= notification.channel_icon %> me-1"></i>
-                      <span class="me-3"><%= notification.channel.humanize %></span>
-                      <i class="feather clock me-1"></i>
-                      <span><%= notification.formatted_created_at %></span>
-                      <% if notification.scheduled_at %>
-                        <span class="ms-3">
-                          <i class="feather calendar me-1"></i>
-                          Agendada: <%= notification.formatted_scheduled_at %>
-                        </span>
-                      <% end %>
-                    </div>
-                  </div>
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                      Ações
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <%= link_to 'Ver detalhes', admin_notification_path(notification), class: 'dropdown-item' %>
-                      </li>
-                      <% if notification.read? %>
-                        <li>
-                          <%= link_to 'Marcar como não lida', mark_as_unread_admin_notification_path(notification), 
-                                      method: :post, class: 'dropdown-item' %>
-                        </li>
-                      <% else %>
-                        <li>
-                          <%= link_to 'Marcar como lida', mark_as_read_admin_notification_path(notification), 
-                                      method: :post, class: 'dropdown-item' %>
-                        </li>
-                      <% end %>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <%= link_to 'Remover', admin_notification_path(notification), 
-                                    method: :delete, 
-                                    confirm: 'Tem certeza?', 
-                                    class: 'dropdown-item text-danger' %>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          </div>
-          
-          <!-- Paginação -->
-          <div class="d-flex justify-content-center mt-4">
-            <!-- Implementar paginação se necessário -->
-          </div>
-        <% else %>
-          <div class="text-center py-5">
-            <i class="feather bell-off text-muted" style="font-size: 3rem;"></i>
-            <h5 class="text-muted mt-3">Nenhuma notificação encontrada</h5>
-            <p class="text-muted">Você não possui notificações com os filtros aplicados.</p>
+<!-- Main Content -->
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Lista de Notificações</h3>
+        <% if @unread_count > 0 %>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+            <%= @unread_count %> não lidas
+          </span>
+        <% end %>
+      </div>
+      <div class="flex items-center gap-3">
+        <%= link_to mark_all_as_read_admin_notifications_path, 
+            method: :post,
+            class: "inline-flex items-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 border border-green-300 rounded-lg hover:bg-green-200 focus:ring-4 focus:ring-green-200 dark:bg-green-800 dark:text-green-300 dark:border-green-600 dark:hover:bg-green-700 dark:hover:border-green-600 dark:focus:ring-green-700" do %>
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Marcar todas como lidas
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Status Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+        <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'w-full' do |f| %>
+          <%= f.select :read, 
+                      options_for_select([
+                        ['Todas', ''],
+                        ['Não lidas', 'false'],
+                        ['Lidas', 'true']
+                      ], params[:read]), 
+                      {}, 
+                      { class: 'w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' } %>
+        <% end %>
+      </div>
+
+      <!-- Type Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipo</label>
+        <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'w-full' do |f| %>
+          <%= f.select :type, 
+                      options_for_select([
+                        ['Todos os tipos', ''],
+                        *@notification_types.map { |type| [type.humanize, type] }
+                      ], params[:type]), 
+                      {}, 
+                      { class: 'w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' } %>
+        <% end %>
+      </div>
+
+      <!-- Channel Filter -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Canal</label>
+        <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'w-full' do |f| %>
+          <%= f.select :channel, 
+                      options_for_select([
+                        ['Todos os canais', ''],
+                        *@notification_channels.map { |channel| [channel.humanize, channel] }
+                      ], params[:channel]), 
+                      {}, 
+                      { class: 'w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' } %>
+        <% end %>
+      </div>
+
+      <!-- Search -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Buscar</label>
+        <%= form_with url: admin_notifications_path, method: :get, local: true, class: 'w-full' do |f| %>
+          <div class="flex gap-2">
+            <%= f.text_field :search, 
+                            placeholder: 'Buscar notificações...', 
+                            value: params[:search], 
+                            class: 'flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' %>
+            <%= f.submit 'Buscar', class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800' %>
           </div>
         <% end %>
       </div>
     </div>
   </div>
+
+  <!-- Notifications List -->
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+    <% if @notifications.any? %>
+      <% @notifications.each do |notification| %>
+        <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 <%= 'bg-gray-50/50 dark:bg-gray-700/30' if notification.read? %>">
+          <div class="flex items-start gap-4">
+            <!-- Icon -->
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center <%= case notification.type_color
+                when 'success' then 'bg-green-100 dark:bg-green-900'
+                when 'info' then 'bg-blue-100 dark:bg-blue-900'
+                when 'warning' then 'bg-yellow-100 dark:bg-yellow-900'
+                when 'danger' then 'bg-red-100 dark:bg-red-900'
+                when 'primary' then 'bg-purple-100 dark:bg-purple-900'
+                else 'bg-gray-100 dark:bg-gray-900'
+              end %>">
+                <svg class="w-5 h-5 <%= case notification.type_color
+                  when 'success' then 'text-green-600 dark:text-green-400'
+                  when 'info' then 'text-blue-600 dark:text-blue-400'
+                  when 'warning' then 'text-yellow-600 dark:text-yellow-400'
+                  when 'danger' then 'text-red-600 dark:text-red-400'
+                  when 'primary' then 'text-purple-600 dark:text-purple-400'
+                  else 'text-gray-600 dark:text-gray-400'
+                end %>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <% case notification.type_icon %>
+                  <% when 'calendar' %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  <% when 'clock' %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  <% when 'alert-triangle' %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                  <% when 'trending-down' %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+                  <% when 'file-text' %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  <% else %>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
+                  <% end %>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white <%= 'text-gray-500 dark:text-gray-400' if notification.read? %>">
+                      <%= notification.title %>
+                    </h4>
+                    <% unless notification.read? %>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                        Nova
+                      </span>
+                    <% end %>
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 <%= 'text-gray-500 dark:text-gray-500' if notification.read? %>">
+                    <%= truncate(notification.message, length: 150) %>
+                  </p>
+                  <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <% case notification.channel_icon %>
+                        <% when 'mail' %>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        <% when 'message-square' %>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        <% when 'smartphone' %>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        <% else %>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
+                        <% end %>
+                      </svg>
+                      <span><%= notification.channel.humanize %></span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span><%= notification.formatted_created_at %></span>
+                    </div>
+                    <% if notification.scheduled_at %>
+                      <div class="flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Agendada: <%= notification.formatted_scheduled_at %></span>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex-shrink-0 ml-4">
+                  <div class="relative notification-dropdown" data-notification-id="<%= notification.id %>">
+                    <button class="notification-action-btn inline-flex items-center p-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                    <div class="notification-dropdown-menu absolute right-0 z-10 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 hidden">
+                      <div class="py-1">
+                        <%= link_to admin_notification_path(notification), 
+                            class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                          Ver detalhes
+                        <% end %>
+                        <% if notification.read? %>
+                          <%= link_to mark_as_unread_admin_notification_path(notification), 
+                              method: :post,
+                              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                            Marcar como não lida
+                          <% end %>
+                        <% else %>
+                          <%= link_to mark_as_read_admin_notification_path(notification), 
+                              method: :post,
+                              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" do %>
+                            Marcar como lida
+                          <% end %>
+                        <% end %>
+                        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                        <%= link_to admin_notification_path(notification), 
+                            method: :delete, 
+                            confirm: 'Tem certeza?', 
+                            class: "block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20" do %>
+                          Remover
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-12">
+        <div class="mx-auto w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6z"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Nenhuma notificação encontrada</h3>
+        <p class="text-gray-500 dark:text-gray-400">Você não possui notificações com os filtros aplicados.</p>
+      </div>
+    <% end %>
+  </div>
 </div>
+
+<!-- Pagination (if needed) -->
+<% if @notifications.respond_to?(:current_page) && @notifications.total_pages > 1 %>
+  <div class="mt-6 flex justify-center">
+    <!-- Add pagination component here -->
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Fechar todos os dropdowns por padrão
+  const dropdownMenus = document.querySelectorAll('.notification-dropdown-menu');
+  dropdownMenus.forEach(menu => {
+    menu.classList.add('hidden');
+  });
+
+  // Adicionar event listeners para os botões de ação
+  const actionButtons = document.querySelectorAll('.notification-action-btn');
+  actionButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const dropdown = this.closest('.notification-dropdown');
+      const menu = dropdown.querySelector('.notification-dropdown-menu');
+      
+      // Fechar todos os outros dropdowns
+      dropdownMenus.forEach(otherMenu => {
+        if (otherMenu !== menu) {
+          otherMenu.classList.add('hidden');
+        }
+      });
+      
+      // Toggle do dropdown atual
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    });
+  });
+
+  // Fechar dropdowns ao clicar fora
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.notification-dropdown')) {
+      dropdownMenus.forEach(menu => {
+        menu.classList.add('hidden');
+      });
+    }
+  });
+
+  // Fechar dropdown ao pressionar Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      dropdownMenus.forEach(menu => {
+        menu.classList.add('hidden');
+      });
+    }
+  });
+});
+</script>
