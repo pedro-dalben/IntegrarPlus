@@ -26,61 +26,57 @@ module Ui
         return breadcrumbs
       end
 
-      current_path = '/admin'
-
-      path_parts.each_with_index do |part, index|
-        current_path += "/#{part}"
-
-        if part.match?(/^\d+$/)
-          resource_name = path_parts[index - 1]&.singularize
-          action = path_parts[index + 1] || 'show'
-
+      # Analisar o path para determinar a estrutura
+      if path_parts.length == 1
+        # /admin/resource - página de índice
+        resource_name = path_parts[0].singularize
+        breadcrumbs << {
+          name: get_page_title(resource_name, 'index'),
+          path: nil,
+          active: true
+        }
+      elsif path_parts.length == 2
+        if path_parts[1].match?(/^\d+$/)
+          # /admin/resource/123 - página de visualização
+          resource_name = path_parts[0].singularize
           breadcrumbs << {
             name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
-            path: "/admin/#{path_parts[0..(index - 1)].join('/')}",
+            path: "/admin/#{path_parts[0]}",
             active: false
           }
-
           breadcrumbs << {
-            name: get_page_title(resource_name, action),
+            name: get_page_title(resource_name, 'show'),
             path: nil,
             active: true
           }
-          break
-        elsif %w[new edit].include?(part)
-          resource_name = path_parts[index - 1]&.singularize
-
-          # Adiciona o recurso pai apenas se não for o primeiro item
-          if index.positive?
-            breadcrumbs << {
-              name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
-              path: "/admin/#{path_parts[0..(index - 1)].join('/')}",
-              active: false
-            }
-          end
-
+        elsif %w[new edit].include?(path_parts[1])
+          # /admin/resource/new ou /admin/resource/edit
+          resource_name = path_parts[0].singularize
           breadcrumbs << {
-            name: get_page_title(resource_name, part),
+            name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
+            path: "/admin/#{path_parts[0]}",
+            active: false
+          }
+          breadcrumbs << {
+            name: get_page_title(resource_name, path_parts[1]),
             path: nil,
             active: true
           }
-          break
-        else
-          resource_name = part.singularize
-
-          breadcrumbs << if index == path_parts.length - 1
-                           {
-                             name: get_page_title(resource_name, 'index'),
-                             path: nil,
-                             active: true
-                           }
-                         else
-                           {
-                             name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
-                             path: current_path,
-                             active: false
-                           }
-                         end
+        end
+      elsif path_parts.length == 3
+        if path_parts[1].match?(/^\d+$/) && %w[new edit].include?(path_parts[2])
+          # /admin/resource/123/edit ou /admin/resource/123/new
+          resource_name = path_parts[0].singularize
+          breadcrumbs << {
+            name: t("admin.breadcrumb.#{resource_name}", default: resource_name&.humanize),
+            path: "/admin/#{path_parts[0]}",
+            active: false
+          }
+          breadcrumbs << {
+            name: get_page_title(resource_name, path_parts[2]),
+            path: nil,
+            active: true
+          }
         end
       end
 
