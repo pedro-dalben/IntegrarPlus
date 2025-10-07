@@ -168,7 +168,10 @@ load(Rails.root.join('db/seeds/external_users.rb'))
 load(Rails.root.join('db/seeds/portal_intakes.rb'))
 
 # Criar templates de notificação
-load Rails.root.join('db', 'seeds', 'notification_templates.rb')
+load Rails.root.join('db/seeds/notification_templates.rb')
+
+# Criar notificações de exemplo
+load Rails.root.join('db/seeds/sample_notifications.rb')
 
 puts "\n🎉 Seeds executados com sucesso!"
 puts '📋 Usuário admin disponível:'
