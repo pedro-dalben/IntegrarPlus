@@ -2,6 +2,7 @@
 
 module ApplicationHelper
   include Pagy::Frontend
+  include SecurityHelper
 
   def generate_pagination_series(pagy)
     return [] if pagy.pages <= 1

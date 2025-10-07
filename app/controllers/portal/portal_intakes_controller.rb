@@ -55,7 +55,7 @@ module Portal
     end
 
     def portal_intake_params
-      params.expect(
+      permitted_params = params.expect(
         portal_intake: [
           :beneficiary_name, :plan_name, :card_code,
           :carteira_codigo, :nome, :telefone_responsavel,
@@ -66,6 +66,55 @@ module Portal
           ] }
         ]
       )
+
+      # Sanitizar parâmetros adicionais
+      sanitize_portal_intake_params(permitted_params)
+    end
+
+    def sanitize_portal_intake_params(params)
+      portal_intake = params[:portal_intake]
+      return params unless portal_intake
+
+      # Sanitizar campos de texto
+      text_fields = %w[beneficiary_name plan_name card_code carteira_codigo nome
+                       endereco responsavel convenio]
+
+      text_fields.each do |field|
+        next unless portal_intake[field].present?
+
+        # Remover caracteres perigosos
+        portal_intake[field] = portal_intake[field].gsub(/[<>'"&]/, '')
+      end
+
+      # Sanitizar CPF - manter apenas números e formatação
+      portal_intake[:cpf] = portal_intake[:cpf].gsub(/[^0-9.-]/, '') if portal_intake[:cpf].present?
+
+      # Sanitizar telefone - manter apenas números e formatação
+      if portal_intake[:telefone_responsavel].present?
+        portal_intake[:telefone_responsavel] = portal_intake[:telefone_responsavel].gsub(/[^0-9()\s-]/, '')
+      end
+
+      # Sanitizar encaminhamentos
+      if portal_intake[:portal_intake_referrals_attributes]
+        portal_intake[:portal_intake_referrals_attributes].each do |_key, referral|
+          next unless referral.is_a?(Hash)
+
+          # Sanitizar campos de texto do encaminhamento
+          %w[medico descricao].each do |field|
+            next unless referral[field].present?
+
+            referral[field] = referral[field].gsub(/[<>'"&]/, '')
+          end
+
+          # Sanitizar CID - manter apenas letras, números e ponto
+          referral[:cid] = referral[:cid].gsub(/[^A-Za-z0-9.]/, '').upcase if referral[:cid].present?
+
+          # Sanitizar CRM - manter apenas números
+          referral[:medico_crm] = referral[:medico_crm].gsub(/[^0-9]/, '') if referral[:medico_crm].present?
+        end
+      end
+
+      params
     end
 
     def apply_filters(scope)

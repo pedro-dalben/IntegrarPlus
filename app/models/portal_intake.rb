@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PortalIntake < ApplicationRecord
+  include SecurityValidations
+
   belongs_to :operator, class_name: 'ExternalUser'
   has_many :journey_events, dependent: :destroy
   has_many :portal_intake_referrals, dependent: :destroy
@@ -11,12 +13,16 @@ class PortalIntake < ApplicationRecord
   validates :requested_at, presence: true
   validates :status, presence: true
 
-  # Campos opcionais do ServiceRequest
+  # Campos opcionais do ServiceRequest com validações de segurança
   validates :convenio, length: { maximum: 100 }
   validates :carteira_codigo, length: { maximum: 50 }
   validates :telefone_responsavel, length: { maximum: 20 }
   validates :responsavel, length: { maximum: 100 }
-  validates :cpf, length: { maximum: 14 }
+  validates :cpf, length: { maximum: 14 }, format: {
+    with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/,
+    message: 'deve estar no formato 000.000.000-00',
+    allow_blank: true
+  }
   validates :endereco, length: { maximum: 1000 }
 
   accepts_nested_attributes_for :portal_intake_referrals, allow_destroy: true, reject_if: :all_blank

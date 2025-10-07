@@ -179,7 +179,7 @@
           
           <!-- Dados das agendas para JavaScript -->
           <script type="application/json" data-agenda-scheduler-target="agendasData">
-            <%= @anamnesis_agendas.to_json(include: { professionals: { only: [:id, :name] } }, methods: [:working_hours, :slot_duration_minutes, :buffer_minutes]).html_safe %>
+            <%= sanitize(@anamnesis_agendas.to_json(include: { professionals: { only: [:id, :name] } }, methods: [:working_hours, :slot_duration_minutes, :buffer_minutes])).html_safe %>
           </script>
         <% end %>
       <% else %>
