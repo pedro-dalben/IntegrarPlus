@@ -1,22 +1,16 @@
 <% content_for :title, "Nova Anamnese" %>
 
-<div class="ta-content-wrapper">
-  <div class="ta-content-header">
-    <div class="ta-content-header-left">
-      <h1 class="ta-content-title">Nova Anamnese</h1>
-      <p class="ta-content-subtitle">Preencha os dados da anamnese</p>
-    </div>
-    <div class="ta-content-header-right">
-      <%= link_to admin_anamneses_path, class: "ta-btn ta-btn-secondary" do %>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Voltar
-      <% end %>
-    </div>
-  </div>
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_anamneses_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
 
-  <div class="max-w-4xl mx-auto">
+  <div class="space-y-6">
     <%= render 'form', anamnesis: @anamnesis, beneficiary: @beneficiary %>
   </div>
-</div>
+<% end %>

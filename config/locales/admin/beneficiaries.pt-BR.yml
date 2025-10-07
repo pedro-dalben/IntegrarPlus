@@ -1,0 +1,81 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      beneficiary: "Beneficiário"
+      beneficiaries: "Beneficiários"
+    pages:
+      beneficiary:
+        index:
+          title: "Beneficiários"
+          subtitle: "Gerencie os beneficiários da plataforma"
+        new:
+          title: "Novo Beneficiário"
+          subtitle: "Cadastre um novo beneficiário"
+        edit:
+          title: "Editar Beneficiário"
+          subtitle: "Edite as informações do beneficiário"
+        show:
+          title: "Detalhes do Beneficiário"
+          subtitle: "Visualize as informações do beneficiário"
+    beneficiaries:
+      messages:
+        created: "Beneficiário criado com sucesso."
+        updated: "Beneficiário atualizado com sucesso."
+        deleted: "Beneficiário removido com sucesso."
+        not_found: "Beneficiário não encontrado."
+        cannot_delete_with_documents: "Não é possível remover o beneficiário pois existem documentos associados."
+      buttons:
+        new: "Novo Beneficiário"
+        edit: "Editar Beneficiário"
+        show: "Ver Beneficiário"
+        back: "Voltar"
+        cancel: "Cancelar"
+        save: "Salvar"
+        create: "Criar Beneficiário"
+        update: "Atualizar Beneficiário"
+      fields:
+        name: "Nome Completo"
+        birth_date: "Data de Nascimento"
+        cpf: "CPF"
+        integrar_code: "Código Integrar"
+        phone: "Telefone"
+        secondary_phone: "Telefone Secundário"
+        email: "E-mail"
+        secondary_email: "E-mail Secundário"
+        whatsapp_number: "WhatsApp"
+        address: "Endereço"
+        address_number: "Número"
+        address_complement: "Complemento"
+        neighborhood: "Bairro"
+        city: "Cidade"
+        state: "Estado"
+        zip_code: "CEP"
+        address_reference: "Referência"
+        responsible_name: "Nome do Responsável"
+        relationship: "Parentesco"
+        responsible_phone: "Telefone do Responsável"
+        responsible_cpf: "CPF do Responsável"
+        responsible_profession: "Profissão do Responsável"
+        family_income: "Renda Familiar"
+        attends_school: "Frequenta escola?"
+        school_name: "Nome da Escola"
+        school_period: "Período"
+        health_plan: "Plano de Saúde"
+        health_card_number: "Número da Carteirinha"
+        allergies: "Alergias"
+        continuous_medications: "Medicamentos de Uso Contínuo"
+        special_conditions: "Condições Especiais"
+        status: "Status"
+        treatment_start_date: "Data de Início do Atendimento"
+        treatment_end_date: "Data de Fim do Atendimento"
+        medical_record_number: "Número do Prontuário"
+        inactivation_reason: "Motivo da Inativação"
+      sections:
+        personal_info: "Informações Pessoais"
+        contact_info: "Informações de Contato"
+        address: "Endereço"
+        responsible: "Responsável"
+        school_info: "Dados Escolares"
+        health_info: "Dados de Saúde"
+        status_info: "Status"
+

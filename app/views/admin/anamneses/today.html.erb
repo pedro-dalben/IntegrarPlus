@@ -1,25 +1,21 @@
 <% content_for :title, "Anamneses de Hoje" %>
 
-<div class="ta-content-wrapper">
-  <div class="ta-content-header">
-    <div class="ta-content-header-left">
-      <h1 class="ta-content-title">Anamneses de Hoje</h1>
-      <p class="ta-content-subtitle">Agendamentos de anamnese para <%= Date.current.strftime("%d/%m/%Y") %></p>
-    </div>
-    <div class="ta-content-header-right">
-      <%= link_to admin_anamneses_path, class: "ta-btn ta-btn-secondary" do %>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Voltar para Lista
-      <% end %>
-    </div>
-  </div>
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_anamneses_path, class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar para Lista
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
 
   <!-- Resumo do Dia -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-    <div class="ta-card">
-      <div class="ta-card-body text-center">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]-body text-center">
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
           <%= @anamneses.count %>
         </div>
@@ -27,8 +23,8 @@
       </div>
     </div>
     
-    <div class="ta-card">
-      <div class="ta-card-body text-center">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]-body text-center">
         <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
           <%= @anamneses.select(&:pendente?).count %>
         </div>
@@ -36,8 +32,8 @@
       </div>
     </div>
     
-    <div class="ta-card">
-      <div class="ta-card-body text-center">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]-body text-center">
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
           <%= @anamneses.select(&:em_andamento?).count %>
         </div>
@@ -45,8 +41,8 @@
       </div>
     </div>
     
-    <div class="ta-card">
-      <div class="ta-card-body text-center">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]-body text-center">
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">
           <%= @anamneses.select(&:concluida?).count %>
         </div>
@@ -56,16 +52,16 @@
   </div>
 
   <!-- Lista de Anamneses de Hoje -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Agendamentos de Hoje</h3>
-      <div class="ta-card-header-right">
-        <span class="ta-badge ta-badge-secondary">
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+      <h2 class="text-lg font-medium text-gray-800 dark:text-white">Agendamentos de Hoje</h2>
+      <div class="flex items-center justify-end">
+        <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300">
           <%= @anamneses.count %> anamneses
         </span>
       </div>
     </div>
-    <div class="ta-card-body">
+    <div class="p-4 sm:p-6">
       <% if @anamneses.any? %>
         <div class="space-y-4">
           <% @anamneses.each do |anamnesis| %>
@@ -116,7 +112,7 @@
                 </div>
                 
                 <div class="flex items-center gap-2">
-                  <%= link_to admin_anamnesis_path(anamnesis), class: "ta-btn ta-btn-sm ta-btn-secondary", title: "Ver detalhes" do %>
+                  <%= link_to admin_anamnesis_path(anamnesis), class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]", title: "Ver detalhes" do %>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -124,7 +120,7 @@
                   <% end %>
 
                   <% if anamnesis.pode_ser_editada? && current_user.permit?('anamneses.edit') %>
-                    <%= link_to edit_admin_anamnesis_path(anamnesis), class: "ta-btn ta-btn-sm ta-btn-primary", title: "Editar" do %>
+                    <%= link_to edit_admin_anamnesis_path(anamnesis), class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition", title: "Editar" do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
@@ -134,7 +130,7 @@
                   <% if anamnesis.pode_ser_concluida? && current_user.permit?('anamneses.complete') %>
                     <%= link_to complete_admin_anamnesis_path(anamnesis), 
                         method: :patch,
-                        class: "ta-btn ta-btn-sm ta-btn-success", 
+                        class: "bg-green-600 shadow-theme-xs hover:bg-green-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition", 
                         title: "Concluir anamnese",
                         data: { 
                           confirm: "Tem certeza que deseja concluir esta anamnese?",
@@ -160,7 +156,7 @@
             Não há anamneses agendadas para <%= Date.current.strftime("%d/%m/%Y") %>.
           </p>
           <div class="mt-6">
-            <%= link_to admin_anamneses_path, class: "ta-btn ta-btn-primary" do %>
+            <%= link_to admin_anamneses_path, class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" do %>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>
@@ -171,4 +167,5 @@
       <% end %>
     </div>
   </div>
-</div>
+  </div>
+<% end %>

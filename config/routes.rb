@@ -94,22 +94,23 @@ Rails.application.routes.draw do
       resources :anamneses, except: [:index]
     end
 
-      resources :anamneses, only: %i[index show] do
-        member do
-          patch :complete
-        end
-        collection do
-          get :today
-          get :by_professional
-        end
+    resources :anamneses, only: %i[index show] do
+      member do
+        patch :complete
       end
+      collection do
+        get :today
+        get :by_professional
+        get :professionals
+      end
+    end
 
-      # Busca de escolas
-      resources :schools, only: [] do
-        collection do
-          get :search
-        end
+    # Busca de escolas
+    resources :schools, only: [] do
+      collection do
+        get :search
       end
+    end
 
     resources :agendas do
       member do

@@ -41,7 +41,7 @@ module Admin
     def show
       authorize @beneficiary, policy_class: Admin::BeneficiaryPolicy
       @anamneses = @beneficiary.anamneses.recent
-      @medical_appointments = @beneficiary.medical_appointments.recent
+      # @medical_appointments = @beneficiary.medical_appointments.recent
     end
 
     def new
@@ -107,7 +107,7 @@ module Admin
     end
 
     def perform_local_search
-      scope = Beneficiary.includes(:anamneses, :medical_appointments, :portal_intake)
+      scope = Beneficiary.includes(:anamneses, :portal_intake)
 
       scope = apply_filters(scope)
       scope = scope.ordered

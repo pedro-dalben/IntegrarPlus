@@ -18,7 +18,7 @@ module Ui
     def menu_items
       [
         {
-          title: 'Dashboard',
+          title: t('admin.breadcrumb.dashboard'),
           path: '/admin',
           icon: dashboard_icon,
           active: current_path&.start_with?('/admin') && !current_path&.include?('/admin/'),
@@ -33,11 +33,13 @@ module Ui
       menus = []
 
       # Módulo: Cadastro de Profissionais
-      if user_can_access_any?(['professionals.index', 'groups.manage', 'specialities.index', 'specializations.index', 'contract_types.index'])
+      if user_can_access_any?(['professionals.index', 'groups.manage', 'specialities.index', 'specializations.index',
+                               'contract_types.index'])
         menus << {
           title: 'Cadastro de Profissionais',
           icon: professionals_icon,
-          active: any_active?(['/admin/professionals', '/admin/groups', '/admin/specialities', '/admin/specializations', '/admin/contract_types']),
+          active: any_active?(['/admin/professionals', '/admin/groups', '/admin/specialities',
+                               '/admin/specializations', '/admin/contract_types']),
           type: 'dropdown',
           items: [
             {

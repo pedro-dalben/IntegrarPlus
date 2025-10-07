@@ -2,7 +2,8 @@
 
 module Ui
   class SchoolSearchComponent < ViewComponent::Base
-    def initialize(form:, field_name: :school_name, placeholder: "Digite o nome da escola para buscar...", value: nil, **options)
+    def initialize(form:, field_name: :school_name, placeholder: 'Digite o nome da escola para buscar...', value: nil,
+                   **options)
       @form = form
       @field_name = field_name
       @placeholder = placeholder
@@ -15,7 +16,7 @@ module Ui
     attr_reader :form, :field_name, :placeholder, :value, :options
 
     def search_url
-      Rails.application.routes.url_helpers.admin_schools_search_path
+      Rails.application.routes.url_helpers.search_admin_schools_path
     end
 
     def field_id

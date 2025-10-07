@@ -1,0 +1,100 @@
+pt-BR:
+  admin:
+    breadcrumb:
+      anamnesis: "Anamnese"
+      anamneses: "Anamneses"
+    pages:
+      anamnesis:
+        index:
+          title: "Anamneses"
+          subtitle: "Gerencie as anamneses dos beneficiários"
+        new:
+          title: "Nova Anamnese"
+          subtitle: "Cadastre uma nova anamnese"
+        edit:
+          title: "Editar Anamnese"
+          subtitle: "Edite as informações da anamnese"
+        show:
+          title: "Detalhes da Anamnese"
+          subtitle: "Visualize as informações da anamnese"
+        today:
+          title: "Anamneses de Hoje"
+          subtitle: "Agendamentos de anamnese para hoje"
+    anamneses:
+      messages:
+        created: "Anamnese criada com sucesso."
+        updated: "Anamnese atualizada com sucesso."
+        deleted: "Anamnese removida com sucesso."
+        not_found: "Anamnese não encontrada."
+        cannot_delete_with_documents: "Não é possível remover a anamnese pois existem documentos associados."
+      buttons:
+        new: "Nova Anamnese"
+        edit: "Editar Anamnese"
+        show: "Ver Anamnese"
+        back: "Voltar"
+        back_to_list: "Voltar para Lista"
+        cancel: "Cancelar"
+        save: "Salvar"
+        create: "Criar Anamnese"
+        update: "Atualizar Anamnese"
+        view_beneficiary: "Ver Beneficiário"
+        view_all: "Ver Todas as Anamneses"
+      fields:
+        performed_at: "Data Realizada"
+        professional_id: "Profissional"
+        beneficiary_name: "Nome do Beneficiário"
+        father_name: "Nome do Pai"
+        father_birth_date: "Data de Nascimento"
+        father_education: "Escolaridade"
+        father_profession: "Profissão"
+        mother_name: "Nome da Mãe"
+        mother_birth_date: "Data de Nascimento"
+        mother_education: "Escolaridade"
+        mother_profession: "Profissão"
+        responsible_name: "Nome do Responsável"
+        responsible_birth_date: "Data de Nascimento"
+        responsible_education: "Escolaridade"
+        responsible_profession: "Profissão"
+        attends_school: "Frequenta escola?"
+        school_name: "Nome da Escola"
+        school_period: "Período"
+        referral_reason: "Motivo Descrito no Encaminhamento"
+        injunction: "Liminar"
+        treatment_location: "Local do Atendimento"
+        referral_hours: "Horas do Pacote Encaminhado"
+        diagnosis_completed: "Diagnóstico Concluído"
+        responsible_doctor: "Médico Responsável"
+        previous_treatment: "Já realizou algum tratamento?"
+        continue_external_treatment: "Vai continuar com algum tratamento externo?"
+        preferred_schedule: "Melhor horário para realizar o tratamento"
+        unavailable_schedule: "Horário impossível para realizar o tratamento"
+      sections:
+        basic_info: "Informações Básicas"
+        beneficiary_data: "Dados do Beneficiário"
+        family_data: "Dados da Família"
+        school_data: "Dados Escolares"
+        referral_reason: "Motivo do Encaminhamento"
+        specialties: "Especialidades - Equipe Multi"
+        diagnosis: "Diagnóstico"
+        treatments: "Tratamentos"
+        schedule: "Horários"
+      specialties:
+        fono: "Fonoaudiologia"
+        to: "Terapia Ocupacional"
+        psicopedagogia: "Psicopedagogia"
+        psicomotricidade: "Psicomotricidade"
+        psicologia: "Psicologia"
+      periods:
+        manha: "Manhã"
+        tarde: "Tarde"
+        integral: "Integral"
+      education_levels:
+        analfabeto: "Analfabeto"
+        fundamental_incompleto: "Ensino Fundamental Incompleto"
+        fundamental_completo: "Ensino Fundamental Completo"
+        medio_incompleto: "Ensino Médio Incompleto"
+        medio_completo: "Ensino Médio Completo"
+        superior_incompleto: "Ensino Superior Incompleto"
+        superior_completo: "Ensino Superior Completo"
+        pos_graduacao: "Pós-graduação"
+

@@ -1,33 +1,45 @@
-<%= form_with model: [:admin, anamnesis], local: true, class: "space-y-8" do |form| %>
+<%= form_with model: [:admin, anamnesis], local: true do |form| %>
   <% if anamnesis.errors.any? %>
     <div class="ta-alert ta-alert-error">
-      <div class="ta-alert-content">
-        <h3 class="ta-alert-title">Erro ao salvar anamnese</h3>
-        <ul class="list-disc list-inside space-y-1">
-          <% anamnesis.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium">Erro ao salvar anamnese</h3>
+          <div class="mt-2 text-sm">
+            <ul class="list-disc pl-5 space-y-1">
+              <% anamnesis.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
 
-  <!-- Informações Básicas -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Informações Básicas</h3>
+  <!-- Card Principal -->
+  <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+      <h2 class="text-lg font-medium text-gray-800 dark:text-white">
+        <%= anamnesis.new_record? ? "Nova Anamnese" : "Editar Anamnese" %>
+      </h2>
     </div>
-    <div class="ta-card-body">
+    
+    <div class="p-4 sm:p-6 space-y-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <%= form.label :performed_at, "Data Realizada", class: "ta-form-label" %>
+          <%= form.label :performed_at, "Data Realizada", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.datetime_local_field :performed_at, 
               value: anamnesis.performed_at&.strftime("%Y-%m-%dT%H:%M"),
-              class: "ta-form-input" %>
+              class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
         
         <div>
-          <%= form.label :professional_id, "Profissional", class: "ta-form-label" %>
+          <%= form.label :professional_id, "Profissional", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.select :professional_id, 
               options_from_collection_for_select(
                 User.joins(:professional).where(professionals: { active: true }),
@@ -35,41 +47,41 @@
                 anamnesis.professional_id || current_user.id
               ),
               { prompt: "Selecione o profissional" },
-              { class: "ta-form-select" } %>
+              { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Dados do Beneficiário (Read-only) -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Dados do Beneficiário</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Dados do Beneficiário</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="ta-form-label">Nome</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome</label>
           <p class="text-gray-900 dark:text-gray-100 font-medium"><%= beneficiary.name %></p>
         </div>
         <div>
-          <label class="ta-form-label">Data de Nascimento</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
           <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
         </div>
         <div>
-          <label class="ta-form-label">Idade</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Idade</label>
           <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.age %> anos</p>
         </div>
         <div>
-          <label class="ta-form-label">CPF</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
           <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.cpf %></p>
         </div>
         <div>
-          <label class="ta-form-label">Código Integrar</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código Integrar</label>
           <p class="text-gray-900 dark:text-gray-100 font-mono"><%= beneficiary.integrar_code %></p>
         </div>
         <div>
-          <label class="ta-form-label">Telefone</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
           <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.formatted_phone %></p>
         </div>
       </div>
@@ -77,26 +89,26 @@
   </div>
 
   <!-- Dados da Família -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Dados da Família</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Dados da Família</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-8">
         <!-- Pai -->
         <div>
           <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Pai</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <%= form.label :father_name, "Nome do Pai", class: "ta-form-label" %>
-              <%= form.text_field :father_name, class: "ta-form-input" %>
+              <%= form.label :father_name, "Nome do Pai", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :father_name, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :father_birth_date, "Data de Nascimento", class: "ta-form-label" %>
-              <%= form.date_field :father_birth_date, class: "ta-form-input" %>
+              <%= form.label :father_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.date_field :father_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :father_education, "Escolaridade", class: "ta-form-label" %>
+              <%= form.label :father_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
               <%= form.select :father_education, 
                   options_for_select([
                     ['Selecione...', ''],
@@ -110,11 +122,11 @@
                     ['Pós-graduação', 'pos_graduacao']
                   ], anamnesis.father_education),
                   {},
-                  { class: "ta-form-select" } %>
+                  { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
             </div>
             <div>
-              <%= form.label :father_profession, "Profissão", class: "ta-form-label" %>
-              <%= form.text_field :father_profession, class: "ta-form-input" %>
+              <%= form.label :father_profession, "Profissão", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :father_profession, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
           </div>
         </div>
@@ -124,15 +136,15 @@
           <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Mãe</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <%= form.label :mother_name, "Nome da Mãe", class: "ta-form-label" %>
-              <%= form.text_field :mother_name, class: "ta-form-input" %>
+              <%= form.label :mother_name, "Nome da Mãe", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :mother_name, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :mother_birth_date, "Data de Nascimento", class: "ta-form-label" %>
-              <%= form.date_field :mother_birth_date, class: "ta-form-input" %>
+              <%= form.label :mother_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.date_field :mother_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :mother_education, "Escolaridade", class: "ta-form-label" %>
+              <%= form.label :mother_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
               <%= form.select :mother_education, 
                   options_for_select([
                     ['Selecione...', ''],
@@ -146,11 +158,11 @@
                     ['Pós-graduação', 'pos_graduacao']
                   ], anamnesis.mother_education),
                   {},
-                  { class: "ta-form-select" } %>
+                  { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
             </div>
             <div>
-              <%= form.label :mother_profession, "Profissão", class: "ta-form-label" %>
-              <%= form.text_field :mother_profession, class: "ta-form-input" %>
+              <%= form.label :mother_profession, "Profissão", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :mother_profession, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
           </div>
         </div>
@@ -160,15 +172,15 @@
           <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Responsável</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <%= form.label :responsible_name, "Nome do Responsável", class: "ta-form-label" %>
-              <%= form.text_field :responsible_name, class: "ta-form-input" %>
+              <%= form.label :responsible_name, "Nome do Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :responsible_name, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :responsible_birth_date, "Data de Nascimento", class: "ta-form-label" %>
-              <%= form.date_field :responsible_birth_date, class: "ta-form-input" %>
+              <%= form.label :responsible_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.date_field :responsible_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
-              <%= form.label :responsible_education, "Escolaridade", class: "ta-form-label" %>
+              <%= form.label :responsible_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
               <%= form.select :responsible_education, 
                   options_for_select([
                     ['Selecione...', ''],
@@ -182,11 +194,11 @@
                     ['Pós-graduação', 'pos_graduacao']
                   ], anamnesis.responsible_education),
                   {},
-                  { class: "ta-form-select" } %>
+                  { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
             </div>
             <div>
-              <%= form.label :responsible_profession, "Profissão", class: "ta-form-label" %>
-              <%= form.text_field :responsible_profession, class: "ta-form-input" %>
+              <%= form.label :responsible_profession, "Profissão", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= form.text_field :responsible_profession, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
           </div>
         </div>
@@ -195,22 +207,22 @@
   </div>
 
   <!-- Dados Escolares -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Dados Escolares</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Dados Escolares</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-4">
         <div>
           <%= form.label :attends_school, class: "flex items-center gap-2" do %>
-            <%= form.check_box :attends_school, class: "ta-form-checkbox" %>
-            <span class="ta-form-label">Frequenta escola?</span>
+            <%= form.check_box :attends_school, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta escola?</span>
           <% end %>
         </div>
         
         <div id="school-fields" class="space-y-4" style="<%= 'display: none;' unless anamnesis.attends_school? %>">
           <div>
-            <%= form.label :school_name, "Nome da Escola", class: "ta-form-label" %>
+            <%= form.label :school_name, "Nome da Escola", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= render Ui::SchoolSearchComponent.new(
                   form: form, 
                   field_name: :school_name,
@@ -220,7 +232,7 @@
           </div>
           
           <div>
-            <%= form.label :school_period, "Período", class: "ta-form-label" %>
+            <%= form.label :school_period, "Período", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= form.select :school_period, 
                 options_for_select([
                   ['Selecione...', ''],
@@ -229,7 +241,7 @@
                   ['Integral', 'integral']
                 ], anamnesis.school_period),
                 {},
-                { class: "ta-form-select" } %>
+                { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
           </div>
         </div>
       </div>
@@ -237,14 +249,14 @@
   </div>
 
   <!-- Motivo do Encaminhamento -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Motivo do Encaminhamento</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Motivo do Encaminhamento</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-6">
         <div>
-          <%= form.label :referral_reason, "Motivo Descrito no Encaminhamento", class: "ta-form-label" %>
+          <%= form.label :referral_reason, "Motivo Descrito no Encaminhamento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.select :referral_reason, 
               options_for_select([
                 ['Selecione...', ''],
@@ -253,18 +265,18 @@
                 ['ABA + Equipe Multi', 'aba_equipe_multi']
               ], anamnesis.referral_reason),
               {},
-              { class: "ta-form-select" } %>
+              { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
 
         <div>
           <%= form.label :injunction, class: "flex items-center gap-2" do %>
-            <%= form.check_box :injunction, class: "ta-form-checkbox" %>
-            <span class="ta-form-label">Liminar</span>
+            <%= form.check_box :injunction, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Liminar</span>
           <% end %>
         </div>
 
         <div>
-          <%= form.label :treatment_location, "Local do Atendimento", class: "ta-form-label" %>
+          <%= form.label :treatment_location, "Local do Atendimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.select :treatment_location, 
               options_for_select([
                 ['Selecione...', ''],
@@ -275,27 +287,27 @@
                 ['Domiciliar + Clínica + Escola', 'domiciliar_clinica_escola']
               ], anamnesis.treatment_location),
               {},
-              { class: "ta-form-select" } %>
+              { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
 
         <div>
-          <%= form.label :referral_hours, "Horas do Pacote Encaminhado", class: "ta-form-label" %>
+          <%= form.label :referral_hours, "Horas do Pacote Encaminhado", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.select :referral_hours, 
               options_for_select((5..40).map { |h| ["#{h} horas", h] }, anamnesis.referral_hours),
               { prompt: "Selecione as horas (5-40)" },
-              { class: "ta-form-select" } %>
+              { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Especialidades -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Especialidades - Equipe Multi</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Especialidades - Equipe Multi</h3>
       <p class="text-sm text-gray-600 dark:text-gray-400">Preencha apenas se o motivo for "Equipe Multi" ou "ABA + Equipe Multi"</p>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-4">
         <% specialties = [
           { key: 'fono', label: 'Fonoaudiologia' },
@@ -310,19 +322,19 @@
             <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3"><%= specialty[:label] %></h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="ta-form-label">Quantidade de Sessões</label>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Quantidade de Sessões</label>
                 <div class="flex gap-2">
                   <% (1..5).each do |i| %>
                     <label class="flex items-center gap-1">
                       <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", i, false, 
-                          class: "ta-form-radio", 
+                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
                           name: "anamnesis[specialties][#{specialty[:key]}][sessions]" %>
                       <span class="text-sm"><%= i %></span>
                     </label>
                   <% end %>
                   <label class="flex items-center gap-1">
                     <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", "nao_especificado", false, 
-                        class: "ta-form-radio", 
+                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
                         name: "anamnesis[specialties][#{specialty[:key]}][sessions]" %>
                     <span class="text-sm">Não especificado</span>
                   </label>
@@ -330,19 +342,19 @@
               </div>
               
               <div>
-                <label class="ta-form-label">Quantidade de Horas</label>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Quantidade de Horas</label>
                 <div class="flex gap-2">
                   <% (1..5).each do |i| %>
                     <label class="flex items-center gap-1">
                       <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", i, false, 
-                          class: "ta-form-radio", 
+                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
                           name: "anamnesis[specialties][#{specialty[:key]}][hours]" %>
                       <span class="text-sm"><%= i %></span>
                     </label>
                   <% end %>
                   <label class="flex items-center gap-1">
                     <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", "nao_especificado", false, 
-                        class: "ta-form-radio", 
+                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
                         name: "anamnesis[specialties][#{specialty[:key]}][hours]" %>
                     <span class="text-sm">Não especificado</span>
                   </label>
@@ -356,21 +368,21 @@
   </div>
 
   <!-- Diagnóstico -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Diagnóstico</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Diagnóstico</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-4">
         <div>
           <%= form.label :diagnosis_completed, class: "flex items-center gap-2" do %>
-            <%= form.check_box :diagnosis_completed, class: "ta-form-checkbox" %>
-            <span class="ta-form-label">Diagnóstico Concluído</span>
+            <%= form.check_box :diagnosis_completed, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Diagnóstico Concluído</span>
           <% end %>
         </div>
         
         <div>
-          <%= form.label :responsible_doctor, "Médico Responsável", class: "ta-form-label" %>
+          <%= form.label :responsible_doctor, "Médico Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.select :responsible_doctor, 
               options_for_select([
                 ['Selecione...', ''],
@@ -378,33 +390,33 @@
                 ['Dra. [Nome]', 'Dra. [Nome]']
               ], anamnesis.responsible_doctor),
               {},
-              { class: "ta-form-select" } %>
+              { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Tratamentos -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Tratamentos</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Tratamentos</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="space-y-6">
         <div>
           <%= form.label :previous_treatment, class: "flex items-center gap-2" do %>
-            <%= form.check_box :previous_treatment, class: "ta-form-checkbox" %>
-            <span class="ta-form-label">Já realizou algum tratamento?</span>
+            <%= form.check_box :previous_treatment, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Já realizou algum tratamento?</span>
           <% end %>
         </div>
 
         <div id="previous-treatments" style="<%= 'display: none;' unless anamnesis.previous_treatment? %>">
-          <label class="ta-form-label">Qual tratamento já realizou?</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Qual tratamento já realizou?</label>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
             <% treatments = ['ABA', 'FONO', 'TO', 'PSICOPEDAGOGIA', 'PSICOLOGIA', 'PSICOMOTRICIDADE', 'FISIOTERAPIA', 'EQUOTERAPIA', 'MUSICOTERAPIA'] %>
             <% treatments.each do |treatment| %>
               <label class="flex items-center gap-2">
-                <%= check_box_tag "anamnesis[previous_treatments][]", treatment, false, class: "ta-form-checkbox" %>
+                <%= check_box_tag "anamnesis[previous_treatments][]", treatment, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
                 <span class="text-sm"><%= treatment %></span>
               </label>
             <% end %>
@@ -413,17 +425,17 @@
 
         <div>
           <%= form.label :continue_external_treatment, class: "flex items-center gap-2" do %>
-            <%= form.check_box :continue_external_treatment, class: "ta-form-checkbox" %>
-            <span class="ta-form-label">Vai continuar com algum tratamento externo?</span>
+            <%= form.check_box :continue_external_treatment, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Vai continuar com algum tratamento externo?</span>
           <% end %>
         </div>
 
         <div id="external-treatments" style="<%= 'display: none;' unless anamnesis.continue_external_treatment? %>">
-          <label class="ta-form-label">Qual tratamento vai continuar?</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Qual tratamento vai continuar?</label>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
             <% treatments.each do |treatment| %>
               <label class="flex items-center gap-2">
-                <%= check_box_tag "anamnesis[external_treatments][]", treatment, false, class: "ta-form-checkbox" %>
+                <%= check_box_tag "anamnesis[external_treatments][]", treatment, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
                 <span class="text-sm"><%= treatment %></span>
               </label>
             <% end %>
@@ -434,14 +446,14 @@
   </div>
 
   <!-- Horários -->
-  <div class="ta-card">
-    <div class="ta-card-header">
-      <h3 class="ta-card-title">Horários</h3>
+  <div class="bg-white shadow rounded-lg">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-medium text-gray-900">Horários</h3>
     </div>
-    <div class="ta-card-body">
+    <div class="px-6 py-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label class="ta-form-label">Melhor horário para realizar o tratamento</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Melhor horário para realizar o tratamento</label>
           <div class="space-y-2 mt-2">
             <% preferred_times = [
               ['Início Manhã', 'inicio_manha'],
@@ -452,7 +464,7 @@
             ] %>
             <% preferred_times.each do |time_label, time_value| %>
               <label class="flex items-center gap-2">
-                <%= check_box_tag "anamnesis[preferred_schedule][]", time_value, false, class: "ta-form-checkbox" %>
+                <%= check_box_tag "anamnesis[preferred_schedule][]", time_value, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
                 <span class="text-sm"><%= time_label %></span>
               </label>
             <% end %>
@@ -460,11 +472,11 @@
         </div>
 
         <div>
-          <label class="ta-form-label">Horário impossível para realizar o tratamento</label>
+          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Horário impossível para realizar o tratamento</label>
           <div class="space-y-2 mt-2">
             <% preferred_times.each do |time_label, time_value| %>
               <label class="flex items-center gap-2">
-                <%= check_box_tag "anamnesis[unavailable_schedule][]", time_value, false, class: "ta-form-checkbox" %>
+                <%= check_box_tag "anamnesis[unavailable_schedule][]", time_value, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
                 <span class="text-sm"><%= time_label %></span>
               </label>
             <% end %>
@@ -474,14 +486,14 @@
     </div>
   </div>
 
-  <!-- Botões de Ação -->
-  <div class="flex justify-end gap-4">
-    <%= link_to admin_anamneses_path, class: "ta-btn ta-btn-secondary" do %>
-      Cancelar
-    <% end %>
-    
-    <%= form.submit anamnesis.persisted? ? "Atualizar Anamnese" : "Criar Anamnese", 
-        class: "ta-btn ta-btn-primary" %>
+    <!-- Botões de Ação -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <%= link_to "Cancelar", admin_anamneses_path, 
+          class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
+      <%= form.submit anamnesis.persisted? ? "Atualizar Anamnese" : "Criar Anamnese", 
+          class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
+    </div>
+    </div>
   </div>
 <% end %>
 

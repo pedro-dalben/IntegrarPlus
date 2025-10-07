@@ -128,6 +128,11 @@ module Admin
       # Filtrar por profissional se não tiver permissão para ver todas
       scope = scope.by_professional(current_user.professional) unless current_user.permit?('anamneses.view_all')
 
+      # Por padrão, não mostrar anamneses concluídas a menos que seja especificado
+      unless params[:include_concluidas] == 'true' || params[:status] == 'concluida'
+        scope = scope.where.not(status: 'concluida')
+      end
+
       scope = apply_filters(scope)
       scope.by_date
     end
@@ -137,7 +142,32 @@ module Admin
 
       filters[:status] = params[:status] if params[:status].present?
       filters[:professional_id] = params[:professional_id] if params[:professional_id].present?
-      filters[:data_realizada] = params[:data_realizada] if params[:data_realizada].present?
+      filters[:referral_reason] = params[:referral_reason] if params[:referral_reason].present?
+      filters[:treatment_location] = params[:treatment_location] if params[:treatment_location].present?
+
+      # Aplicar filtro de período para busca
+      if params[:period].present?
+        case params[:period]
+        when 'today'
+          filters[:performed_at] = Date.current.to_s
+        when 'this_week'
+          filters[:performed_at] = "#{Date.current.beginning_of_week}..#{Date.current.end_of_week}"
+        when 'this_month'
+          filters[:performed_at] = "#{Date.current.beginning_of_month}..#{Date.current.end_of_month}"
+        when 'last_7_days'
+          filters[:performed_at] = "#{7.days.ago.to_date}..#{Date.current}"
+        when 'last_30_days'
+          filters[:performed_at] = "#{30.days.ago.to_date}..#{Date.current}"
+        end
+      end
+
+      # Filtro por data personalizada
+      if params[:start_date].present? && params[:end_date].present?
+        filters[:performed_at] = "#{params[:start_date]}..#{params[:end_date]}"
+      end
+
+      # Por padrão, não incluir concluídas na busca
+      filters[:status] = %w[pendente em_andamento] unless params[:include_concluidas] == 'true'
 
       filters
     end
@@ -174,6 +204,16 @@ module Admin
       scope = scope.by_professional(User.find(params[:professional_id])) if params[:professional_id].present?
       scope = scope.by_beneficiary(Beneficiary.find(params[:beneficiary_id])) if params[:beneficiary_id].present?
 
+      # Filtro por motivo de encaminhamento
+      scope = scope.where(referral_reason: params[:referral_reason]) if params[:referral_reason].present?
+
+      # Filtro por local de tratamento
+      scope = scope.where(treatment_location: params[:treatment_location]) if params[:treatment_location].present?
+
+      # Aplicar filtro de período
+      scope = apply_period_filter(scope)
+
+      # Filtro por período personalizado (data inicial e final)
       if params[:start_date].present? && params[:end_date].present?
         begin
           start_date = Date.parse(params[:start_date])
@@ -185,6 +225,23 @@ module Admin
       end
 
       scope
+    end
+
+    def apply_period_filter(scope)
+      case params[:period]
+      when 'today'
+        scope.today
+      when 'this_week'
+        scope.this_week
+      when 'this_month'
+        scope.this_month
+      when 'last_7_days'
+        scope.where(performed_at: 7.days.ago..Time.current)
+      when 'last_30_days'
+        scope.where(performed_at: 30.days.ago..Time.current)
+      else
+        scope
+      end
     end
 
     def anamnesis_params
@@ -202,6 +259,18 @@ module Admin
           beneficiary_id portal_intake_id
         ]
       )
+    end
+
+    def professionals
+      @professionals = if current_user.permit?('anamneses.view_all')
+                         User.professionals.order(:full_name)
+                       else
+                         [current_user.professional].compact
+                       end
+
+      render json: {
+        professionals: @professionals.map { |p| { id: p.id, name: p.full_name } }
+      }
     end
   end
 end

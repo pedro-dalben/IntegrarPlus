@@ -7,8 +7,7 @@ class Beneficiary < ApplicationRecord
   belongs_to :portal_intake, optional: true
   belongs_to :created_by_professional, class_name: 'User', optional: true
   belongs_to :updated_by_professional, class_name: 'User', optional: true
-  has_many :anamneses, dependent: :destroy
-  has_many :medical_appointments, dependent: :destroy
+  has_many :anamneses, class_name: 'Anamnesis', dependent: :destroy
 
   # Enums
   enum :status, {

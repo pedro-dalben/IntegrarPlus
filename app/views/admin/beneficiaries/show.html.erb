@@ -1,61 +1,57 @@
 <% content_for :title, "Beneficiário - #{@beneficiary.name}" %>
 
-<div class="ta-content-wrapper">
-  <div class="ta-content-header">
-    <div class="ta-content-header-left">
-      <h1 class="ta-content-title"><%= @beneficiary.name %></h1>
-      <p class="ta-content-subtitle">Código: <%= @beneficiary.integrar_code %></p>
-    </div>
-    <div class="ta-content-header-right">
-      <%= link_to admin_beneficiaries_path, class: "ta-btn ta-btn-secondary" do %>
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_beneficiaries_path, class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+    
+    <% if current_user.permit?('beneficiaries.edit') %>
+      <%= link_to edit_admin_beneficiary_path(@beneficiary), class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" do %>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
         </svg>
-        Voltar
+        Editar
       <% end %>
-      
-      <% if current_user.permit?('beneficiaries.edit') %>
-        <%= link_to edit_admin_beneficiary_path(@beneficiary), class: "ta-btn ta-btn-primary" do %>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-          </svg>
-          Editar
-        <% end %>
-      <% end %>
-    </div>
-  </div>
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2 space-y-6">
       <!-- Informações Pessoais -->
-      <div class="ta-card">
-        <div class="ta-card-header">
-          <h3 class="ta-card-title">Informações Pessoais</h3>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações Pessoais</h2>
         </div>
-        <div class="ta-card-body">
+        <div class="p-4 sm:p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="ta-form-label">Nome Completo</label>
-              <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.name %></p>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome Completo</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.name %></p>
             </div>
             <div>
-              <label class="ta-form-label">Data de Nascimento</label>
-              <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
             </div>
             <div>
-              <label class="ta-form-label">Idade</label>
-              <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.age %> anos</p>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Idade</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.age %> anos</p>
             </div>
             <div>
-              <label class="ta-form-label">CPF</label>
-              <p class="text-gray-900 dark:text-gray-100 font-mono"><%= @beneficiary.cpf %></p>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono"><%= @beneficiary.cpf %></p>
             </div>
             <div>
-              <label class="ta-form-label">Código Integrar</label>
-              <p class="text-gray-900 dark:text-gray-100 font-mono text-lg font-semibold"><%= @beneficiary.integrar_code %></p>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código Integrar</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono text-lg font-semibold"><%= @beneficiary.integrar_code %></p>
             </div>
             <div>
-              <label class="ta-form-label">Status</label>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Status</label>
               <span class="<%= @beneficiary.status_badge_class %>">
                 <%= @beneficiary.status_label %>
               </span>
@@ -65,44 +61,44 @@
       </div>
 
       <!-- Contato -->
-      <div class="ta-card">
-        <div class="ta-card-header">
-          <h3 class="ta-card-title">Informações de Contato</h3>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações de Contato</h2>
         </div>
-        <div class="ta-card-body">
+        <div class="p-4 sm:p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <% if @beneficiary.phone.present? %>
               <div>
-                <label class="ta-form-label">Telefone</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.formatted_phone %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.formatted_phone %></p>
               </div>
             <% end %>
             
             <% if @beneficiary.secondary_phone.present? %>
               <div>
-                <label class="ta-form-label">Telefone Secundário</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.secondary_phone %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone Secundário</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.secondary_phone %></p>
               </div>
             <% end %>
             
             <% if @beneficiary.email.present? %>
               <div>
-                <label class="ta-form-label">E-mail</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.email %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">E-mail</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.email %></p>
               </div>
             <% end %>
             
             <% if @beneficiary.secondary_email.present? %>
               <div>
-                <label class="ta-form-label">E-mail Secundário</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.secondary_email %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">E-mail Secundário</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.secondary_email %></p>
               </div>
             <% end %>
             
             <% if @beneficiary.whatsapp_number.present? %>
               <div>
-                <label class="ta-form-label">WhatsApp</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.whatsapp_number %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">WhatsApp</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.whatsapp_number %></p>
               </div>
             <% end %>
           </div>
@@ -111,15 +107,15 @@
 
       <!-- Endereço -->
       <% if @beneficiary.address.present? %>
-        <div class="ta-card">
-          <div class="ta-card-header">
-            <h3 class="ta-card-title">Endereço</h3>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-800 dark:text-white">Endereço</h2>
           </div>
-          <div class="ta-card-body">
+          <div class="p-4 sm:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
-                <label class="ta-form-label">Endereço Completo</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.full_address %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Endereço Completo</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.full_address %></p>
               </div>
             </div>
           </div>
@@ -128,44 +124,44 @@
 
       <!-- Responsável -->
       <% if @beneficiary.responsible_name.present? %>
-        <div class="ta-card">
-          <div class="ta-card-header">
-            <h3 class="ta-card-title">Responsável</h3>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-800 dark:text-white">Responsável</h2>
           </div>
-          <div class="ta-card-body">
+          <div class="p-4 sm:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="ta-form-label">Nome do Responsável</label>
-                <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.responsible_name %></p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome do Responsável</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.responsible_name %></p>
               </div>
               <% if @beneficiary.relationship.present? %>
                 <div>
-                  <label class="ta-form-label">Parentesco</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.relationship %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Parentesco</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.relationship %></p>
                 </div>
               <% end %>
               <% if @beneficiary.responsible_phone.present? %>
                 <div>
-                  <label class="ta-form-label">Telefone do Responsável</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.formatted_responsible_phone %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone do Responsável</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.formatted_responsible_phone %></p>
                 </div>
               <% end %>
               <% if @beneficiary.responsible_cpf.present? %>
                 <div>
-                  <label class="ta-form-label">CPF do Responsável</label>
-                  <p class="text-gray-900 dark:text-gray-100 font-mono"><%= @beneficiary.responsible_cpf %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF do Responsável</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono"><%= @beneficiary.responsible_cpf %></p>
                 </div>
               <% end %>
               <% if @beneficiary.responsible_profession.present? %>
                 <div>
-                  <label class="ta-form-label">Profissão do Responsável</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.responsible_profession %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Profissão do Responsável</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.responsible_profession %></p>
                 </div>
               <% end %>
               <% if @beneficiary.family_income.present? %>
                 <div>
-                  <label class="ta-form-label">Renda Familiar</label>
-                  <p class="text-gray-900 dark:text-gray-100">R$ <%= number_with_precision(@beneficiary.family_income, precision: 2, delimiter: '.') %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Renda Familiar</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">R$ <%= number_with_precision(@beneficiary.family_income, precision: 2, delimiter: '.') %></p>
                 </div>
               <% end %>
             </div>
@@ -175,26 +171,26 @@
 
       <!-- Dados Escolares -->
       <% if @beneficiary.attends_school? %>
-        <div class="ta-card">
-          <div class="ta-card-header">
-            <h3 class="ta-card-title">Dados Escolares</h3>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados Escolares</h2>
           </div>
-          <div class="ta-card-body">
+          <div class="p-4 sm:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label class="ta-form-label">Frequenta Escola</label>
-                <p class="text-gray-900 dark:text-gray-100">Sim</p>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta Escola</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">Sim</p>
               </div>
               <% if @beneficiary.school_name.present? %>
                 <div>
-                  <label class="ta-form-label">Nome da Escola</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.school_name %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome da Escola</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.school_name %></p>
                 </div>
               <% end %>
               <% if @beneficiary.school_period.present? %>
                 <div>
-                  <label class="ta-form-label">Período</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.school_period.humanize %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Período</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.school_period.humanize %></p>
                 </div>
               <% end %>
             </div>
@@ -204,40 +200,40 @@
 
       <!-- Dados de Saúde -->
       <% if @beneficiary.health_plan.present? || @beneficiary.health_card_number.present? || @beneficiary.allergies.present? || @beneficiary.continuous_medications.present? || @beneficiary.special_conditions.present? %>
-        <div class="ta-card">
-          <div class="ta-card-header">
-            <h3 class="ta-card-title">Dados de Saúde</h3>
+        <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+          <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+            <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados de Saúde</h2>
           </div>
-          <div class="ta-card-body">
+          <div class="p-4 sm:p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <% if @beneficiary.health_plan.present? %>
                 <div>
-                  <label class="ta-form-label">Plano de Saúde</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.health_plan %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Plano de Saúde</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.health_plan %></p>
                 </div>
               <% end %>
               <% if @beneficiary.health_card_number.present? %>
                 <div>
-                  <label class="ta-form-label">Número da Carteirinha</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.health_card_number %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Número da Carteirinha</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.health_card_number %></p>
                 </div>
               <% end %>
               <% if @beneficiary.allergies.present? %>
                 <div class="md:col-span-2">
-                  <label class="ta-form-label">Alergias</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.allergies %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Alergias</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.allergies %></p>
                 </div>
               <% end %>
               <% if @beneficiary.continuous_medications.present? %>
                 <div class="md:col-span-2">
-                  <label class="ta-form-label">Medicamentos de Uso Contínuo</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.continuous_medications %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Medicamentos de Uso Contínuo</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.continuous_medications %></p>
                 </div>
               <% end %>
               <% if @beneficiary.special_conditions.present? %>
                 <div class="md:col-span-2">
-                  <label class="ta-form-label">Condições Especiais</label>
-                  <p class="text-gray-900 dark:text-gray-100"><%= @beneficiary.special_conditions %></p>
+                  <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Condições Especiais</label>
+                  <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @beneficiary.special_conditions %></p>
                 </div>
               <% end %>
             </div>
@@ -249,23 +245,23 @@
     <!-- Sidebar -->
     <div class="space-y-6">
       <!-- Informações Gerais -->
-      <div class="ta-card">
-        <div class="ta-card-header">
-          <h3 class="ta-card-title">Informações</h3>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações</h2>
         </div>
-        <div class="ta-card-body">
+        <div class="p-4 sm:p-6">
           <div class="space-y-4">
             <div>
-              <label class="ta-form-label">Criado em</label>
-              <p class="text-gray-900 dark:text-gray-100">
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Criado em</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
                 <%= @beneficiary.created_at.strftime("%d/%m/%Y às %H:%M") %>
               </p>
             </div>
             
             <% if @beneficiary.updated_at != @beneficiary.created_at %>
               <div>
-                <label class="ta-form-label">Atualizado em</label>
-                <p class="text-gray-900 dark:text-gray-100">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Atualizado em</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
                   <%= @beneficiary.updated_at.strftime("%d/%m/%Y às %H:%M") %>
                 </p>
               </div>
@@ -273,8 +269,8 @@
 
             <% if @beneficiary.treatment_start_date.present? %>
               <div>
-                <label class="ta-form-label">Início do Atendimento</label>
-                <p class="text-gray-900 dark:text-gray-100">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Início do Atendimento</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
                   <%= @beneficiary.treatment_start_date.strftime("%d/%m/%Y") %>
                 </p>
               </div>
@@ -282,8 +278,8 @@
 
             <% if @beneficiary.treatment_end_date.present? %>
               <div>
-                <label class="ta-form-label">Fim do Atendimento</label>
-                <p class="text-gray-900 dark:text-gray-100">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Fim do Atendimento</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
                   <%= @beneficiary.treatment_end_date.strftime("%d/%m/%Y") %>
                 </p>
               </div>
@@ -293,18 +289,18 @@
       </div>
 
       <!-- Anamneses -->
-      <div class="ta-card">
-        <div class="ta-card-header">
-          <h3 class="ta-card-title">Anamneses</h3>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Anamneses</h2>
         </div>
-        <div class="ta-card-body">
+        <div class="p-4 sm:p-6">
           <% if @beneficiary.anamneses.any? %>
             <div class="space-y-3">
               <% @beneficiary.anamneses.order(created_at: :desc).limit(5).each do |anamnesis| %>
                 <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
                   <div class="flex items-center justify-between">
                     <div>
-                      <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      <p class="text-sm font-medium text-gray-800 dark:text-white">
                         <%= anamnesis.performed_at.strftime("%d/%m/%Y") %>
                       </p>
                       <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -333,14 +329,14 @@
       </div>
 
       <!-- Ações -->
-      <div class="ta-card">
-        <div class="ta-card-header">
-          <h3 class="ta-card-title">Ações</h3>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Ações</h2>
         </div>
-        <div class="ta-card-body">
+        <div class="p-4 sm:p-6">
           <div class="space-y-3">
             <% if current_user.permit?('beneficiaries.edit') %>
-              <%= link_to edit_admin_beneficiary_path(@beneficiary), class: "ta-btn ta-btn-primary w-full" do %>
+              <%= link_to edit_admin_beneficiary_path(@beneficiary), class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition w-full" do %>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
@@ -349,7 +345,7 @@
             <% end %>
 
             <% if current_user.permit?('anamneses.create') %>
-              <%= link_to new_admin_beneficiary_anamnesis_path(@beneficiary), class: "ta-btn ta-btn-success w-full" do %>
+              <%= link_to new_admin_beneficiary_anamnese_path(@beneficiary), class: "bg-green-600 shadow-theme-xs hover:bg-green-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition w-full" do %>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -357,7 +353,7 @@
               <% end %>
             <% end %>
 
-            <%= link_to admin_anamneses_path(beneficiary_id: @beneficiary.id), class: "ta-btn ta-btn-secondary w-full" do %>
+            <%= link_to admin_anamneses_path(beneficiary_id: @beneficiary.id), class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] w-full" do %>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>
@@ -368,4 +364,5 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
+<% end %>

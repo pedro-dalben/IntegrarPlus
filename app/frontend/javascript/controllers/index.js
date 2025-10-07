@@ -51,3 +51,12 @@ application.register("session-timeout", SessionTimeoutController)
 
 import DisableAutofillController from "./disable_autofill_controller"
 application.register("disable-autofill", DisableAutofillController)
+
+import AnamnesesFiltersController from "./anamneses_filters_controller"
+application.register("anamneses-filters", AnamnesesFiltersController)
+
+import AnamnesesFiltersModalController from "./anamneses_filters_modal_controller"
+application.register("anamneses-filters-modal", AnamnesesFiltersModalController)
+
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)
