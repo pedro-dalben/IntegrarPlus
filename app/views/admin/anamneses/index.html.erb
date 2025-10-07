@@ -88,14 +88,3 @@
 
 </div> <!-- Fim do container da Busca Avançada -->
 
-<!-- Modal de Filtros - Renderizado fora de todos os containers para aparecer como overlay -->
-<%= render Ui::ModalComponent.new(
-      id: "anamneses-filters-modal",
-      title: "Filtros Avançados",
-      size: :large
-    ) do %>
-  <%= render Ui::AnamnesesFiltersModalComponent.new(
-        current_user: current_user,
-        params: params
-      ) %>
-<% end %>

@@ -55,8 +55,3 @@ application.register("disable-autofill", DisableAutofillController)
 import AnamnesesFiltersController from "./anamneses_filters_controller"
 application.register("anamneses-filters", AnamnesesFiltersController)
 
-import AnamnesesFiltersModalController from "./anamneses_filters_modal_controller"
-application.register("anamneses-filters-modal", AnamnesesFiltersModalController)
-
-import ModalController from "./modal_controller"
-application.register("modal", ModalController)
