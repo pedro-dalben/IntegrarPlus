@@ -4,12 +4,17 @@ export default class extends Controller {
   static targets = ["preview", "duration", "buffer", "periods", "exceptions", "workingHoursInput"]
 
   connect() {
+    // Carregar dados existentes se disponíveis
+    const existingData = this.loadExistingWorkingHours()
+    
     this.workingHours = {
-      slot_duration: 50,
-      buffer: 10,
-      weekdays: [],
-      exceptions: []
+      slot_duration: existingData.slot_duration || 50,
+      buffer: existingData.buffer || 10,
+      weekdays: existingData.weekdays || [],
+      exceptions: existingData.exceptions || []
     }
+    
+    this.loadExistingSchedule()
     this.updatePreview()
   }
 
@@ -251,5 +256,89 @@ export default class extends Controller {
   removeDayFromWorkingHours(day) {
     this.workingHours.weekdays = this.workingHours.weekdays.filter(d => d.wday !== day)
     this.updateWorkingHoursInput()
+  }
+
+  loadExistingWorkingHours() {
+    if (this.hasWorkingHoursInputTarget && this.workingHoursInputTarget.value) {
+      try {
+        return JSON.parse(this.workingHoursInputTarget.value)
+      } catch (e) {
+        console.warn('Erro ao carregar dados existentes:', e)
+        return {}
+      }
+    }
+    return {}
+  }
+
+  loadExistingSchedule() {
+    // Carregar dias marcados
+    this.workingHours.weekdays.forEach(dayData => {
+      const checkbox = this.element.querySelector(`input[data-day="${dayData.wday}"]`)
+      if (checkbox) {
+        checkbox.checked = true
+        this.loadPeriodsForDay(dayData.wday, dayData.periods)
+      }
+    })
+
+    // Carregar exceções
+    this.workingHours.exceptions.forEach(exception => {
+      this.addExceptionFromData(exception)
+    })
+  }
+
+  loadPeriodsForDay(day, periods) {
+    const periodsContainer = this.element.querySelector(`[data-day="${day}"] [data-agendas--working-hours-target="periods"]`)
+    if (!periodsContainer) return
+
+    periods.forEach(period => {
+      const periodHtml = `
+        <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+          <input type="time" 
+                 class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                 data-period-start
+                 value="${period.start}">
+          <span class="text-sm text-gray-500">até</span>
+          <input type="time" 
+                 class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                 data-period-end
+                 value="${period.end}">
+          <button type="button" 
+                  class="text-red-600 hover:text-red-800"
+                  data-action="click->agendas--working-hours#removePeriod">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      `
+      periodsContainer.insertAdjacentHTML('beforeend', periodHtml)
+    })
+  }
+
+  addExceptionFromData(exception) {
+    const exceptionsContainer = this.exceptionsTarget
+    
+    const exceptionHtml = `
+      <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+        <input type="date" 
+               class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+               data-exception-date
+               value="${exception.date || ''}">
+        <select class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                data-exception-type>
+          <option value="closed" ${exception.closed ? 'selected' : ''}>Fechado</option>
+          <option value="special" ${!exception.closed ? 'selected' : ''}>Horário Especial</option>
+        </select>
+        <button type="button" 
+                class="text-red-600 hover:text-red-800"
+                data-action="click->agendas--working-hours#removeException">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    `
+    
+    exceptionsContainer.insertAdjacentHTML('beforeend', exceptionHtml)
   }
 }
