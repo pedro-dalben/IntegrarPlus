@@ -30,7 +30,7 @@ gem 'solid_queue'
 gem 'sidekiq'
 
 gem 'faraday', '~> 2.13'
-gem 'httparty', '~> 0.23.1'
+gem 'httparty', '~> 0.23.2'
 
 gem 'image_processing', '~> 1.13'
 gem 'paper_trail'
