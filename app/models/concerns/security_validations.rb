@@ -163,11 +163,6 @@ module SecurityValidations
 
     # Verificar se não são todos os dígitos iguais
     errors.add(:telefone_responsavel, 'não pode ter todos os dígitos iguais') if clean_phone.match?(/^(\d)\1{9,10}$/)
-
-    # Verificar se não contém números negativos
-    return unless telefone_responsavel.match?(/-/)
-
-    errors.add(:telefone_responsavel, 'não pode conter números negativos')
   end
 
   # Métodos auxiliares
