@@ -51,7 +51,7 @@ class AppointmentSchedulingService
     # Buscar exceções de disponibilidade através do Professional
     # @professional pode ser User ou Professional, então precisamos acessar corretamente
     professional_record = @professional.is_a?(User) ? @professional.professional : @professional
-    
+
     if professional_record.present?
       availability_exceptions = professional_record.availability_exceptions
                                                    .where(agenda: @agenda)
@@ -80,7 +80,7 @@ class AppointmentSchedulingService
 
     # @professional pode ser User ou Professional
     professional_record = @professional.is_a?(User) ? @professional.professional : @professional
-    
+
     return [] unless professional_record.present?
 
     availabilities = professional_record.professional_availabilities
