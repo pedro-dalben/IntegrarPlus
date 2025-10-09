@@ -31,7 +31,7 @@ class Agenda < ApplicationRecord
     archived: 2
   }
 
-  validates :name, presence: true, length: { maximum: 255 }
+  validates :name, presence: true, length: { maximum: 255 }, unless: :draft?
   validates :service_type, presence: true
   validates :default_visibility, presence: true
   validates :slot_duration_minutes, presence: true, numericality: { greater_than: 0 }
@@ -40,10 +40,11 @@ class Agenda < ApplicationRecord
   validates :working_hours, presence: true
   validates :name,
             uniqueness: { scope: %i[unit_id service_type],
-                          message: 'já existe uma agenda com este nome para esta unidade e tipo de serviço' }
+                          message: 'já existe uma agenda com este nome para esta unidade e tipo de serviço' },
+            if: -> { name.present? }
 
-  validate :validate_working_hours_structure
-  validate :validate_professionals_present
+  validate :validate_working_hours_structure, unless: :draft?
+  validate :validate_professionals_present, unless: :draft?
 
   before_validation :set_default_working_hours, on: :create
   before_save :set_updated_by
