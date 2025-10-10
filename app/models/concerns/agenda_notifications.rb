@@ -14,7 +14,7 @@ module AgendaNotifications
     return unless saved_change_to_working_hours?
 
     professionals.each do |professional|
-      AgendaNotificationMailer.schedule_changed(professional.user, self).deliver_later
+      AgendaNotificationMailer.schedule_changed(professional, self).deliver_later
     end
 
     notify_admins_about_changes
