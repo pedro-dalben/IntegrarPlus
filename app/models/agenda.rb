@@ -152,19 +152,19 @@ class Agenda < ApplicationRecord
   end
 
   private
+
   def normalize_working_hours
     return if working_hours.blank?
 
-    if working_hours.is_a?(String)
-      begin
-        parsed = JSON.parse(working_hours)
-        self.working_hours = parsed if parsed.is_a?(Hash)
-      rescue JSON::ParserError
-        errors.add(:working_hours, 'deve ser um JSON válido') unless draft?
-      end
+    return unless working_hours.is_a?(String)
+
+    begin
+      parsed = JSON.parse(working_hours)
+      self.working_hours = parsed if parsed.is_a?(Hash)
+    rescue JSON::ParserError
+      errors.add(:working_hours, 'deve ser um JSON válido') unless draft?
     end
   end
-
 
   def calculate_total_slots(date_range)
     total = 0
