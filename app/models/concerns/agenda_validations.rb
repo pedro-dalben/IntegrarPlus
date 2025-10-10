@@ -16,6 +16,7 @@ module AgendaValidations
 
   def working_hours_format
     return if working_hours.blank?
+    return unless working_hours.is_a?(Hash)
 
     working_hours['weekdays']&.each do |day_config|
       next if day_config['periods'].blank?
@@ -30,6 +31,7 @@ module AgendaValidations
 
   def no_overlapping_schedules
     return if working_hours.blank?
+    return unless working_hours.is_a?(Hash)
 
     working_hours['weekdays']&.each do |day_config|
       next if day_config['periods'].blank?
@@ -57,6 +59,7 @@ module AgendaValidations
 
   def slot_duration_consistency
     return if working_hours.blank? || slot_duration_minutes.blank?
+    return unless working_hours.is_a?(Hash)
 
     working_hours['weekdays']&.each do |day_config|
       next if day_config['periods'].blank?

@@ -46,6 +46,7 @@ class Agenda < ApplicationRecord
   validate :validate_working_hours_structure, unless: :draft?
   validate :validate_professionals_present, unless: :draft?
 
+  before_validation :normalize_working_hours
   before_validation :set_default_working_hours, on: :create
   before_save :set_updated_by
 
@@ -151,6 +152,19 @@ class Agenda < ApplicationRecord
   end
 
   private
+  def normalize_working_hours
+    return if working_hours.blank?
+
+    if working_hours.is_a?(String)
+      begin
+        parsed = JSON.parse(working_hours)
+        self.working_hours = parsed if parsed.is_a?(Hash)
+      rescue JSON::ParserError
+        errors.add(:working_hours, 'deve ser um JSON válido') unless draft?
+      end
+    end
+  end
+
 
   def calculate_total_slots(date_range)
     total = 0
