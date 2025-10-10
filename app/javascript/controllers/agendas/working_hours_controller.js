@@ -130,6 +130,11 @@ export default class extends Controller {
       const params = new URLSearchParams({
         working_hours: JSON.stringify(this.workingHours)
       })
+
+      const selectedInputs = document.querySelectorAll('input[name="agenda[professional_ids][]"]')
+      selectedInputs.forEach(input => {
+        if (input.value) params.append('professional_ids[]', input.value)
+      })
       
       const response = await fetch(`/admin/agendas/preview_slots?${params}`, {
         method: 'GET',

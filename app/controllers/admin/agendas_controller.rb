@@ -267,15 +267,17 @@ class Admin::AgendasController < Admin::BaseController
     start_date = Date.current
     end_date = start_date + 14.days
 
-    # Se for uma agenda temporária (nova), usar profissionais padrão
-    professionals = if agenda.persisted?
-                      agenda.professionals.active
-                    else
-                      # Para preview de nova agenda, usar todos os profissionais ativos
-                      User.professionals.includes(professional: :specialities)
-                          .joins(:professional)
-                          .where(professionals: { active: true })
-                    end
+    # Escolher profissionais da prévia: prioriza os enviados no request
+    if params[:professional_ids].present?
+      professionals = User.where(id: params[:professional_ids]).joins(:professional).where(professionals: { active: true })
+    else
+      professionals = if agenda.persisted?
+                        agenda.professionals.active
+                      else
+                        # Sem seleção explícita em nova agenda: nenhum profissional
+                        User.none
+                      end
+    end
 
     professionals.each do |professional|
       preview_data[professional.id] = {
