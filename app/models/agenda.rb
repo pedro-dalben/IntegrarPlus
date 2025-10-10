@@ -2,6 +2,8 @@ class Agenda < ApplicationRecord
   include AgendaValidations
   include AgendaNotifications
 
+  serialize :working_hours, coder: JSON
+
   belongs_to :created_by, class_name: 'User'
   belongs_to :updated_by, class_name: 'User', optional: true
   belongs_to :unit, optional: true
@@ -200,8 +202,6 @@ class Agenda < ApplicationRecord
 
     days.join(' | ')
   end
-
-  private
 
   def validate_working_hours_structure
     return if working_hours.blank?

@@ -135,7 +135,7 @@
           <div class="text-sm">
             <span class="text-gray-500">Resumo:</span>
             <span class="ml-1 font-medium">
-              <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
+              <% if @agenda.working_hours.is_a?(Hash) && @agenda.working_hours['weekdays'].is_a?(Array) && @agenda.working_hours['weekdays'].present? %>
                 Configurado
               <% else %>
                 Não configurado
@@ -143,7 +143,7 @@
             </span>
           </div>
 
-          <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
+          <% if @agenda.working_hours.is_a?(Hash) && @agenda.working_hours['weekdays'].is_a?(Array) && @agenda.working_hours['weekdays'].present? %>
             <div class="space-y-2">
               <% @agenda.working_hours['weekdays'].each do |day| %>
                 <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
