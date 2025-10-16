@@ -63,3 +63,6 @@ application.register("schedule-configuration", ScheduleConfigurationController)
 
 import UnifiedCalendarController from "./unified_calendar_controller"
 application.register("unified-calendar", UnifiedCalendarController)
+
+import TomSelectController from "../../frontend/javascript/controllers/tom_select_controller"
+application.register("tom-select", TomSelectController)

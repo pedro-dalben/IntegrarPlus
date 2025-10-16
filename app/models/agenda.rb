@@ -156,14 +156,52 @@ class Agenda < ApplicationRecord
   def normalize_working_hours
     return if working_hours.blank?
 
-    return unless working_hours.is_a?(String)
-
-    begin
-      parsed = JSON.parse(working_hours)
-      self.working_hours = parsed if parsed.is_a?(Hash)
-    rescue JSON::ParserError
-      errors.add(:working_hours, 'deve ser um JSON válido') unless draft?
+    working = working_hours
+    if working.is_a?(String)
+      begin
+        parsed = JSON.parse(working)
+        working = parsed if parsed.is_a?(Hash)
+      rescue JSON::ParserError
+        errors.add(:working_hours, 'deve ser um JSON válido') unless draft?
+        return
+      end
     end
+
+    return unless working.is_a?(Hash)
+
+    if working['weekdays'].blank?
+      day_names = {
+        'sunday' => 0,
+        'monday' => 1,
+        'tuesday' => 2,
+        'wednesday' => 3,
+        'thursday' => 4,
+        'friday' => 5,
+        'saturday' => 6
+      }
+
+      weekdays = day_names.map do |name, wday|
+        periods_arr = working[name]
+        next nil unless periods_arr.is_a?(Array) && periods_arr.any?
+
+        periods = periods_arr.map do |p|
+          s = p['start'] || p[:start]
+          e = p['end'] || p[:end]
+          { 'start' => s, 'end' => e }
+        end.select { |p| p['start'].present? && p['end'].present? }
+
+        next nil if periods.empty?
+
+        { 'wday' => wday, 'periods' => periods }
+      end.compact
+
+      working['weekdays'] = weekdays if weekdays.any?
+    end
+
+    working['slot_duration'] ||= slot_duration_minutes if slot_duration_minutes.present?
+    working['buffer'] ||= buffer_minutes if buffer_minutes.present?
+
+    self.working_hours = working
   end
 
   def calculate_total_slots(date_range)

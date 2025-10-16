@@ -30,7 +30,12 @@ class Admin::AgendasController < Admin::BaseController
                                              .limit(10)
 
     # Para o calendário, usar apenas os eventos (que já incluem os appointments associados)
-    @all_events = @recent_events
+    @all_events = Event.joins(:professional)
+                       .where(professional: @agenda.professionals)
+                       .includes(:professional, :medical_appointment)
+                       .where(start_time: Date.current.beginning_of_month..(Date.current.end_of_month + 14.days))
+
+    @free_slot_events = build_free_slot_events(@agenda)
   end
 
   def new
@@ -60,6 +65,8 @@ class Admin::AgendasController < Admin::BaseController
   end
 
   def update
+    @agenda.professional_ids = params[:professional_ids] if params[:professional_ids].present?
+
     if @agenda.update(agenda_params.merge(updated_by: current_user))
       if params[:commit] == 'Salvar e Continuar'
         next_step = determine_next_step
@@ -111,7 +118,12 @@ class Admin::AgendasController < Admin::BaseController
       authorize @agenda
     else
       # Se for uma nova agenda, criar um objeto temporário com os dados fornecidos
-      @agenda = Agenda.new(working_hours: JSON.parse(params[:working_hours] || '{}'))
+      working = JSON.parse(params[:working_hours] || '{}')
+      @agenda = Agenda.new(
+        working_hours: working,
+        slot_duration_minutes: working['slot_duration'] || 50,
+        buffer_minutes: working['buffer'] || 10
+      )
     end
 
     @preview_data = generate_slots_preview(@agenda)
@@ -183,7 +195,7 @@ class Admin::AgendasController < Admin::BaseController
     params.require(:agenda).permit(
       :name, :service_type, :default_visibility, :unit_id, :color_theme, :notes,
       :slot_duration_minutes, :buffer_minutes, :status,
-      working_hours: {},
+      :working_hours,
       professional_ids: []
     )
   end
@@ -268,16 +280,14 @@ class Admin::AgendasController < Admin::BaseController
     end_date = start_date + 14.days
 
     # Escolher profissionais da prévia: prioriza os enviados no request
-    if params[:professional_ids].present?
-      professionals = User.where(id: params[:professional_ids]).joins(:professional).where(professionals: { active: true })
-    else
-      professionals = if agenda.persisted?
-                        agenda.professionals.active
-                      else
-                        # Sem seleção explícita em nova agenda: nenhum profissional
-                        User.none
-                      end
-    end
+    professionals = if params[:professional_ids].present?
+                      User.where(id: params[:professional_ids]).joins(:professional).where(professionals: { active: true })
+                    elsif agenda.persisted?
+                      agenda.professionals.active
+                    else
+                      # Sem seleção explícita em nova agenda: nenhum profissional
+                      User.none
+                    end
 
     professionals.each do |professional|
       preview_data[professional.id] = {
@@ -321,5 +331,49 @@ class Admin::AgendasController < Admin::BaseController
     end
 
     slots
+  end
+
+  def build_free_slot_events(agenda)
+    return [] unless agenda.working_hours.present?
+
+    start_date = Date.current.beginning_of_month
+    end_date = Date.current.end_of_month + 14.days
+
+    result = []
+    (start_date..end_date).each do |date|
+      weekday = date.wday
+      day_config = agenda.working_hours['weekdays']&.find { |d| d['wday'] == weekday }
+      next unless day_config&.dig('periods').present?
+
+      day_config['periods'].each do |period|
+        begin
+          period_start = Time.zone.parse("#{date} #{period['start']}")
+          period_end = Time.zone.parse("#{date} #{period['end']}")
+        rescue ArgumentError
+          next
+        end
+
+        current_time = period_start
+        while current_time + agenda.slot_duration_minutes.minutes <= period_end
+          slot_end = current_time + agenda.slot_duration_minutes.minutes
+          result << {
+            id: "free-#{date}-#{current_time.to_i}",
+            title: 'Horário livre',
+            start: current_time.iso8601,
+            end: slot_end.iso8601,
+            start_time: current_time.strftime('%H:%M'),
+            end_time: slot_end.strftime('%H:%M'),
+            color: '#3B82F6',
+            professional_name: 'Disponível',
+            event_type: 'personal',
+            description: 'Slot disponível para agendamento'
+          }
+
+          current_time = slot_end + agenda.buffer_minutes.minutes
+        end
+      end
+    end
+
+    result
   end
 end

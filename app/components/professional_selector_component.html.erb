@@ -6,77 +6,15 @@
     
     <% if searchable? %>
       <div class="relative">
-        <input 
-          type="text" 
-          id="professional-search"
-          class="ta-input"
-          placeholder="Digite para buscar profissionais..."
-          data-professional-selector-target="searchInput"
-          data-action="input->agendas--wizard#searchProfessionals"
-        />
-        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </div>
+        <select multiple data-professional-selector-target="tomselect" data-url="/admin/agendas/search_professionals"></select>
       </div>
     <% end %>
   </div>
 
   <div class="professional-list border border-gray-200 rounded-lg max-h-64 overflow-y-auto mb-4" data-professional-selector-target="professionalList">
-    <% if selected_professionals.any? %>
-      <% selected_professionals.each do |professional| %>
-        <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="<%= professional.id %>">
-          <div class="flex items-center space-x-3">
-            <div class="flex-shrink-0">
-              <img 
-                src="<%= professional.avatar.attached? ? url_for(professional.avatar) : '/default-avatar.png' %>" 
-                alt="<%= professional.full_name %>"
-                class="h-8 w-8 rounded-full object-cover"
-              />
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900 truncate">
-                <%= professional.full_name %>
-              </p>
-              <p class="text-xs text-gray-500 truncate">
-                <%= professional.email %>
-              </p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <% if multiple? %>
-              <input 
-                type="checkbox" 
-                class="professional-checkbox rounded border-gray-300 text-brand-600 focus:ring-brand-500"
-                checked
-                data-professional-id="<%= professional.id %>"
-                data-action="change->professional-selector#toggleProfessional"
-              />
-            <% else %>
-              <input 
-                type="radio" 
-                name="selected_professional"
-                class="professional-radio rounded-full border-gray-300 text-brand-600 focus:ring-brand-500"
-                checked
-                data-professional-id="<%= professional.id %>"
-                data-action="change->professional-selector#selectProfessional"
-              />
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
-      <div class="p-4 text-center text-gray-500">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-        </svg>
-        <p class="mt-2 text-sm">Nenhum profissional selecionado</p>
-        <% if searchable? %>
-          <p class="text-xs">Digite acima para buscar e selecionar profissionais</p>
-        <% end %>
-      </div>
-    <% end %>
+    <div class="p-4 text-center text-gray-500">
+      <p class="mt-2 text-sm">Use o campo acima para buscar profissionais</p>
+    </div>
   </div>
 
   <div class="mt-4" data-professional-selector-target="selectedList">
@@ -97,6 +35,8 @@
           name="agenda[professional_ids][]" 
           value="<%= professional.id %>"
           data-professional-id="<%= professional.id %>"
+          data-professional-name="<%= professional.name %>"
+          data-professional-specialties="<%= professional.professional&.specialities&.pluck(:name)&.join(', ') %>"
         />
       <% end %>
     <% else %>

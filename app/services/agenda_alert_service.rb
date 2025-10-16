@@ -44,19 +44,19 @@ class AgendaAlertService
     alerts = []
 
     Agenda.active.each do |agenda|
-      if agenda.has_conflicts?
-        conflicts = agenda.check_all_conflicts
+      next unless agenda.has_conflicts?
 
-        alerts << {
-          type: :conflicts,
-          severity: :high,
-          message: "Agenda '#{agenda.name}' possui #{conflicts.count} conflitos de horário",
-          agenda: agenda,
-          conflicts: conflicts,
-          actionable: true,
-          action: 'Resolver conflitos de horário'
-        }
-      end
+      conflicts = agenda.check_all_conflicts
+
+      alerts << {
+        type: :conflicts,
+        severity: :high,
+        message: "Agenda '#{agenda.name}' possui #{conflicts.count} conflitos de horário",
+        agenda: agenda,
+        conflicts: conflicts,
+        actionable: true,
+        action: 'Resolver conflitos de horário'
+      }
     end
 
     alerts
@@ -68,17 +68,17 @@ class AgendaAlertService
     Agenda.active.each do |agenda|
       last_event = agenda.events.order(:start_time).last
 
-      if last_event && last_event.start_time < 60.days.ago
-        alerts << {
-          type: :inactive_agenda,
-          severity: :medium,
-          message: "Agenda '#{agenda.name}' inativa há mais de 60 dias",
-          agenda: agenda,
-          last_event: last_event,
-          actionable: true,
-          action: 'Revisar necessidade da agenda'
-        }
-      end
+      next unless last_event && last_event.start_time < 60.days.ago
+
+      alerts << {
+        type: :inactive_agenda,
+        severity: :medium,
+        message: "Agenda '#{agenda.name}' inativa há mais de 60 dias",
+        agenda: agenda,
+        last_event: last_event,
+        actionable: true,
+        action: 'Revisar necessidade da agenda'
+      }
     end
 
     alerts
@@ -88,17 +88,17 @@ class AgendaAlertService
     alerts = []
 
     Agenda.active.each do |agenda|
-      if agenda.updated_at < 30.days.ago
-        alerts << {
-          type: :maintenance_needed,
-          severity: :low,
-          message: "Agenda '#{agenda.name}' não foi atualizada há mais de 30 dias",
-          agenda: agenda,
-          last_updated: agenda.updated_at,
-          actionable: true,
-          action: 'Revisar configurações da agenda'
-        }
-      end
+      next unless agenda.updated_at < 30.days.ago
+
+      alerts << {
+        type: :maintenance_needed,
+        severity: :low,
+        message: "Agenda '#{agenda.name}' não foi atualizada há mais de 30 dias",
+        agenda: agenda,
+        last_updated: agenda.updated_at,
+        actionable: true,
+        action: 'Revisar configurações da agenda'
+      }
     end
 
     alerts
@@ -168,7 +168,7 @@ class AgendaAlertService
   private
 
   def self.send_high_priority_alerts(alerts)
-    admin_users = User.where(role: 'admin')
+    admin_users = User.joins(professional: :groups).where(groups: { is_admin: true }).distinct
 
     admin_users.each do |admin|
       AgendaNotificationMailer.high_priority_alerts(admin, alerts).deliver_later
@@ -176,7 +176,7 @@ class AgendaAlertService
   end
 
   def self.send_medium_priority_alerts(alerts)
-    admin_users = User.where(role: 'admin')
+    admin_users = User.joins(professional: :groups).where(groups: { is_admin: true }).distinct
 
     admin_users.each do |admin|
       AgendaNotificationMailer.medium_priority_alerts(admin, alerts).deliver_later

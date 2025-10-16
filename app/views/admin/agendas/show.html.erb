@@ -169,9 +169,25 @@
       <!-- Calendário de Visualização -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Visualização da Agenda</h2>
-        
-        <%= render BasicCalendarComponent.new(
-          events: @all_events
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por profissionais</label>
+          <div data-controller="tom-select">
+          <select multiple class="w-full"
+                  data-action="change->calendar-views#filterByProfessionals"
+                  data-calendar-views-target="profFilter"
+                  data-tom-select-target="select">
+            <option value="all" selected>Todos</option>
+            <% @agenda.professionals.each do |p| %>
+              <option value="<%= p.id %>"><%= p.name %></option>
+            <% end %>
+          </select>
+          </div>
+        </div>
+
+        <%= render AdvancedCalendarComponent.new(
+          events: (@all_events.to_a + @free_slot_events),
+          read_only: true
         ) %>
       </div>
 

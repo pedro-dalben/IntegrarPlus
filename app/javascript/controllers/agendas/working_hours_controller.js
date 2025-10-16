@@ -83,7 +83,9 @@ export default class extends Controller {
   }
 
   removePeriod(event) {
-    event.target.closest('.flex').remove()
+    const target = event.currentTarget || event.target
+    const container = target.closest('.flex')
+    if (container) container.remove()
     this.updateWorkingHoursInput()
   }
 
@@ -127,14 +129,37 @@ export default class extends Controller {
       }
       
       // Fazer chamada AJAX para gerar preview
+      this.updateWorkingHoursInput()
+
+      if ((!this.workingHours.weekdays || this.workingHours.weekdays.length === 0)) {
+        const defaults = []
+        const allCheckboxes = this.element.querySelectorAll('input[type="checkbox"][data-day]')
+        allCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            defaults.push({ wday: parseInt(cb.dataset.day), periods: [{ start: '08:00', end: '12:00' }] })
+          }
+        })
+        if (defaults.length > 0) {
+          this.workingHours.weekdays = defaults
+        }
+      }
+
       const params = new URLSearchParams({
         working_hours: JSON.stringify(this.workingHours)
       })
 
       const selectedInputs = document.querySelectorAll('input[name="agenda[professional_ids][]"]')
-      selectedInputs.forEach(input => {
-        if (input.value) params.append('professional_ids[]', input.value)
-      })
+      if (selectedInputs.length > 0) {
+        selectedInputs.forEach(input => {
+          if (input.value) params.append('professional_ids[]', input.value)
+        })
+      } else {
+        const checkedBoxes = document.querySelectorAll('.professional-checkbox:checked, .professional-radio:checked')
+        checkedBoxes.forEach(cb => {
+          const id = cb.dataset.professionalId
+          if (id) params.append('professional_ids[]', id)
+        })
+      }
       
       const response = await fetch(`/admin/agendas/preview_slots?${params}`, {
         method: 'GET',
@@ -161,7 +186,7 @@ export default class extends Controller {
 
   showLoading() {
     // Adicionar indicador de loading se necessário
-    const button = this.element.querySelector('[data-action="click->agendas-working-hours#generatePreview"]')
+    const button = this.element.querySelector('[data-action="click->agendas--working-hours#generatePreview"]')
     if (button) {
       button.disabled = true
       button.textContent = 'Gerando...'
@@ -170,7 +195,7 @@ export default class extends Controller {
 
   hideLoading() {
     // Remover indicador de loading
-    const button = this.element.querySelector('[data-action="click->agendas-working-hours#generatePreview"]')
+    const button = this.element.querySelector('[data-action="click->agendas--working-hours#generatePreview"]')
     if (button) {
       button.disabled = false
       button.textContent = 'Gerar Prévia de Slots'
@@ -205,7 +230,9 @@ export default class extends Controller {
   }
 
   removeException(event) {
-    event.target.closest('.flex').remove()
+    const target = event.currentTarget || event.target
+    const container = target.closest('.flex')
+    if (container) container.remove()
     this.updateWorkingHoursInput()
   }
 

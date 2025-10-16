@@ -144,5 +144,5 @@
     </div>
   </div>
 
-  <%= form.hidden_field :working_hours, data: { 'agendas--working-hours-target': "workingHoursInput" } %>
+  <%= form.hidden_field :working_hours, value: (form.object.working_hours.present? ? form.object.working_hours.to_json : ""), data: { 'agendas--working-hours-target': "workingHoursInput" } %>
 </div>

@@ -97,15 +97,18 @@ export default class extends Controller {
     const currentIndex = steps.indexOf(this.currentStepValue)
     
     if (currentIndex < steps.length - 1) {
-      this.saveCurrentStepData()
+      try {
+        this.saveCurrentStepData()
+      } catch (e) {
+      }
       
       this.currentStepValue = steps[currentIndex + 1]
-      this.showStep(this.currentStepValue)
-      this.updateNavigation()
-      this.updateTabs()
-      this.updateStepInput()
+      try { this.showStep(this.currentStepValue) } catch (e) {}
+      try { this.updateNavigation() } catch (e) {}
+      try { this.updateTabs() } catch (e) {}
+      try { this.updateStepInput() } catch (e) {}
       
-      this.updateHiddenInputs()
+      try { this.updateHiddenInputs() } catch (e) {}
     }
   }
 
@@ -136,10 +139,10 @@ export default class extends Controller {
 
   restoreStepData(stepName) {
     if (stepName === 'professionals') {
-      this.restoreProfessionalSelection()
-      this.updateHiddenInputs()
+      try { this.restoreProfessionalSelection() } catch (e) {}
+      try { this.updateHiddenInputs() } catch (e) {}
       setTimeout(() => {
-        this.updateSelectedProfessionalsList()
+        try { this.updateSelectedProfessionalsList() } catch (e) {}
       }, 100)
     }
   }
@@ -224,7 +227,7 @@ export default class extends Controller {
               type="checkbox" 
               class="professional-checkbox rounded border-gray-300 text-brand-600 focus:ring-brand-500"
               data-professional-id="${professional.id}"
-              data-action="change->agendas-wizard#toggleProfessional"
+              data-action="change->agendas--wizard#toggleProfessional"
               ${isChecked ? 'checked' : ''}
             />
           </div>

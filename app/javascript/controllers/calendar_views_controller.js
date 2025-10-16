@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["calendar", "viewSelector", "eventTypeFilter", "monthView", "weekView", "dayView"]
+  static targets = ["calendar", "viewSelector", "eventTypeFilter", "monthView", "weekView", "dayView", "profFilter"]
   static values = { 
     eventsData: Array, 
     readOnly: Boolean, 
@@ -28,6 +28,13 @@ export default class extends Controller {
         this.filterEventsByType(e.target.value)
       })
     }
+
+    if (this.hasProfFilterTarget) {
+      this.profFilterTarget.addEventListener('change', () => {
+        const values = Array.from(this.profFilterTarget.selectedOptions).map(o => o.value)
+        this.filterByProfessionals(values)
+      })
+    }
   }
 
   changeView(view) {
@@ -42,6 +49,19 @@ export default class extends Controller {
       this.filteredEvents = (this.eventsDataValue || []).filter(event => 
         event.event_type === eventType
       )
+    }
+    this.renderCalendar()
+  }
+
+  filterByProfessionals(values) {
+    if (!values || values.length === 0 || values.includes('all')) {
+      this.filteredEvents = this.eventsDataValue || []
+    } else {
+      const idSet = new Set(values.map(v => parseInt(v)))
+      this.filteredEvents = (this.eventsDataValue || []).filter(event => {
+        if (event.professional_id) return idSet.has(parseInt(event.professional_id))
+        return true
+      })
     }
     this.renderCalendar()
   }
