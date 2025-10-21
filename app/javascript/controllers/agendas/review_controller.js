@@ -14,7 +14,7 @@ export default class extends Controller {
   }
 
   updateProfessionalsCount() {
-    const selectedProfessionals = document.querySelectorAll('input[name*="professional_ids"]')
+    const selectedProfessionals = document.querySelectorAll('input[name="agenda[professional_ids][]"]')
     const count = selectedProfessionals.length
     
     if (this.hasProfessionalsCountTarget) {
@@ -37,24 +37,20 @@ export default class extends Controller {
     let html = ''
     selectedProfessionals.forEach(input => {
       const professionalId = input.value
-      const professionalItem = document.querySelector(`[data-professional-id="${professionalId}"]`)
+      const name = input.dataset.professionalName || ''
+      const specialties = input.dataset.professionalSpecialties || ''
       
-      if (professionalItem) {
-        const name = professionalItem.dataset.professionalName
-        const specialties = professionalItem.dataset.professionalSpecialties
-        
-        html += `
-          <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
-            <div>
-              <div class="text-sm font-medium text-gray-900">${name}</div>
-              <div class="text-sm text-gray-500">${specialties}</div>
-            </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Ativo
-            </span>
+      html += `
+        <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+          <div>
+            <div class="text-sm font-medium text-gray-900">${name}</div>
+            <div class="text-sm text-gray-500">${specialties}</div>
           </div>
-        `
-      }
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            Ativo
+          </span>
+        </div>
+      `
     })
     
     if (this.hasProfessionalsListTarget) {

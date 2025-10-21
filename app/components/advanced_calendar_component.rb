@@ -20,21 +20,26 @@ class AdvancedCalendarComponent < ViewComponent::Base
   end
 
   def events_data
-    return [] if events.empty?
+    return [] if events.blank?
 
     events.map do |event|
-      {
-        id: event.id,
-        title: event.title,
-        start: event.start_time.iso8601,
-        end: event.end_time.iso8601,
-        start_time: event.start_time.strftime('%H:%M'),
-        end_time: event.end_time.strftime('%H:%M'),
-        color: event_color(event.event_type),
-        professional_name: event.professional&.full_name || 'N/A',
-        event_type: event.event_type,
-        description: event.description || ''
-      }
+      if event.is_a?(Hash)
+        event
+      else
+        {
+          id: event.id,
+          title: event.title,
+          start: event.start_time.iso8601,
+          end: event.end_time.iso8601,
+          start_time: event.start_time.strftime('%H:%M'),
+          end_time: event.end_time.strftime('%H:%M'),
+          color: event_color(event.event_type),
+          professional_name: event.professional&.full_name || 'N/A',
+          professional_id: event.professional&.id,
+          event_type: event.event_type,
+          description: event.description || ''
+        }
+      end
     end
   end
 
@@ -48,4 +53,3 @@ class AdvancedCalendarComponent < ViewComponent::Base
     end
   end
 end
-

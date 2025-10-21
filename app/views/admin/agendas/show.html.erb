@@ -135,7 +135,7 @@
           <div class="text-sm">
             <span class="text-gray-500">Resumo:</span>
             <span class="ml-1 font-medium">
-              <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
+              <% if @agenda.working_hours.is_a?(Hash) && @agenda.working_hours['weekdays'].is_a?(Array) && @agenda.working_hours['weekdays'].present? %>
                 Configurado
               <% else %>
                 Não configurado
@@ -143,7 +143,7 @@
             </span>
           </div>
 
-          <% if @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present? %>
+          <% if @agenda.working_hours.is_a?(Hash) && @agenda.working_hours['weekdays'].is_a?(Array) && @agenda.working_hours['weekdays'].present? %>
             <div class="space-y-2">
               <% @agenda.working_hours['weekdays'].each do |day| %>
                 <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
@@ -169,9 +169,25 @@
       <!-- Calendário de Visualização -->
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Visualização da Agenda</h2>
-        
-        <%= render BasicCalendarComponent.new(
-          events: @all_events
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por profissionais</label>
+          <div data-controller="tom-select">
+          <select multiple class="w-full"
+                  data-action="change->calendar-views#filterByProfessionals"
+                  data-calendar-views-target="profFilter"
+                  data-tom-select-target="select">
+            <option value="all" selected>Todos</option>
+            <% @agenda.professionals.each do |p| %>
+              <option value="<%= p.id %>"><%= p.name %></option>
+            <% end %>
+          </select>
+          </div>
+        </div>
+
+        <%= render AdvancedCalendarComponent.new(
+          events: (@all_events.to_a + @free_slot_events),
+          read_only: true
         ) %>
       </div>
 

@@ -19,7 +19,7 @@ class ProfessionalSelectorComponent < ViewComponent::Base
   end
 
   def selected_professional_ids
-    selected_professionals.map(&:id)
+    selected_professionals.map { |p| p.respond_to?(:user) && p.user.present? ? p.user.id : p.id }
   end
 
   def component_id

@@ -49,13 +49,18 @@ class AppointmentSchedulingService
     conflicts.concat(existing_appointments.map { |appointment| { type: 'appointment', object: appointment } })
 
     # Buscar exceções de disponibilidade através do Professional
-    availability_exceptions = @professional.availability_exceptions
-                                           .where(agenda: @agenda)
-                                           .for_date(datetime.to_date)
-                                           .active
-                                           .select { |exception| exception.blocks_time?(datetime) }
+    # @professional pode ser User ou Professional, então precisamos acessar corretamente
+    professional_record = @professional.is_a?(User) ? @professional.professional : @professional
 
-    conflicts.concat(availability_exceptions.map { |exception| { type: 'exception', object: exception } })
+    if professional_record.present?
+      availability_exceptions = professional_record.availability_exceptions
+                                                   .where(agenda: @agenda)
+                                                   .for_date(datetime.to_date)
+                                                   .active
+                                                   .select { |exception| exception.blocks_time?(datetime) }
+
+      conflicts.concat(availability_exceptions.map { |exception| { type: 'exception', object: exception } })
+    end
 
     result = {
       available: conflicts.empty?,
@@ -73,10 +78,15 @@ class AppointmentSchedulingService
   def get_available_slots(date, duration_minutes = nil)
     duration_minutes ||= @agenda.slot_duration_minutes
 
-    availabilities = @professional.professional_availabilities
-                                  .where(agenda: @agenda)
-                                  .for_day(date.wday)
-                                  .active
+    # @professional pode ser User ou Professional
+    professional_record = @professional.is_a?(User) ? @professional.professional : @professional
+
+    return [] unless professional_record.present?
+
+    availabilities = professional_record.professional_availabilities
+                                        .where(agenda: @agenda)
+                                        .for_day(date.wday)
+                                        .active
 
     return [] if availabilities.empty?
 

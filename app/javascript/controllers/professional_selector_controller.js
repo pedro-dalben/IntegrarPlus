@@ -1,13 +1,89 @@
 import { Controller } from "@hotwired/stimulus"
+import TomSelect from "tom-select"
 
 export default class extends Controller {
-  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs", "selectedProfessionalsContainer"]
+  static targets = ["searchInput", "professionalList", "hiddenInput", "loadingIndicator", "selectedList", "hiddenInputs", "selectedProfessionalsContainer", "tomselect"]
 
   connect() {
     this.selectedProfessionals = new Set()
     this.professionalsData = {}
-    this.loadProfessionals()
+    // Não carregar lista; usamos apenas Tom Select como busca
+    const selectEl = this.hasTomselectTarget ? this.tomselectTarget : this.element.querySelector('select[data-professional-selector-target="tomselect"]')
+    if (selectEl && !selectEl.tomSelect) {
+      const url = selectEl.dataset.url || "/admin/agendas/search_professionals"
+      this.tomSelect = new TomSelect(selectEl, {
+        plugins: ["dropdown_input"],
+        valueField: "id",
+        labelField: "name",
+        searchField: "name",
+        preload: "focus",
+        maxItems: 1,
+        load: (query, callback) => {
+          const u = `${url}?search=${encodeURIComponent(query || "")}`
+          fetch(u, { headers: { Accept: "application/json" } })
+            .then((r) => r.json())
+            .then((json) => callback(json.professionals || []))
+            .catch(() => callback())
+        },
+        onItemAdd: (value) => {
+          this.syncAddSingle(value, this.tomSelect.options)
+          this.updateSelectedProfessionalsList()
+          this.notifyWizardController()
+          this.tomSelect.clear(true)
+        }
+      })
+      selectEl.tomSelect = this.tomSelect
+      // Pré-popular profissionais já salvos (opções com selected)
+      // Se houver inputs ocultos pré-carregados, popular lista visual
+      const presetInputs = this.hiddenInputsTarget.querySelectorAll('input[data-professional-id]')
+      presetInputs.forEach((input) => this.syncAddSingle(input.dataset.professionalId, this.tomSelect.options))
+      this.updateSelectedProfessionalsList()
+    }
     this.updateSelectedProfessionalsList()
+  }
+
+  syncFromTomSelect(event) {
+    const selectElement = event.target
+    const tom = selectElement && selectElement.tomSelect
+    if (!tom) return
+
+    this.syncFromTomSelectValues(tom.getValue(), tom.options)
+  }
+
+  syncFromTomSelectValues(values, optionsMap = {}) {
+    const selectedIds = Array.isArray(values) ? values : (values ? [values] : [])
+
+    this.hiddenInputsTarget.innerHTML = ''
+
+    selectedIds.forEach((id) => {
+      this.syncAddSingle(id, optionsMap)
+    })
+
+    this.updateSelectedProfessionalsList()
+    this.notifyWizardController()
+  }
+
+  syncAddSingle(id, optionsMap = {}) {
+    const optionData = optionsMap && optionsMap[id] ? optionsMap[id] : {}
+    const name = optionData.name || optionData.text || optionData.label || ''
+    const specialties = optionData.specialties || []
+
+    if (!this.hiddenInputsTarget.querySelector(`input[data-professional-id="${id}"]`)) {
+      const hiddenInput = document.createElement('input')
+      hiddenInput.type = 'hidden'
+      hiddenInput.name = 'agenda[professional_ids][]'
+      hiddenInput.value = id
+      hiddenInput.dataset.professionalId = id
+      if (name) hiddenInput.dataset.professionalName = name
+      if (specialties && specialties.length > 0) hiddenInput.dataset.professionalSpecialties = Array.isArray(specialties) ? specialties.join(', ') : String(specialties)
+      this.hiddenInputsTarget.appendChild(hiddenInput)
+    }
+
+    this.professionalsData[id] = {
+      id,
+      name,
+      specialties: Array.isArray(specialties) ? specialties : String(specialties || '').split(',').map(s => s.trim()).filter(Boolean)
+    }
   }
 
   search(event) {
@@ -41,12 +117,35 @@ export default class extends Controller {
 
   async loadProfessionals() {
     try {
-      const response = await fetch('/admin/agendas/search_professionals')
+      const response = await fetch('/admin/agendas/search_professionals', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
       const data = await response.json()
       
       this.renderSearchResults(data.professionals || [])
     } catch (error) {
     }
+  }
+
+  selectAllApt() {
+    this.selectAll()
+  }
+
+  selectAll() {
+    if (!this.hasProfessionalListTarget) return
+    const checkboxes = this.professionalListTarget.querySelectorAll('.professional-checkbox')
+    checkboxes.forEach(cb => {
+      const professionalId = cb.dataset.professionalId
+      cb.checked = true
+      const data = this.professionalsData[professionalId]
+      this.addProfessional(professionalId, data)
+    })
+    this.updateSelectedProfessionalsList()
+    this.notifyWizardController()
   }
 
   toggleProfessional(event) {
@@ -86,6 +185,9 @@ export default class extends Controller {
       hiddenInput.name = 'agenda[professional_ids][]'
       hiddenInput.value = professionalId
       hiddenInput.dataset.professionalId = professionalId
+      const data = professionalData || this.professionalsData[professionalId] || {}
+      if (data && data.name) hiddenInput.dataset.professionalName = data.name
+      if (data && data.specialties) hiddenInput.dataset.professionalSpecialties = (data.specialties || []).join(', ')
       
       this.hiddenInputsTarget.appendChild(hiddenInput)
     }
@@ -138,20 +240,26 @@ export default class extends Controller {
       return
     }
 
-    const resultsHTML = professionals.map(professional => `
-      <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="${professional.id}">
+    const resultsHTML = professionals.map(professional => {
+      const specialties = professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'
+      const name = professional.name || ''
+      return `
+      <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50"
+           data-professional-id="${professional.id}"
+           data-professional-name="${name.replace(/"/g, '&quot;')}"
+           data-professional-specialties="${specialties.replace(/"/g, '&quot;')}">
         <div class="flex items-center space-x-3">
           <div class="flex-shrink-0">
             <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <span class="text-xs font-medium text-gray-600">${professional.name.charAt(0).toUpperCase()}</span>
+              <span class="text-xs font-medium text-gray-600">${name.charAt(0).toUpperCase()}</span>
             </div>
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-900 truncate">
-              ${professional.name}
+              ${name}
             </p>
             <p class="text-xs text-gray-500 truncate">
-              ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
+              ${specialties}
             </p>
           </div>
         </div>
@@ -159,7 +267,8 @@ export default class extends Controller {
           ${this.getCheckboxHTML(professional)}
         </div>
       </div>
-    `).join('')
+    `
+    }).join('')
 
     this.professionalListTarget.innerHTML = resultsHTML
   }
@@ -180,15 +289,20 @@ export default class extends Controller {
     }
     
     const selectedHTML = selectedIds.map(id => {
-      const professional = this.professionalsData[id]
-      if (!professional) return ''
+      let professional = this.professionalsData[id]
+      if (!professional) {
+        const input = this.hiddenInputsTarget.querySelector(`input[data-professional-id="${id}"]`)
+        const name = input?.dataset.professionalName || ''
+        const specialties = (input?.dataset.professionalSpecialties || '').split(',').map(s => s.trim()).filter(Boolean)
+        professional = { id, name, specialties }
+      }
       
       return `
         <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-200 mb-2">
           <div class="flex items-center space-x-2 flex-1 min-w-0">
             <div class="flex-shrink-0">
               <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                <span class="text-xs font-medium text-blue-600">${professional.name.charAt(0).toUpperCase()}</span>
+                <span class="text-xs font-medium text-blue-600">${(professional.name || '').charAt(0).toUpperCase()}</span>
               </div>
             </div>
             <div class="flex-1 min-w-0">
@@ -196,7 +310,7 @@ export default class extends Controller {
                 ${professional.name}
               </p>
               <p class="text-xs text-gray-500 truncate">
-                ${professional.specialties ? professional.specialties.join(', ') : 'Sem especialidades'}
+                ${professional.specialties && professional.specialties.length > 0 ? professional.specialties.join(', ') : 'Sem especialidades'}
               </p>
             </div>
           </div>

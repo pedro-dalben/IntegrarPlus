@@ -13,20 +13,27 @@ class AgendaConflictService
   def self.check_agenda_conflicts(agenda, professional, start_time, end_time)
     conflicts = []
 
-    other_agendas = professional.agendas.active.where.not(id: agenda.id)
+    other_agendas = agendas_for(professional).active.where.not(id: agenda&.id)
 
     other_agendas.each do |other_agenda|
-      if schedules_overlap?(other_agenda, start_time, end_time)
-        conflicts << {
-          type: :agenda_conflict,
-          message: "Conflito com agenda '#{other_agenda.name}'",
-          conflicting_agenda: other_agenda,
-          severity: :high
-        }
-      end
+      next unless schedules_overlap?(other_agenda, start_time, end_time)
+
+      conflicts << {
+        type: :agenda_conflict,
+        message: "Conflito com agenda '#{other_agenda.name}'",
+        conflicting_agenda: other_agenda,
+        severity: :high
+      }
     end
 
     conflicts
+  end
+
+  def self.agendas_for(professional_or_user)
+    return professional_or_user.agendas if professional_or_user.respond_to?(:agendas)
+
+    Agenda.joins(:agenda_professionals)
+          .where(agenda_professionals: { professional_id: professional_or_user.id, active: true })
   end
 
   def self.check_event_conflicts(professional, start_time, end_time)
@@ -68,11 +75,23 @@ class AgendaConflictService
   def self.check_professional_availability(professional, start_time, end_time)
     conflicts = []
 
-    unless professional.available_at?(start_time, end_time)
+    professional_id = if professional.respond_to?(:id) && professional.class.name == 'Professional'
+                        professional.id
+                      elsif professional.respond_to?(:professional_id)
+                        professional.professional_id
+                      else
+                        nil
+                      end
+
+    return conflicts unless professional_id
+
+    existing_events = Event.available_slots(professional_id, start_time, end_time)
+
+    if existing_events.any?
       conflicts << {
         type: :availability_conflict,
-        message: "Profissional não disponível neste horário",
-        professional: professional,
+        message: 'Profissional não disponível neste horário',
+        professional_id: professional_id,
         severity: :high
       }
     end
