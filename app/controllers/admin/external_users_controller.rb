@@ -36,7 +36,7 @@ module Admin
 
       if @external_user.save
         redirect_to admin_external_user_path(@external_user),
-                    notice: 'Operadora criada com sucesso.'
+                    notice: t('admin.external_users.messages.created')
       else
         render :new, status: :unprocessable_entity
       end
@@ -48,7 +48,7 @@ module Admin
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
       if @external_user.update(sanitized_external_user_params)
         redirect_to admin_external_user_path(@external_user),
-                    notice: 'Operadora atualizada com sucesso.'
+                    notice: t('admin.external_users.messages.updated')
       else
         render :edit, status: :unprocessable_entity
       end
@@ -58,27 +58,27 @@ module Admin
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
       if @external_user.portal_intakes.exists?
         redirect_to admin_external_user_path(@external_user),
-                    alert: 'Não é possível excluir operadora com entradas no portal.'
+                    alert: t('admin.external_users.messages.cannot_delete_with_intakes')
         return
       end
 
       @external_user.destroy
       redirect_to admin_external_users_path,
-                  notice: 'Operadora excluída com sucesso.'
+                  notice: t('admin.external_users.messages.deleted')
     end
 
     def activate
       authorize @external_user, :activate?, policy_class: Admin::ExternalUserPolicy
       @external_user.update!(active: true)
       redirect_to admin_external_user_path(@external_user),
-                  notice: 'Operadora ativada com sucesso.'
+                  notice: t('admin.external_users.messages.activated')
     end
 
     def deactivate
       authorize @external_user, :deactivate?, policy_class: Admin::ExternalUserPolicy
       @external_user.update!(active: false)
       redirect_to admin_external_user_path(@external_user),
-                  notice: 'Operadora desativada com sucesso.'
+                  notice: t('admin.external_users.messages.deactivated')
     end
 
     def search
@@ -99,7 +99,7 @@ module Admin
     def set_external_user
       @external_user = ExternalUser.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      redirect_to admin_external_users_path, alert: 'Operadora não encontrada.'
+      redirect_to admin_external_users_path, alert: t('admin.external_users.messages.not_found')
     end
 
     def external_user_params

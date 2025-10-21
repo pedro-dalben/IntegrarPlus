@@ -231,6 +231,15 @@ pt-BR:
       short: "%d de %B, %H:%M"
     pm: pm
   admin:
+    external_users:
+      messages:
+        created: "Operadora criada com sucesso."
+        updated: "Operadora atualizada com sucesso."
+        deleted: "Operadora excluída com sucesso."
+        activated: "Operadora ativada com sucesso."
+        deactivated: "Operadora desativada com sucesso."
+        not_found: "Operadora não encontrada."
+        cannot_delete_with_intakes: "Não é possível excluir operadora com entradas no portal."
     notifications:
       show:
         title: "Detalhes da Notificação"

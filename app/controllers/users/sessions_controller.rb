@@ -14,3 +14,4 @@ class Users::SessionsController < Devise::SessionsController
     session[:user_last_seen_at] = nil
   end
 end
+
