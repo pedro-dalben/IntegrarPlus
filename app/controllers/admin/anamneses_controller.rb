@@ -5,6 +5,8 @@ module Admin
     before_action :set_anamnesis, only: %i[show edit update complete]
 
     def index
+      authorize Anamnesis, policy_class: Admin::AnamnesisPolicy
+
       if params[:query].present?
         begin
           search_service = AdvancedSearchService.new(Anamnesis)
@@ -89,11 +91,12 @@ module Admin
     end
 
     def today
+      authorize Anamnesis, policy_class: Admin::AnamnesisPolicy
+
       @anamneses = Anamnesis.today
                             .includes(:beneficiary, :professional)
                             .order(:performed_at)
 
-      # Filtrar por profissional se não tiver permissão para ver todas
       unless current_user.permit?('anamneses.view_all')
         @anamneses = @anamneses.by_professional(current_user.professional)
       end
@@ -105,6 +108,8 @@ module Admin
     end
 
     def by_professional
+      authorize Anamnesis, policy_class: Admin::AnamnesisPolicy
+
       professional = User.find(params[:professional_id])
       @anamneses = Anamnesis.by_professional(professional)
                             .includes(:beneficiary, :professional)

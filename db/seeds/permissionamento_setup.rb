@@ -74,18 +74,23 @@ permissions_data = [
   # Permissões de Beneficiários
   { key: 'beneficiaries.index', description: 'Listar beneficiários' },
   { key: 'beneficiaries.show', description: 'Ver detalhes do beneficiário' },
+  { key: 'beneficiaries.new', description: 'Criar novo beneficiário (formulário)' },
   { key: 'beneficiaries.create', description: 'Criar novos beneficiários' },
   { key: 'beneficiaries.edit', description: 'Editar beneficiários' },
   { key: 'beneficiaries.update', description: 'Atualizar beneficiários' },
   { key: 'beneficiaries.destroy', description: 'Excluir beneficiários' },
+  { key: 'beneficiaries.search', description: 'Buscar beneficiários' },
   # Permissões de Anamnese
   { key: 'anamneses.index', description: 'Listar anamneses' },
   { key: 'anamneses.show', description: 'Ver detalhes da anamnese' },
+  { key: 'anamneses.new', description: 'Criar nova anamnese (formulário)' },
   { key: 'anamneses.create', description: 'Criar anamnese' },
   { key: 'anamneses.edit', description: 'Editar anamnese' },
   { key: 'anamneses.update', description: 'Atualizar anamnese' },
   { key: 'anamneses.complete', description: 'Concluir anamnese' },
-  { key: 'anamneses.view_all', description: 'Ver todas as anamneses (não apenas próprias)' }
+  { key: 'anamneses.view_all', description: 'Ver todas as anamneses (não apenas próprias)' },
+  { key: 'anamneses.today', description: 'Ver anamneses de hoje' },
+  { key: 'anamneses.by_professional', description: 'Ver anamneses por profissional' }
 ]
 
 permissions_data.each do |perm_data|
@@ -108,19 +113,22 @@ end
 
 prof_group = Group.find_by(name: 'Profissionais')
 if prof_group
-  # Profissionais têm permissões básicas
   basic_permissions = [
     'dashboard.view',
     'professionals.index',
     'professionals.show',
     'beneficiaries.index',
     'beneficiaries.show',
+    'beneficiaries.search',
     'anamneses.index',
     'anamneses.show',
+    'anamneses.new',
     'anamneses.create',
     'anamneses.edit',
     'anamneses.update',
-    'anamneses.complete'
+    'anamneses.complete',
+    'anamneses.today',
+    'anamneses.by_professional'
   ]
 
   basic_permissions.each do |perm_key|
@@ -131,7 +139,6 @@ end
 
 recepcao_group = Group.find_by(name: 'Recepção')
 if recepcao_group
-  # Recepção pode criar profissionais, gerenciar entradas do portal e agendas
   recepcao_permissions = [
     'dashboard.view',
     'professionals.index',
@@ -147,12 +154,20 @@ if recepcao_group
     'agendas.update',
     'beneficiaries.index',
     'beneficiaries.show',
+    'beneficiaries.new',
     'beneficiaries.create',
     'beneficiaries.edit',
     'beneficiaries.update',
+    'beneficiaries.search',
     'anamneses.index',
     'anamneses.show',
-    'anamneses.view_all'
+    'anamneses.new',
+    'anamneses.create',
+    'anamneses.edit',
+    'anamneses.update',
+    'anamneses.view_all',
+    'anamneses.today',
+    'anamneses.by_professional'
   ]
 
   recepcao_permissions.each do |perm_key|
@@ -163,7 +178,6 @@ end
 
 clinico_group = Group.find_by(name: 'Clínico')
 if clinico_group
-  # Clínicos podem ver e editar profissionais e visualizar agendas
   clinico_permissions = [
     'dashboard.view',
     'professionals.index',
@@ -173,13 +187,21 @@ if clinico_group
     'agendas.read',
     'beneficiaries.index',
     'beneficiaries.show',
+    'beneficiaries.new',
+    'beneficiaries.create',
+    'beneficiaries.edit',
+    'beneficiaries.update',
+    'beneficiaries.search',
     'anamneses.index',
     'anamneses.show',
+    'anamneses.new',
     'anamneses.create',
     'anamneses.edit',
     'anamneses.update',
     'anamneses.complete',
-    'anamneses.view_all'
+    'anamneses.view_all',
+    'anamneses.today',
+    'anamneses.by_professional'
   ]
 
   clinico_permissions.each do |perm_key|

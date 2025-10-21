@@ -5,6 +5,8 @@ module Admin
     before_action :set_beneficiary, only: %i[show edit update destroy]
 
     def index
+      authorize Beneficiary, policy_class: Admin::BeneficiaryPolicy
+
       if params[:query].present?
         begin
           search_service = AdvancedSearchService.new(Beneficiary)
@@ -89,6 +91,8 @@ module Admin
     end
 
     def search
+      authorize Beneficiary, policy_class: Admin::BeneficiaryPolicy
+
       query = params[:q]
       beneficiaries = Beneficiary.search_by_term(query)
                                  .limit(10)

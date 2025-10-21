@@ -15,7 +15,7 @@ module Admin
     end
 
     def new?
-      create?
+      user.permit?('anamneses.new')
     end
 
     def update?
@@ -23,11 +23,19 @@ module Admin
     end
 
     def edit?
-      update?
+      user.permit?('anamneses.edit')
     end
 
     def complete?
       user.permit?('anamneses.complete') && can_edit_anamnesis?
+    end
+
+    def today?
+      user.permit?('anamneses.today')
+    end
+
+    def by_professional?
+      user.permit?('anamneses.by_professional')
     end
 
     class Scope < Scope

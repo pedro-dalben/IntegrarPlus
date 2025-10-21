@@ -15,7 +15,7 @@ module Admin
     end
 
     def new?
-      create?
+      user.permit?('beneficiaries.new')
     end
 
     def update?
@@ -23,17 +23,19 @@ module Admin
     end
 
     def edit?
-      update?
+      user.permit?('beneficiaries.edit')
     end
 
     def destroy?
       user.permit?('beneficiaries.destroy')
     end
 
+    def search?
+      user.permit?('beneficiaries.search')
+    end
+
     class Scope < Scope
       def resolve
-        if user.admin?
-        end
         scope.all
       end
     end
