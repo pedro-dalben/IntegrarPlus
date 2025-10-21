@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ScheduleConfigurationComponent < ViewComponent::Base
   def initialize(professional:, agenda: nil, read_only: false)
     @professional = professional

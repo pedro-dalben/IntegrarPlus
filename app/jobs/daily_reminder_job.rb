@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DailyReminderJob < ApplicationJob
   queue_as :default
 

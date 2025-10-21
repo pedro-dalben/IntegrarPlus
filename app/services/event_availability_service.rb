@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventAvailabilityService
   def initialize(professional_id)
     @professional_id = professional_id
@@ -143,14 +145,14 @@ class EventAvailabilityService
       overlap_end = [end_time, event.end_time].min
       overlap_minutes = ((overlap_end - overlap_start) / 1.minute).to_i
 
-      available_minutes -= overlap_minutes if overlap_minutes > 0
+      available_minutes -= overlap_minutes if overlap_minutes.positive?
     end
 
     {
       total_minutes: total_minutes,
       available_minutes: [available_minutes, 0].max,
       occupied_minutes: total_minutes - [available_minutes, 0].max,
-      utilization_percentage: (total_minutes > 0 ? ((total_minutes - available_minutes) / total_minutes.to_f * 100).round(2) : 0)
+      utilization_percentage: (total_minutes.positive? ? ((total_minutes - available_minutes) / total_minutes.to_f * 100).round(2) : 0)
     }
   end
 end

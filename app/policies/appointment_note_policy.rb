@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentNotePolicy < ApplicationPolicy
   def index?
     user.admin? || user.permit?('appointment_notes.read')
@@ -5,7 +7,7 @@ class AppointmentNotePolicy < ApplicationPolicy
 
   def show?
     user.admin? || user.permit?('appointment_notes.read') ||
-    (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
+      (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
   end
 
   def create?

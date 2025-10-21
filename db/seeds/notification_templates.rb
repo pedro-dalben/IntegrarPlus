@@ -1,5 +1,7 @@
-puts "Criando templates padrão de notificação..."
+# frozen_string_literal: true
+
+Rails.logger.debug 'Criando templates padrão de notificação...'
 
 NotificationTemplate.create_default_templates
 
-puts "Templates de notificação criados com sucesso!"
+Rails.logger.debug 'Templates de notificação criados com sucesso!'

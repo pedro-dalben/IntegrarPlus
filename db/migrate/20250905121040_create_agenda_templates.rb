@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAgendaTemplates < ActiveRecord::Migration[8.0]
   def change
     create_table :agenda_templates do |t|
@@ -15,6 +17,6 @@ class CreateAgendaTemplates < ActiveRecord::Migration[8.0]
     add_index :agenda_templates, :category
     add_index :agenda_templates, :visibility
     add_index :agenda_templates, :usage_count
-    add_index :agenda_templates, [:created_by_id, :visibility]
+    add_index :agenda_templates, %i[created_by_id visibility]
   end
 end

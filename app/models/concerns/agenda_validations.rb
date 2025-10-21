@@ -51,7 +51,7 @@ module AgendaValidations
   def professional_availability
     return if professionals.blank?
 
-    professionals.each do |professional|
+    professionals.each do |_professional|
       # Skip validation for now to avoid User/Professional confusion
       next
     end

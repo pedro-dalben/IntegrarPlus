@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ProfessionalAvailability, type: :model do
@@ -100,12 +102,12 @@ RSpec.describe ProfessionalAvailability, type: :model do
 
     describe '#covers_time?' do
       it 'returns true for time within availability' do
-        time = Time.parse('2000-01-01 10:00')
+        time = Time.zone.parse('2000-01-01 10:00')
         expect(availability.covers_time?(time)).to be true
       end
 
       it 'returns false for time outside availability' do
-        time = Time.parse('2000-01-01 18:00')
+        time = Time.zone.parse('2000-01-01 18:00')
         expect(availability.covers_time?(time)).to be false
       end
     end
@@ -114,8 +116,8 @@ RSpec.describe ProfessionalAvailability, type: :model do
       it 'generates time slots correctly' do
         slots = availability.time_slots(60, 0) # 1 hour slots, no buffer
         expect(slots.length).to eq(9)
-        expect(slots.first[:start_time]).to eq(Time.parse('2000-01-01 08:00'))
-        expect(slots.first[:end_time]).to eq(Time.parse('2000-01-01 09:00'))
+        expect(slots.first[:start_time]).to eq(Time.zone.parse('2000-01-01 08:00'))
+        expect(slots.first[:end_time]).to eq(Time.zone.parse('2000-01-01 09:00'))
       end
     end
   end

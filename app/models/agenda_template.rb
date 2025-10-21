@@ -27,8 +27,8 @@ class AgendaTemplate < ApplicationRecord
   }
 
   scope :by_category, ->(category) { where(category: category) }
-  scope :visible_for_user, ->(user) {
-    where(visibility: [:unit_template, :global_template])
+  scope :visible_for_user, lambda { |user|
+    where(visibility: %i[unit_template global_template])
       .or(where(created_by: user, visibility: :private_template))
   }
   scope :popular, -> { order(usage_count: :desc) }
@@ -50,12 +50,10 @@ class AgendaTemplate < ApplicationRecord
     agenda.updated_by = user
     agenda.status = :draft
 
-    if agenda.save
-      increment_usage_count
-      agenda
-    else
-      nil
-    end
+    return unless agenda.save
+
+    increment_usage_count
+    agenda
   end
 
   def self.create_from_agenda(agenda, template_name = nil)

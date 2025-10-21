@@ -162,7 +162,7 @@ class Beneficiary < ApplicationRecord
   end
 
   def anamnese_pendente?
-    anamneses.where(status: %w[pendente em_andamento]).exists?
+    anamneses.exists?(status: %w[pendente em_andamento])
   end
 
   def ultima_anamnese

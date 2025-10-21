@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaPolicy < ApplicationPolicy
   def index?
     user.admin? || user.secretary?

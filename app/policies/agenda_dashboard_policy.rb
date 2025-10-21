@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaDashboardPolicy < ApplicationPolicy
   def view?
     user.can_view_agenda_dashboard?

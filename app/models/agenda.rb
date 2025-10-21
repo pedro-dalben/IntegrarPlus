@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Agenda < ApplicationRecord
   include AgendaValidations
   include AgendaNotifications
@@ -79,8 +81,8 @@ class Agenda < ApplicationRecord
     professionals.any? do |professional|
       working_hours['weekdays']&.any? do |day_config|
         day_config['periods']&.any? do |period|
-          start_time = Time.parse("#{Date.current} #{period['start']}")
-          end_time = Time.parse("#{Date.current} #{period['end']}")
+          start_time = Time.zone.parse("#{Date.current} #{period['start']}")
+          end_time = Time.zone.parse("#{Date.current} #{period['end']}")
 
           check_conflicts_for_professional(professional, start_time, end_time).any?
         end
@@ -114,16 +116,16 @@ class Agenda < ApplicationRecord
   end
 
   def generate_day_slots(professional, date)
-    return [] unless working_hours['weekdays'].present?
+    return [] if working_hours['weekdays'].blank?
 
     weekday = date.wday
     day_config = working_hours['weekdays'].find { |d| d['wday'] == weekday }
-    return [] unless day_config&.dig('periods').present?
+    return [] if day_config&.dig('periods').blank?
 
     slots = []
     day_config['periods'].each do |period|
-      start_time = Time.parse("#{date} #{period['start']}")
-      end_time = Time.parse("#{date} #{period['end']}")
+      start_time = Time.zone.parse("#{date} #{period['start']}")
+      end_time = Time.zone.parse("#{date} #{period['end']}")
 
       current_time = start_time
       while current_time + slot_duration_minutes.minutes <= end_time
@@ -180,7 +182,7 @@ class Agenda < ApplicationRecord
         'saturday' => 6
       }
 
-      weekdays = day_names.map do |name, wday|
+      weekdays = day_names.filter_map do |name, wday|
         periods_arr = working[name]
         next nil unless periods_arr.is_a?(Array) && periods_arr.any?
 
@@ -193,7 +195,7 @@ class Agenda < ApplicationRecord
         next nil if periods.empty?
 
         { 'wday' => wday, 'periods' => periods }
-      end.compact
+      end
 
       working['weekdays'] = weekdays if weekdays.any?
     end
@@ -262,7 +264,7 @@ class Agenda < ApplicationRecord
     end
 
     weekdays = working_hours['weekdays']
-    return unless weekdays.present?
+    return if weekdays.blank?
 
     weekdays.each_with_index do |day, index|
       unless day.is_a?(Hash) && day['wday'].present? && day['periods'].present?
@@ -277,8 +279,8 @@ class Agenda < ApplicationRecord
         end
 
         begin
-          start_time = Time.parse(period['start'])
-          end_time = Time.parse(period['end'])
+          start_time = Time.zone.parse(period['start'])
+          end_time = Time.zone.parse(period['end'])
 
           if end_time <= start_time
             errors.add(:working_hours,

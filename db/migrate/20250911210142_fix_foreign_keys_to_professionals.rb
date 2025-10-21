@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FixForeignKeysToProfessionals < ActiveRecord::Migration[8.0]
   def change
     # Remove foreign keys that point to users table

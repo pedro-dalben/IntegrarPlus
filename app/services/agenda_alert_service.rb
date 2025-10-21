@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaAlertService
   def self.check_alerts
     alerts = []
@@ -165,8 +167,6 @@ class AgendaAlertService
     end
   end
 
-  private
-
   def self.send_high_priority_alerts(alerts)
     admin_users = User.joins(professional: :groups).where(groups: { is_admin: true }).distinct
 
@@ -189,8 +189,8 @@ class AgendaAlertService
       total_professionals: Professional.joins(:agenda_professionals).distinct.count,
       total_events: Event.where(start_time: 7.days.ago..Date.current).count,
       average_occupancy: calculate_average_occupancy,
-      conflicts_count: Agenda.active.select(&:has_conflicts?).count,
-      low_occupancy_count: Agenda.active.select { |a| a.occupancy_rate < 30 }.count
+      conflicts_count: Agenda.active.count(&:has_conflicts?),
+      low_occupancy_count: Agenda.active.count { |a| a.occupancy_rate < 30 }
     }
   end
 

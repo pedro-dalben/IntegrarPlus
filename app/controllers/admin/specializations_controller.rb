@@ -163,7 +163,7 @@ module Admin
     end
 
     def specialization_params
-      params.require(:specialization).permit(:name, { speciality_ids: [] })
+      params.expect(specialization: [:name, { speciality_ids: [] }])
     end
   end
 end

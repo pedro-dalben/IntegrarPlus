@@ -17,7 +17,7 @@ module Admin
       {
         # Todos os eventos (para o calendário completo)
         all_events: Event.includes(:professional, :created_by)
-                         .where('start_time >= ?', 1.month.ago)
+                         .where(start_time: 1.month.ago..)
                          .order(:start_time),
 
         # Eventos da semana atual

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Teste de Validação de Especializações
 # Execute este arquivo no console do Rails: rails console
 # load 'test_specialization_validation.rb'
@@ -38,18 +40,18 @@ specializations_count = Specialization.count
 puts "Especialidades disponíveis: #{specialities_count}"
 puts "Especializações disponíveis: #{specializations_count}"
 
-if specialities_count == 0
+if specialities_count.zero?
   puts '⚠️ Nenhuma especialidade encontrada. Criando dados de teste...'
 
   # Criar especialidades de teste
-  speciality1 = Speciality.create!(name: 'Cardiologia')
-  speciality2 = Speciality.create!(name: 'Neurologia')
+  Speciality.create!(name: 'Cardiologia')
+  Speciality.create!(name: 'Neurologia')
   puts '✅ Especialidades de teste criadas'
 else
   puts '✅ Dados suficientes para teste'
 end
 
-if specializations_count == 0
+if specializations_count.zero?
   puts '⚠️ Nenhuma especialização encontrada. Criando dados de teste...'
 
   # Criar especializações de teste
@@ -132,7 +134,7 @@ begin
     # Encontrar especialização que não pertence às especialidades selecionadas
     invalid_specialization = all_specializations.find do |spec|
       spec_speciality_ids = spec.specialities.pluck(:id)
-      (spec_speciality_ids & selected_specialities).empty?
+      !spec_speciality_ids.intersect?(selected_specialities)
     end
 
     if invalid_specialization

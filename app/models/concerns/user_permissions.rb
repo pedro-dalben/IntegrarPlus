@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserPermissions
   extend ActiveSupport::Concern
 
@@ -5,6 +7,7 @@ module UserPermissions
     return true if admin?
     return true if appointment.professional == self
     return true if appointment.patient == self
+
     false
   end
 
@@ -12,6 +15,7 @@ module UserPermissions
     return true if admin?
     return true if appointment.professional == self
     return true if appointment.patient == self
+
     false
   end
 
@@ -19,12 +23,14 @@ module UserPermissions
     return true if admin?
     return true if appointment.professional == self
     return true if appointment.patient == self
+
     false
   end
 
   def can_complete_appointment?(appointment)
     return true if admin?
     return true if appointment.professional == self
+
     false
   end
 

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class NotificationTemplate < ApplicationRecord
   self.inheritance_column = nil
-  
+
   enum :type, {
     agenda_created: 'agenda_created',
     agenda_updated: 'agenda_updated',
@@ -17,43 +19,43 @@ class NotificationTemplate < ApplicationRecord
     weekly_report: 'weekly_report',
     monthly_report: 'monthly_report'
   }
-  
+
   enum :channel, {
     email: 'email',
     sms: 'sms',
     push: 'push',
     in_app: 'in_app'
   }
-  
+
   validates :name, presence: true
   validates :type, presence: true
   validates :channel, presence: true
   validates :body, presence: true
-  
+
   scope :active, -> { where(active: true) }
   scope :by_type, ->(type) { where(type: type) }
   scope :by_channel, ->(channel) { where(channel: channel) }
-  
+
   def render(variables = {})
     rendered_body = body.dup
     rendered_subject = subject&.dup || ''
-    
+
     variables.each do |key, value|
       placeholder = "{{#{key}}}"
       rendered_body.gsub!(placeholder, value.to_s)
       rendered_subject.gsub!(placeholder, value.to_s)
     end
-    
+
     {
       subject: rendered_subject,
       body: rendered_body
     }
   end
-  
+
   def self.find_for_type_and_channel(type, channel)
     find_by(type: type, channel: channel, active: true)
   end
-  
+
   def self.create_default_templates
     default_templates = [
       {
@@ -106,7 +108,7 @@ class NotificationTemplate < ApplicationRecord
         body: 'Consulta de emergência agendada para {{appointment_time}}'
       }
     ]
-    
+
     default_templates.each do |template_data|
       create!(template_data)
     end

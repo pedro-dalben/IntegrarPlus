@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentAttachmentPolicy < ApplicationPolicy
   def index?
     user.admin? || user.permit?('appointment_attachments.read')
@@ -5,7 +7,7 @@ class AppointmentAttachmentPolicy < ApplicationPolicy
 
   def show?
     user.admin? || user.permit?('appointment_attachments.read') ||
-    (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
+      (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
   end
 
   def create?
@@ -14,7 +16,7 @@ class AppointmentAttachmentPolicy < ApplicationPolicy
 
   def download?
     user.admin? || user.permit?('appointment_attachments.download') ||
-    (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
+      (record.medical_appointment.professional == user) || (record.medical_appointment.patient == user)
   end
 
   def update?

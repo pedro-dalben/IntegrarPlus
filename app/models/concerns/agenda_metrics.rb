@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AgendaMetrics
   extend ActiveSupport::Concern
 
@@ -27,10 +29,8 @@ module AgendaMetrics
     end
 
     def calculate_agendas_growth
-      current_month = Agenda.where('created_at >= ?', Date.current.beginning_of_month).count
-      last_month = Agenda.where('created_at >= ? AND created_at < ?',
-                               1.month.ago.beginning_of_month,
-                               1.month.ago.end_of_month).count
+      current_month = Agenda.where(created_at: Date.current.beginning_of_month..).count
+      last_month = Agenda.where(created_at: 1.month.ago.beginning_of_month...1.month.ago.end_of_month).count
 
       return 0 if last_month.zero?
 
@@ -38,10 +38,8 @@ module AgendaMetrics
     end
 
     def calculate_events_growth
-      current_month = Event.where('created_at >= ?', Date.current.beginning_of_month).count
-      last_month = Event.where('created_at >= ? AND created_at < ?',
-                              1.month.ago.beginning_of_month,
-                              1.month.ago.end_of_month).count
+      current_month = Event.where(created_at: Date.current.beginning_of_month..).count
+      last_month = Event.where(created_at: 1.month.ago.beginning_of_month...1.month.ago.end_of_month).count
 
       return 0 if last_month.zero?
 

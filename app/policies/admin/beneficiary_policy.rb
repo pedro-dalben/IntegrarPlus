@@ -33,10 +33,8 @@ module Admin
     class Scope < Scope
       def resolve
         if user.admin?
-          scope.all
-        else
-          scope.all
         end
+        scope.all
       end
     end
   end

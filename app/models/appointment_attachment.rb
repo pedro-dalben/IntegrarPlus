@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentAttachment < ApplicationRecord
   include FileValidation
 
@@ -16,7 +18,6 @@ class AppointmentAttachment < ApplicationRecord
 
   validates :attachment_type, presence: true
   validates :name, presence: true
-  validates :uploaded_by, presence: true
 
   scope :by_type, ->(type) { where(attachment_type: type) }
   scope :recent, -> { order(created_at: :desc) }
@@ -24,11 +25,13 @@ class AppointmentAttachment < ApplicationRecord
 
   def file_size_mb
     return 0 unless file.attached?
+
     (file.byte_size / 1.megabyte.to_f).round(2)
   end
 
   def file_extension
     return nil unless file.attached?
+
     File.extname(file.filename.to_s).downcase
   end
 
@@ -49,11 +52,13 @@ class AppointmentAttachment < ApplicationRecord
     return true if user.admin?
     return true if medical_appointment.professional == user
     return true if medical_appointment.patient == user
+
     false
   end
 
   def can_be_deleted_by?(user)
     return false unless user
+
     uploaded_by == user || user.admin?
   end
 
@@ -92,5 +97,4 @@ class AppointmentAttachment < ApplicationRecord
   def preview_url
     Rails.application.routes.url_helpers.rails_blob_path(file, disposition: 'inline')
   end
-
 end

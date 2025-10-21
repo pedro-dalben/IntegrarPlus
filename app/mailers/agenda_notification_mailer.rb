@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaNotificationMailer < ApplicationMailer
   default from: 'noreply@integrar.com.br'
 

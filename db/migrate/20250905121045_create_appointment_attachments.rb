@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAppointmentAttachments < ActiveRecord::Migration[8.0]
   def change
     create_table :appointment_attachments do |t|
@@ -10,6 +12,6 @@ class CreateAppointmentAttachments < ActiveRecord::Migration[8.0]
     end
 
     add_index :appointment_attachments, :attachment_type
-    add_index :appointment_attachments, [:medical_appointment_id, :created_at]
+    add_index :appointment_attachments, %i[medical_appointment_id created_at]
   end
 end

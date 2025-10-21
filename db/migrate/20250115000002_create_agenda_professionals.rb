@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAgendaProfessionals < ActiveRecord::Migration[7.1]
   def change
     create_table :agenda_professionals do |t|

@@ -1,5 +1,6 @@
-class Home::FaqComponent < ViewComponent::Base
-  def initialize
-    super
+# frozen_string_literal: true
+
+module Home
+  class FaqComponent < ViewComponent::Base
   end
 end

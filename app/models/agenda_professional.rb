@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaProfessional < ApplicationRecord
   belongs_to :agenda
   belongs_to :professional, class_name: 'User'

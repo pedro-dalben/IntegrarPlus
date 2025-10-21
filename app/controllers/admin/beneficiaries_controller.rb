@@ -110,7 +110,7 @@ module Admin
       scope = Beneficiary.includes(:anamneses, :portal_intake)
 
       scope = apply_filters(scope)
-      scope = scope.ordered
+      scope.ordered
     end
 
     def build_search_filters

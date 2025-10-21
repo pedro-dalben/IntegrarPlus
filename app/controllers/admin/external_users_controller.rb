@@ -6,8 +6,8 @@ module Admin
 
     def index
       @external_users = policy_scope(ExternalUser, policy_scope_class: Admin::ExternalUserPolicy::Scope)
-                                   .includes(:portal_intakes)
-                                   .order(:company_name, :name)
+                        .includes(:portal_intakes)
+                        .order(:company_name, :name)
 
       @external_users = apply_filters(@external_users)
       @pagy, @external_users = pagy(@external_users, items: 20)
@@ -30,6 +30,8 @@ module Admin
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
     end
 
+    def edit; end
+
     def create
       @external_user = ExternalUser.new(external_user_params)
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
@@ -41,8 +43,6 @@ module Admin
         render :new, status: :unprocessable_entity
       end
     end
-
-    def edit; end
 
     def update
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
@@ -116,7 +116,10 @@ module Admin
 
     def apply_filters(scope)
       scope = scope.where(active: params[:active] == 'true') if params[:active].present?
-      scope = scope.where('name ILIKE ? OR company_name ILIKE ?', "%#{params[:search]}%", "%#{params[:search]}%") if params[:search].present?
+      if params[:search].present?
+        scope = scope.where('name ILIKE ? OR company_name ILIKE ?', "%#{params[:search]}%",
+                            "%#{params[:search]}%")
+      end
       scope
     end
 

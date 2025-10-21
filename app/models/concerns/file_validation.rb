@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FileValidation
   extend ActiveSupport::Concern
 
@@ -18,9 +20,9 @@ module FileValidation
 
     max_size = file_size_limits[attachment_type.to_s] || 10.megabytes
 
-    if file.byte_size > max_size
-      errors.add(:file, "tamanho máximo permitido: #{max_size / 1.megabyte}MB")
-    end
+    return unless file.byte_size > max_size
+
+    errors.add(:file, "tamanho máximo permitido: #{max_size / 1.megabyte}MB")
   end
 
   def file_type_allowed
@@ -28,9 +30,9 @@ module FileValidation
 
     allowed_extensions = allowed_file_types[attachment_type.to_s] || %w[.pdf .jpg .jpeg .png .doc .docx .txt]
 
-    unless allowed_extensions.include?(file_extension)
-      errors.add(:file, "tipo de arquivo não permitido para #{attachment_type}")
-    end
+    return if allowed_extensions.include?(file_extension)
+
+    errors.add(:file, "tipo de arquivo não permitido para #{attachment_type}")
   end
 
   def file_size_limits

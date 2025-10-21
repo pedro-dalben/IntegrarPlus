@@ -1,6 +1,6 @@
-class Home::FeaturesComponent < ViewComponent::Base
-  def initialize
+# frozen_string_literal: true
+
+module Home
+  class FeaturesComponent < ViewComponent::Base
   end
 end
-
-

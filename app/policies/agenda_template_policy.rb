@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaTemplatePolicy < ApplicationPolicy
   def index?
     user.admin? || user.can?(:view_agenda_templates)

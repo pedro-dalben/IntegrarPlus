@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationPolicy < ApplicationPolicy
   def index?
     user.admin? || user.permit?('notifications.index')
@@ -57,5 +59,3 @@ class NotificationPolicy < ApplicationPolicy
     end
   end
 end
-
-

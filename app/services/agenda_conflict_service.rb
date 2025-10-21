@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgendaConflictService
   def self.check_conflicts(agenda, professional, start_time, end_time)
     conflicts = []
@@ -37,20 +39,16 @@ class AgendaConflictService
   end
 
   def self.check_event_conflicts(professional, start_time, end_time)
-    conflicts = []
-
     conflicting_events = Event.available_slots(professional.id, start_time, end_time)
 
-    conflicting_events.each do |event|
-      conflicts << {
+    conflicting_events.map do |event|
+      {
         type: :event_conflict,
         message: "Conflito com evento '#{event.title}'",
         conflicting_event: event,
         severity: :high
       }
     end
-
-    conflicts
   end
 
   def self.check_holiday_conflicts(start_time, end_time)
@@ -75,12 +73,10 @@ class AgendaConflictService
   def self.check_professional_availability(professional, start_time, end_time)
     conflicts = []
 
-    professional_id = if professional.respond_to?(:id) && professional.class.name == 'Professional'
+    professional_id = if professional.respond_to?(:id) && professional.instance_of?(::Professional)
                         professional.id
                       elsif professional.respond_to?(:professional_id)
                         professional.professional_id
-                      else
-                        nil
                       end
 
     return conflicts unless professional_id
@@ -100,15 +96,15 @@ class AgendaConflictService
   end
 
   def self.schedules_overlap?(agenda, start_time, end_time)
-    return false unless agenda.working_hours.present?
+    return false if agenda.working_hours.blank?
 
     target_wday = start_time.wday
     day_config = agenda.working_hours['weekdays']&.find { |d| d['wday'] == target_wday }
-    return false unless day_config&.dig('periods').present?
+    return false if day_config&.dig('periods').blank?
 
     day_config['periods'].any? do |period|
-      period_start = Time.parse("#{start_time.to_date} #{period['start']}")
-      period_end = Time.parse("#{start_time.to_date} #{period['end']}")
+      period_start = Time.zone.parse("#{start_time.to_date} #{period['start']}")
+      period_end = Time.zone.parse("#{start_time.to_date} #{period['end']}")
 
       start_time < period_end && end_time > period_start
     end
@@ -139,8 +135,6 @@ class AgendaConflictService
       conflicts
     end
   end
-
-  private
 
   def self.auto_resolve_conflicts(conflicts)
     resolved_conflicts = []
@@ -179,8 +173,8 @@ class AgendaConflictService
       alternative_date = original_start.to_date + day_offset.days
       next if holiday?(alternative_date)
 
-      alternative_start = Time.parse("#{alternative_date} #{original_start.strftime('%H:%M')}")
-      alternative_end = Time.parse("#{alternative_date} #{original_end.strftime('%H:%M')}")
+      alternative_start = Time.zone.parse("#{alternative_date} #{original_start.strftime('%H:%M')}")
+      alternative_end = Time.zone.parse("#{alternative_date} #{original_end.strftime('%H:%M')}")
 
       alternative_conflicts = check_conflicts(nil, professional, alternative_start, alternative_end)
 

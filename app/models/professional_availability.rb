@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfessionalAvailability < ApplicationRecord
   belongs_to :professional, class_name: 'Professional'
   belongs_to :agenda, optional: true

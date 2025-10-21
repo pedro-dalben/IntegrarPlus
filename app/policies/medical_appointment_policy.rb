@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalAppointmentPolicy < ApplicationPolicy
   def index?
     user.can_view_medical_appointments?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAvailabilityExceptions < ActiveRecord::Migration[8.0]
   def change
     create_table :availability_exceptions do |t|

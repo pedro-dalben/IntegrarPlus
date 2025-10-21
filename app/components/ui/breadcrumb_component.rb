@@ -27,7 +27,8 @@ module Ui
       end
 
       # Analisar o path para determinar a estrutura
-      if path_parts.length == 1
+      case path_parts.length
+      when 1
         # /admin/resource - página de índice
         resource_name = path_parts[0].singularize
         breadcrumbs << {
@@ -35,7 +36,7 @@ module Ui
           path: nil,
           active: true
         }
-      elsif path_parts.length == 2
+      when 2
         if path_parts[1].match?(/^\d+$/)
           # /admin/resource/123 - página de visualização
           resource_name = path_parts[0].singularize
@@ -63,7 +64,7 @@ module Ui
             active: true
           }
         end
-      elsif path_parts.length == 3
+      when 3
         if path_parts[1].match?(/^\d+$/) && %w[new edit].include?(path_parts[2])
           # /admin/resource/123/edit ou /admin/resource/123/new
           resource_name = path_parts[0].singularize

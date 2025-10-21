@@ -162,21 +162,21 @@ module Admin
     def professional_params
       Rails.logger.info "Parâmetros brutos: #{params.inspect}"
 
-      permitted_params = params.require(:professional).permit(
-        :full_name, :birth_date, :cpf, :phone, :email, :active,
-        :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes,
-        :council_code, :company_name, :cnpj,
-        { primary_address_attributes: %i[
-            id zip_code street number complement
-            neighborhood city state latitude longitude _destroy
-          ],
-          secondary_address_attributes: %i[
-            id zip_code street number complement
-            neighborhood city state latitude longitude _destroy
-          ],
-          group_ids: [],
-          speciality_ids: [],
-          specialization_ids: [] }
+      permitted_params = params.expect(
+        professional: [:full_name, :birth_date, :cpf, :phone, :email, :active,
+                       :contract_type_id, :hired_on, :workload_hhmm, :workload_minutes,
+                       :council_code, :company_name, :cnpj,
+                       { primary_address_attributes: %i[
+                           id zip_code street number complement
+                           neighborhood city state latitude longitude _destroy
+                         ],
+                         secondary_address_attributes: %i[
+                           id zip_code street number complement
+                           neighborhood city state latitude longitude _destroy
+                         ],
+                         group_ids: [],
+                         speciality_ids: [],
+                         specialization_ids: [] }]
       )
 
       Rails.logger.info "Parâmetros permitidos: #{permitted_params.inspect}"

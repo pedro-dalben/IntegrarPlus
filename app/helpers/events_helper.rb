@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsHelper
   def event_color(event_type)
     case event_type
@@ -67,7 +69,7 @@ module EventsHelper
     else
       hours = minutes / 60
       remaining_minutes = minutes % 60
-      if remaining_minutes == 0
+      if remaining_minutes.zero?
         "#{hours}h"
       else
         "#{hours}h#{remaining_minutes}min"
