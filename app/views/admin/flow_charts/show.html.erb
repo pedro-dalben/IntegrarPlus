@@ -1,0 +1,185 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_flow_charts_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+
+    <% if policy(@flow_chart).update? %>
+      <%= link_to edit_admin_flow_chart_path(@flow_chart), class: "ta-btn ta-btn-primary inline-flex items-center gap-2" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        Editar
+      <% end %>
+    <% end %>
+
+    <% if policy(@flow_chart).duplicate? %>
+      <%= button_to duplicate_admin_flow_chart_path(@flow_chart), method: :post, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Duplicar
+      <% end %>
+    <% end %>
+
+    <% if policy(@flow_chart).publish? && @flow_chart.draft? && @flow_chart.can_publish? %>
+      <%= button_to publish_admin_flow_chart_path(@flow_chart), method: :post, class: "ta-btn ta-btn-success inline-flex items-center gap-2" do %>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Publicar
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+      <div class="flex items-start justify-between mb-6">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @flow_chart.title %></h1>
+          <div class="flex items-center gap-3 mt-2">
+            <% if @flow_chart.published? %>
+              <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                Publicado
+              </span>
+            <% elsif @flow_chart.archived? %>
+              <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                Arquivado
+              </span>
+            <% else %>
+              <span class="inline-flex items-center gap-1 rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                Rascunho
+              </span>
+            <% end %>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Versão <%= @flow_chart.version_number %></span>
+          </div>
+        </div>
+      </div>
+
+      <% if @flow_chart.description.present? %>
+        <div class="mb-6">
+          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrição</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400"><%= @flow_chart.description %></p>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div>
+          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Informações</h3>
+          <dl class="space-y-2">
+            <div>
+              <dt class="text-xs text-gray-500 dark:text-gray-400">Criado por</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= @flow_chart.created_by.full_name %></dd>
+            </div>
+            <div>
+              <dt class="text-xs text-gray-500 dark:text-gray-400">Criado em</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= l(@flow_chart.created_at, format: :long) %></dd>
+            </div>
+            <div>
+              <dt class="text-xs text-gray-500 dark:text-gray-400">Última atualização</dt>
+              <dd class="text-sm text-gray-900 dark:text-white"><%= l(@flow_chart.updated_at, format: :long) %></dd>
+            </div>
+          </dl>
+        </div>
+
+        <% if @current_version.present? %>
+          <div>
+            <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Versão Atual</h3>
+            <dl class="space-y-2">
+              <div>
+                <dt class="text-xs text-gray-500 dark:text-gray-400">Número da versão</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">v<%= @current_version.version %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-gray-500 dark:text-gray-400">Criada por</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= @current_version.created_by.full_name %></dd>
+              </div>
+              <div>
+                <dt class="text-xs text-gray-500 dark:text-gray-400">Criada em</dt>
+                <dd class="text-sm text-gray-900 dark:text-white"><%= l(@current_version.created_at, format: :long) %></dd>
+              </div>
+              <% if @current_version.has_notes? %>
+                <div>
+                  <dt class="text-xs text-gray-500 dark:text-gray-400">Notas</dt>
+                  <dd class="text-sm text-gray-900 dark:text-white"><%= @current_version.notes %></dd>
+                </div>
+              <% end %>
+            </dl>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @current_version.present? %>
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Preview do Fluxograma</h3>
+        <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white" style="min-height: 500px;">
+          <iframe
+            id="drawio-preview"
+            src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1"
+            style="width: 100%; height: 600px; border: none;"
+            data-diagram="<%= @current_version.data.gsub('"', '&quot;').html_safe %>">
+          </iframe>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const iframe = document.getElementById('drawio-preview');
+          const diagramData = iframe.dataset.diagram;
+
+          iframe.addEventListener('load', function() {
+            setTimeout(() => {
+              iframe.contentWindow.postMessage(
+                JSON.stringify({
+                  action: 'load',
+                  xml: diagramData,
+                  autosave: 0
+                }),
+                '*'
+              );
+            }, 1000);
+          });
+        });
+      </script>
+    <% end %>
+
+    <% if @versions.any? %>
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Histórico de Versões</h3>
+        <div class="space-y-3">
+          <% @versions.each do |version| %>
+            <div class="flex items-start gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-lg <%= 'bg-blue-50 dark:bg-blue-900/10' if version.id == @current_version&.id %>">
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                  <span class="text-sm font-medium text-blue-600 dark:text-blue-400">v<%= version.version %></span>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">
+                    <%= version.display_name %>
+                  </p>
+                  <% if version.id == @current_version&.id %>
+                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                      Atual
+                    </span>
+                  <% end %>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <%= version.created_by.full_name %> • <%= l(version.created_at, format: :short) %>
+                </p>
+                <% if version.has_notes? %>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-2"><%= version.notes %></p>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

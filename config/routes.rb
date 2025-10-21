@@ -217,6 +217,14 @@ Rails.application.routes.draw do
     resources :released_documents, only: %i[index show]
     resources :specialities, except: [:show]
     resources :calendar, only: [:index]
+
+    resources :flow_charts do
+      member do
+        post :publish
+        post :duplicate
+        post :export_pdf
+      end
+    end
   end
 
   namespace :api do

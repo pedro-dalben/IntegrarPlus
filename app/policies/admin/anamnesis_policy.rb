@@ -53,7 +53,7 @@ module Admin
     def can_view_anamnesis?
       return true if user.permit?('anamneses.view_all')
       return true if record.professional == user.professional
-
+a
       false
     end
 

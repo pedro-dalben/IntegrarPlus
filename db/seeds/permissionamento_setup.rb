@@ -90,7 +90,18 @@ permissions_data = [
   { key: 'anamneses.complete', description: 'Concluir anamnese' },
   { key: 'anamneses.view_all', description: 'Ver todas as anamneses (não apenas próprias)' },
   { key: 'anamneses.today', description: 'Ver anamneses de hoje' },
-  { key: 'anamneses.by_professional', description: 'Ver anamneses por profissional' }
+  { key: 'anamneses.by_professional', description: 'Ver anamneses por profissional' },
+  { key: 'flow_charts.index', description: 'Listar fluxogramas' },
+  { key: 'flow_charts.show', description: 'Ver detalhes de fluxograma' },
+  { key: 'flow_charts.new', description: 'Acessar formulário de novo fluxograma' },
+  { key: 'flow_charts.create', description: 'Criar novos fluxogramas' },
+  { key: 'flow_charts.edit', description: 'Acessar formulário de edição de fluxograma' },
+  { key: 'flow_charts.update', description: 'Atualizar fluxogramas' },
+  { key: 'flow_charts.destroy', description: 'Excluir fluxogramas' },
+  { key: 'flow_charts.publish', description: 'Publicar fluxogramas' },
+  { key: 'flow_charts.duplicate', description: 'Duplicar fluxogramas' },
+  { key: 'flow_charts.export_pdf', description: 'Exportar fluxogramas para PDF' },
+  { key: 'flow_charts.manage', description: 'Gerenciar fluxogramas (criar, editar, excluir, publicar, duplicar)' }
 ]
 
 permissions_data.each do |perm_data|

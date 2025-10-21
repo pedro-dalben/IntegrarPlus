@@ -173,6 +173,9 @@ load Rails.root.join('db/seeds/notification_templates.rb')
 # Criar notificações de exemplo
 load Rails.root.join('db/seeds/sample_notifications.rb')
 
+# Criar fluxogramas de exemplo
+load Rails.root.join('db/seeds/flow_charts_setup.rb')
+
 Rails.logger.debug "\n🎉 Seeds executados com sucesso!"
 Rails.logger.debug '📋 Usuário admin disponível:'
 Rails.logger.debug '   Email: admin@integrarplus.com'

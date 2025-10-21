@@ -1,0 +1,7 @@
+<%= render 'table', flow_charts: @flow_charts, pagy: @pagy %>
+
+<% if @pagy.pages > 1 %>
+  <div class="mt-6">
+    <%= render Ui::PaginationComponent.new(pagy: @pagy) %>
+  </div>
+<% end %>

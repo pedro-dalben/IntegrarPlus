@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🧪 Iniciando testes do módulo de Fluxogramas..."
+echo ""
+
+echo "📋 Verificando pré-requisitos..."
+
+if ! command -v npx &> /dev/null; then
+    echo "❌ Node.js/npm não encontrado. Por favor instale Node.js primeiro."
+    exit 1
+fi
+
+if ! command -v bundle &> /dev/null; then
+    echo "❌ Bundler não encontrado. Por favor instale Bundler primeiro."
+    exit 1
+fi
+
+echo "✅ Node.js encontrado"
+echo "✅ Bundler encontrado"
+echo ""
+
+if ! pgrep -f "rails server.*3001" > /dev/null; then
+    echo "⚠️  Servidor Rails não está rodando na porta 3001"
+    echo "📌 Iniciando servidor de testes..."
+
+    bin/rails server -p 3001 -e test &
+    SERVER_PID=$!
+
+    echo "⏳ Aguardando servidor inicializar (15s)..."
+    sleep 15
+
+    echo "✅ Servidor iniciado (PID: $SERVER_PID)"
+    STOP_SERVER=true
+else
+    echo "✅ Servidor Rails já está rodando"
+    STOP_SERVER=false
+fi
+
+echo ""
+echo "🧪 Executando testes Playwright..."
+echo ""
+
+npx playwright test tests/flow-charts.spec.ts --reporter=list
+
+EXIT_CODE=$?
+
+if [ "$STOP_SERVER" = true ]; then
+    echo ""
+    echo "🛑 Parando servidor de testes..."
+    kill $SERVER_PID 2>/dev/null || true
+fi
+
+echo ""
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "✅ Todos os testes passaram com sucesso!"
+    echo ""
+    echo "📊 Para ver o relatório detalhado, execute:"
+    echo "   npx playwright show-report"
+else
+    echo "❌ Alguns testes falharam"
+    echo ""
+    echo "🔍 Para debug, execute:"
+    echo "   npx playwright test tests/flow-charts.spec.ts --debug"
+    echo ""
+    echo "📊 Para ver o relatório, execute:"
+    echo "   npx playwright show-report"
+fi
+
+echo ""
+exit $EXIT_CODE
