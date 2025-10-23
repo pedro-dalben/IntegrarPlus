@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentSchedulingService
   def initialize(professional, agenda)
     @professional = professional
@@ -81,7 +83,7 @@ class AppointmentSchedulingService
     # @professional pode ser User ou Professional
     professional_record = @professional.is_a?(User) ? @professional.professional : @professional
 
-    return [] unless professional_record.present?
+    return [] if professional_record.blank?
 
     availabilities = professional_record.professional_availabilities
                                         .where(agenda: @agenda)
@@ -210,7 +212,7 @@ class AppointmentSchedulingService
     end
   end
 
-  def send_notifications(event, medical_appointment)
+  def send_notifications(_event, medical_appointment)
     if medical_appointment.patient.present?
       MedicalAppointmentMailer.appointment_scheduled(medical_appointment).deliver_later
     end
@@ -218,13 +220,13 @@ class AppointmentSchedulingService
     MedicalAppointmentMailer.professional_notification(medical_appointment).deliver_later
   end
 
-  def send_reschedule_notifications(appointment, old_datetime, new_datetime)
+  def send_reschedule_notifications(appointment, _old_datetime, _new_datetime)
     MedicalAppointmentMailer.appointment_rescheduled(appointment).deliver_later if appointment.patient.present?
 
     MedicalAppointmentMailer.professional_reschedule(appointment).deliver_later
   end
 
-  def send_cancellation_notifications(appointment, reason)
+  def send_cancellation_notifications(appointment, _reason)
     MedicalAppointmentMailer.appointment_cancelled(appointment).deliver_later if appointment.patient.present?
 
     MedicalAppointmentMailer.professional_cancellation(appointment).deliver_later

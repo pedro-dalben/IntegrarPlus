@@ -168,9 +168,9 @@ module SecurityValidations
   # Métodos auxiliares
   def text_fields
     # Campos de texto que precisam ser sanitizados
-    if self.class.name == 'PortalIntake'
+    if instance_of?(::PortalIntake)
       %w[nome responsavel endereco convenio plan_name card_code carteira_codigo]
-    elsif self.class.name == 'PortalIntakeReferral'
+    elsif instance_of?(::PortalIntakeReferral)
       %w[medico descricao]
     else
       []

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AvailabilityConfigurationService
   def initialize(professional, agenda = nil)
     @professional = professional
@@ -184,7 +186,7 @@ class AvailabilityConfigurationService
        (exception_data[:start_time].present? && exception_data[:end_time].present?))
   end
 
-  def check_availability_for_date(date, availabilities, exceptions)
+  def check_availability_for_date(_date, availabilities, exceptions)
     return false if availabilities.empty?
     return false if exceptions.any?(&:blocks_time?)
 

@@ -18,6 +18,7 @@ module AdminNav
         { label: 'Grupos', path: '/admin/groups', icon: 'bi-collection', required_permission: 'groups.manage' }
       ] },
 
+      { label: 'Fluxogramas', path: '/admin/flow_charts', icon: 'bi-diagram-3', required_permission: 'flow_charts.index' },
       { label: 'Configurações', icon: 'bi-gear', required_permission: 'settings.read', children: [
         { label: 'Formas de Contratação', path: '/admin/contract_types', icon: 'bi-briefcase',
           required_permission: 'settings.read' },

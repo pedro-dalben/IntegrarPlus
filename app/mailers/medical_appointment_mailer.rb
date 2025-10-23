@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalAppointmentMailer < ApplicationMailer
   def appointment_scheduled(appointment)
     @appointment = appointment
@@ -175,7 +177,7 @@ class MedicalAppointmentMailer < ApplicationMailer
 
     mail(
       to: @professional.email,
-      subject: "ALERTA: Consulta de emergência agendada",
+      subject: 'ALERTA: Consulta de emergência agendada',
       template_name: 'emergency_alert'
     )
   end

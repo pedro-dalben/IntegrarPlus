@@ -80,7 +80,7 @@ module Portal
                        endereco responsavel convenio]
 
       text_fields.each do |field|
-        next unless portal_intake[field].present?
+        next if portal_intake[field].blank?
 
         # Remover caracteres perigosos
         portal_intake[field] = portal_intake[field].gsub(/[<>'"&]/, '')
@@ -95,23 +95,21 @@ module Portal
       end
 
       # Sanitizar encaminhamentos
-      if portal_intake[:portal_intake_referrals_attributes]
-        portal_intake[:portal_intake_referrals_attributes].each do |_key, referral|
-          next unless referral.is_a?(Hash)
+      portal_intake[:portal_intake_referrals_attributes]&.each_value do |referral|
+        next unless referral.is_a?(Hash)
 
-          # Sanitizar campos de texto do encaminhamento
-          %w[medico descricao].each do |field|
-            next unless referral[field].present?
+        # Sanitizar campos de texto do encaminhamento
+        %w[medico descricao].each do |field|
+          next if referral[field].blank?
 
-            referral[field] = referral[field].gsub(/[<>'"&]/, '')
-          end
-
-          # Sanitizar CID - manter apenas letras, números e ponto
-          referral[:cid] = referral[:cid].gsub(/[^A-Za-z0-9.]/, '').upcase if referral[:cid].present?
-
-          # Sanitizar CRM - manter apenas números
-          referral[:medico_crm] = referral[:medico_crm].gsub(/[^0-9]/, '') if referral[:medico_crm].present?
+          referral[field] = referral[field].gsub(/[<>'"&]/, '')
         end
+
+        # Sanitizar CID - manter apenas letras, números e ponto
+        referral[:cid] = referral[:cid].gsub(/[^A-Za-z0-9.]/, '').upcase if referral[:cid].present?
+
+        # Sanitizar CRM - manter apenas números
+        referral[:medico_crm] = referral[:medico_crm].gsub(/[^0-9]/, '') if referral[:medico_crm].present?
       end
 
       params

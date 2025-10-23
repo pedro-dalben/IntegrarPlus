@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalAppointment < ApplicationRecord
   belongs_to :agenda
   belongs_to :professional, class_name: 'Professional'
@@ -39,7 +41,6 @@ class MedicalAppointment < ApplicationRecord
   validates :priority, presence: true
   validates :scheduled_at, presence: true
   validates :duration_minutes, presence: true, numericality: { greater_than: 0 }
-  validates :professional, presence: true
 
   scope :today, -> { where(scheduled_at: Date.current.all_day) }
   scope :this_week, -> { where(scheduled_at: Date.current.all_week) }
@@ -128,13 +129,11 @@ class MedicalAppointment < ApplicationRecord
   end
 
   def is_this_week?
-    scheduled_at.to_date >= Date.current.beginning_of_week &&
-      scheduled_at.to_date <= Date.current.end_of_week
+    scheduled_at.to_date.between?(Date.current.beginning_of_week, Date.current.end_of_week)
   end
 
   def is_this_month?
-    scheduled_at.to_date >= Date.current.beginning_of_month &&
-      scheduled_at.to_date <= Date.current.end_of_month
+    scheduled_at.to_date.between?(Date.current.beginning_of_month, Date.current.end_of_month)
   end
 
   def status_color

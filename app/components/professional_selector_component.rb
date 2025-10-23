@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfessionalSelectorComponent < ViewComponent::Base
   def initialize(selected_professionals: [], multiple: true, searchable: true, agenda: nil)
     @selected_professionals = selected_professionals

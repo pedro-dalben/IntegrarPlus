@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppointmentNote < ApplicationRecord
   belongs_to :medical_appointment
   belongs_to :created_by, class_name: 'User'
@@ -16,7 +18,6 @@ class AppointmentNote < ApplicationRecord
 
   validates :note_type, presence: true
   validates :content, presence: true
-  validates :created_by, presence: true
 
   scope :by_type, ->(type) { where(note_type: type) }
   scope :recent, -> { order(created_at: :desc) }
@@ -71,11 +72,13 @@ class AppointmentNote < ApplicationRecord
 
   def can_be_edited_by?(user)
     return false unless user
+
     created_by == user || user.admin?
   end
 
   def can_be_deleted_by?(user)
     return false unless user
+
     created_by == user || user.admin?
   end
 

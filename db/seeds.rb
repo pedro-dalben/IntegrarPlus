@@ -114,7 +114,7 @@ if admin_user
     active: true,
     confirmed_at: Time.current
   )
-  puts "✅ Usuário admin atualizado: #{admin_user.email} com senha: 123456"
+  Rails.logger.debug { "✅ Usuário admin atualizado: #{admin_user.email} com senha: 123456" }
 else
   # Se não existe, cria novo usuário
   admin_user = User.create!(
@@ -125,15 +125,15 @@ else
     active: true,
     confirmed_at: Time.current
   )
-  puts "✅ Usuário admin criado: #{admin_user.email} com senha: 123456"
+  Rails.logger.debug { "✅ Usuário admin criado: #{admin_user.email} com senha: 123456" }
 end
 
 # Verifica se a senha está funcionando
 if admin_user.valid_password?('123456')
-  puts '✅ Senha do usuário admin validada com sucesso'
+  Rails.logger.debug '✅ Senha do usuário admin validada com sucesso'
 else
-  puts '❌ ERRO: Senha do usuário admin não está funcionando!'
-  puts '   Tentando recriar usuário...'
+  Rails.logger.debug '❌ ERRO: Senha do usuário admin não está funcionando!'
+  Rails.logger.debug '   Tentando recriar usuário...'
 
   # Força recriação do usuário
   admin_user.destroy!
@@ -147,18 +147,18 @@ else
   )
 
   if admin_user.valid_password?('123456')
-    puts '✅ Usuário admin recriado com sucesso'
+    Rails.logger.debug '✅ Usuário admin recriado com sucesso'
   else
-    puts '❌ ERRO CRÍTICO: Não foi possível criar usuário admin válido!'
+    Rails.logger.debug '❌ ERRO CRÍTICO: Não foi possível criar usuário admin válido!'
     raise 'Falha na criação do usuário admin'
   end
 end
 
 # Associa o profissional admin ao grupo Administradores
 admin_group = Group.find_by(name: 'Administradores')
-if admin_group && !admin_professional.groups.include?(admin_group)
+if admin_group && admin_professional.groups.exclude?(admin_group)
   admin_professional.professional_groups.create!(group: admin_group)
-  puts "✅ Profissional admin associado ao grupo: #{admin_group.name}"
+  Rails.logger.debug { "✅ Profissional admin associado ao grupo: #{admin_group.name}" }
 end
 
 # Carrega seeds para usuários externos (operadoras)
@@ -173,10 +173,13 @@ load Rails.root.join('db/seeds/notification_templates.rb')
 # Criar notificações de exemplo
 load Rails.root.join('db/seeds/sample_notifications.rb')
 
-puts "\n🎉 Seeds executados com sucesso!"
-puts '📋 Usuário admin disponível:'
-puts '   Email: admin@integrarplus.com'
-puts '   Senha: 123456'
-puts "   Status: #{admin_user.active ? 'Ativo' : 'Inativo'}"
-puts "   Confirmado: #{admin_user.confirmed_at ? 'Sim' : 'Não'}"
-puts "   Senha válida: #{admin_user.valid_password?('123456') ? 'Sim' : 'Não'}"
+# Criar fluxogramas de exemplo
+load Rails.root.join('db/seeds/flow_charts_setup.rb')
+
+Rails.logger.debug "\n🎉 Seeds executados com sucesso!"
+Rails.logger.debug '📋 Usuário admin disponível:'
+Rails.logger.debug '   Email: admin@integrarplus.com'
+Rails.logger.debug '   Senha: 123456'
+Rails.logger.debug { "   Status: #{admin_user.active ? 'Ativo' : 'Inativo'}" }
+Rails.logger.debug { "   Confirmado: #{admin_user.confirmed_at ? 'Sim' : 'Não'}" }
+Rails.logger.debug { "   Senha válida: #{admin_user.valid_password?('123456') ? 'Sim' : 'Não'}" }

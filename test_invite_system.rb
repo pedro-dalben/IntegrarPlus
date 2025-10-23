@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Teste do Sistema de Convites
 # Execute este arquivo no console do Rails: rails console
 # load 'test_invite_system.rb'
@@ -93,7 +95,7 @@ end
 # Testar sistema de convites existente
 puts "\n=== Testando Sistema de Convites Existente ==="
 
-if invites_count > 0
+if invites_count.positive?
   latest_invite = Invite.order(created_at: :desc).first
   puts 'Convite mais recente:'
   puts "  Token: #{latest_invite.token}"

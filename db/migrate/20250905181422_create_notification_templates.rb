@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateNotificationTemplates < ActiveRecord::Migration[8.0]
   def change
     create_table :notification_templates do |t|
@@ -12,7 +14,7 @@ class CreateNotificationTemplates < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :notification_templates, [:type, :channel]
+    add_index :notification_templates, %i[type channel]
     add_index :notification_templates, :active
   end
 end

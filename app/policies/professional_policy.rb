@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProfessionalPolicy < ApplicationPolicy
   def access?
     user.present? && user.professional.present?

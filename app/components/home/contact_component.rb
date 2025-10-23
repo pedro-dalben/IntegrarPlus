@@ -1,5 +1,6 @@
-class Home::ContactComponent < ViewComponent::Base
-  def initialize
-    super
+# frozen_string_literal: true
+
+module Home
+  class ContactComponent < ViewComponent::Base
   end
 end

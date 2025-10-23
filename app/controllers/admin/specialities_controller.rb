@@ -123,7 +123,7 @@ module Admin
     end
 
     def speciality_params
-      permitted_params = params.require(:speciality).permit(:name, :active)
+      permitted_params = params.expect(speciality: %i[name active])
       permitted_params[:specialty] = permitted_params[:name] if permitted_params[:name].present?
       permitted_params
     end

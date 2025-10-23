@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Seeds para notícias da homepage
-puts 'Criando notícias de exemplo...'
+Rails.logger.debug 'Criando notícias de exemplo...'
 
 news_data = [
   {
@@ -54,9 +56,7 @@ news_data.each do |news_attrs|
     n.published_at = news_attrs[:published_at]
   end
 
-  puts "Notícia criada: #{news.title}"
+  Rails.logger.debug { "Notícia criada: #{news.title}" }
 end
 
-puts '✅ Notícias criadas com sucesso!'
-
-
+Rails.logger.debug '✅ Notícias criadas com sucesso!'

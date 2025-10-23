@@ -1,28 +1,30 @@
+# frozen_string_literal: true
+
 class NotificationChannel < ApplicationCable::Channel
   def subscribed
     stream_for current_user
     Rails.logger.info "User #{current_user.id} subscribed to notifications"
   end
-  
+
   def unsubscribed
     Rails.logger.info "User #{current_user.id} unsubscribed from notifications"
   end
-  
+
   def mark_as_read(data)
     notification = current_user.notifications.find(data['notification_id'])
     notification.mark_as_read!
-    
+
     transmit({
-      type: 'notification_read',
-      notification_id: notification.id
-    })
+               type: 'notification_read',
+               notification_id: notification.id
+             })
   rescue ActiveRecord::RecordNotFound
     transmit({
-      type: 'error',
-      message: 'Notification not found'
-    })
+               type: 'error',
+               message: 'Notification not found'
+             })
   end
-  
+
   def self.broadcast_notification(notification)
     broadcast_to(
       notification.user,
@@ -38,10 +40,10 @@ class NotificationChannel < ApplicationCable::Channel
       }
     )
   end
-  
+
   def self.broadcast_notification_count(user)
     unread_count = user.notifications.unread.count
-    
+
     broadcast_to(
       user,
       {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Event < ApplicationRecord
   belongs_to :professional
   belongs_to :created_by, class_name: 'Professional'
@@ -14,8 +16,6 @@ class Event < ApplicationRecord
   validates :end_time, presence: true
   validates :event_type, presence: true
   validates :visibility_level, presence: true
-  validates :professional_id, presence: true
-  validates :created_by_id, presence: true
 
   validate :end_time_after_start_time
   validate :no_time_conflicts, on: :create

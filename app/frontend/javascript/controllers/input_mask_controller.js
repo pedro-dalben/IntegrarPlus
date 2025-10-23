@@ -17,25 +17,29 @@ export default class extends Controller {
     let newCursorPosition = cursorPosition
 
     switch (this.typeValue) {
-      case "cpf":
+      case "cpf": {
         const result = this.maskCPF(value, cursorPosition)
         maskedValue = result.value
         newCursorPosition = result.cursorPosition
         break
-      case "cep":
+      }
+      case "cep": {
         const cepResult = this.maskCEP(value, cursorPosition)
         maskedValue = cepResult.value
         newCursorPosition = cepResult.cursorPosition
         break
-      case "telefone":
+      }
+      case "telefone": {
         const telefoneResult = this.maskTelefone(value, cursorPosition)
         maskedValue = telefoneResult.value
         newCursorPosition = telefoneResult.cursorPosition
         break
-      case "crm":
+      }
+      case "crm": {
         maskedValue = this.maskCRM(value)
         newCursorPosition = Math.min(cursorPosition, maskedValue.length)
         break
+      }
       default:
         maskedValue = value
     }

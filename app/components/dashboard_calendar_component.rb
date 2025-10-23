@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DashboardCalendarComponent < ViewComponent::Base
   include EventsHelper
 

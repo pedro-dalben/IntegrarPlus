@@ -40,6 +40,9 @@ application.register("carousel", CarouselController)
 import CepController from "./cep_controller"
 application.register("cep", CepController)
 
+import DrawioController from "./drawio_controller"
+application.register("drawio", DrawioController)
+
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 
@@ -63,6 +66,3 @@ application.register("schedule-configuration", ScheduleConfigurationController)
 
 import UnifiedCalendarController from "./unified_calendar_controller"
 application.register("unified-calendar", UnifiedCalendarController)
-
-import TomSelectController from "../../frontend/javascript/controllers/tom_select_controller"
-application.register("tom-select", TomSelectController)

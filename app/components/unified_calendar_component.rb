@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UnifiedCalendarComponent < ViewComponent::Base
   def initialize(events: [], professional: nil, view_type: 'month', agenda: nil)
     @events = events
@@ -41,7 +43,7 @@ class UnifiedCalendarComponent < ViewComponent::Base
   end
 
   def filtered_events
-    return events unless professional.present?
+    return events if professional.blank?
 
     events.select { |event| event.professional_id == professional.id }
   end

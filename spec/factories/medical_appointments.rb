@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :medical_appointment do
     scheduled_at { 1.hour.from_now }

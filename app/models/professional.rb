@@ -275,7 +275,7 @@ class Professional < ApplicationRecord
   end
 
   def create_invite_for_user(user)
-    return unless user.present?
+    return if user.blank?
 
     begin
       invite = Invite.create!(user: user)

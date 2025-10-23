@@ -1,16 +1,20 @@
-class Users::SessionsController < Devise::SessionsController
-  after_action :set_user_last_seen, only: [:create]
-  after_action :clear_user_last_seen, only: [:destroy]
+# frozen_string_literal: true
 
-  private
+module Users
+  class SessionsController < Devise::SessionsController
+    after_action :set_user_last_seen, only: [:create]
+    after_action :clear_user_last_seen, only: [:destroy]
 
-  def set_user_last_seen
-    return unless user_signed_in?
+    private
 
-    session[:user_last_seen_at] = Time.current.iso8601
-  end
+    def set_user_last_seen
+      return unless user_signed_in?
 
-  def clear_user_last_seen
-    session[:user_last_seen_at] = nil
+      session[:user_last_seen_at] = Time.current.iso8601
+    end
+
+    def clear_user_last_seen
+      session[:user_last_seen_at] = nil
+    end
   end
 end

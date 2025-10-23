@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAgendaIdToEvents < ActiveRecord::Migration[8.0]
   def change
     add_reference :events, :agenda, null: true, foreign_key: true

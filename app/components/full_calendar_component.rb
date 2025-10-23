@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FullCalendarComponent < ViewComponent::Base
   include EventsHelper
 

@@ -1,0 +1,126 @@
+pt-BR:
+  activerecord:
+    models:
+      flow_chart:
+        one: Fluxograma
+        other: Fluxogramas
+      flow_chart_version:
+        one: Versão do Fluxograma
+        other: Versões do Fluxograma
+    attributes:
+      flow_chart:
+        title: Título
+        description: Descrição
+        status: Status
+        current_version: Versão Atual
+        created_by: Criado por
+        updated_by: Atualizado por
+        created_at: Criado em
+        updated_at: Atualizado em
+        statuses:
+          draft: Rascunho
+          published: Publicado
+          archived: Arquivado
+      flow_chart_version:
+        version: Versão
+        data: Dados
+        data_format: Formato
+        notes: Notas
+        created_by: Criado por
+        created_at: Criado em
+        data_formats:
+          xml: XML
+          svg: SVG
+    errors:
+      models:
+        flow_chart:
+          attributes:
+            title:
+              blank: não pode ficar em branco
+              too_short: é muito curto (mínimo de 2 caracteres)
+              too_long: é muito longo (máximo de 255 caracteres)
+            base:
+              cannot_publish_without_version: Não é possível publicar sem uma versão ativa
+        flow_chart_version:
+          attributes:
+            version:
+              blank: não pode ficar em branco
+              not_a_number: deve ser um número
+              greater_than: deve ser maior que 0
+            data:
+              blank: não pode ficar em branco
+
+  admin:
+    flow_charts:
+      index:
+        title: Fluxogramas
+        subtitle: Gerencie os fluxogramas do sistema
+        new: Novo Fluxograma
+        search_placeholder: Digite para buscar fluxogramas...
+        empty_state: Nenhum fluxograma encontrado
+        create_first: Criar primeiro fluxograma
+        columns:
+          title: Título
+          status: Status
+          version: Versão
+          created_by: Criado por
+          updated_at: Última atualização
+          actions: Ações
+      show:
+        title: Detalhes do Fluxograma
+        edit: Editar
+        duplicate: Duplicar
+        publish: Publicar
+        back: Voltar
+        information: Informações
+        current_version: Versão Atual
+        version_history: Histórico de Versões
+        preview: Preview do Fluxograma
+        current_badge: Atual
+        version_label: Versão
+        created_by_label: Criado por
+        created_at_label: Criado em
+        updated_at_label: Última atualização
+        notes_label: Notas
+      new:
+        title: Novo Fluxograma
+        subtitle: Crie um novo fluxograma para o sistema
+        information: Informações do Fluxograma
+        cancel: Cancelar
+        submit: Criar e Editar Diagrama
+      edit:
+        title: Editar Fluxograma
+        subtitle: Edite o fluxograma usando o editor draw.io
+        back: Voltar
+        save_version: Salvar Versão
+        export_png: Exportar PNG
+        export_svg: Exportar SVG
+        export_pdf: Exportar PDF
+        version_notes_label: Notas da próxima versão (opcional)
+        version_notes_placeholder: "Ex: Corrigiu fluxo de aprovação, adicionou nova etapa..."
+        version_notes_help: Descreva as alterações que você fez nesta versão
+        information: Informações do Fluxograma
+        cancel: Cancelar
+        submit: Atualizar Informações
+        instructions:
+          title: Como usar o editor
+          edit: Edite o diagrama normalmente usando as ferramentas do draw.io
+          save: Clique em "Salvar" para criar uma nova versão do fluxograma
+          export: Use "Exportar" para baixar o diagrama em diferentes formatos
+      messages:
+        created: Fluxograma criado com sucesso
+        created_edit: Fluxograma criado com sucesso. Agora você pode editá-lo no diagrama.
+        updated: Fluxograma atualizado com sucesso
+        saved: Fluxograma salvo com sucesso
+        destroyed: Fluxograma excluído com sucesso
+        published: Fluxograma publicado com sucesso
+        duplicated: Fluxograma duplicado com sucesso
+        cannot_publish: Não é possível publicar um fluxograma sem versão
+        duplicate_error: Erro ao duplicar fluxograma
+        export_error: Dados SVG não fornecidos
+      confirmations:
+        destroy: Tem certeza que deseja excluir este fluxograma?
+      tooltips:
+        view: Ver detalhes
+        edit: Editar
+        delete: Excluir

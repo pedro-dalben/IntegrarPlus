@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateNotificationPreferences < ActiveRecord::Migration[8.0]
   def change
     create_table :notification_preferences do |t|
@@ -11,6 +13,6 @@ class CreateNotificationPreferences < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :notification_preferences, [:user_id, :type], unique: true
+    add_index :notification_preferences, %i[user_id type], unique: true
   end
 end

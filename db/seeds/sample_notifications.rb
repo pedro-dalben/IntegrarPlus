@@ -1,4 +1,6 @@
-puts 'Criando notificações de exemplo...'
+# frozen_string_literal: true
+
+Rails.logger.debug 'Criando notificações de exemplo...'
 
 # Buscar o usuário admin
 admin_user = User.find_by(email: 'admin@integrarplus.com')
@@ -57,24 +59,24 @@ if admin_user
     )
 
     if existing_notification
-      puts "⏭️  Notificação já existe: #{notification_attrs[:title]}"
+      Rails.logger.debug { "⏭️  Notificação já existe: #{notification_attrs[:title]}" }
     else
       admin_user.notifications.create!(notification_attrs)
-      puts "✅ Notificação criada: #{notification_attrs[:title]}"
+      Rails.logger.debug { "✅ Notificação criada: #{notification_attrs[:title]}" }
     end
   end
 
   # Criar preferências de notificação para o usuário admin se não existirem
   NotificationPreference.create_default_preferences_for_user(admin_user)
-  puts '✅ Preferências de notificação criadas para o usuário admin'
+  Rails.logger.debug '✅ Preferências de notificação criadas para o usuário admin'
 
-  puts "\n📊 Resumo das notificações:"
-  puts "   Total: #{admin_user.notifications.count}"
-  puts "   Não lidas: #{admin_user.notifications.unread.count}"
-  puts "   Lidas: #{admin_user.notifications.read.count}"
+  Rails.logger.debug "\n📊 Resumo das notificações:"
+  Rails.logger.debug { "   Total: #{admin_user.notifications.count}" }
+  Rails.logger.debug { "   Não lidas: #{admin_user.notifications.unread.count}" }
+  Rails.logger.debug { "   Lidas: #{admin_user.notifications.read.count}" }
 
 else
-  puts '❌ Usuário admin não encontrado. Execute os seeds principais primeiro.'
+  Rails.logger.debug '❌ Usuário admin não encontrado. Execute os seeds principais primeiro.'
 end
 
-puts 'Notificações de exemplo criadas com sucesso!'
+Rails.logger.debug 'Notificações de exemplo criadas com sucesso!'

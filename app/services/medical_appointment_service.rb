@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MedicalAppointmentService
   def initialize(appointment)
     @appointment = appointment
@@ -10,23 +12,15 @@ class MedicalAppointmentService
       appointment.send_notifications
       NotificationService.send_appointment_notification(appointment, 'scheduled')
       schedule_reminders(appointment)
-      appointment
-    else
-      appointment
     end
+    appointment
   end
 
   def self.update_appointment(appointment, params)
     old_status = appointment.status
 
-    if appointment.update(params)
-      if old_status != appointment.status
-        appointment.send_notifications
-      end
-      appointment
-    else
-      appointment
-    end
+    appointment.send_notifications if appointment.update(params) && (old_status != appointment.status)
+    appointment
   end
 
   def self.cancel_appointment(appointment, reason = nil)
@@ -92,8 +86,8 @@ class MedicalAppointmentService
 
   def self.send_reminders_for_date(date, reminder_type)
     appointments = MedicalAppointment.where(
-      scheduled_at: date.beginning_of_day..date.end_of_day,
-      status: ['scheduled', 'confirmed']
+      scheduled_at: date.all_day,
+      status: %w[scheduled confirmed]
     )
 
     appointments.each do |appointment|
@@ -113,7 +107,7 @@ class MedicalAppointmentService
       appointments = MedicalAppointment.where(
         professional: professional,
         scheduled_at: Date.current.all_day,
-        status: ['scheduled', 'confirmed']
+        status: %w[scheduled confirmed]
       ).order(:scheduled_at)
 
       if appointments.any?
@@ -129,13 +123,11 @@ class MedicalAppointmentService
     professionals.each do |professional|
       appointments = MedicalAppointment.where(
         professional: professional,
-        scheduled_at: Date.current.beginning_of_week..Date.current.end_of_week,
-        status: ['scheduled', 'confirmed']
+        scheduled_at: Date.current.all_week,
+        status: %w[scheduled confirmed]
       ).order(:scheduled_at)
 
-      if appointments.any?
-        MedicalAppointmentMailer.weekly_schedule(professional, appointments).deliver_later
-      end
+      MedicalAppointmentMailer.weekly_schedule(professional, appointments).deliver_later if appointments.any?
     end
   end
 
@@ -144,9 +136,12 @@ class MedicalAppointmentService
       professional: professional,
       date_range: date_range,
       total_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range).count,
-      completed_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range, status: 'completed').count,
-      cancelled_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range, status: 'cancelled').count,
-      no_show_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range, status: 'no_show').count,
+      completed_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range,
+                                                       status: 'completed').count,
+      cancelled_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range,
+                                                       status: 'cancelled').count,
+      no_show_appointments: MedicalAppointment.where(professional: professional, scheduled_at: date_range,
+                                                     status: 'no_show').count,
       occupation_rate: MedicalAppointment.occupation_rate(professional, date_range),
       completion_rate: MedicalAppointment.completion_rate(professional, date_range),
       no_show_rate: MedicalAppointment.no_show_rate(professional, date_range),
@@ -181,7 +176,7 @@ class MedicalAppointmentService
       by_type: appointments.group(:appointment_type).count,
       by_priority: appointments.group(:priority).count,
       by_professional: appointments.joins(:professional).group('users.name').count,
-      by_day: appointments.group("DATE(scheduled_at)").count,
+      by_day: appointments.group('DATE(scheduled_at)').count,
       completion_rate: appointments.where(status: 'completed').count.to_f / appointments.count * 100,
       no_show_rate: appointments.where(status: 'no_show').count.to_f / appointments.count * 100
     }
@@ -208,7 +203,7 @@ class MedicalAppointmentService
   def self.check_emergency_appointments
     emergency_appointments = MedicalAppointment.where(
       priority: 'urgent',
-      status: ['scheduled', 'confirmed'],
+      status: %w[scheduled confirmed],
       scheduled_at: Time.current..1.hour.from_now
     )
 
@@ -222,7 +217,7 @@ class MedicalAppointmentService
 
   def self.check_overdue_appointments
     overdue_appointments = MedicalAppointment.where(
-      status: ['scheduled', 'confirmed'],
+      status: %w[scheduled confirmed],
       scheduled_at: 1.hour.ago..Time.current
     )
 
@@ -234,16 +229,14 @@ class MedicalAppointmentService
     overdue_appointments
   end
 
-  private
-
   def self.schedule_reminders(appointment)
     # Agendar lembrete 24h antes
     ReminderJob.set(wait_until: appointment.scheduled_at - 24.hours)
-              .perform_later(appointment.id, '24h')
+               .perform_later(appointment.id, '24h')
 
     # Agendar lembrete 48h antes
     ReminderJob.set(wait_until: appointment.scheduled_at - 48.hours)
-              .perform_later(appointment.id, '48h')
+               .perform_later(appointment.id, '48h')
   end
 
   def self.cancel_reminders(appointment)
@@ -251,7 +244,7 @@ class MedicalAppointmentService
     # Implementar cancelamento de jobs agendados
   end
 
-  def self.reschedule_reminders(appointment, old_time, new_time)
+  def self.reschedule_reminders(appointment, _old_time, _new_time)
     # Cancelar lembretes antigos
     cancel_reminders(appointment)
 

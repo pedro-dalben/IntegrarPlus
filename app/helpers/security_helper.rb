@@ -121,7 +121,7 @@ module SecurityHelper
     return false if clean_phone.match?(/^(\d)\1{9,10}$/)
 
     # Verificar se não contém números negativos
-    return false if phone.match?(/-/)
+    return false if phone.include?('-')
 
     true
   end

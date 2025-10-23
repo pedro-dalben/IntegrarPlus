@@ -15,7 +15,7 @@ class EventsListComponent < ViewComponent::Base
   end
 
   def format_time(event)
-    event.start_time.strftime('%H:%M') + ' - ' + event.end_time.strftime('%H:%M')
+    "#{event.start_time.strftime('%H:%M')} - #{event.end_time.strftime('%H:%M')}"
   end
 
   def format_date(date)
@@ -42,7 +42,7 @@ class EventsListComponent < ViewComponent::Base
     end
   end
 
-  def can_edit_event?(event)
+  def can_edit_event?(_event)
     return true if professional.nil?
     return true if current_user&.professional&.id == professional.id
 
