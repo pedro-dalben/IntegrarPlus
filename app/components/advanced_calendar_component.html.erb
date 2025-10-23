@@ -1,9 +1,13 @@
-<div class="advanced-calendar-wrapper">
+<div class="advanced-calendar-wrapper"
+     data-controller="basic-calendar"
+     data-basic-calendar-events-value='<%= events_data.to_json %>'
+     data-basic-calendar-calendar-id-value="<%= calendar_id %>">
   <!-- Cabeçalho da Agenda -->
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-4">
       <!-- Seletor de Visualização -->
-      <select data-calendar-views-target="viewSelector" 
+      <select data-basic-calendar-target="viewSelector"
+          data-action="change->basic-calendar#changeView"
           class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
         <option value="month">Mês</option>
         <option value="week">Semana</option>
@@ -11,7 +15,7 @@
       </select>
 
       <!-- Filtro por Tipo de Evento -->
-      <select data-calendar-views-target="eventTypeFilter" 
+      <select 
           class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
         <option value="all">Todos os tipos</option>
         <% event_types.each do |type| %>
@@ -24,7 +28,7 @@
     <div class="flex items-center gap-2">
       <button type="button" 
           class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          data-action="click->calendar-views#prev">
+          data-action="click->basic-calendar#prev">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
@@ -32,13 +36,13 @@
       
       <button type="button" 
           class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          data-action="click->calendar-views#today">
+          data-action="click->basic-calendar#today">
         Hoje
       </button>
       
       <button type="button" 
           class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          data-action="click->calendar-views#next">
+          data-action="click->basic-calendar#next">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
@@ -49,34 +53,8 @@
   <!-- Calendário Principal -->
   <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
     <div id="<%= calendar_id %>" 
-        data-controller="calendar-views"
-        data-calendar-views-events-data-value="<%= events_data.to_json %>"
-        data-calendar-views-read-only-value="<%= read_only %>"
-        data-calendar-views-professional-id-value="<%= professional&.id %>"
-        data-calendar-views-target="calendar"
-        style="min-height: 600px;">
-      
-      <!-- Visualização Mensal -->
-      <div data-calendar-views-target="monthView">
-        <div class="month-grid">
-          <!-- Conteúdo será inserido via JavaScript -->
-        </div>
-      </div>
-
-      <!-- Visualização Semanal -->
-      <div data-calendar-views-target="weekView" class="hidden">
-        <div class="week-grid">
-          <!-- Conteúdo será inserido via JavaScript -->
-        </div>
-      </div>
-
-      <!-- Visualização Diária -->
-      <div data-calendar-views-target="dayView" class="hidden">
-        <div class="day-grid">
-          <!-- Conteúdo será inserido via JavaScript -->
-        </div>
-      </div>
-    </div>
+        data-basic-calendar-target="container"
+        style="min-height: 600px;"></div>
   </div>
 
   <!-- Legenda de Cores -->

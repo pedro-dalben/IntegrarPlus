@@ -11,13 +11,15 @@ export default class extends Controller {
     const selectEl = this.hasTomselectTarget ? this.tomselectTarget : this.element.querySelector('select[data-professional-selector-target="tomselect"]')
     if (selectEl && !selectEl.tomSelect) {
       const url = selectEl.dataset.url || "/admin/agendas/search_professionals"
+      const allowMultiple = this.element.dataset.multiple === 'true'
       this.tomSelect = new TomSelect(selectEl, {
         plugins: ["dropdown_input"],
         valueField: "id",
         labelField: "name",
         searchField: "name",
-        preload: "focus",
-        maxItems: 1,
+        preload: false,
+        shouldLoad: (query) => (query || '').trim().length >= 2,
+        maxItems: allowMultiple ? null : 1,
         load: (query, callback) => {
           const u = `${url}?search=${encodeURIComponent(query || "")}`
           fetch(u, { headers: { Accept: "application/json" } })

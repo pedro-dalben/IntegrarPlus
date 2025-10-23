@@ -28,6 +28,12 @@ application.register("tom-select", TomSelectController)
 import MaskedInputController from "./masked_input_controller"
 application.register("masked-input", MaskedInputController)
 
+import CalendarViewsController from "../../../javascript/controllers/calendar_views_controller"
+application.register("calendar-views", CalendarViewsController)
+
+import BasicCalendarController from "../../../javascript/controllers/basic_calendar_controller"
+application.register("basic-calendar", BasicCalendarController)
+
 import Agendas__MetadataController from "../../../javascript/controllers/agendas/metadata_controller"
 application.register("agendas--metadata", Agendas__MetadataController)
 
