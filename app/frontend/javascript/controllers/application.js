@@ -29,6 +29,7 @@ import ProfessionalsController from '../../../javascript/controllers/agendas/pro
 import WorkingHoursController from '../../../javascript/controllers/agendas/working_hours_controller';
 import ReviewController from '../../../javascript/controllers/agendas/review_controller';
 import AgendaSchedulerController from '../../../javascript/controllers/agenda_scheduler_controller';
+import DrawioController from './drawio_controller';
 
 application.register('header', HeaderController);
 application.register('sidebar', SidebarController);
@@ -53,5 +54,6 @@ application.register('agendas-professionals', ProfessionalsController);
 application.register('agendas-working-hours', WorkingHoursController);
 application.register('agendas-review', ReviewController);
 application.register('agenda-scheduler', AgendaSchedulerController);
+application.register('drawio', DrawioController);
 
 export { application };

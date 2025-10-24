@@ -64,5 +64,5 @@ application.register("disable-autofill", DisableAutofillController)
 import AnamnesesFiltersController from "./anamneses_filters_controller"
 application.register("anamneses-filters", AnamnesesFiltersController)
 
-import DrawioController from "../../../javascript/controllers/drawio_controller"
+import DrawioController from "./drawio_controller"
 application.register("drawio", DrawioController)

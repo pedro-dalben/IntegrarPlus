@@ -12,7 +12,7 @@
        data-drawio-flow-chart-id-value="<%= @flow_chart.id %>"
        data-drawio-update-url-value="<%= admin_flow_chart_path(@flow_chart) %>"
        data-drawio-export-url-value="<%= export_pdf_admin_flow_chart_path(@flow_chart) %>"
-       data-drawio-initial-data-value="<%= @current_version&.data&.gsub('"', '&quot;') || '' %>">
+       data-drawio-initial-data-value="<%= (@current_version&.data || '').to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;') %>">
 
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
       <div class="flex items-center justify-between mb-4">
@@ -35,7 +35,7 @@
           <p class="font-medium">Como usar o editor:</p>
           <ul class="mt-1 space-y-1 text-xs">
             <li>• Edite o diagrama normalmente usando as ferramentas do draw.io</li>
-            <li>• Clique em "Salvar" para criar uma nova versão do fluxograma</li>
+            <li>• Clique em "Salvar Fluxograma" para salvar o diagrama e as informações</li>
             <li>• Use "Exportar" para baixar o diagrama em diferentes formatos</li>
           </ul>
         </div>
@@ -43,15 +43,6 @@
 
       <div class="flex items-center justify-between gap-3 mb-4">
         <div class="flex items-center gap-3">
-          <button type="button"
-                  data-action="click->drawio#save"
-                  class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-            </svg>
-            Salvar Versão
-          </button>
-
           <button type="button"
                   data-action="click->drawio#exportPNG"
                   class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
@@ -85,8 +76,12 @@
       <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white">
         <iframe
           data-drawio-target="iframe"
-          src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1&libraries=1"
-          style="width: 100%; height: 700px; border: none;">
+          src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1&libraries=1&origin=<%= CGI.escape(request.base_url) %>"
+          style="width: 100%; height: 700px; border: none;"
+          allow="clipboard-write"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+          onload="console.log('Iframe loaded successfully')"
+          onerror="console.error('Iframe failed to load')">
         </iframe>
       </div>
 
@@ -106,7 +101,7 @@
       </div>
     </div>
 
-    <%= form_with model: [:admin, @flow_chart], local: true, class: "mt-6" do |form| %>
+    <%= form_with model: [:admin, @flow_chart], local: true, class: "mt-6", id: "flow-chart-info-form" do |form| %>
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Informações do Fluxograma</h3>
 
@@ -136,10 +131,14 @@
         <div class="mt-6 flex items-center justify-end gap-3">
           <%= link_to "Cancelar", admin_flow_chart_path(@flow_chart),
               class: "inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" %>
-          <%= form.submit "Atualizar Informações",
-              class: "inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800" %>
+          <%= form.submit "Salvar Fluxograma",
+              class: "inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800",
+              data: { action: "click->drawio#saveAndSubmit" },
+              onclick: "event.preventDefault(); window.drawioController?.saveAndSubmit(event);" %>
         </div>
       </div>
     <% end %>
   </div>
 <% end %>
+
+

@@ -143,6 +143,12 @@ class AdvancedSearchService
         'LOWER(name) LIKE ?',
         "%#{normalized_query}%"
       )
+    when 'FlowChart'
+      base_query.where(
+        'LOWER(title) LIKE ? OR LOWER(description) LIKE ?',
+        "%#{normalized_query}%",
+        "%#{normalized_query}%"
+      )
     else
       # Fallback genérico
       base_query.where(
