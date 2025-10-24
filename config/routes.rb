@@ -225,6 +225,13 @@ Rails.application.routes.draw do
         post :export_pdf
       end
     end
+
+    # Rotas públicas para visualização de fluxogramas
+    resources :flow_charts, only: %i[index show], path: 'fluxogramas', controller: 'public_flow_charts' do
+      member do
+        get :view
+      end
+    end
   end
 
   namespace :api do

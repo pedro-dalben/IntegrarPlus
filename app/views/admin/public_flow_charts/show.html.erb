@@ -1,0 +1,105 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_public_flow_charts_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar para Lista
+    <% end %>
+    <%= link_to view_admin_public_flow_chart_path(@flow_chart), 
+        class: "ta-btn ta-btn-primary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Visualizar Diagrama
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex-1">
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            <%= @flow_chart.title %>
+          </h1>
+          <% if @flow_chart.description.present? %>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              <%= @flow_chart.description %>
+            </p>
+          <% end %>
+          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <span>Criado por: <%= @flow_chart.created_by&.name || 'Sistema' %></span>
+            <span>•</span>
+            <span>Atualizado em <%= l(@flow_chart.updated_at, format: :short) %></span>
+            <span>•</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              Publicado
+            </span>
+            <span>•</span>
+            <span>Versão v<%= @flow_chart.version_number %></span>
+          </div>
+        </div>
+        <% if @flow_chart.thumbnail.attached? %>
+          <div class="ml-6 flex-shrink-0">
+            <%= image_tag @flow_chart.thumbnail, 
+                class: "w-32 h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-700",
+                alt: "Thumbnail do fluxograma" %>
+          </div>
+        <% end %>
+      </div>
+
+      <% if @current_version.present? %>
+        <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Informações da Versão Atual</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="font-medium text-gray-700 dark:text-gray-300">Versão:</span>
+              <span class="text-gray-600 dark:text-gray-400">v<%= @current_version.version %></span>
+            </div>
+            <div>
+              <span class="font-medium text-gray-700 dark:text-gray-300">Criada em:</span>
+              <span class="text-gray-600 dark:text-gray-400"><%= l(@current_version.created_at, format: :short) %></span>
+            </div>
+            <% if @current_version.notes.present? %>
+              <div class="md:col-span-2">
+                <span class="font-medium text-gray-700 dark:text-gray-300">Notas:</span>
+                <span class="text-gray-600 dark:text-gray-400"><%= @current_version.notes %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @versions.any? %>
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Histórico de Versões</h3>
+          <div class="space-y-3">
+            <% @versions.each_with_index do |version, index| %>
+              <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">
+                      v<%= version.version %>
+                    </span>
+                    <% if index == 0 %>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        Atual
+                      </span>
+                    <% end %>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= version.notes.present? ? version.notes : "Versão sem notas" %>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <%= l(version.created_at, format: :short) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+

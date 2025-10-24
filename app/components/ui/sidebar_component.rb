@@ -145,14 +145,21 @@ module Ui
         menus << {
           title: 'Fluxogramas',
           icon: documents_icon,
-          active: any_active?(['/admin/flow_charts']),
+          active: any_active?(['/admin/flow_charts', '/admin/fluxogramas']),
           type: 'dropdown',
           items: [
             {
-              title: 'Listar Fluxogramas',
+              title: 'Gerenciar Fluxogramas',
               path: '/admin/flow_charts',
               icon: documents_icon,
-              active: current_path&.start_with?('/admin/flow_charts'),
+              active: current_path&.start_with?('/admin/flow_charts') && !current_path&.start_with?('/admin/fluxogramas'),
+              permission: 'flow_charts.index'
+            },
+            {
+              title: 'Fluxogramas Publicados',
+              path: '/admin/fluxogramas',
+              icon: documents_icon,
+              active: current_path&.start_with?('/admin/fluxogramas'),
               permission: 'flow_charts.index'
             }
           ]
