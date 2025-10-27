@@ -73,14 +73,48 @@ module Admin
     def update
       @flow_chart.updated_by = current_professional
 
+      if params[:thumbnail_data].present?
+        data_uri = params[:thumbnail_data].to_s
+        if data_uri.start_with?('data:image/png;base64,')
+          base64 = data_uri.split(',', 2)[1]
+          decoded = Base64.decode64(base64)
+          @flow_chart.thumbnail.attach(
+            io: StringIO.new(decoded),
+            filename: "flow_chart_#{@flow_chart.id}.png",
+            content_type: 'image/png'
+          )
+        end
+
+        render json: { success: true }, status: :ok and return
+      end
+
       if params[:diagram_data].present?
+        # Se está publicado e sendo editado, voltar para draft
+        @flow_chart.update!(status: :draft) if @flow_chart.published?
+
         create_new_version
-        redirect_to admin_flow_chart_path(@flow_chart),
-                    notice: 'Fluxograma salvo com sucesso.'
+        respond_to do |format|
+          format.json do
+            render json: { success: true, version: @flow_chart.current_version.version }, status: :ok
+          end
+          format.html do
+            redirect_to admin_flow_chart_path(@flow_chart),
+                        notice: 'Fluxograma salvo com sucesso.'
+          end
+        end
       elsif @flow_chart.update(flow_chart_params)
-        redirect_to admin_flow_chart_path(@flow_chart),
-                    notice: 'Fluxograma atualizado com sucesso.'
+        Rails.logger.info "Flow chart updated successfully: #{@flow_chart.id}"
+
+        # Verificar se deve redirecionar para show (quando vem do saveAndSubmit)
+        if params[:redirect_to_show] == 'true'
+          redirect_to admin_flow_chart_path(@flow_chart),
+                      notice: 'Fluxograma salvo com sucesso!'
+        else
+          redirect_to admin_flow_chart_path(@flow_chart),
+                      notice: 'Fluxograma atualizado com sucesso.'
+        end
       else
+        Rails.logger.error "Flow chart update failed: #{@flow_chart.errors.full_messages}"
         @current_version = @flow_chart.current_version
         render :edit, status: :unprocessable_entity
       end
@@ -175,7 +209,7 @@ module Admin
     end
 
     def flow_chart_params
-      params.expect(flow_chart: [:title, :description, :status])
+      params.expect(flow_chart: %i[title description status])
     end
 
     def create_initial_version
@@ -186,9 +220,9 @@ module Admin
         created_by: current_professional
       )
 
-      if version.save
-        @flow_chart.update(current_version: version)
-      end
+      return unless version.save
+
+      @flow_chart.update(current_version: version)
     end
 
     def create_new_version
@@ -199,9 +233,9 @@ module Admin
         created_by: current_professional
       )
 
-      if version.save
-        @flow_chart.update(current_version: version)
-      end
+      return unless version.save
+
+      @flow_chart.update(current_version: version)
     end
   end
 end

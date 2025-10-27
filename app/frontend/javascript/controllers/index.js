@@ -28,6 +28,12 @@ application.register("tom-select", TomSelectController)
 import MaskedInputController from "./masked_input_controller"
 application.register("masked-input", MaskedInputController)
 
+import CalendarViewsController from "../../../javascript/controllers/calendar_views_controller"
+application.register("calendar-views", CalendarViewsController)
+
+import BasicCalendarController from "../../../javascript/controllers/basic_calendar_controller"
+application.register("basic-calendar", BasicCalendarController)
+
 import Agendas__MetadataController from "../../../javascript/controllers/agendas/metadata_controller"
 application.register("agendas--metadata", Agendas__MetadataController)
 
@@ -58,5 +64,5 @@ application.register("disable-autofill", DisableAutofillController)
 import AnamnesesFiltersController from "./anamneses_filters_controller"
 application.register("anamneses-filters", AnamnesesFiltersController)
 
-import DrawioController from "../../../javascript/controllers/drawio_controller"
+import DrawioController from "./drawio_controller"
 application.register("drawio", DrawioController)

@@ -1,0 +1,119 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_flow_charts_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Gerenciar Fluxogramas
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Fluxogramas Publicados</h1>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              Visualize os fluxogramas disponíveis para consulta
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-500 dark:text-gray-400">
+              <%= @pagy.count %> fluxogramas encontrados
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-200 dark:border-gray-800">
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Título</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Status</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Versão</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Criado por</th>
+              <th class="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Última atualização</th>
+              <th class="px-5 py-4 text-right text-sm font-medium text-gray-700 dark:text-gray-300">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @flow_charts.any? %>
+              <% @flow_charts.each do |flow_chart| %>
+                <tr class="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <td class="px-5 py-4">
+                    <%= link_to admin_flow_chart_path(flow_chart), class: "text-sm font-medium text-gray-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-400" do %>
+                      <%= flow_chart.title %>
+                    <% end %>
+                    <% if flow_chart.description.present? %>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><%= truncate(flow_chart.description, length: 80) %></p>
+                    <% end %>
+                  </td>
+                  <td class="px-5 py-4">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                      Publicado
+                    </span>
+                  </td>
+                  <td class="px-5 py-4 text-sm text-gray-700 dark:text-gray-300">
+                    v<%= flow_chart.version_number %>
+                  </td>
+                  <td class="px-5 py-4 text-sm text-gray-700 dark:text-gray-300">
+                    <%= flow_chart.created_by&.full_name || 'Sistema' %>
+                  </td>
+                  <td class="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
+                    <%= l(flow_chart.updated_at, format: :short) %>
+                  </td>
+                  <td class="px-5 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <%= link_to admin_flow_chart_path(flow_chart), class: "inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white", title: "Ver detalhes" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      <% end %>
+
+                      <%= link_to view_admin_flow_chart_path(flow_chart), class: "inline-flex items-center justify-center w-8 h-8 rounded-lg text-brand-600 hover:bg-brand-100 hover:text-brand-700 dark:text-brand-400 dark:hover:bg-brand-900/20", title: "Visualizar diagrama" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="6" class="px-5 py-12 text-center">
+                  <div class="flex flex-col items-center justify-center">
+                    <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Nenhum fluxograma publicado</p>
+                    <p class="text-gray-400 dark:text-gray-500 text-xs">
+                      Os fluxogramas aparecerão aqui quando forem publicados
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <% if @pagy && @pagy.pages > 1 %>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex justify-center">
+            <%= pagy_nav(@pagy) if @pagy %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

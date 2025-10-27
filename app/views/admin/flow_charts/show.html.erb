@@ -12,7 +12,7 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
         </svg>
-        Editar
+        <%= @flow_chart.published? ? 'Editar (volta para rascunho)' : 'Editar' %>
       <% end %>
     <% end %>
 
@@ -117,34 +117,67 @@
       <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Preview do Fluxograma</h3>
         <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white" style="min-height: 500px;">
-          <iframe
-            id="drawio-preview"
-            src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1"
-            style="width: 100%; height: 600px; border: none;"
-            data-diagram="<%= @current_version.data.gsub('"', '&quot;').html_safe %>">
-          </iframe>
+          <% if @flow_chart.thumbnail.attached? %>
+            <img src="<%= url_for(@flow_chart.thumbnail) %>" alt="Prévia do fluxograma" style="max-width: 100%; height: auto; display: block;" />
+          <% else %>
+            <div id="diagram-preview" class="w-full" style="height: 600px; display: flex; align-items: center; justify-content: center;">
+              <img id="diagram-image" alt="Prévia do fluxograma" style="max-width: 100%; max-height: 600px; display: none;" />
+              <div id="diagram-loading" class="text-gray-500 dark:text-gray-400 text-sm">Carregando prévia...</div>
+            </div>
+            <div id="diagram-data" data-xml="<%= h((@current_version.data || '').to_s) %>" style="display:none"></div>
+            <iframe
+              id="drawio-exporter"
+              src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1&noSave=1&noExit=1&libraries=1&origin=<%= CGI.escape(request.base_url) %>"
+              style="width:1px;height:1px;position:absolute;left:-9999px;top:-9999px;border:0;">
+            </iframe>
+          <% end %>
         </div>
       </div>
 
+      <% unless @flow_chart.thumbnail.attached? %>
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          const iframe = document.getElementById('drawio-preview');
-          const diagramData = iframe.dataset.diagram;
+          const container = document.getElementById('diagram-data');
+          const escaped = container ? container.dataset.xml || '' : '';
+          const txt = document.createElement('textarea');
+          txt.innerHTML = escaped;
+          const xml = txt.value;
 
-          iframe.addEventListener('load', function() {
-            setTimeout(() => {
-              iframe.contentWindow.postMessage(
-                JSON.stringify({
-                  action: 'load',
-                  xml: diagramData,
-                  autosave: 0
-                }),
-                '*'
-              );
-            }, 1000);
-          });
+          const viewer = document.createElement('iframe');
+          viewer.id = 'drawio-viewer';
+          viewer.src = 'https://viewer.diagrams.net/?embed=1&ui=atlas&spin=1&lightbox=1&nav=1&proto=json&noSave=1&noExit=1&origin=' + encodeURIComponent('<%= request.base_url %>');
+          viewer.style.width = '100%';
+          viewer.style.height = '600px';
+          viewer.style.border = '0';
+
+          const previewArea = document.getElementById('diagram-preview');
+          const loading = document.getElementById('diagram-loading');
+          const img = document.getElementById('diagram-image');
+          if (previewArea) {
+            previewArea.innerHTML = '';
+            previewArea.appendChild(viewer);
+          }
+
+          const ORIGIN = 'https://viewer.diagrams.net';
+          function send(msg) { if (viewer && viewer.contentWindow) viewer.contentWindow.postMessage(JSON.stringify(msg), ORIGIN); }
+
+          function onMessage(event) {
+            if (event.origin !== ORIGIN || typeof event.data !== 'string') return;
+            try {
+              const msg = JSON.parse(event.data);
+              if (msg.event === 'init') {
+                send({ action: 'load', xml: xml, autosave: 0 });
+              }
+            } catch(_) {}
+          }
+
+          window.addEventListener('message', onMessage);
+
+          setTimeout(function(){ if (loading) loading.style.display = 'none'; }, 1500);
+          if (img) img.style.display = 'none';
         });
       </script>
+      <% end %>
     <% end %>
 
     <% if @versions.any? %>

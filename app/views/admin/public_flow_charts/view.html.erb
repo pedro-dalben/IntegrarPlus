@@ -1,0 +1,119 @@
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_public_flow_chart_path(@flow_chart), 
+        class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar para Detalhes
+    <% end %>
+    <%= link_to admin_public_flow_charts_path, 
+        class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Lista de Fluxogramas
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
+            <%= @flow_chart.title %>
+          </h1>
+          <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            Visualização do fluxograma - Versão v<%= @flow_chart.version_number %>
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+            Publicado
+          </span>
+        </div>
+      </div>
+
+      <% if @current_version.present? %>
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden" style="min-height: 600px;">
+          <% if @flow_chart.thumbnail.attached? %>
+            <div class="p-4 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Prévia do fluxograma:</p>
+              <img src="<%= url_for(@flow_chart.thumbnail) %>" 
+                   alt="Prévia do fluxograma" 
+                   class="max-w-full h-auto max-h-32 object-contain" />
+            </div>
+          <% end %>
+          
+          <div id="diagram-viewer" class="w-full" style="height: 600px; display: flex; align-items: center; justify-content: center;">
+            <div id="diagram-loading" class="text-gray-500 dark:text-gray-400 text-sm">Carregando diagrama...</div>
+          </div>
+          
+          <div id="diagram-data" data-xml="<%= h((@current_version.data || '').to_s) %>" style="display:none"></div>
+          <iframe
+            id="drawio-viewer"
+            src="https://viewer.diagrams.net/?embed=1&ui=atlas&spin=1&lightbox=1&nav=1&proto=json&noSave=1&noExit=1&libraries=1&origin=<%= CGI.escape(request.base_url) %>"
+            style="width:1px;height:1px;position:absolute;left:-9999px;top:-9999px;border:0;">
+          </iframe>
+        </div>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('diagram-data');
+            const escaped = container ? container.dataset.xml || '' : '';
+            const txt = document.createElement('textarea');
+            txt.innerHTML = escaped;
+            const xml = txt.value;
+
+            const viewer = document.createElement('iframe');
+            viewer.id = 'drawio-viewer-main';
+            viewer.src = 'https://viewer.diagrams.net/?embed=1&ui=atlas&spin=1&lightbox=1&nav=1&proto=json&noSave=1&noExit=1&origin=' + encodeURIComponent('<%= request.base_url %>');
+            viewer.style.width = '100%';
+            viewer.style.height = '600px';
+            viewer.style.border = '0';
+
+            const previewArea = document.getElementById('diagram-viewer');
+            const loading = document.getElementById('diagram-loading');
+            if (previewArea) {
+              previewArea.innerHTML = '';
+              previewArea.appendChild(viewer);
+            }
+
+            const ORIGIN = 'https://viewer.diagrams.net';
+            function send(msg) { 
+              if (viewer && viewer.contentWindow) 
+                viewer.contentWindow.postMessage(JSON.stringify(msg), ORIGIN); 
+            }
+
+            function onMessage(event) {
+              if (event.origin !== ORIGIN || typeof event.data !== 'string') return;
+              try {
+                const msg = JSON.parse(event.data);
+                if (msg.event === 'init') {
+                  send({ action: 'load', xml: xml, autosave: 0 });
+                }
+              } catch(_) {}
+            }
+
+            window.addEventListener('message', onMessage);
+
+            setTimeout(function(){ 
+              if (loading) loading.style.display = 'none'; 
+            }, 1500);
+          });
+        </script>
+      <% else %>
+        <div class="text-center py-12">
+          <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Nenhuma versão disponível</h3>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Este fluxograma não possui versões para visualização.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+

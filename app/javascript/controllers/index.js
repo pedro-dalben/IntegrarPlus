@@ -40,9 +40,6 @@ application.register("carousel", CarouselController)
 import CepController from "./cep_controller"
 application.register("cep", CepController)
 
-import DrawioController from "./drawio_controller"
-application.register("drawio", DrawioController)
-
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 

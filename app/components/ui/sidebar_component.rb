@@ -140,6 +140,32 @@ module Ui
         }
       end
 
+      # Módulo: Fluxogramas
+      if user_can_access_any?(['flow_charts.index', 'flow_charts.manage'])
+        menus << {
+          title: 'Fluxogramas',
+          icon: documents_icon,
+          active: any_active?(['/admin/flow_charts', '/admin/fluxogramas']),
+          type: 'dropdown',
+          items: [
+            {
+              title: 'Gerenciar Fluxogramas',
+              path: '/admin/flow_charts',
+              icon: documents_icon,
+              active: current_path&.start_with?('/admin/flow_charts') && !current_path&.start_with?('/admin/fluxogramas'),
+              permission: 'flow_charts.index'
+            },
+            {
+              title: 'Fluxogramas Publicados',
+              path: '/admin/fluxogramas',
+              icon: documents_icon,
+              active: current_path&.start_with?('/admin/fluxogramas'),
+              permission: 'flow_charts.index'
+            }
+          ]
+        }
+      end
+
       # Módulo: Agendamentos
       if user_can_access?('agendas.read')
         menus << {

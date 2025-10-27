@@ -52,11 +52,10 @@ export default class extends Controller {
   }
 
   updateHiddenInputs() {
-    // Remover inputs existentes
+    const hasProfessionalSelector = this.element.querySelector('[data-controller~="professional-selector"]')
+    if (hasProfessionalSelector) return
     const existingInputs = this.element.querySelectorAll('input[name="agenda[professional_ids][]"]')
     existingInputs.forEach(input => input.remove())
-    
-    // Adicionar novos inputs
     this.persistentData.professionals.forEach(professionalId => {
       const input = document.createElement('input')
       input.type = 'hidden'
@@ -451,24 +450,23 @@ export default class extends Controller {
   }
 
   addProfessionalIdsParameter() {
-    // Remover parâmetro existente se houver
-    const existingParam = this.element.querySelector('input[name="professional_ids"]')
-    if (existingParam) {
-      existingParam.remove()
+    const oldParams = this.element.querySelectorAll('input[name="professional_ids[]"]')
+    oldParams.forEach(el => el.remove())
+    const form = this.element.querySelector('form')
+    if (!form) return
+    let ids = []
+    const compHidden = this.element.querySelector('[data-professional-selector-target="hiddenInputs"]')
+    if (compHidden) {
+      ids = Array.from(compHidden.querySelectorAll('input[name="agenda[professional_ids][]"]')).map(i => i.value)
+    } else {
+      ids = this.persistentData.professionals
     }
-
-    // Adicionar professional_ids como parâmetro separado
-    if (this.persistentData.professionals.length > 0) {
-      const form = this.element.querySelector('form')
-      if (form) {
-        this.persistentData.professionals.forEach(professionalId => {
-          const input = document.createElement('input')
-          input.type = 'hidden'
-          input.name = 'professional_ids[]'
-          input.value = professionalId
-          form.appendChild(input)
-        })
-      }
-    }
+    ids.forEach(professionalId => {
+      const input = document.createElement('input')
+      input.type = 'hidden'
+      input.name = 'professional_ids[]'
+      input.value = professionalId
+      form.appendChild(input)
+    })
   }
 }
