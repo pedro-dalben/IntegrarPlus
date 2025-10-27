@@ -3,6 +3,7 @@
 module Admin
   class AnamnesesController < BaseController
     before_action :set_anamnesis, only: %i[show edit update complete]
+    before_action :convert_date_params, only: %i[create update]
 
     def index
       authorize Anamnesis, policy_class: Admin::AnamnesisPolicy
@@ -63,7 +64,11 @@ module Admin
       authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
 
       if @anamnesis.save
-        redirect_to admin_anamnesis_path(@anamnesis), notice: 'Anamnese criada com sucesso.'
+        if @anamnesis.beneficiary.present?
+          redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], notice: 'Anamnese criada com sucesso.'
+        else
+          redirect_to admin_anamneses_today_path, notice: 'Anamnese criada com sucesso.'
+        end
       else
         render :new, status: :unprocessable_entity
       end
@@ -74,7 +79,11 @@ module Admin
       @anamnesis.updated_by_professional = current_user
 
       if @anamnesis.update(anamnesis_params)
-        redirect_to admin_anamnesis_path(@anamnesis), notice: 'Anamnese atualizada com sucesso.'
+        if @anamnesis.beneficiary.present?
+          redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], notice: 'Anamnese atualizada com sucesso.'
+        else
+          redirect_to admin_anamneses_today_path, notice: 'Anamnese atualizada com sucesso.'
+        end
       else
         render :edit, status: :unprocessable_entity
       end
@@ -84,9 +93,17 @@ module Admin
       authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
 
       if @anamnesis.concluir!(current_user)
-        redirect_to admin_anamnesis_path(@anamnesis), notice: 'Anamnese concluída com sucesso!'
+        if @anamnesis.beneficiary.present?
+          redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], notice: 'Anamnese concluída com sucesso!'
+        else
+          redirect_to admin_anamneses_path, notice: 'Anamnese concluída com sucesso!'
+        end
       else
-        redirect_to admin_anamnesis_path(@anamnesis), alert: 'Não foi possível concluir a anamnese.'
+        if @anamnesis.beneficiary.present?
+          redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], alert: 'Não foi possível concluir a anamnese.'
+        else
+          redirect_to admin_anamneses_path, alert: 'Não foi possível concluir a anamnese.'
+        end
       end
     end
 
@@ -125,6 +142,26 @@ module Admin
 
     def set_anamnesis
       @anamnesis = Anamnesis.find(params[:id])
+    end
+
+    def convert_date_params
+      return unless params[:anamnesis].present?
+
+      date_fields = [:father_birth_date, :mother_birth_date, :responsible_birth_date]
+
+      date_fields.each do |field|
+        next unless params[:anamnesis][field].present?
+
+        date_string = params[:anamnesis][field]
+        if date_string.match?(/\d{2}\/\d{2}\/\d{4}/)
+          begin
+            day, month, year = date_string.split('/')
+            params[:anamnesis][field] = "#{year}-#{month}-#{day}"
+          rescue StandardError => e
+            Rails.logger.error "Erro ao converter data #{field}: #{e.message}"
+          end
+        end
+      end
     end
 
     def perform_local_search
@@ -250,19 +287,19 @@ module Admin
     end
 
     def anamnesis_params
-      params.expect(
-        anamnesis: %i[
-          performed_at
-          father_name father_birth_date father_education father_profession
-          mother_name mother_birth_date mother_education mother_profession
-          responsible_name responsible_birth_date responsible_education responsible_profession
-          attends_school school_name school_period
-          referral_reason injunction treatment_location referral_hours
-          specialties diagnosis_completed responsible_doctor
-          previous_treatment previous_treatments continue_external_treatment external_treatments
-          preferred_schedule unavailable_schedule
-          beneficiary_id portal_intake_id
-        ]
+      params.require(:anamnesis).permit(
+        :performed_at,
+        :father_name, :father_birth_date, :father_education, :father_profession,
+        :mother_name, :mother_birth_date, :mother_education, :mother_profession,
+        :responsible_name, :responsible_birth_date, :responsible_education, :responsible_profession,
+        :attends_school, :school_name, :school_period,
+        :referral_reason, :injunction, :treatment_location, :referral_hours,
+        :diagnosis_completed, :responsible_doctor,
+        :previous_treatment, :previous_treatments, :continue_external_treatment, :external_treatments,
+        :beneficiary_id, :portal_intake_id,
+        specialties: {},
+        preferred_schedule: [],
+        unavailable_schedule: []
       )
     end
 

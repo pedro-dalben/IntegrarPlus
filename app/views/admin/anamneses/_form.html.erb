@@ -1,4 +1,4 @@
-<%= form_with model: [:admin, anamnesis], local: true do |form| %>
+<%= form_with model: (anamnesis.beneficiary.present? ? [:admin, anamnesis.beneficiary, anamnesis] : [:admin, anamnesis]), local: true do |form| %>
   <% if anamnesis.errors.any? %>
     <div class="ta-alert ta-alert-error">
       <div class="flex">
@@ -28,22 +28,22 @@
         <%= anamnesis.new_record? ? "Nova Anamnese" : "Editar Anamnese" %>
       </h2>
     </div>
-    
+
     <div class="p-4 sm:p-6 space-y-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <%= form.label :performed_at, "Data Realizada", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.datetime_local_field :performed_at, 
+          <%= form.datetime_local_field :performed_at,
               value: anamnesis.performed_at&.strftime("%Y-%m-%dT%H:%M"),
               class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :professional_id, "Profissional", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :professional_id, 
+          <%= form.select :professional_id,
               options_from_collection_for_select(
                 User.joins(:professional).where(professionals: { active: true }),
-                :id, :full_name, 
+                :id, :full_name,
                 anamnesis.professional_id || current_user.id
               ),
               { prompt: "Selecione o profissional" },
@@ -105,11 +105,15 @@
             </div>
             <div>
               <%= form.label :father_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.date_field :father_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+              <%= form.text_field :father_birth_date,
+                  placeholder: "DD/MM/AAAA",
+                  data: { controller: "mask", mask_target: "input", mask_type_value: "date" },
+                  value: (form.object.father_birth_date.present? ? form.object.father_birth_date.strftime("%d/%m/%Y") : nil),
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
               <%= form.label :father_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.select :father_education, 
+              <%= form.select :father_education,
                   options_for_select([
                     ['Selecione...', ''],
                     ['Analfabeto', 'analfabeto'],
@@ -141,11 +145,15 @@
             </div>
             <div>
               <%= form.label :mother_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.date_field :mother_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+              <%= form.text_field :mother_birth_date,
+                  placeholder: "DD/MM/AAAA",
+                  data: { controller: "mask", mask_target: "input", mask_type_value: "date" },
+                  value: (form.object.mother_birth_date.present? ? form.object.mother_birth_date.strftime("%d/%m/%Y") : nil),
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
               <%= form.label :mother_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.select :mother_education, 
+              <%= form.select :mother_education,
                   options_for_select([
                     ['Selecione...', ''],
                     ['Analfabeto', 'analfabeto'],
@@ -177,11 +185,15 @@
             </div>
             <div>
               <%= form.label :responsible_birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.date_field :responsible_birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+              <%= form.text_field :responsible_birth_date,
+                  placeholder: "DD/MM/AAAA",
+                  data: { controller: "mask", mask_target: "input", mask_type_value: "date" },
+                  value: (form.object.responsible_birth_date.present? ? form.object.responsible_birth_date.strftime("%d/%m/%Y") : nil),
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
             </div>
             <div>
               <%= form.label :responsible_education, "Escolaridade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-              <%= form.select :responsible_education, 
+              <%= form.select :responsible_education,
                   options_for_select([
                     ['Selecione...', ''],
                     ['Analfabeto', 'analfabeto'],
@@ -219,21 +231,21 @@
             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta escola?</span>
           <% end %>
         </div>
-        
+
         <div id="school-fields" class="space-y-4" style="<%= 'display: none;' unless anamnesis.attends_school? %>">
           <div>
             <%= form.label :school_name, "Nome da Escola", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= render Ui::SchoolSearchComponent.new(
-                  form: form, 
+                  form: form,
                   field_name: :school_name,
                   placeholder: "Digite o nome da escola para buscar...",
                   value: anamnesis.school_name
                 ) %>
           </div>
-          
+
           <div>
             <%= form.label :school_period, "Período", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.select :school_period, 
+            <%= form.select :school_period,
                 options_for_select([
                   ['Selecione...', ''],
                   ['Manhã', 'manha'],
@@ -257,7 +269,7 @@
       <div class="space-y-6">
         <div>
           <%= form.label :referral_reason, "Motivo Descrito no Encaminhamento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :referral_reason, 
+          <%= form.select :referral_reason,
               options_for_select([
                 ['Selecione...', ''],
                 ['ABA', 'aba'],
@@ -277,7 +289,7 @@
 
         <div>
           <%= form.label :treatment_location, "Local do Atendimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :treatment_location, 
+          <%= form.select :treatment_location,
               options_for_select([
                 ['Selecione...', ''],
                 ['Domiciliar', 'domiciliar'],
@@ -292,7 +304,7 @@
 
         <div>
           <%= form.label :referral_hours, "Horas do Pacote Encaminhado", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :referral_hours, 
+          <%= form.select :referral_hours,
               options_for_select((5..40).map { |h| ["#{h} horas", h] }, anamnesis.referral_hours),
               { prompt: "Selecione as horas (5-40)" },
               { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
@@ -316,7 +328,7 @@
           { key: 'psicomotricidade', label: 'Psicomotricidade' },
           { key: 'psicologia', label: 'Psicologia' }
         ] %>
-        
+
         <% specialties.each do |specialty| %>
           <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
             <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3"><%= specialty[:label] %></h4>
@@ -326,35 +338,35 @@
                 <div class="flex gap-2">
                   <% (1..5).each do |i| %>
                     <label class="flex items-center gap-1">
-                      <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", i, false, 
-                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
+                      <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", i, false,
+                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300",
                           name: "anamnesis[specialties][#{specialty[:key]}][sessions]" %>
                       <span class="text-sm"><%= i %></span>
                     </label>
                   <% end %>
                   <label class="flex items-center gap-1">
-                    <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", "nao_especificado", false, 
-                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
+                    <%= radio_button_tag "specialties[#{specialty[:key]}][sessions]", "nao_especificado", false,
+                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300",
                         name: "anamnesis[specialties][#{specialty[:key]}][sessions]" %>
                     <span class="text-sm">Não especificado</span>
                   </label>
                 </div>
               </div>
-              
+
               <div>
                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Quantidade de Horas</label>
                 <div class="flex gap-2">
                   <% (1..5).each do |i| %>
                     <label class="flex items-center gap-1">
-                      <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", i, false, 
-                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
+                      <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", i, false,
+                          class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300",
                           name: "anamnesis[specialties][#{specialty[:key]}][hours]" %>
                       <span class="text-sm"><%= i %></span>
                     </label>
                   <% end %>
                   <label class="flex items-center gap-1">
-                    <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", "nao_especificado", false, 
-                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300", 
+                    <%= radio_button_tag "specialties[#{specialty[:key]}][hours]", "nao_especificado", false,
+                        class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300",
                         name: "anamnesis[specialties][#{specialty[:key]}][hours]" %>
                     <span class="text-sm">Não especificado</span>
                   </label>
@@ -380,10 +392,10 @@
             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Diagnóstico Concluído</span>
           <% end %>
         </div>
-        
+
         <div>
           <%= form.label :responsible_doctor, "Médico Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :responsible_doctor, 
+          <%= form.select :responsible_doctor,
               options_for_select([
                 ['Selecione...', ''],
                 ['Dr. Sardinha', 'Dr. Sardinha'],
@@ -488,9 +500,9 @@
 
     <!-- Botões de Ação -->
     <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-      <%= link_to "Cancelar", admin_anamneses_path, 
+      <%= link_to "Cancelar", admin_anamneses_path,
           class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
-      <%= form.submit anamnesis.persisted? ? "Atualizar Anamnese" : "Criar Anamnese", 
+      <%= form.submit anamnesis.persisted? ? "Atualizar Anamnese" : "Criar Anamnese",
           class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
     </div>
     </div>
@@ -502,7 +514,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const attendsSchoolCheckbox = document.getElementById('anamnesis_attends_school');
     const schoolFields = document.getElementById('school-fields');
-    
+
     if (attendsSchoolCheckbox) {
       attendsSchoolCheckbox.addEventListener('change', function() {
         schoolFields.style.display = this.checked ? 'grid' : 'none';
@@ -512,7 +524,7 @@
     // Toggle previous treatments
     const previousTreatmentCheckbox = document.getElementById('anamnesis_previous_treatment');
     const previousTreatmentsDiv = document.getElementById('previous-treatments');
-    
+
     if (previousTreatmentCheckbox) {
       previousTreatmentCheckbox.addEventListener('change', function() {
         previousTreatmentsDiv.style.display = this.checked ? 'block' : 'none';
@@ -522,7 +534,7 @@
     // Toggle external treatments
     const externalTreatmentCheckbox = document.getElementById('anamnesis_continue_external_treatment');
     const externalTreatmentsDiv = document.getElementById('external-treatments');
-    
+
     if (externalTreatmentCheckbox) {
       externalTreatmentCheckbox.addEventListener('change', function() {
         externalTreatmentsDiv.style.display = this.checked ? 'block' : 'none';
