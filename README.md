@@ -26,6 +26,13 @@ Gems instaladas
 - Versionamento: PaperTrail
 - Front-end: Vite + Tailwind v4 + Preline + Turbo/Stimulus
 - Formulários: Simple Form (+ @tailwindcss/forms)
+- Monitoramento: Sentry (rastreamento de erros e performance)
+
+Monitoramento
+- Sentry configurado para produção e staging
+- Configure SENTRY_DSN no .env para habilitar
+- Execute bin/test-sentry para testar a integração
+- Documentação: docs/SENTRY_MONITORAMENTO.md
 
 Observações
 - Ajustar credenciais e variáveis em .env conforme necessário.

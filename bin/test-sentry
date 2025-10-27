@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+
+puts "🔍 Testando integração com Sentry..."
+puts "Ambiente: #{Rails.env}"
+puts "DSN configurado: #{Sentry.configuration.dsn.present? ? '✅ Sim' : '❌ Não'}"
+puts ""
+
+if Sentry.configuration.dsn.present?
+  puts "📨 Enviando erro de teste para o Sentry..."
+
+  begin
+    1 / 0
+  rescue ZeroDivisionError => exception
+    Sentry.capture_exception(exception)
+    puts "✅ Exceção capturada e enviada"
+  end
+
+  puts ""
+  puts "📨 Enviando mensagem de teste para o Sentry..."
+  Sentry.capture_message("Teste de integração do Sentry - #{Time.current}")
+  puts "✅ Mensagem enviada"
+
+  puts ""
+  puts "🎉 Testes concluídos!"
+  puts "Verifique o dashboard do Sentry em: https://sentry.io/"
+  puts ""
+  puts "Nota: Os eventos podem levar alguns segundos para aparecer no dashboard."
+else
+  puts "❌ DSN do Sentry não configurado!"
+  puts "Configure a variável de ambiente SENTRY_DSN"
+end
