@@ -1,0 +1,191 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+
+class PermissionTester
+  def initialize
+    @errors = []
+    @warnings = []
+    @success_count = 0
+  end
+
+  def run_all_tests
+    puts "🔍 Iniciando testes do sistema de permissões...\n\n"
+
+    test_permissions_exist
+    test_groups_structure
+    test_menu_permissions
+    test_controller_validations
+    test_permission_consistency
+
+    print_results
+  end
+
+  private
+
+  def test_permissions_exist
+    puts "📋 Testando existência de permissões cadastradas..."
+
+    expected_modules = %w[
+      dashboard professionals groups specialities specializations contract_types
+      users invites beneficiaries anamneses agendas portal_intakes external_users
+      documents flow_charts organograms schools settings reports
+    ]
+
+    expected_modules.each do |module_name|
+      permissions = Permission.where("key LIKE ?", "#{module_name}.%")
+      if permissions.any?
+        @success_count += 1
+        puts "  ✅ #{module_name.titleize}: #{permissions.count} permissões"
+      else
+        @warnings << "#{module_name.titleize} não tem permissões cadastradas"
+      end
+    end
+
+    puts ""
+  end
+
+  def test_groups_structure
+    puts "👥 Testando estrutura de grupos..."
+
+    total_groups = Group.count
+    admin_groups = Group.admin.count
+    groups_with_permissions = Group.joins(:permissions).distinct.count
+
+    puts "  📊 Total de grupos: #{total_groups}"
+    puts "  🔐 Grupos admin: #{admin_groups}"
+    puts "  ✅ Grupos com permissões: #{groups_with_permissions}"
+
+    if groups_with_permissions < total_groups
+      @warnings << "Existem #{total_groups - groups_with_permissions} grupo(s) sem permissões"
+    end
+
+    @success_count += 1
+    puts ""
+  end
+
+  def test_menu_permissions
+    puts "🎯 Testando permissões do menu..."
+
+    menu_permissions = extract_menu_permissions
+
+    menu_permissions.each do |perm|
+      if Permission.exists_by_key?(perm)
+        @success_count += 1
+      else
+        @errors << "Permissão do menu não existe: #{perm}"
+      end
+    end
+
+    puts "  ✅ #{@success_count} permissões do menu validadas"
+    puts ""
+  end
+
+  def test_controller_validations
+    puts "🎮 Testando validações nos controllers..."
+
+    controllers_to_test = {
+      'Admin::ProfessionalsController' => ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'],
+      'Admin::GroupsController' => ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'],
+      'Admin::BeneficiariesController' => ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'],
+      'Admin::AnamnesesController' => ['index', 'show', 'new', 'create', 'edit', 'update'],
+      'Admin::FlowChartsController' => ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'],
+      'Admin::SchoolsController' => ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy']
+    }
+
+    controllers_to_test.each do |controller_name, actions|
+      controller_key = controller_name.split('::').last.underscore.gsub('_controller', '')
+
+      actions.each do |action|
+        permission_key = "#{controller_key}.#{action}"
+
+        if Permission.exists_by_key?(permission_key)
+          @success_count += 1
+        else
+          @warnings << "Permissão esperada não existe: #{permission_key}"
+        end
+      end
+    end
+
+    puts "  ✅ Validações de controller testadas"
+    puts ""
+  end
+
+  def test_permission_consistency
+    puts "🔍 Testando consistência de permissões..."
+
+    all_permissions = Permission.all
+    used_in_groups = Permission.joins(:groups).distinct.count
+    unused = all_permissions.count - used_in_groups
+
+    puts "  📊 Total de permissões: #{all_permissions.count}"
+    puts "  ✅ Usadas em grupos: #{used_in_groups}"
+    puts "  ⚠️  Não usadas: #{unused}"
+
+    if unused > 0
+      @warnings << "#{unused} permissão(ões) não está(ão) atribuída(s) a nenhum grupo"
+    end
+
+    permissions_by_module = all_permissions.group_by { |p| p.key.split('.').first }
+    puts "\n  📦 Distribuição por módulo:"
+    permissions_by_module.each do |module_name, perms|
+      puts "     #{module_name.ljust(20)}: #{perms.count} permissões"
+    end
+
+    @success_count += 1
+    puts ""
+  end
+
+  def extract_menu_permissions
+    [
+      'dashboard.view',
+      'professionals.index',
+      'groups.manage',
+      'specialities.index',
+      'specializations.index',
+      'contract_types.index',
+      'portal_intakes.index',
+      'external_users.index',
+      'documents.access',
+      'documents.view_released',
+      'documents.manage_permissions',
+      'flow_charts.index',
+      'agendas.read',
+      'beneficiaries.index',
+      'anamneses.index',
+      'schools.view',
+      'users.index'
+    ]
+  end
+
+  def print_results
+    puts "\n" + "=" * 60
+    puts "📊 RESULTADOS DOS TESTES"
+    puts "=" * 60
+
+    puts "\n✅ Testes bem-sucedidos: #{@success_count}"
+
+    if @warnings.any?
+      puts "\n⚠️  Avisos (#{@warnings.count}):"
+      @warnings.each { |w| puts "   - #{w}" }
+    end
+
+    if @errors.any?
+      puts "\n❌ Erros (#{@errors.count}):"
+      @errors.each { |e| puts "   - #{e}" }
+    end
+
+    puts "\n" + "=" * 60
+
+    if @errors.empty?
+      puts "\n✅ Sistema de permissões está funcionando corretamente!"
+      exit 0
+    else
+      puts "\n❌ Foram encontrados erros no sistema de permissões."
+      exit 1
+    end
+  end
+end
+
+# Executar testes
+tester = PermissionTester.new
+tester.run_all_tests

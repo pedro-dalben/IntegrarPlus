@@ -212,8 +212,27 @@ module Ui
         }
       end
 
+      # Módulo: Usuários e Permissões
+      if user_can_access_any?(['users.index', 'groups.manage'])
+        menus << {
+          title: 'Usuários',
+          icon: users_icon,
+          active: any_active?(['/admin/users']),
+          type: 'dropdown',
+          items: [
+            {
+              title: 'Listar Usuários',
+              path: '/admin/users',
+              icon: users_icon,
+              active: current_path&.start_with?('/admin/users'),
+              permission: 'users.index'
+            }
+          ]
+        }
+      end
+
       # Módulo: Configurações
-      if user_can_access_any?(['schools.view'])
+      if user_can_access_any?(['schools.view', 'settings.read'])
         menus << {
           title: 'Configurações',
           icon: settings_icon,
@@ -327,6 +346,10 @@ module Ui
 
     def schools_icon
       '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M9 7h1"/><path d="M9 11h1"/><path d="M9 15h1"/><path d="M14 7h1"/><path d="M14 11h1"/><path d="M14 15h1"/></svg>'.html_safe
+    end
+
+    def users_icon
+      '<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'.html_safe
     end
 
     def user_can_access?(permission_key)

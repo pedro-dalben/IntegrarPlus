@@ -28,7 +28,7 @@
         <%= professional.new_record? ? "Novo Profissional" : "Editar Profissional" %>
       </h2>
     </div>
-    
+
     <div class="p-4 sm:p-6 space-y-8">
       <!-- Dados Pessoais -->
       <div>
@@ -85,7 +85,9 @@
       </div>
 
       <!-- Acesso e Status -->
-      <div>
+      <div data-controller="contract-fields"
+           data-contract-fields-contract-types-value="<%= @contract_types.map { |ct| { id: ct.id, name: ct.name, requires_company: ct.requires_company?, requires_cnpj: ct.requires_cnpj? } }.to_json %>"
+           data-contract-fields-current-type-value="<%= professional.contract_type_id %>">
         <h3 class="text-md font-medium text-gray-800 dark:text-white mb-4">Acesso e Status</h3>
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
@@ -102,7 +104,8 @@
                 @contract_types.map { |ct| [ct.name, ct.id] },
                 { prompt: "Selecione o tipo de contratação..." },
                 {
-                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30",
+                  data: { action: "change->contract-fields#contractTypeChanged" }
                 } %>
           </div>
 

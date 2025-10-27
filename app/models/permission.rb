@@ -12,7 +12,7 @@ class Permission < ApplicationRecord
     find_by(key: key)
   end
 
-  def self.exists?(key)
-    exists?(key: key)
+  def self.exists_by_key?(key)
+    where(key: key).exists?
   end
 end

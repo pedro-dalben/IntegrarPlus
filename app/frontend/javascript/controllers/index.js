@@ -10,17 +10,29 @@ application.register("advanced-search", AdvancedSearchController)
 import CommentsController from "./comments_controller"
 application.register("comments", CommentsController)
 
+import ContractFieldsController from "./contract_fields_controller"
+application.register("contract-fields", ContractFieldsController)
+
+import DependentSpecializationsController from "./dependent_specializations_controller"
+application.register("dependent-specializations", DependentSpecializationsController)
+
 import DocumentUploadController from "./document_upload_controller"
 application.register("document-upload", DocumentUploadController)
 
 import FlashController from "./flash_controller"
 application.register("flash", FlashController)
 
+import MaskController from "./mask_controller"
+application.register("mask", MaskController)
+
 import PermissionsController from "./permissions_controller"
 application.register("permissions", PermissionsController)
 
 import SelectSearchController from "./select_search_controller"
 application.register("select-search", SelectSearchController)
+
+import TimeHhmmController from "./time_hhmm_controller"
+application.register("time-hhmm", TimeHhmmController)
 
 import TomSelectController from "./tom_select_controller"
 application.register("tom-select", TomSelectController)

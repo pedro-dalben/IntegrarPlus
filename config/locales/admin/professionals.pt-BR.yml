@@ -27,3 +27,5 @@ pt-BR:
         user_created: "Usuário criado com sucesso."
         user_creation_failed: "Erro ao criar usuário para o profissional."
         user_already_exists: "Usuário já existe para este profissional."
+        activated: "Profissional ativado com sucesso."
+        deactivated: "Profissional desativado com sucesso."

@@ -1,253 +1,332 @@
-# 🔐 Sistema de Permissionamento - Guia Completo
+# Sistema de Permissões - IntegrarPlus
 
-## 📋 Visão Geral
+## Visão Geral
 
-O sistema de permissionamento do IntegrarPlus funciona através de **Grupos** e **Permissões**, permitindo controle granular de acesso às funcionalidades do sistema.
+O IntegrarPlus possui um sistema completo de permissões baseado em grupos. Cada usuário pertence a um ou mais grupos, e cada grupo possui permissões específicas.
 
-## 🏗️ Arquitetura
+**Total de Permissões Cadastradas: 100**
 
-### Estrutura de Dados
+## Como Funciona
+
+### 1. Estrutura
+
 ```
-User (Usuário)
-├── belongs_to Professional
-└── has_many Groups (através de Memberships)
-
-Group (Grupo)
-├── has_many Users (através de Memberships)
-├── has_many Permissions (através de GroupPermissions)
-└── is_admin (boolean)
-
-Permission (Permissão)
-├── key (string) - Ex: 'professionals.index'
-└── description (string) - Ex: 'Listar profissionais'
+User → Professional → Group → Permission
 ```
 
-### Fluxo de Verificação
-1. **User** → **Groups** → **Permissions** → **Access Control**
-2. Método `user.permit?('permission.key')` verifica se o usuário tem a permissão
-3. Controllers verificam permissões antes de permitir acesso
+- **User**: Usuário do sistema (autenticação)
+- **Professional**: Profissional vinculado ao usuário
+- **Group**: Grupo que define conjunto de permissões
+- **Permission**: Permissão individual por funcionalidade
 
-## 🎯 Como Configurar Permissões
+### 2. Validação Automática
 
-### 1. **Tela de Grupos** (Principal)
-Acesse `/admin/groups` para gerenciar grupos e suas permissões:
+O `Admin::BaseController` implementa validação automática:
 
-#### Criar Novo Grupo
-1. Clique em "Novo Grupo"
-2. Preencha:
-   - **Nome**: Ex: "Médicos", "Secretárias", "Administradores"
-   - **Descrição**: Descrição do propósito do grupo
-   - **Grupo Administrador**: Marque se deve ter acesso total
-3. **Selecione as Permissões**:
-   - Dashboard → `dashboard.view`
-   - Profissionais → `professionals.index`, `professionals.show`, etc.
-   - Usuários → `users.index`, `users.show`, etc.
-   - Configurações → `settings.read`, `settings.write`
-   - Relatórios → `reports.view`, `reports.generate`
-
-#### Editar Grupo Existente
-1. Clique no grupo na lista
-2. Clique em "Editar"
-3. Modifique permissões conforme necessário
-
-### 2. **Exemplos de Configuração**
-
-#### Grupo "Médicos"
 ```ruby
-Permissões:
-- dashboard.view
-- professionals.index
-- professionals.show
-- professionals.edit
-- professionals.update
-- reports.view
+before_action :check_permissions
+
+def check_permissions
+  action_permission = "#{controller_name}.#{action_name}"
+  return if current_user.permit?(action_permission)
+  redirect_to admin_root_path, alert: 'Sem permissão'
+end
 ```
 
-#### Grupo "Secretárias"
+### 3. Menu Dinâmico
+
+O menu lateral (`Ui::SidebarComponent`) exibe apenas opções que o usuário tem permissão:
+
 ```ruby
-Permissões:
-- dashboard.view
-- professionals.index
-- professionals.show
-- professionals.new
-- professionals.create
-- professionals.edit
-- professionals.update
+def user_can_access?(permission_key)
+  return true if current_user.admin?
+  current_user.permit?(permission_key)
+end
 ```
 
-#### Grupo "Recepção"
-```ruby
-Permissões:
-- dashboard.view
-- professionals.index
-- professionals.show
-```
+## Permissões por Módulo
 
-### 3. **Permissões Disponíveis**
-
-#### Dashboard
+### Dashboard (1 permissão)
 - `dashboard.view` - Visualizar dashboard
 
-#### Profissionais
+### Profissionais (7 permissões)
 - `professionals.index` - Listar profissionais
-- `professionals.show` - Ver detalhes de profissional
-- `professionals.new` - Criar novo profissional
-- `professionals.create` - Salvar profissional
-- `professionals.edit` - Editar profissional
-- `professionals.update` - Atualizar profissional
-- `professionals.destroy` - Excluir profissional
+- `professionals.show` - Ver detalhes
+- `professionals.new` - Formulário novo
+- `professionals.create` - Salvar
+- `professionals.edit` - Formulário edição
+- `professionals.update` - Atualizar
+- `professionals.destroy` - Excluir
 
-#### Usuários
+### Grupos (1 permissão)
+- `groups.manage` - Gerenciar grupos (CRUD completo)
+
+### Especialidades (2 permissões)
+- `specialities.index` - Listar
+- `specialities.manage` - Gerenciar (CRUD)
+
+### Especializações (2 permissões)
+- `specializations.index` - Listar
+- `specializations.manage` - Gerenciar (CRUD)
+
+### Tipos de Contrato (2 permissões)
+- `contract_types.index` - Listar
+- `contract_types.manage` - Gerenciar (CRUD)
+
+### Usuários (9 permissões)
 - `users.index` - Listar usuários
-- `users.show` - Ver detalhes de usuário
-- `users.new` - Criar novo usuário
-- `users.create` - Salvar usuário
-- `users.edit` - Editar usuário
-- `users.update` - Atualizar usuário
-- `users.destroy` - Excluir usuário
-- `users.activate` - Ativar usuário
-- `users.deactivate` - Desativar usuário
+- `users.show` - Ver detalhes
+- `users.new` - Formulário novo
+- `users.create` - Salvar
+- `users.edit` - Formulário edição
+- `users.update` - Atualizar
+- `users.destroy` - Excluir
+- `users.activate` - Ativar
+- `users.deactivate` - Desativar
 
-#### Convites
+### Convites (7 permissões)
 - `invites.index` - Listar convites
-- `invites.show` - Ver detalhes de convite
-- `invites.create` - Criar convite
-- `invites.update` - Atualizar convite
-- `invites.destroy` - Excluir convite
-- `invites.resend` - Reenviar convite
+- `invites.show` - Ver detalhes
+- `invites.create` - Criar
+- `invites.update` - Atualizar
+- `invites.destroy` - Excluir
+- `invites.resend` - Reenviar
 
-#### Grupos
-- `groups.manage` - Gerenciar grupos
+### Beneficiários (8 permissões)
+- `beneficiaries.index` - Listar
+- `beneficiaries.show` - Ver detalhes
+- `beneficiaries.new` - Formulário novo
+- `beneficiaries.create` - Criar
+- `beneficiaries.edit` - Formulário edição
+- `beneficiaries.update` - Atualizar
+- `beneficiaries.destroy` - Excluir
+- `beneficiaries.search` - Buscar
 
-#### Configurações
+### Anamneses (10 permissões)
+- `anamneses.index` - Listar anamneses
+- `anamneses.show` - Ver detalhes
+- `anamneses.new` - Formulário novo
+- `anamneses.create` - Criar
+- `anamneses.edit` - Formulário edição
+- `anamneses.update` - Atualizar
+- `anamneses.complete` - Concluir
+- `anamneses.today` - Ver anamneses de hoje
+- `anamneses.by_professional` - Ver por profissional
+- `anamneses.view_all` - Ver todas (não apenas próprias)
+
+### Agendas (7 permissões)
+- `agendas.read` - Visualizar agendas
+- `agendas.create` - Criar
+- `agendas.update` - Editar
+- `agendas.destroy` - Excluir
+- `agendas.activate` - Ativar
+- `agendas.archive` - Arquivar
+- `agendas.duplicate` - Duplicar
+
+### Portal de Operadoras (4 permissões)
+- `portal_intakes.index` - Listar entradas
+- `portal_intakes.show` - Ver detalhes
+- `portal_intakes.update` - Atualizar
+- `portal_intakes.schedule_anamnesis` - Agendar anamnese
+
+### Operadoras (7 permissões)
+- `external_users.index` - Listar
+- `external_users.show` - Ver detalhes
+- `external_users.new` - Formulário novo
+- `external_users.create` - Salvar
+- `external_users.edit` - Formulário edição
+- `external_users.update` - Atualizar
+- `external_users.destroy` - Excluir
+
+### Documentos (6 permissões)
+- `documents.access` - Acessar área
+- `documents.create` - Criar novos
+- `documents.view_released` - Ver liberados
+- `documents.manage_permissions` - Gerenciar permissões
+- `documents.assign_responsibles` - Atribuir responsáveis
+- `documents.release` - Liberar
+
+### Fluxogramas (11 permissões)
+- `flow_charts.index` - Listar
+- `flow_charts.show` - Ver detalhes
+- `flow_charts.new` - Formulário novo
+- `flow_charts.create` - Criar
+- `flow_charts.edit` - Formulário edição
+- `flow_charts.update` - Atualizar
+- `flow_charts.destroy` - Excluir
+- `flow_charts.publish` - Publicar
+- `flow_charts.duplicate` - Duplicar
+- `flow_charts.export_pdf` - Exportar PDF
+- `flow_charts.manage` - Gerenciar (permissão global)
+
+### Organogramas (9 permissões)
+- `organograms.index` - Listar
+- `organograms.show` - Visualizar
+- `organograms.create` - Criar
+- `organograms.update` - Editar
+- `organograms.destroy` - Excluir
+- `organograms.editor` - Usar editor
+- `organograms.publish` - Publicar
+- `organograms.export` - Exportar
+- `organograms.import` - Importar dados
+
+### Escolas (4 permissões)
+- `schools.view` - Visualizar
+- `schools.create` - Criar
+- `schools.edit` - Editar
+- `schools.destroy` - Excluir
+
+### Configurações (2 permissões)
 - `settings.read` - Ler configurações
 - `settings.write` - Editar configurações
 
-#### Relatórios
+### Relatórios (2 permissões)
 - `reports.view` - Visualizar relatórios
 - `reports.generate` - Gerar relatórios
 
-## 🔧 Como Funciona na Prática
+## Grupos Especiais
 
-### 1. **Menu Dinâmico**
-O menu lateral é filtrado automaticamente baseado nas permissões do usuário:
+### Grupo Admin
+- Flag `is_admin = true`
+- Bypass de todas as permissões
+- Acesso total ao sistema
+
+## Como Adicionar Novas Permissões
+
+### 1. Criar Permissão no Console
+
 ```ruby
-# app/navigation/admin_nav.rb
-def items
-  [
-    { label: 'Dashboard', path: '/admin', required_permission: 'dashboard.view' },
-    { label: 'Profissionais', path: '/admin/professionals', required_permission: 'professionals.read' }
-  ]
-end
-```
-
-### 2. **Controle de Acesso nos Controllers**
-```ruby
-# app/controllers/admin/base_controller.rb
-def check_permissions
-  action_permission = "#{controller_name}.#{action_name}"
-  
-  unless current_user.permit?(action_permission)
-    redirect_to admin_path, alert: 'Você não tem permissão para acessar esta área.'
-  end
-end
-```
-
-### 3. **Verificação em Views**
-```erb
-<% if current_user.permit?('professionals.create') %>
-  <%= link_to 'Novo Profissional', new_admin_professional_path %>
-<% end %>
-```
-
-## 📝 Exemplos de Uso
-
-### Cenário 1: Médico
-**Grupo**: Médicos
-**Permissões**: Ver e editar profissionais, visualizar relatórios
-**Acesso**: Dashboard, Lista de Profissionais, Relatórios
-
-### Cenário 2: Secretária
-**Grupo**: Secretárias  
-**Permissões**: Criar, editar e visualizar profissionais
-**Acesso**: Dashboard, Gerenciamento completo de Profissionais
-
-### Cenário 3: Recepção
-**Grupo**: Recepção
-**Permissões**: Apenas visualizar profissionais
-**Acesso**: Dashboard, Lista de Profissionais (somente leitura)
-
-## 🚀 Comandos Úteis
-
-### Executar Seeds
-```bash
-rails db:seed
-```
-
-### Verificar Permissões no Console
-```ruby
-# Rails console
-user = User.first
-user.permit?('professionals.index')  # => true/false
-user.groups.pluck(:name)             # => ["Médicos", "Secretárias"]
-```
-
-### Criar Grupo via Console
-```ruby
-group = Group.create!(
-  name: 'Novo Grupo',
-  description: 'Descrição do grupo'
+Permission.create!(
+  key: 'modulo.acao',
+  description: 'Descrição da permissão'
 )
-
-# Adicionar permissões
-group.add_permission('dashboard.view')
-group.add_permission('professionals.index')
 ```
 
-## 🔒 Segurança
+### 2. Adicionar ao Grupo
 
-### Boas Práticas
-1. **Princípio do Menor Privilégio**: Dê apenas as permissões necessárias
-2. **Revisão Regular**: Revise permissões periodicamente
-3. **Logs de Acesso**: Monitore tentativas de acesso negado
-4. **Testes**: Teste permissões com diferentes usuários
-
-### Verificações Automáticas
-- Controllers verificam permissões automaticamente
-- Menu é filtrado dinamicamente
-- Redirecionamento para usuários sem permissão
-- Logs de tentativas de acesso
-
-## 📊 Monitoramento
-
-### Verificar Status
 ```ruby
-# Total de grupos
-Group.count
-
-# Total de permissões
-Permission.count
-
-# Usuários por grupo
-Group.joins(:professionals).group(:name).count
-
-# Permissões por grupo
-Group.joins(:permissions).group(:name).count
+group = Group.find_by(name: 'Nome do Grupo')
+group.add_permission('modulo.acao')
 ```
 
-### Logs de Acesso
-O sistema registra automaticamente:
-- Tentativas de acesso negado
-- Mudanças de permissões
-- Criação/exclusão de grupos
+### 3. Atualizar Menu (se aplicável)
 
-## 🎯 Próximos Passos
+Editar `app/components/ui/sidebar_component.rb` e adicionar item com `permission:`:
 
-1. **Testar o Sistema**: Crie usuários de teste com diferentes grupos
-2. **Configurar Grupos**: Defina grupos específicos para sua organização
-3. **Ajustar Permissões**: Refine permissões conforme necessário
-4. **Documentar**: Mantenha documentação atualizada das configurações
+```ruby
+{
+  title: 'Nova Funcionalidade',
+  path: '/admin/nova_funcionalidade',
+  icon: icon_method,
+  active: current_path&.start_with?('/admin/nova_funcionalidade'),
+  permission: 'modulo.acao'
+}
+```
+
+### 4. Controller Valida Automaticamente
+
+O `BaseController` já valida automaticamente usando:
+- Nome do controller
+- Nome da action
+
+Exemplo: `professionals#index` → verifica `professionals.index`
+
+## Testes de Permissões
+
+### Verificar se Usuário Tem Permissão
+
+```ruby
+# No controller
+current_user.permit?('professionals.index')
+
+# No model
+professional.groups.any? { |g| g.has_permission?('professionals.index') }
+
+# Admin bypass
+professional.admin? # true se pertence a grupo admin
+```
+
+### Verificar Permissões do Menu
+
+```ruby
+# No component
+user_can_access?('professionals.index')
+user_can_access_any?(['users.index', 'groups.manage'])
+```
+
+## Segurança
+
+### Validações Implementadas
+
+1. **Controller Level**: Validação automática em todas as actions
+2. **View Level**: Menu mostra apenas opções permitidas
+3. **Model Level**: Métodos `permit?` e `admin?` para verificações
+4. **Redirect**: Redirecionamento seguro para dashboard sem permissão
+
+### Bypass de Segurança
+
+⚠️ **ATENÇÃO**: Apenas grupos com `is_admin = true` fazem bypass
+
+```ruby
+def check_permissions
+  return if current_user.admin? # BYPASS TOTAL
+  # ... validações normais
+end
+```
+
+## Debugging
+
+### Ver Permissões de um Usuário
+
+```ruby
+user = User.find(1)
+permissions = user.professional.groups.flat_map(&:permissions).uniq
+permissions.each { |p| puts "#{p.key} - #{p.description}" }
+```
+
+### Ver Grupos de um Usuário
+
+```ruby
+user = User.find(1)
+user.professional.groups.each do |g|
+  puts "#{g.name} (Admin: #{g.admin?})"
+  puts "Permissões: #{g.permissions.count}"
+end
+```
+
+### Testar Permissão Específica
+
+```ruby
+user = User.find(1)
+puts user.permit?('professionals.index') # true/false
+```
+
+## Migrações Futuras Sugeridas
+
+1. **Cache de Permissões**: Cachear permissões do usuário para performance
+2. **Auditoria**: Log de tentativas de acesso negadas
+3. **Permissões Temporárias**: Sistema de permissões com data de validade
+4. **Hierarquia de Permissões**: Permissão pai concede permissões filhas automaticamente
+5. **API de Permissões**: Endpoint para apps externos verificarem permissões
+
+## Compatibilidade
+
+- ✅ Rails 8.0.3
+- ✅ ViewComponent
+- ✅ Stimulus
+- ✅ MeiliSearch (para busca de grupos/permissões)
+
+## Manutenção
+
+Para manter o sistema atualizado:
+
+1. Sempre criar permissão ao adicionar novo controller/action
+2. Atualizar menu quando adicionar nova funcionalidade
+3. Documentar novas permissões neste arquivo
+4. Testar permissões após cada deploy
+5. Revisar grupos periodicamente
 
 ---
 
-**💡 Dica**: Comece com poucas permissões e adicione conforme necessário. É mais fácil adicionar permissões do que remover depois!
+**Última Atualização**: 27/10/2025
+**Versão**: 1.0

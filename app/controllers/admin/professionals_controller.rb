@@ -2,7 +2,7 @@
 
 module Admin
   class ProfessionalsController < BaseController
-    before_action :set_professional, only: %i[show edit update destroy create_user]
+    before_action :set_professional, only: %i[show edit update destroy create_user toggle_active]
 
     def index
       @professionals = params[:query].present? ? perform_search : perform_local_search
@@ -81,6 +81,23 @@ module Admin
       else
         redirect_to admin_professional_path(@professional),
                     alert: t('admin.professionals.messages.user_creation_failed')
+      end
+    end
+
+    def toggle_active
+      if @professional.active? && has_future_appointments?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Não é possível desativar o profissional pois existem agendamentos futuros.'
+        return
+      end
+
+      if @professional.update(active: !@professional.active)
+        message_key = @professional.active? ? :activated : :deactivated
+        redirect_to admin_professional_path(@professional),
+                    notice: t("admin.professionals.messages.#{message_key}")
+      else
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Erro ao alterar status do profissional.'
       end
     end
 
@@ -187,6 +204,10 @@ module Admin
       @contract_types = ContractType.active.ordered
       @groups = Group.ordered
       @specialities = Speciality.active.ordered
+    end
+
+    def has_future_appointments?
+      @professional.medical_appointments.where('scheduled_at > ?', Time.current).exists?
     end
   end
 end

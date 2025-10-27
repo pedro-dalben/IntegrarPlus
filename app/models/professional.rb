@@ -4,6 +4,7 @@ class Professional < ApplicationRecord
   include DashboardCache
   include MeiliSearch::Rails unless Rails.env.test?
   include AddressableConcern
+  include BrazilianDocumentValidation
 
   belongs_to :contract_type, optional: true
   has_one :user, dependent: :destroy
@@ -38,10 +39,13 @@ class Professional < ApplicationRecord
   validates :cpf, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :workload_minutes, numericality: { greater_than_or_equal_to: 0 }
+  validates :phone, format: { with: /\A\d{10,11}\z/, message: 'deve ter 10 ou 11 dígitos' }, allow_blank: true
 
   validate :contract_type_consistency
   validate :specialization_consistency
   validate :email_not_used_by_other_user
+
+  before_validation :normalize_phone, if: -> { phone.present? }
 
   after_create :create_user_for_authentication, if: :active?
 
@@ -171,30 +175,42 @@ class Professional < ApplicationRecord
     end
   end
 
-  # Método simplificado para criação de usuário
   def create_user_for_authentication!
     return user if user.present?
 
-    temp_password = SecureRandom.hex(12)
-    new_user = User.create!(
-      email: email,
-      password: temp_password,
-      password_confirmation: temp_password,
-      professional: self
-    )
+    new_user = nil
+    new_invite = nil
 
-    Rails.logger.info "Usuário de autenticação criado para profissional #{id}: #{email}"
+    ActiveRecord::Base.transaction do
+      temp_password = SecureRandom.hex(12)
+      new_user = User.create!(
+        email: email,
+        password: temp_password,
+        password_confirmation: temp_password,
+        professional: self
+      )
 
-    # Criar convite automaticamente
-    create_invite_for_user(new_user)
+      Rails.logger.info "Usuário de autenticação criado para profissional #{id}: #{email}"
+
+      new_invite = Invite.create!(user: new_user)
+      Rails.logger.info "Convite criado para usuário #{new_user.email}: #{new_invite.token}"
+    end
+
+    InviteMailer.invite_email(new_invite).deliver_later if new_invite
+    Rails.logger.info "Email de convite agendado para envio: #{new_user.email}"
 
     new_user
   rescue StandardError => e
     Rails.logger.error "Erro ao criar usuário para profissional #{id}: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
     nil
   end
 
   private
+
+  def normalize_phone
+    self.phone = phone.to_s.gsub(/\D/, '') if phone.present?
+  end
 
   def contract_type_consistency
     return unless contract_type
@@ -272,23 +288,5 @@ class Professional < ApplicationRecord
     return if user.present?
 
     create_user_for_authentication!
-  end
-
-  def create_invite_for_user(user)
-    return if user.blank?
-
-    begin
-      invite = Invite.create!(user: user)
-      Rails.logger.info "Convite criado para usuário #{user.email}: #{invite.token}"
-
-      # Enviar email de convite
-      InviteMailer.invite_email(invite).deliver_now
-      Rails.logger.info "Email de convite enviado para #{user.email}"
-
-      invite
-    rescue StandardError => e
-      Rails.logger.error "Erro ao criar convite para usuário #{user.email}: #{e.message}"
-      nil
-    end
   end
 end

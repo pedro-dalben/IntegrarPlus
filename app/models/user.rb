@@ -17,9 +17,15 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_many :notification_preferences, dependent: :destroy
 
+  validates :professional, presence: true
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
+
+  validate :professional_must_be_active, on: :create
+
   delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true
 
   scope :professionals, -> { joins(:professional) }
+  scope :active, -> { joins(:professional).where(professionals: { active: true }) }
 
   def name
     professional&.full_name || email.split('@').first.titleize
@@ -39,5 +45,12 @@ class User < ApplicationRecord
 
   def latest_invite
     invites.order(created_at: :desc).first
+  end
+
+  private
+
+  def professional_must_be_active
+    return if professional&.active?
+    errors.add(:professional, 'deve estar ativo para criar um usuário')
   end
 end

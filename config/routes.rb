@@ -21,6 +21,7 @@ Rails.application.routes.draw do
         patch :deactivate
         patch :confirm
         patch :unconfirm
+        patch :toggle_active
       end
     end
 
