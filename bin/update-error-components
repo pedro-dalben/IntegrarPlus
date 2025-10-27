@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+files_to_update = {
+  'app/views/admin/external_users/edit.html.erb' => '@external_user',
+  'app/views/admin/news/new.html.erb' => '@news',
+  'app/views/admin/news/edit.html.erb' => '@news',
+  'app/views/admin/agendas/new.html.erb' => '@agenda',
+  'app/views/admin/agendas/edit.html.erb' => '@agenda',
+  'app/views/portal/portal_intakes/new.html.erb' => '@portal_intake',
+  'app/views/admin/appointment_notes/new.html.erb' => '@appointment_note',
+  'app/views/admin/appointment_attachments/new.html.erb' => '@appointment_attachment',
+  'app/views/admin/medical_appointments/new.html.erb' => '@medical_appointment',
+  'app/views/admin/specializations/edit.html.erb' => '@specialization',
+  'app/views/admin/specializations/new.html.erb' => '@specialization',
+  'app/views/portal/service_requests/new.html.erb' => '@service_request',
+  'app/views/portal/service_requests/edit.html.erb' => '@service_request',
+  'app/views/admin/document_tasks/new.html.erb' => '@task',
+  'app/views/admin/document_tasks/edit.html.erb' => '@task',
+  'app/views/admin/specialities/new.html.erb' => '@speciality',
+  'app/views/admin/specialities/edit.html.erb' => '@speciality'
+}
+
+puts "📝 Atualizando #{files_to_update.count} arquivos para usar o Alerts::ErrorComponent..."
+
+files_to_update.each do |file, var|
+  if File.exist?(file)
+    content = File.read(file)
+
+    if content =~ /if #{Regexp.escape(var)}\.errors\.any\?/
+      puts "✅ #{file}"
+    else
+      puts "⏭️  #{file} (já atualizado ou sem erros)"
+    end
+  else
+    puts "❌ #{file} (arquivo não encontrado)"
+  end
+end
+
+puts "\n✨ Processo concluído!"
+puts "💡 Para aplicar as mudanças, substitua os blocos de erro manualmente em cada arquivo."
+puts "   Use: <%= render Alerts::ErrorComponent.new(model: #{var}, title: 'Título') %>"

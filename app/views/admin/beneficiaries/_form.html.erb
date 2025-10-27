@@ -1,25 +1,5 @@
 <%= form_with model: [:admin, beneficiary], local: true do |form| %>
-  <% if beneficiary.errors.any? %>
-    <div class="ta-alert ta-alert-error">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium">Erro ao salvar beneficiário</h3>
-          <div class="mt-2 text-sm">
-            <ul class="list-disc pl-5 space-y-1">
-              <% beneficiary.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
+  <%= render Alerts::ErrorComponent.new(model: beneficiary, title: "Erro ao salvar beneficiário") %>
 
   <!-- Card Principal -->
   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -28,24 +8,36 @@
         <%= beneficiary.new_record? ? "Novo Beneficiário" : "Editar Beneficiário" %>
       </h2>
     </div>
-    
+
     <div class="p-4 sm:p-6 space-y-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <%= form.label :name, "Nome Completo", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :name, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
+          <div class="relative">
+            <%= form.text_field :name, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :name)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :name)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :name) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :name) %>
         </div>
-        
+
         <div>
           <%= form.label :birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.date_field :birth_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
+          <div class="relative">
+            <%= form.date_field :birth_date, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :birth_date)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :birth_date)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :birth_date) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :birth_date) %>
         </div>
-        
+
         <div>
           <%= form.label :cpf, "CPF", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :cpf, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true, placeholder: "000.000.000-00" %>
+          <div class="relative">
+            <%= form.text_field :cpf, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :cpf)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :cpf)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true, placeholder: "000.000.000-00" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :cpf) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :cpf) %>
         </div>
-        
+
         <div>
           <%= form.label :integrar_code, "Código Integrar", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :integrar_code, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", readonly: true, placeholder: "Será gerado automaticamente" %>
@@ -63,27 +55,47 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <%= form.label :phone, "Telefone", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :phone, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+          <div class="relative">
+            <%= form.text_field :phone, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :phone)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :phone)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :phone) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :phone) %>
         </div>
-        
+
         <div>
           <%= form.label :secondary_phone, "Telefone Secundário", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :secondary_phone, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+          <div class="relative">
+            <%= form.text_field :secondary_phone, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :secondary_phone)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :secondary_phone)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :secondary_phone) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :secondary_phone) %>
         </div>
-        
+
         <div>
           <%= form.label :email, "E-mail", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.email_field :email, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "email@exemplo.com" %>
+          <div class="relative">
+            <%= form.email_field :email, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :email)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :email)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "email@exemplo.com" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :email) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :email) %>
         </div>
-        
+
         <div>
           <%= form.label :secondary_email, "E-mail Secundário", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.email_field :secondary_email, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "email2@exemplo.com" %>
+          <div class="relative">
+            <%= form.email_field :secondary_email, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :secondary_email)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :secondary_email)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "email2@exemplo.com" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :secondary_email) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :secondary_email) %>
         </div>
-        
+
         <div>
           <%= form.label :whatsapp_number, "WhatsApp", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :whatsapp_number, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+          <div class="relative">
+            <%= form.text_field :whatsapp_number, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :whatsapp_number)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :whatsapp_number)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
+            <%= render_field_error_icon if field_has_error?(beneficiary, :whatsapp_number) %>
+          </div>
+          <%= render_field_error_message(beneficiary, :whatsapp_number) %>
         </div>
       </div>
     </div>
@@ -100,37 +112,37 @@
           <%= form.label :address, "Endereço", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :address, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "Rua, Avenida, etc." %>
         </div>
-        
+
         <div>
           <%= form.label :address_number, "Número", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :address_number, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "123" %>
         </div>
-        
+
         <div>
           <%= form.label :address_complement, "Complemento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :address_complement, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "Apto, Bloco, etc." %>
         </div>
-        
+
         <div>
           <%= form.label :neighborhood, "Bairro", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :neighborhood, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :city, "Cidade", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :city, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :state, "Estado", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :state, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "SP" %>
         </div>
-        
+
         <div>
           <%= form.label :zip_code, "CEP", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :zip_code, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "00000-000" %>
         </div>
-        
+
         <div>
           <%= form.label :address_reference, "Referência", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :address_reference, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "Ponto de referência" %>
@@ -150,10 +162,10 @@
           <%= form.label :responsible_name, "Nome do Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :responsible_name, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :relationship, "Parentesco", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :relationship, 
+          <%= form.select :relationship,
               options_for_select([
                 ['Selecione...', ''],
                 ['Pai', 'pai'],
@@ -163,26 +175,26 @@
                 ['Tio(a)', 'tio'],
                 ['Irmão(ã)', 'irmao'],
                 ['Outro', 'outro']
-              ], beneficiary.relationship), 
-              {}, 
+              ], beneficiary.relationship),
+              {},
               { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
-        
+
         <div>
           <%= form.label :responsible_phone, "Telefone do Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :responsible_phone, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "(11) 99999-9999" %>
         </div>
-        
+
         <div>
           <%= form.label :responsible_cpf, "CPF do Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :responsible_cpf, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", placeholder: "000.000.000-00" %>
         </div>
-        
+
         <div>
           <%= form.label :responsible_profession, "Profissão do Responsável", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :responsible_profession, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :family_income, "Renda Familiar", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.number_field :family_income, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", step: 0.01, placeholder: "0.00" %>
@@ -204,7 +216,7 @@
             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta escola?</span>
           <% end %>
         </div>
-        
+
         <div id="school-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4" style="<%= 'display: none;' unless beneficiary.attends_school? %>">
           <div>
             <%= form.label :school_name, "Nome da Escola", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
@@ -212,7 +224,7 @@
           </div>
           <div>
             <%= form.label :school_period, "Período", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-            <%= form.select :school_period, 
+            <%= form.select :school_period,
                 options_for_select([
                   ['Selecione...', ''],
                   ['Manhã', 'manha'],
@@ -238,22 +250,22 @@
           <%= form.label :health_plan, "Plano de Saúde", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :health_plan, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :health_card_number, "Número da Carteirinha", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :health_card_number, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div class="md:col-span-2">
           <%= form.label :allergies, "Alergias", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_area :allergies, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", rows: 3, placeholder: "Descreva as alergias conhecidas" %>
         </div>
-        
+
         <div class="md:col-span-2">
           <%= form.label :continuous_medications, "Medicamentos de Uso Contínuo", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_area :continuous_medications, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", rows: 3, placeholder: "Liste os medicamentos de uso contínuo" %>
         </div>
-        
+
         <div class="md:col-span-2">
           <%= form.label :special_conditions, "Condições Especiais", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_area :special_conditions, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", rows: 3, placeholder: "Descreva condições especiais ou necessidades" %>
@@ -271,32 +283,32 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <%= form.label :status, "Status", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.select :status, 
+          <%= form.select :status,
               options_for_select([
                 ['Ativo', 'ativo'],
                 ['Inativo', 'inativo'],
                 ['Suspenso', 'suspenso'],
                 ['Transferido', 'transferido']
-              ], beneficiary.status || 'ativo'), 
-              {}, 
+              ], beneficiary.status || 'ativo'),
+              {},
               { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" } %>
         </div>
-        
+
         <div>
           <%= form.label :treatment_start_date, "Data de Início do Atendimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.date_field :treatment_start_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :treatment_end_date, "Data de Fim do Atendimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.date_field :treatment_end_date, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div>
           <%= form.label :medical_record_number, "Número do Prontuário", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_field :medical_record_number, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
-        
+
         <div class="md:col-span-2">
           <%= form.label :inactivation_reason, "Motivo da Inativação", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.text_area :inactivation_reason, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", rows: 3, placeholder: "Descreva o motivo da inativação (se aplicável)" %>
@@ -307,9 +319,9 @@
 
     <!-- Botões de Ação -->
     <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-      <%= link_to "Cancelar", admin_beneficiaries_path, 
+      <%= link_to "Cancelar", admin_beneficiaries_path,
           class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
-      <%= form.submit beneficiary.persisted? ? "Atualizar Beneficiário" : "Criar Beneficiário", 
+      <%= form.submit beneficiary.persisted? ? "Atualizar Beneficiário" : "Criar Beneficiário",
           class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
     </div>
     </div>
@@ -321,7 +333,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const attendsSchoolCheckbox = document.getElementById('beneficiary_attends_school');
     const schoolFields = document.getElementById('school-fields');
-    
+
     if (attendsSchoolCheckbox) {
       attendsSchoolCheckbox.addEventListener('change', function() {
         schoolFields.style.display = this.checked ? 'grid' : 'none';

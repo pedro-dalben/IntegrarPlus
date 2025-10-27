@@ -1,0 +1,30 @@
+<div class="<%= wrapper_class %>">
+  <%= form.label field, label_text, class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+
+  <div class="<%= container_classes %>" <%= container_data_attributes.map { |k, v| "data-#{k.to_s.gsub('_', '-')}=\"#{v}\"" }.join(' ').html_safe %>>
+    <% case type %>
+    <% when :email %>
+      <%= form.email_field field, input_options %>
+    <% when :password %>
+      <%= form.password_field field, input_options %>
+    <% when :number %>
+      <%= form.number_field field, input_options %>
+    <% when :date %>
+      <%= form.date_field field, input_options %>
+    <% when :select %>
+      <%= form.select field, options[:choices] || [], options[:select_options] || {}, input_options %>
+    <% when :text_area %>
+      <%= form.text_area field, input_options.merge(class: input_options[:class].gsub('h-11', 'min-h-[100px]')) %>
+    <% else %>
+      <%= form.text_field field, input_options %>
+    <% end %>
+
+    <%= error_icon_html %>
+  </div>
+
+  <% if has_error? %>
+    <p class="text-xs text-error-500 dark:text-error-400 mt-1.5">
+      <%= error_message %>
+    </p>
+  <% end %>
+</div>
