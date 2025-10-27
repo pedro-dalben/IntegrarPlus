@@ -59,3 +59,4 @@ class NotificationPolicy < ApplicationPolicy
     end
   end
 end
+
