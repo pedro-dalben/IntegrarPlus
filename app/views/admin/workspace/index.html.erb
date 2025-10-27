@@ -52,7 +52,7 @@
 
 <!-- Container da Busca Avançada -->
 <div data-controller="advanced-search"
-     data-advanced-search-url-value="<%= admin_workspace_path %>"
+     data-advanced-search-url-value="<%= admin_workspace_index_path %>"
      data-advanced-search-debounce-ms-value="500"
      data-advanced-search-min-length-value="2">
 
@@ -117,7 +117,7 @@
       <h3 class="text-lg font-medium text-gray-900 dark:text-white">Filtros</h3>
     </div>
     <div class="px-6 py-4">
-      <%= form_with url: admin_workspace_path, method: :get, local: true do |f| %>
+      <%= form_with url: admin_workspace_index_path, method: :get, local: true do |f| %>
         <!-- Manter o campo de busca no form para compatibilidade -->
         <%= f.hidden_field :query, value: params[:query] if params[:query].present? %>
 
@@ -176,7 +176,7 @@
 
           <div class="flex gap-2 w-full sm:w-auto">
             <%= f.submit "Filtrar", class: "flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out" %>
-            <%= link_to "Limpar", admin_workspace_path, class: "flex-1 sm:flex-none bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out text-center" %>
+            <%= link_to "Limpar", admin_workspace_index_path, class: "flex-1 sm:flex-none bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out text-center" %>
                   </div>
       </div>
     <% end %>
