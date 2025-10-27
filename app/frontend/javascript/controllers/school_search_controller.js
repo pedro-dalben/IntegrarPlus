@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["input", "results", "selectedSchool"]
-  static values = { 
+  static values = {
     url: String,
     minLength: { type: Number, default: 3 },
     debounceMs: { type: Number, default: 300 }
@@ -11,17 +11,19 @@ export default class extends Controller {
   connect() {
     this.debounceTimer = null
     this.selectedSchoolData = null
+    document.addEventListener('click', this.handleClickOutside.bind(this))
   }
 
   disconnect() {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer)
     }
+    document.removeEventListener('click', this.handleClickOutside.bind(this))
   }
 
   search() {
     const query = this.inputTarget.value.trim()
-    
+
     if (query.length < this.minLengthValue) {
       this.hideResults()
       return
@@ -40,7 +42,7 @@ export default class extends Controller {
   async performSearch(query) {
     try {
       this.showLoading()
-      
+
       const response = await fetch(`${this.urlValue}?q=${encodeURIComponent(query)}`, {
         method: 'GET',
         headers: {
@@ -55,7 +57,7 @@ export default class extends Controller {
 
       const data = await response.json()
       this.displayResults(data.schools || [])
-      
+
     } catch (error) {
       console.error('Erro ao buscar escolas:', error)
       this.showError('Erro ao buscar escolas. Tente novamente.')
@@ -74,7 +76,7 @@ export default class extends Controller {
     }
 
     const resultsHtml = schools.map(school => `
-      <div class="school-result p-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0" 
+      <div class="school-result p-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0"
            data-school-id="${school.id}"
            data-school-name="${school.name}"
            data-school-code="${school.code}"
@@ -121,7 +123,7 @@ export default class extends Controller {
               <div class="text-sm text-green-600 dark:text-green-400">${schoolData.address}</div>
               <div class="text-xs text-green-500 dark:text-green-500">${schoolData.city} - ${schoolData.state} • ${schoolData.type}</div>
             </div>
-            <button type="button" 
+            <button type="button"
                     class="ml-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200"
                     data-action="click->school-search#clearSelection">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +140,7 @@ export default class extends Controller {
     this.selectedSchoolData = null
     this.inputTarget.value = ''
     this.hideResults()
-    
+
     if (this.hasSelectedSchoolTarget) {
       this.selectedSchoolTarget.innerHTML = ''
     }
@@ -180,16 +182,5 @@ export default class extends Controller {
     if (!this.element.contains(event.target)) {
       this.hideResults()
     }
-  }
-
-  // Adicionar event listener para cliques fora
-  connect() {
-    super.connect()
-    document.addEventListener('click', this.handleClickOutside.bind(this))
-  }
-
-  disconnect() {
-    super.disconnect()
-    document.removeEventListener('click', this.handleClickOutside.bind(this))
   }
 }

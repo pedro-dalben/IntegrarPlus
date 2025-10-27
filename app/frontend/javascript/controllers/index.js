@@ -66,3 +66,6 @@ application.register("anamneses-filters", AnamnesesFiltersController)
 
 import DrawioController from "./drawio_controller"
 application.register("drawio", DrawioController)
+
+import SchoolSearchController from "./school_search_controller"
+application.register("school-search", SchoolSearchController)
