@@ -1,0 +1,14 @@
+<% content_for :title, "Nova Escola" %>
+
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_schools_path, class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
+
+  <%= render 'form', school: @school %>
+<% end %>
