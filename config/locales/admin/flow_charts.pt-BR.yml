@@ -59,6 +59,9 @@ pt-BR:
         search_placeholder: Digite para buscar fluxogramas...
         empty_state: Nenhum fluxograma encontrado
         create_first: Criar primeiro fluxograma
+        results:
+          one: "%{count} fluxograma encontrado"
+          other: "%{count} fluxogramas encontrados"
         columns:
           title: Título
           status: Status
