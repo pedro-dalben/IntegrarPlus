@@ -28,7 +28,19 @@ class BasicCalendarComponent < ViewComponent::Base
       # Se o evento tem um medical_appointment associado, usar suas informações
       if event.respond_to?(:medical_appointment) && event.medical_appointment.present?
         appointment = event.medical_appointment
-        title = "#{appointment.appointment_type.humanize} - #{appointment.patient&.name || 'Paciente não informado'}"
+
+        patient_name = if appointment.anamnesis&.portal_intake.present?
+                         appointment.anamnesis.portal_intake.beneficiary_name
+                       elsif appointment.patient.present?
+                         appointment.patient.name
+                       else
+                         'Paciente não informado'
+                       end
+
+        appointment_type_label = I18n.t("admin.medical_appointments.appointment_types.#{appointment.appointment_type}",
+                                         default: appointment.appointment_type.humanize)
+
+        title = "#{appointment_type_label} - #{patient_name}"
         description = appointment.notes || event.description || ''
       else
         title = event.title
