@@ -107,8 +107,11 @@ Rails.application.routes.draw do
       end
     end
 
-    # Busca de escolas
-    resources :schools, only: [] do
+    resources :schools do
+      member do
+        patch :activate
+        patch :deactivate
+      end
       collection do
         get :search
       end

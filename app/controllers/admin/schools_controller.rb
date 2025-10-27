@@ -1,7 +1,76 @@
-# frozen_string_literal: true
-
 module Admin
-  class SchoolsController < Admin::BaseController
+  class SchoolsController < BaseController
+    before_action :set_school, only: %i[show edit update destroy activate deactivate]
+
+    def index
+      authorize School, policy_class: Admin::SchoolPolicy
+
+      @schools = School.all.order(:name)
+
+      @schools = @schools.search_by_name(params[:query]) if params[:query].present?
+      @schools = @schools.by_city(params[:city]) if params[:city].present?
+      @schools = @schools.by_state(params[:state]) if params[:state].present?
+      @schools = @schools.by_type(params[:school_type]) if params[:school_type].present?
+      @schools = @schools.by_network(params[:network]) if params[:network].present?
+      @schools = @schools.active if params[:status] == 'active'
+      @schools = @schools.where(active: false) if params[:status] == 'inactive'
+    end
+
+    def show
+      authorize @school, policy_class: Admin::SchoolPolicy
+    end
+
+    def new
+      @school = School.new
+      authorize @school, policy_class: Admin::SchoolPolicy
+    end
+
+    def create
+      @school = School.new(school_params)
+      @school.created_by = current_user
+      authorize @school, policy_class: Admin::SchoolPolicy
+
+      if @school.save
+        redirect_to [:admin, @school], notice: 'Escola cadastrada com sucesso.'
+      else
+        render :new, status: :unprocessable_entity
+      end
+    end
+
+    def edit
+      authorize @school, policy_class: Admin::SchoolPolicy
+    end
+
+    def update
+      authorize @school, policy_class: Admin::SchoolPolicy
+      @school.updated_by = current_user
+
+      if @school.update(school_params)
+        redirect_to [:admin, @school], notice: 'Escola atualizada com sucesso.'
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      authorize @school, policy_class: Admin::SchoolPolicy
+
+      @school.destroy
+      redirect_to admin_schools_path, notice: 'Escola removida com sucesso.'
+    end
+
+    def activate
+      authorize @school, policy_class: Admin::SchoolPolicy
+      @school.update(active: true, updated_by: current_user)
+      redirect_to [:admin, @school], notice: 'Escola ativada com sucesso.'
+    end
+
+    def deactivate
+      authorize @school, policy_class: Admin::SchoolPolicy
+      @school.update(active: false, updated_by: current_user)
+      redirect_to [:admin, @school], notice: 'Escola desativada com sucesso.'
+    end
+
     def search
       query = params[:q]
 
@@ -10,75 +79,35 @@ module Admin
         return
       end
 
-      begin
-        schools = search_schools_in_inep(query)
-        render json: { schools: schools }
-      rescue StandardError => e
-        Rails.logger.error "Erro ao buscar escolas: #{e.message}"
-        render json: { schools: [], error: 'Erro ao buscar escolas. Tente novamente.' }
+      schools = School.active
+                      .search_by_name(query)
+                      .limit(10)
+                      .map do |school|
+        {
+          id: school.id,
+          name: school.name,
+          code: school.code,
+          address: school.full_address,
+          city: school.city,
+          state: school.state,
+          type: school.type_label
+        }
       end
+
+      render json: { schools: schools }
     end
 
     private
 
-    def search_schools_in_inep(query)
-      # Simulação de busca - em produção, integrar com API real do INEP
-      # Por enquanto, retornamos dados mockados baseados em escolas reais
-
-      mock_schools = [
-        {
-          id: 1,
-          name: "Escola Municipal #{query} - Centro",
-          code: '12345678',
-          address: 'Rua das Flores, 123 - Centro',
-          city: 'São Paulo',
-          state: 'SP',
-          type: 'Municipal'
-        },
-        {
-          id: 2,
-          name: "Escola Estadual #{query} - Vila Nova",
-          code: '87654321',
-          address: 'Av. Principal, 456 - Vila Nova',
-          city: 'São Paulo',
-          state: 'SP',
-          type: 'Estadual'
-        },
-        {
-          id: 3,
-          name: "Colégio Particular #{query}",
-          code: '11223344',
-          address: 'Rua da Educação, 789 - Jardim',
-          city: 'São Paulo',
-          state: 'SP',
-          type: 'Particular'
-        }
-      ]
-
-      # Filtrar escolas que contenham o termo de busca
-      mock_schools.select do |school|
-        school[:name].downcase.include?(query.downcase) ||
-          school[:address].downcase.include?(query.downcase) ||
-          school[:city].downcase.include?(query.downcase)
-      end.first(10) # Limitar a 10 resultados
+    def set_school
+      @school = School.find(params[:id])
     end
 
-    # Método para integração futura com API real do INEP
-    def search_real_inep_api(query)
-      # Exemplo de como seria a integração real:
-      # require 'net/http'
-      # require 'json'
-      #
-      # uri = URI("https://api.inep.gov.br/escolas")
-      # params = { q: query, limit: 10 }
-      # uri.query = URI.encode_www_form(params)
-      #
-      # response = Net::HTTP.get_response(uri)
-      # if response.is_a?(Net::HTTPSuccess)
-      #   JSON.parse(response.body)
-      # else
-      #   []
-      # end
+    def school_params
+      params.require(:school).permit(
+        :name, :code, :address, :neighborhood, :city, :state, :zip_code,
+        :phone, :email, :school_type, :network, :active
+      )
     end
   end
 end
