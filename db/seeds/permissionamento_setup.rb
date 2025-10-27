@@ -101,7 +101,11 @@ permissions_data = [
   { key: 'flow_charts.publish', description: 'Publicar fluxogramas' },
   { key: 'flow_charts.duplicate', description: 'Duplicar fluxogramas' },
   { key: 'flow_charts.export_pdf', description: 'Exportar fluxogramas para PDF' },
-  { key: 'flow_charts.manage', description: 'Gerenciar fluxogramas (criar, editar, excluir, publicar, duplicar)' }
+  { key: 'flow_charts.manage', description: 'Gerenciar fluxogramas (criar, editar, excluir, publicar, duplicar)' },
+  { key: 'schools.view', description: 'Visualizar escolas' },
+  { key: 'schools.create', description: 'Criar escolas' },
+  { key: 'schools.edit', description: 'Editar escolas' },
+  { key: 'schools.destroy', description: 'Excluir escolas' }
 ]
 
 permissions_data.each do |perm_data|
@@ -178,7 +182,10 @@ if recepcao_group
     'anamneses.update',
     'anamneses.view_all',
     'anamneses.today',
-    'anamneses.by_professional'
+    'anamneses.by_professional',
+    'schools.view',
+    'schools.create',
+    'schools.edit'
   ]
 
   recepcao_permissions.each do |perm_key|

@@ -1,0 +1,94 @@
+pt-BR:
+  admin:
+    schools:
+      index:
+        title: "Escolas"
+        description: "Gerencie as escolas cadastradas"
+        new_school: "Nova Escola"
+        search_placeholder: "Buscar por nome da escola..."
+        filter: "Filtrar"
+        no_schools: "Nenhuma escola encontrada"
+        start_message: "Comece cadastrando uma nova escola."
+
+      show:
+        title: "Detalhes da Escola"
+        back: "Voltar"
+        edit: "Editar"
+        basic_info: "Informações Básicas"
+        address_info: "Endereço"
+        contact_info: "Contato"
+        actions: "Ações"
+        edit_school: "Editar Escola"
+        deactivate: "Desativar Escola"
+        activate: "Ativar Escola"
+        remove: "Remover Escola"
+        confirm_deactivate: "Deseja realmente desativar esta escola?"
+        confirm_remove: "Deseja realmente remover esta escola? Esta ação não pode ser desfeita."
+
+      new:
+        title: "Nova Escola"
+        description: "Cadastre uma nova escola no sistema"
+
+      edit:
+        title: "Editar Escola"
+
+      form:
+        basic_info: "Informações Básicas"
+        address_info: "Endereço"
+        contact_info: "Contato"
+        name: "Nome da Escola"
+        code: "Código INEP"
+        school_type: "Tipo de Escola"
+        network: "Rede"
+        active: "Escola Ativa"
+        address: "Endereço"
+        neighborhood: "Bairro"
+        city: "Cidade"
+        state: "UF"
+        zip_code: "CEP"
+        phone: "Telefone"
+        email: "E-mail"
+        cancel: "Cancelar"
+        create: "Cadastrar Escola"
+        update: "Atualizar Escola"
+        required_fields: "Campos obrigatórios"
+
+      messages:
+        created: "Escola cadastrada com sucesso."
+        updated: "Escola atualizada com sucesso."
+        destroyed: "Escola removida com sucesso."
+        activated: "Escola ativada com sucesso."
+        deactivated: "Escola desativada com sucesso."
+
+  activerecord:
+    models:
+      school:
+        one: "Escola"
+        other: "Escolas"
+
+    attributes:
+      school:
+        name: "Nome"
+        code: "Código INEP"
+        address: "Endereço"
+        neighborhood: "Bairro"
+        city: "Cidade"
+        state: "UF"
+        zip_code: "CEP"
+        phone: "Telefone"
+        email: "E-mail"
+        school_type: "Tipo de Escola"
+        network: "Rede"
+        active: "Ativa"
+        created_at: "Criada em"
+        updated_at: "Atualizada em"
+
+        school_types:
+          municipal: "Municipal"
+          estadual: "Estadual"
+          federal: "Federal"
+          particular: "Particular"
+
+        networks:
+          publica: "Pública"
+          privada: "Privada"
