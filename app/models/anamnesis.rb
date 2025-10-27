@@ -4,7 +4,7 @@ class Anamnesis < ApplicationRecord
   include MeiliSearch::Rails unless Rails.env.test?
 
   # Relacionamentos
-  belongs_to :beneficiary
+  belongs_to :beneficiary, optional: true
   belongs_to :professional, class_name: 'User'
   belongs_to :portal_intake, optional: true
   belongs_to :created_by_professional, class_name: 'User', optional: true
@@ -29,8 +29,7 @@ class Anamnesis < ApplicationRecord
     clinica: 'clinica',
     domiciliar_clinica: 'domiciliar_clinica',
     domiciliar_escola: 'domiciliar_escola',
-    domiciliar_clinica_escola: 'domiciliar_clinica_escola',
-    domiciliar_escola: 'domiciliar_escola'
+    domiciliar_clinica_escola: 'domiciliar_clinica_escola'
   }
 
   enum :school_period, {
@@ -53,7 +52,6 @@ class Anamnesis < ApplicationRecord
 
   # Callbacks
   before_validation :set_default_values
-  after_create :create_beneficiary_from_portal_intake, if: :portal_intake_id?
 
   # Scopes
   scope :by_professional, ->(professional) { where(professional: professional) }
@@ -74,7 +72,7 @@ class Anamnesis < ApplicationRecord
       sortable_attributes %i[created_at updated_at performed_at]
 
       attribute :beneficiary_name do
-        beneficiary.name
+        beneficiary&.name || portal_intake&.beneficiary_name || 'Beneficiário não informado'
       end
       attribute :professional_name do
         professional.full_name
@@ -88,7 +86,9 @@ class Anamnesis < ApplicationRecord
   end
 
   # Métodos de instância
-  delegate :name, to: :beneficiary, prefix: true
+  def beneficiary_name
+    beneficiary&.name || portal_intake&.beneficiary_name || 'Beneficiário não informado'
+  end
 
   def professional_name
     professional.full_name
