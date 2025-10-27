@@ -88,6 +88,33 @@ module Admin
           # current_user é um User, mas o método schedule_anamnesis! espera um admin_user (User)
           @portal_intake.schedule_anamnesis!(scheduled_datetime, current_user)
 
+          # Criar a Anamnesis
+          anamnesis = Anamnesis.new(
+            portal_intake: @portal_intake,
+            professional: professional_user,
+            performed_at: scheduled_datetime,
+            status: 'pendente',
+            referral_reason: 'aba',
+            treatment_location: 'clinica',
+            referral_hours: 20,
+            created_by_professional: current_user
+          )
+
+          begin
+            anamnesis.save!
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error "❌ Erro ao criar anamnese: #{e.message}"
+            flash.now[:alert] = "Erro ao criar anamnese: #{e.message}"
+            render :schedule_anamnesis
+            return
+          rescue StandardError => e
+            Rails.logger.error "❌ Erro inesperado ao criar anamnese: #{e.class} - #{e.message}"
+            Rails.logger.error e.backtrace.join("\n")
+            flash.now[:alert] = "Erro ao criar anamnese: #{e.message}"
+            render :schedule_anamnesis
+            return
+          end
+
           # Usar o service de agendamento para criar evento e appointment
           scheduling_service = AppointmentSchedulingService.new(professional, agenda)
 
@@ -99,7 +126,7 @@ module Admin
             title: "Anamnese - #{@portal_intake.beneficiary_name}",
             description: "Anamnese para #{@portal_intake.plan_name}",
             created_by: professional,
-            patient: nil, # Portal intake não tem paciente específico
+            patient: nil,
             source_context: {
               type: 'portal_intake',
               id: @portal_intake.id
@@ -118,6 +145,9 @@ module Admin
             render :schedule_anamnesis
             return
           end
+
+          medical_appointment = result[:medical_appointment]
+          medical_appointment.update(anamnesis: anamnesis) if medical_appointment
 
           Rails.logger.debug '✅ Agendamento criado com sucesso, redirecionando...'
           redirect_to admin_portal_intake_path(@portal_intake),
