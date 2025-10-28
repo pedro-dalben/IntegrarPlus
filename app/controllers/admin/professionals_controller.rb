@@ -115,7 +115,7 @@ module Admin
     end
 
     def perform_local_search
-      Professional.includes(:user, :groups, :specialities, :specializations, :contract_type)
+      Professional.includes(user: :invites)
                   .order(created_at: :desc)
     end
 

@@ -22,23 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const bulletFooter = document.getElementById('bullet-footer');
     if (!bulletFooter) return;
 
-    // Debug: ver o HTML completo do footer
-    console.log('DEBUG - Bullet Footer HTML:', bulletFooter.innerHTML);
-    console.log('DEBUG - Bullet Footer Text:', bulletFooter.innerText);
+    // Pega o div com os warnings (ignora summary e styles)
+    const warningsDiv = bulletFooter.querySelector('div');
+    if (!warningsDiv) return;
 
-    // Tenta pegar o conteúdo de várias formas
-    let warnings = bulletFooter.innerText || bulletFooter.textContent || '';
-    warnings = warnings.trim();
+    // Pega o HTML e limpa
+    let html = warningsDiv.innerHTML;
 
-    console.log('DEBUG - Warnings processados:', warnings);
+    // Remove styles e spans de console-message
+    html = html.replace(/<style[^>]*>.*?<\/style>/gi, '');
+    html = html.replace(/<span id="console-message">.*?<\/span>/gi, '');
 
-    // Se não tem conteúdo útil, não faz nada
-    if (!warnings || warnings.length === 0 || warnings === 'Uniform Notifier') return;
+    // Converte BR para quebras de linha
+    html = html.replace(/<br\s*\/?>/gi, '\n');
+
+    // Remove outras tags HTML
+    html = html.replace(/<[^>]+>/g, '');
+
+    // Decodifica HTML entities
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    const warnings = div.textContent || div.innerText || '';
 
     const lines = warnings
       .split('\n')
       .map(line => line.trim())
-      .filter(line => line && line !== 'Uniform Notifier');
+      .filter(line => line && line !== 'Uniform Notifier' && line !== 'Bullet Warnings');
 
     if (lines.length === 0) return;
 
