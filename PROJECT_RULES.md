@@ -41,7 +41,7 @@ app/frontend/
 export default function widgetName() {
   const el = document.querySelector("#widget-selector");
   if (!el) return;
-  
+
   // inicialização do widget
 }
 ```
@@ -55,7 +55,7 @@ export default class extends Controller {
   connect() {
     // inicialização
   }
-  
+
   disconnect() {
     // limpeza
   }
@@ -125,6 +125,76 @@ if (el._instance) el._instance.destroy();
 // Inicialização segura
 const safe = (fn) => { try { fn?.(); } catch (_) {} };
 ```
+
+## ⚠️ JavaScript e Event Listeners Globais
+
+### ❌ NUNCA FAÇA ISSO (Event Listeners Duplicados)
+```javascript
+// ERRADO: Event listeners serão duplicados a cada navegação Turbo
+document.addEventListener('DOMContentLoaded', initializeWidget);
+document.addEventListener('turbo:load', initializeWidget);
+document.addEventListener('turbo:render', initializeWidget);
+```
+
+### ✅ FAÇA ISSO (Event Listeners Protegidos)
+```javascript
+// CORRETO: Proteger contra duplicação de listeners globais
+if (!window.widgetListenersAttached) {
+  document.addEventListener('DOMContentLoaded', initializeWidget);
+  document.addEventListener('turbo:load', initializeWidget);
+  document.addEventListener('turbo:render', initializeWidget);
+  window.widgetListenersAttached = true;
+} else {
+  initializeWidget();
+}
+```
+
+### ✅ MELHOR: Use Stimulus Controllers
+```javascript
+// MELHOR OPÇÃO: Usar Stimulus que gerencia lifecycle automaticamente
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  connect() {
+    this.element.addEventListener('click', this.handleClick);
+  }
+
+  disconnect() {
+    this.element.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick = (e) => {
+    // lógica do evento
+  }
+}
+```
+
+### Regras de Event Listeners
+1. **PREFIRA Stimulus Controllers**: Sempre que possível, use Stimulus para gerenciar eventos
+2. **Scripts Inline**: Evite scripts inline em arquivos `.erb` - use Stimulus
+3. **Event Listeners Globais**: Se necessário usar, sempre proteja contra duplicação
+4. **Limpeza**: Sempre remova event listeners no `disconnect()` ou ao destruir componentes
+5. **Named Functions**: Use funções nomeadas para poder remover listeners corretamente
+
+## 🐛 Debug e Logging
+
+### Console.log em Produção
+**NUNCA** deixe `console.log()` no código de produção:
+- ❌ **ERRADO**: `console.log('Dropdown opened')`
+- ✅ **CORRETO**: Remover todos os console.log antes do commit
+- ⚠️ **EXCEÇÃO**: Use apenas em desenvolvimento com conditional check:
+
+```javascript
+if (import.meta.env.DEV) {
+  console.log('Debug info');
+}
+```
+
+### Monitoramento
+Para logging em produção, use ferramentas apropriadas:
+- **Sentry**: Para erros e exceptions
+- **Analytics**: Para tracking de eventos
+- **APM**: Para performance monitoring
 
 ## 📝 Documentação
 

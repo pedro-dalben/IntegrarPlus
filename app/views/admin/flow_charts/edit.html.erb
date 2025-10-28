@@ -79,9 +79,7 @@
           src="https://embed.diagrams.net/?embed=1&ui=atlas&spin=1&proto=json&configure=1&libraries=1&origin=<%= CGI.escape(request.base_url) %>"
           style="width: 100%; height: 700px; border: none;"
           allow="clipboard-write"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-          onload="console.log('Iframe loaded successfully')"
-          onerror="console.error('Iframe failed to load')">
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox">
         </iframe>
       </div>
 
@@ -140,5 +138,3 @@
     <% end %>
   </div>
 <% end %>
-
-

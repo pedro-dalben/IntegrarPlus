@@ -27,14 +27,10 @@ import "../javascript/tailadmin-pro.js";
 // Reinit seguro para Turbo / renders parciais
 // ----------------------------
 const reinitAll = () => {
-  console.log("🔄 Re-inicializando componentes após navegação...");
-
   // Re-inicializar componentes TailAdmin se necessário
   if (window.TailAdminPro && typeof window.TailAdminPro.initializeComponents === "function") {
     window.TailAdminPro.initializeComponents();
   }
-
-  console.log("✅ Re-inicialização concluída");
 };
 
 // ----------------------------

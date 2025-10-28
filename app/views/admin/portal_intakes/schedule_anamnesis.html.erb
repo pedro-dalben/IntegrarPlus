@@ -216,12 +216,10 @@ function hideAgendaGrid() {
 }
 
 function selectSlot(datetime, timeSlot) {
-  console.log('🎯 selectSlot chamado:', datetime, timeSlot);
 
   const professionalSelect = document.querySelector('select[name="professional_id"]');
   const professionalId = professionalSelect?.value;
 
-  console.log('👤 professional_id atual:', professionalId);
 
   if (!professionalId) {
     alert('Por favor, selecione um profissional antes de escolher o horário.');
@@ -229,20 +227,16 @@ function selectSlot(datetime, timeSlot) {
   }
 
   if (confirm(`Deseja agendar para ${timeSlot}?`)) {
-    console.log('✅ Usuário confirmou a seleção');
 
     const gridSection = document.getElementById('agenda-grid-section');
     if (gridSection) {
       gridSection.classList.add('hidden');
-      console.log('📦 Grade fechada');
     }
 
     const date = new Date(datetime);
     const dateString = date.toISOString().split('T')[0];
     const timeString = timeSlot.split(' - ')[0];
 
-    console.log('📅 Data formatada:', dateString);
-    console.log('🕐 Horário formatado:', timeString);
 
     const dateInput = document.querySelector('[data-agenda-scheduler-target="dateSelect"]');
     const timeInput = document.querySelector('[data-agenda-scheduler-target="timeSelect"]');
@@ -250,7 +244,6 @@ function selectSlot(datetime, timeSlot) {
     const previewSection = document.querySelector('[data-agenda-scheduler-target="previewSection"]');
     const submitButton = document.querySelector('[data-agenda-scheduler-target="submitButton"]');
 
-    console.log('🔍 Elementos encontrados:', {
       dateInput: !!dateInput,
       timeInput: !!timeInput,
       datetimeSection: !!datetimeSection,
@@ -260,39 +253,31 @@ function selectSlot(datetime, timeSlot) {
 
     if (dateInput) {
       dateInput.value = dateString;
-      console.log('✅ Campo de data preenchido:', dateInput.value);
     }
 
     if (timeInput) {
       timeInput.value = timeString;
-      console.log('✅ Campo de horário preenchido:', timeInput.value);
     }
 
     if (datetimeSection) {
       datetimeSection.classList.remove('hidden');
-      console.log('✅ Seção de data/hora mostrada');
     }
 
     const scheduledDateTimeTarget = document.querySelector('[data-agenda-scheduler-target="scheduledDateTime"]');
     if (scheduledDateTimeTarget) {
       const formattedDate = new Date(dateString).toLocaleDateString('pt-BR');
       scheduledDateTimeTarget.textContent = `${formattedDate} às ${timeString}`;
-      console.log('✅ Preview atualizado:', scheduledDateTimeTarget.textContent);
     }
 
     if (previewSection) {
       previewSection.classList.remove('hidden');
-      console.log('✅ Seção de preview mostrada');
     }
 
     if (submitButton) {
       submitButton.disabled = false;
-      console.log('✅ Botão de submit habilitado');
     }
 
-    console.log('🎉 Processo de seleção concluído');
   } else {
-    console.log('❌ Usuário cancelou a seleção');
   }
 }
 </script>

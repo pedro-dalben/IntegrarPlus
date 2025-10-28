@@ -10,10 +10,6 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("DrawioController connected")
-    console.log("Initial data:", this.initialDataValue)
-    console.log("Update URL:", this.updateUrlValue)
-    console.log("Iframe target:", this.iframeTarget)
     
     // Expor referência global para acesso externo
     window.drawioController = this
@@ -28,7 +24,6 @@ export default class extends Controller {
     this.saveAttempts = 0
     this.isManualExport = false
 
-    console.log("Current XML:", this.currentXml.substring(0, 100))
 
     // Verificar se o iframe existe
     if (!this.iframe) {
@@ -36,12 +31,8 @@ export default class extends Controller {
       return
     }
 
-    console.log("Iframe element found:", this.iframe)
-    console.log("Iframe src:", this.iframe.src)
 
     this.iframe.addEventListener("load", () => {
-      console.log("Draw.io iframe loaded")
-      console.log("Iframe contentWindow:", this.iframe.contentWindow)
       // Aguardar um pouco para o draw.io inicializar completamente
       setTimeout(() => {
         this.loadDiagram()
@@ -56,7 +47,6 @@ export default class extends Controller {
     // Fallback: tentar carregar após 5 segundos se não carregou
     setTimeout(() => {
       if (!this.diagramLoaded) {
-        console.log("Fallback: loading diagram after timeout")
         this.loadDiagram()
       }
     }, 5000)
@@ -75,11 +65,9 @@ export default class extends Controller {
 
     try {
       const message = JSON.parse(event.data)
-      console.log("Received message from iframe:", message)
 
       switch(message.event) {
         case "init":
-          console.log("Draw.io init event received")
           this.handleInit()
           break
         case "autosave":
@@ -99,25 +87,21 @@ export default class extends Controller {
   }
 
   handleInit() {
-    console.log("Draw.io initialized, loading diagram...")
     this.loadDiagram()
   }
 
   handleSaveEvent(message) {
     if (message.xml) {
       this.currentXml = message.xml
-      console.log("Diagram auto-saved in memory")
     }
   }
 
   handleExport(message) {
     if (message.data) {
       const format = message.format || "png"
-      console.log("Export received:", format, message.data.substring(0, 100))
 
       // Verificar se é XML válido (começa com <mxfile)
       if (format === "xml" || (typeof message.data === "string" && message.data.startsWith("<mxfile"))) {
-        console.log("XML export received, saving diagram...")
         this.currentXml = message.data
         if (this.pendingSave) {
           this.pendingSave = false
@@ -128,7 +112,6 @@ export default class extends Controller {
 
       // Se é SVG mas estamos tentando salvar, usar o XML atual
       if (format === "svg" && this.pendingSave) {
-        console.log("SVG received during save, using current XML data")
         this.pendingSave = false
         this.saveDiagramAndSubmit()
         return
@@ -136,7 +119,6 @@ export default class extends Controller {
 
       // Se recebeu dados mas não é XML válido e está tentando salvar, usar XML atual
       if (this.pendingSave && format !== "xml") {
-        console.log("Non-XML format received during save, using current XML data")
         this.pendingSave = false
         this.saveDiagramAndSubmit()
         return
@@ -144,7 +126,6 @@ export default class extends Controller {
 
       // Se não é XML e não é um save pendente, fazer download apenas se for export manual
       if (!this.pendingSave && this.isManualExport) {
-        console.log("Non-XML export, downloading file...")
         this.downloadFile(message.data, `fluxograma-${this.flowChartIdValue}.${format}`)
       }
     }
@@ -165,8 +146,6 @@ export default class extends Controller {
     if (this.diagramLoaded) return
 
     const xml = this.currentXml
-    console.log("Loading diagram with data:", xml ? "present" : "empty")
-    console.log("XML content:", xml.substring(0, 200))
 
     // Verificar se o iframe está pronto
     if (!this.iframe || !this.iframe.contentWindow) {
@@ -190,11 +169,9 @@ export default class extends Controller {
     }
     
     event.preventDefault()
-    console.log("Save button clicked - Stimulus controller")
 
     // Evitar múltiplos saves simultâneos
     if (this.pendingSave) {
-      console.log("Save already in progress, ignoring...")
       return
     }
 
@@ -360,7 +337,6 @@ export default class extends Controller {
       return
     }
 
-    console.log("Sending message to iframe:", message)
     this.iframe.contentWindow.postMessage(JSON.stringify(message), "*")
   }
 
@@ -420,11 +396,9 @@ export default class extends Controller {
     if (event) {
       event.preventDefault()
     }
-    console.log("Save and submit button clicked")
 
     // Evitar múltiplos saves simultâneos
     if (this.pendingSave) {
-      console.log("Save already in progress, ignoring...")
       return
     }
 
@@ -496,8 +470,6 @@ export default class extends Controller {
       // Agora submeter o formulário de informações
       const form = document.getElementById('flow-chart-info-form')
       if (form) {
-        console.log('Formulário encontrado:', form.action)
-        console.log('Update URL:', this.updateUrlValue)
         
         // Criar um input hidden para forçar redirecionamento para show
         const redirectInput = document.createElement('input')
@@ -510,7 +482,6 @@ export default class extends Controller {
         const formData = new FormData(form)
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
         
-        console.log('Submetendo formulário para:', form.action)
         
         fetch(form.action, {
           method: 'POST',
@@ -520,11 +491,9 @@ export default class extends Controller {
           },
           body: formData
         }).then(response => {
-          console.log('Resposta do servidor:', response.status, response.ok)
           if (response.ok) {
             // Redirecionar para a tela de show
             const showUrl = this.updateUrlValue.replace('/edit', '')
-            console.log('Redirecionando para:', showUrl)
             window.location.href = showUrl
           } else {
             console.error('Erro ao salvar informações')

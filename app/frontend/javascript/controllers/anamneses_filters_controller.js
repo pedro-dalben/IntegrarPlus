@@ -2,11 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
-    console.log('AnamnesesFiltersController conectado')
   }
 
   async openModal() {
-    console.log('Abrindo modal...')
     
     // Obter dados dos profissionais
     const professionals = await this.getProfessionals()
@@ -145,7 +143,6 @@ export default class extends Controller {
     // Tornar a função toggleDateInputs global
     window.toggleDateInputs = () => this.toggleDateInputs()
     
-    console.log('Modal de filtros criado com sucesso')
   }
 
   async getProfessionals() {
