@@ -91,8 +91,5 @@ Rails.application.configure do
 
     # Custom logger para console do navegador
     Bullet.stacktrace_includes = ['app']
-
-    # JavaScript console via footer
-    Bullet.footer_console_log = true
   end
 end
