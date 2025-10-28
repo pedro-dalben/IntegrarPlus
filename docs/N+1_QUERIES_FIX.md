@@ -1,6 +1,6 @@
 # 🔍 Correção de N+1 Queries - IntegrarPlus
 
-**Data**: 28 de Outubro de 2025  
+**Data**: 28 de Outubro de 2025
 **Status**: 🔧 Em Progresso
 
 ---
@@ -10,9 +10,9 @@
 ### ✅ CORRIGIDOS
 
 #### 1. Groups Controller
-**Local**: `app/controllers/admin/groups_controller.rb:91`  
-**Problema**: `Group => [:permissions, :group_permissions]`  
-**Solução**: 
+**Local**: `app/controllers/admin/groups_controller.rb:91`
+**Problema**: `Group => [:permissions, :group_permissions]`
+**Solução**:
 ```ruby
 # ANTES
 Group.includes(:permissions).order(created_at: :desc)
@@ -25,8 +25,8 @@ Group.includes(:permissions, :group_permissions).order(created_at: :desc)
 ---
 
 #### 2. Beneficiaries Controller (Search Results)
-**Local**: `app/controllers/admin/beneficiaries_controller.rb:23`  
-**Problema**: `Beneficiary => [:anamneses, :portal_intake]`  
+**Local**: `app/controllers/admin/beneficiaries_controller.rb:23`
+**Problema**: `Beneficiary => [:anamneses, :portal_intake]`
 **Solução**:
 ```ruby
 # ANTES
@@ -42,7 +42,7 @@ beneficiary_ids = search_results[offset, per_page].map(&:id)
 
 ### 🔧 EM ANÁLISE
 
-Os controllers abaixo JÁ TÊM includes, mas Bullet está detectando problemas. 
+Os controllers abaixo JÁ TÊM includes, mas Bullet está detectando problemas.
 Precisa verificar:
 1. Se as views estão acessando associações não carregadas
 2. Se os resultados de busca perdem os includes
@@ -127,6 +127,5 @@ end
 
 ---
 
-**Última atualização**: 28 de Outubro de 2025  
+**Última atualização**: 28 de Outubro de 2025
 **Progresso**: 2 problemas corrigidos, análise em andamento
-

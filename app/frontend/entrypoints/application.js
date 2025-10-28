@@ -24,6 +24,11 @@ import '../javascript/application';
 import '../javascript/tailadmin-pro.js';
 
 // ----------------------------
+// Bullet Console Logger (Development)
+// ----------------------------
+import '../javascript/bullet_console_logger.js';
+
+// ----------------------------
 // Reinit seguro para Turbo / renders parciais
 // ----------------------------
 const reinitAll = () => {

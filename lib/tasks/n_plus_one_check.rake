@@ -151,4 +151,3 @@ namespace :performance do
     puts "💡 Use estas associações em .includes() nos controllers"
   end
 end
-

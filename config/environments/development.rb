@@ -79,7 +79,7 @@ Rails.application.configure do
   # Bullet: Detect N+1 queries and unused eager loading
   config.after_initialize do
     Bullet.enable = true
-    Bullet.alert = true
+    Bullet.alert = false
     Bullet.bullet_logger = true
     Bullet.console = true
     Bullet.rails_logger = true
@@ -88,5 +88,11 @@ Rails.application.configure do
     # Configurações adicionais
     Bullet.unused_eager_loading_enable = true
     Bullet.counter_cache_enable = true
+
+    # Custom logger para console do navegador
+    Bullet.stacktrace_includes = ['app']
+    
+    # JavaScript console via footer
+    Bullet.footer_console_log = true
   end
 end
