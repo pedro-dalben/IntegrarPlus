@@ -20,11 +20,17 @@
   </head>
 
   <body class="bg-gray-50 dark:bg-gray-900" 
-        data-controller="session-timeout"
+        data-controller="session-timeout loading"
         data-session-timeout-timeout-minutes-value="<%= Rails.env.production? ? 60 : 60 %>"
         data-session-timeout-warning-minutes-value="0"
         data-session-timeout-logout-url-value="<%= portal_new_external_user_session_path %>"
         data-session-timeout-is-production-value="<%= Rails.env.production? %>">
+    
+    <!-- Global Loading Spinner -->
+    <div data-loading-target="spinner" class="hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-25">
+      <%= render Ui::LoadingSpinnerComponent.new(size: :large, color: :white) %>
+    </div>
+    
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
 
     <div class="flex h-screen overflow-hidden layout-container">
