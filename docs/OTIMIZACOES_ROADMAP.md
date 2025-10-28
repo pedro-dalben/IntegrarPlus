@@ -1,6 +1,6 @@
 # 🚀 Roadmap de Otimizações - IntegrarPlus
 
-**Data**: 28 de Outubro de 2025  
+**Data**: 28 de Outubro de 2025
 **Status**: 📋 Planejamento
 
 ---
@@ -45,7 +45,7 @@
 ### 🔴 Prioridade CRÍTICA (Impacto Alto, Esforço Baixo)
 
 #### 1. Implementar Loading States Globais
-**Problema**: Usuários não sabem quando algo está carregando  
+**Problema**: Usuários não sabem quando algo está carregando
 **Solução**: Loading indicators consistentes
 
 **Implementação**:
@@ -58,7 +58,7 @@ export default class extends Controller {
 
   connect() {
     this.showLoading();
-    
+
     // Turbo events
     document.addEventListener('turbo:before-fetch-request', this.showLoading.bind(this));
     document.addEventListener('turbo:before-fetch-response', this.hideLoading.bind(this));
@@ -76,8 +76,8 @@ export default class extends Controller {
 }
 ```
 
-**Impacto**: 📈 +30% em perceived performance  
-**Esforço**: 🕐 2-4 horas  
+**Impacto**: 📈 +30% em perceived performance
+**Esforço**: 🕐 2-4 horas
 **ROI**: ⭐⭐⭐⭐⭐
 
 ---
@@ -116,8 +116,8 @@ end
 @beneficiaries = Beneficiary.includes(:anamnesis).all
 ```
 
-**Impacto**: 📈 -50% em tempo de resposta  
-**Esforço**: 🕐 4-8 horas  
+**Impacto**: 📈 -50% em tempo de resposta
+**Esforço**: 🕐 4-8 horas
 **ROI**: ⭐⭐⭐⭐⭐
 
 ---
@@ -131,7 +131,7 @@ end
 <% cache beneficiary do %>
   <div class="beneficiary-card">
     <%= beneficiary.nome %>
-    
+
     <% cache [beneficiary, :anamnesis] do %>
       <%= render beneficiary.anamnesis %>
     <% end %>
@@ -148,8 +148,8 @@ config.cache_store = :redis_cache_store, {
 }
 ```
 
-**Impacto**: 📈 -60% em tempo de renderização  
-**Esforço**: 🕐 6-12 horas  
+**Impacto**: 📈 -60% em tempo de renderização
+**Esforço**: 🕐 6-12 horas
 **ROI**: ⭐⭐⭐⭐⭐
 
 ---
@@ -167,7 +167,7 @@ module ImageHelper
     options[:loading] = 'lazy'
     options[:decoding] = 'async'
     options[:class] = "#{options[:class]} lazy-image"
-    
+
     image_tag(source, options)
   end
 end
@@ -207,8 +207,8 @@ export default class extends Controller {
 }
 ```
 
-**Impacto**: 📈 -40% em tempo de carregamento inicial  
-**Esforço**: 🕐 4-6 horas  
+**Impacto**: 📈 -40% em tempo de carregamento inicial
+**Esforço**: 🕐 4-6 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -249,8 +249,8 @@ end
 <% end %>
 ```
 
-**Impacto**: 📈 +40% em perceived performance  
-**Esforço**: 🕐 8-12 horas  
+**Impacto**: 📈 +40% em perceived performance
+**Esforço**: 🕐 8-12 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -280,7 +280,7 @@ export default defineConfig({
 **Preload Critical Resources**:
 ```erb
 <!-- app/views/layouts/application.html.erb -->
-<%= vite_javascript_tag 'application', 
+<%= vite_javascript_tag 'application',
     'data-turbo-track': 'reload',
     crossorigin: 'anonymous',
     async: true %>
@@ -290,8 +290,8 @@ export default defineConfig({
 <link rel="dns-prefetch" href="<%= ENV['CDN_URL'] %>">
 ```
 
-**Impacto**: 📈 -30% em bundle size  
-**Esforço**: 🕐 6-10 horas  
+**Impacto**: 📈 -30% em bundle size
+**Esforço**: 🕐 6-10 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -351,8 +351,8 @@ async function networkFirst(request, cacheName) {
 }
 ```
 
-**Impacto**: 📈 +50% em performance offline  
-**Esforço**: 🕐 8-12 horas  
+**Impacto**: 📈 +50% em performance offline
+**Esforço**: 🕐 8-12 horas
 **ROI**: ⭐⭐⭐
 
 ---
@@ -368,7 +368,7 @@ production:
   timeout: 5000
   checkout_timeout: 5
   reaping_frequency: 10
-  
+
   # PgBouncer configuration
   prepared_statements: false
   advisory_locks: false
@@ -388,8 +388,8 @@ reserve_pool_size = 5
 reserve_pool_timeout = 3
 ```
 
-**Impacto**: 📈 +100% em concurrent connections  
-**Esforço**: 🕐 4-6 horas  
+**Impacto**: 📈 +100% em concurrent connections
+**Esforço**: 🕐 4-6 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -402,13 +402,13 @@ reserve_pool_timeout = 3
 # app/jobs/anamnesis_pdf_generator_job.rb
 class AnamnesisPdfGeneratorJob < ApplicationJob
   queue_as :default
-  
+
   def perform(anamnesis_id)
     anamnesis = Anamnesis.find(anamnesis_id)
     pdf = AnamnesisPdfService.new(anamnesis).generate
-    
+
     anamnesis.update(pdf_url: upload_to_storage(pdf))
-    
+
     # Broadcast via Turbo Stream
     Turbo::StreamsChannel.broadcast_update_to(
       "anamnesis_#{anamnesis.id}",
@@ -422,7 +422,7 @@ end
 # Controller
 def generate_pdf
   AnamnesisPdfGeneratorJob.perform_later(@anamnesis.id)
-  
+
   respond_to do |format|
     format.turbo_stream {
       render turbo_stream: turbo_stream.update(
@@ -441,8 +441,8 @@ end
 - Sincronização com MeiliSearch
 - Limpeza de dados antigos
 
-**Impacto**: 📈 -70% em tempo de resposta  
-**Esforço**: 🕐 12-16 horas  
+**Impacto**: 📈 -70% em tempo de resposta
+**Esforço**: 🕐 12-16 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -456,21 +456,21 @@ end
 server {
     listen 443 ssl http2;
     server_name integrarplus.com;
-    
+
     # HTTP/2 Server Push
     location = /admin {
         http2_push /assets/application.css;
         http2_push /assets/application.js;
         http2_push /assets/tailadmin-pro.css;
-        
+
         proxy_pass http://rails_backend;
     }
-    
+
     # Brotli Compression
     brotli on;
     brotli_comp_level 6;
     brotli_types text/plain text/css application/javascript;
-    
+
     # Gzip fallback
     gzip on;
     gzip_vary on;
@@ -478,8 +478,8 @@ server {
 }
 ```
 
-**Impacto**: 📈 -20% em tempo de carregamento  
-**Esforço**: 🕐 4-6 horas  
+**Impacto**: 📈 -20% em tempo de carregamento
+**Esforço**: 🕐 4-6 horas
 **ROI**: ⭐⭐⭐
 
 ---
@@ -509,7 +509,7 @@ async function handleRequest(request) {
 
   if (!response) {
     response = await fetch(request);
-    
+
     // Cache images for 1 year
     if (request.url.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
       response = new Response(response.body, response);
@@ -522,8 +522,8 @@ async function handleRequest(request) {
 }
 ```
 
-**Impacto**: 📈 -40% em latência global  
-**Esforço**: 🕐 8-12 horas  
+**Impacto**: 📈 -40% em latência global
+**Esforço**: 🕐 8-12 horas
 **ROI**: ⭐⭐⭐
 
 ---
@@ -546,7 +546,7 @@ production:
   key: <%= ENV['SCOUT_KEY'] %>
   monitor: true
   name: IntegrarPlus Production
-  
+
   # Custom Instruments
   instrument:
     - ActiveRecord
@@ -563,15 +563,15 @@ class AnamnesisPdfService
   include ScoutApm::Tracer
 
   instrument_method :generate, type: 'PDF Generation'
-  
+
   def generate
     # ... PDF logic
   end
 end
 ```
 
-**Impacto**: 📈 Visibilidade completa de performance  
-**Esforço**: 🕐 6-10 horas  
+**Impacto**: 📈 Visibilidade completa de performance
+**Esforço**: 🕐 6-10 horas
 **ROI**: ⭐⭐⭐⭐
 
 ---
@@ -604,7 +604,7 @@ getTTFB(sendToAnalytics);
 # app/controllers/analytics_controller.rb
 class AnalyticsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :web_vitals
-  
+
   def web_vitals
     WebVitalsMetric.create(
       name: params[:name],
@@ -613,7 +613,7 @@ class AnalyticsController < ApplicationController
     )
     head :ok
   end
-  
+
   def dashboard
     @metrics = WebVitalsMetric
       .where('created_at > ?', 7.days.ago)
@@ -623,8 +623,8 @@ class AnalyticsController < ApplicationController
 end
 ```
 
-**Impacto**: 📈 Métricas de UX quantificáveis  
-**Esforço**: 🕐 10-14 horas  
+**Impacto**: 📈 Métricas de UX quantificáveis
+**Esforço**: 🕐 10-14 horas
 **ROI**: ⭐⭐⭐
 
 ---
@@ -636,7 +636,7 @@ end
 2. ✅ Otimizar Queries com Bullet (4-8h) → -50% response time
 3. ✅ Russian Doll Caching (6-12h) → -60% render time
 
-**Total Esforço**: 12-24 horas  
+**Total Esforço**: 12-24 horas
 **Impacto Combinado**: 📈 +120% em performance percebida
 
 ---
@@ -646,7 +646,7 @@ end
 5. ✅ Skeleton Screens (8-12h)
 6. ✅ Code Splitting (6-10h)
 
-**Total Esforço**: 18-28 horas  
+**Total Esforço**: 18-28 horas
 **Impacto Combinado**: 📈 +110% em métricas objetivas
 
 ---
@@ -657,7 +657,7 @@ end
 9. ⚠️ Background Jobs Expansion (12-16h)
 10. ⚠️ HTTP/2 Server Push (4-6h)
 
-**Total Esforço**: 28-40 horas  
+**Total Esforço**: 28-40 horas
 **Impacto Combinado**: 📈 +220% em escalabilidade
 
 ---
@@ -667,7 +667,7 @@ end
 12. 📋 APM/Monitoring (6-10h)
 13. 📋 Web Vitals Tracking (10-14h)
 
-**Total Esforço**: 24-36 horas  
+**Total Esforço**: 24-36 horas
 **Impacto Combinado**: 📈 Observability completa
 
 ---
@@ -692,10 +692,10 @@ end
 ## 🛠️ Plano de Ação Recomendado
 
 ### Semana 1: Quick Wins
-**Segunda**: Loading States + Bullet Setup  
-**Terça**: Identificar e corrigir N+1 queries  
-**Quarta**: Implementar Russian Doll Caching  
-**Quinta**: Testar e ajustar cache strategy  
+**Segunda**: Loading States + Bullet Setup
+**Terça**: Identificar e corrigir N+1 queries
+**Quarta**: Implementar Russian Doll Caching
+**Quinta**: Testar e ajustar cache strategy
 **Sexta**: Deploy e monitoramento
 
 **Resultado Esperado**: +50% em performance percebida
@@ -703,10 +703,10 @@ end
 ---
 
 ### Semana 2: High Impact
-**Segunda**: Lazy Loading de Imagens  
-**Terça**: Skeleton Screens (componentes)  
-**Quarta**: Skeleton Screens (implementação)  
-**Quinta**: Code Splitting e Preloading  
+**Segunda**: Lazy Loading de Imagens
+**Terça**: Skeleton Screens (componentes)
+**Quarta**: Skeleton Screens (implementação)
+**Quinta**: Code Splitting e Preloading
 **Sexta**: Testes de performance e ajustes
 
 **Resultado Esperado**: +40% em métricas Core Web Vitals
@@ -714,7 +714,7 @@ end
 ---
 
 ### Semana 3-4: Strategic
-**Semana 3**: Service Worker + Background Jobs  
+**Semana 3**: Service Worker + Background Jobs
 **Semana 4**: HTTP/2 + Database Pooling
 
 **Resultado Esperado**: Sistema pronto para escala 5x
@@ -790,7 +790,6 @@ end
 
 ---
 
-**Última atualização**: 28 de Outubro de 2025  
-**Status**: 📋 Ready for Implementation  
+**Última atualização**: 28 de Outubro de 2025
+**Status**: 📋 Ready for Implementation
 **Próxima Revisão**: Após implementação das Quick Wins
-

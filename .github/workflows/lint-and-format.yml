@@ -42,4 +42,3 @@ jobs:
               repo: context.repo.repo,
               body: '❌ **Falha na verificação de código**\n\nEncontramos problemas de formatação ou lint.\n\n**Para corrigir:**\n```bash\nnpm run format  # Corrige formatação\nnpm run lint:fix  # Corrige problemas de lint\n```'
             })
-

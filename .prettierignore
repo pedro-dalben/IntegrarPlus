@@ -9,7 +9,7 @@ public/vite-dev
 dist
 build
 
-# Rails  
+# Rails
 tmp
 log
 storage
