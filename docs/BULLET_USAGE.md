@@ -1,6 +1,6 @@
 # 🔫 Guia de Uso do Bullet - N+1 Query Detection
 
-**Data**: 28 de Outubro de 2025  
+**Data**: 28 de Outubro de 2025
 **Status**: ✅ Configurado
 
 ---
@@ -87,7 +87,7 @@ USE eager loading detected
   Add to your query: .includes([:anamneses, :portal_intake])
 ```
 
-**O que significa**: 
+**O que significa**:
 Você está iterando sobre beneficiaries e acessando `anamneses` ou `portal_intake` dentro do loop, causando uma query para cada beneficiary.
 
 **Como corrigir**:
@@ -247,6 +247,5 @@ Toda vez que você ver um alerta do Bullet, é uma oportunidade de melhorar a pe
 
 ---
 
-**Última atualização**: 28 de Outubro de 2025  
+**Última atualização**: 28 de Outubro de 2025
 **Versão**: 2.0 (com console do navegador)
-
