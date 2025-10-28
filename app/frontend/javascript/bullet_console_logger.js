@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
     html = html.replace(/<[^>]+>/g, '');
 
     // Decodifica HTML entities
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    const warnings = div.textContent || div.innerText || '';
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const warnings = tempDiv.textContent || tempDiv.innerText || '';
 
     const lines = warnings
       .split('\n')

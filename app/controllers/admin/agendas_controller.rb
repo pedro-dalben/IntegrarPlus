@@ -7,7 +7,7 @@ module Admin
 
     def index
       @agendas = policy_scope(Agenda)
-                 .includes(:unit, :created_by, :professionals)
+                 .includes(:unit)
                  .order(created_at: :desc)
 
       apply_filters
