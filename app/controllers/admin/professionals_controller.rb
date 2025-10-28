@@ -115,8 +115,7 @@ module Admin
     end
 
     def perform_local_search
-      Professional.includes(user: :invites)
-                  .order(created_at: :desc)
+      Professional.order(created_at: :desc)
     end
 
     def build_search_filters

@@ -20,7 +20,7 @@ module Admin
           offset = (page - 1) * per_page
 
           beneficiary_ids = search_results[offset, per_page].map(&:id)
-          @beneficiaries = Beneficiary.includes(:anamneses, :portal_intake).where(id: beneficiary_ids)
+          @beneficiaries = Beneficiary.where(id: beneficiary_ids)
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
           Rails.logger.error "Erro na busca avançada: #{e.message}"
@@ -112,7 +112,7 @@ module Admin
     end
 
     def perform_local_search
-      scope = Beneficiary.includes(:anamneses, :portal_intake)
+      scope = Beneficiary.all
 
       scope = apply_filters(scope)
       scope.ordered
