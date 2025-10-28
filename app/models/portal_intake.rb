@@ -6,6 +6,7 @@ class PortalIntake < ApplicationRecord
   belongs_to :operator, class_name: 'ExternalUser'
   has_many :journey_events, dependent: :destroy
   has_many :portal_intake_referrals, dependent: :destroy
+  has_one :anamnesis, dependent: :destroy
 
   validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
   validates :plan_name, presence: true, length: { minimum: 2, maximum: 100 }
@@ -129,6 +130,104 @@ class PortalIntake < ApplicationRecord
 
   def can_finish_anamnesis?
     aguardando_anamnese?
+  end
+
+  def can_reschedule_anamnesis?
+    aguardando_anamnese? && anamnesis_scheduled_on.present?
+  end
+
+  def reschedule_anamnesis!(new_date, admin_user = nil, reason = nil)
+    return false unless can_reschedule_anamnesis?
+
+    transaction do
+      old_date = anamnesis_scheduled_on
+
+      update!(
+        anamnesis_scheduled_on: new_date
+      )
+
+      journey_events.create!(
+        event_type: 'rescheduled_anamnesis',
+        metadata: {
+          admin_id: admin_user&.id,
+          admin_name: admin_user&.full_name,
+          ip: nil,
+          old_scheduled_on: old_date,
+          new_scheduled_on: new_date,
+          reason: reason
+        }
+      )
+
+      if anamnesis.present?
+        if anamnesis.medical_appointment.present?
+          old_appointment = anamnesis.medical_appointment
+
+          old_appointment.update!(
+            status: 'cancelled',
+            cancellation_reason: "Reagendado - #{reason}",
+            cancelled_at: Time.current
+          )
+
+          if old_appointment.event.present?
+            old_appointment.event.update!(status: 'cancelled')
+          end
+        end
+
+        anamnesis.update!(performed_at: new_date)
+      end
+    end
+
+    true
+  end
+
+  def can_cancel_anamnesis?
+    aguardando_anamnese? && anamnesis_scheduled_on.present?
+  end
+
+  def cancel_anamnesis!(admin_user = nil, reason = nil)
+    return false unless can_cancel_anamnesis?
+
+    transaction do
+      old_date = anamnesis_scheduled_on
+
+      update!(
+        anamnesis_scheduled_on: nil,
+        status: 'aguardando_agendamento_anamnese'
+      )
+
+      journey_events.create!(
+        event_type: 'cancelled_anamnesis',
+        metadata: {
+          admin_id: admin_user&.id,
+          admin_name: admin_user&.full_name,
+          ip: nil,
+          cancelled_scheduled_on: old_date,
+          reason: reason,
+          from: 'aguardando_anamnese',
+          to: 'aguardando_agendamento_anamnese'
+        }
+      )
+
+      if anamnesis.present?
+        if anamnesis.medical_appointment.present?
+          appointment = anamnesis.medical_appointment
+
+          appointment.update!(
+            status: 'cancelled',
+            cancellation_reason: reason,
+            cancelled_at: Time.current
+          )
+
+          if appointment.event.present?
+            appointment.event.update!(status: 'cancelled')
+          end
+        end
+
+        anamnesis.destroy
+      end
+    end
+
+    true
   end
 
   private

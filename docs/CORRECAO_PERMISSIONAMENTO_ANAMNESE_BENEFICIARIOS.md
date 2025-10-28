@@ -240,3 +240,5 @@ rails runner "load 'db/seeds/permissionamento_setup.rb'"
 **Data da Correção**: 21/10/2025
 **Versão**: 1.0
 
+
+

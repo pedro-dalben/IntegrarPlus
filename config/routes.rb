@@ -82,6 +82,9 @@ Rails.application.routes.draw do
         patch :deactivate
         get :schedule_anamnesis
         post :schedule_anamnesis
+        get :reschedule_anamnesis
+        patch :reschedule_anamnesis
+        patch :cancel_anamnesis
         get :agenda_view
       end
     end

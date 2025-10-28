@@ -2,7 +2,7 @@
 
 module Admin
   class PortalIntakesController < BaseController
-    before_action :set_portal_intake, only: %i[show update schedule_anamnesis agenda_view]
+    before_action :set_portal_intake, only: %i[show update schedule_anamnesis reschedule_anamnesis cancel_anamnesis agenda_view]
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: Admin::PortalIntakePolicy::Scope)
@@ -51,6 +51,13 @@ module Admin
       professional_id = params[:professional_id]
       scheduled_date = params[:scheduled_date]
       scheduled_time = params[:scheduled_time]
+
+      Rails.logger.debug "🔍 Parâmetros recebidos:"
+      Rails.logger.debug "  agenda_id: #{agenda_id.inspect} (present? #{agenda_id.present?})"
+      Rails.logger.debug "  professional_id: #{professional_id.inspect} (present? #{professional_id.present?})"
+      Rails.logger.debug "  scheduled_date: #{scheduled_date.inspect} (present? #{scheduled_date.present?})"
+      Rails.logger.debug "  scheduled_time: #{scheduled_time.inspect} (present? #{scheduled_time.present?})"
+      Rails.logger.debug "  Todos os params: #{params.inspect}"
 
       if agenda_id.present? && professional_id.present? && scheduled_date.present? && scheduled_time.present?
         begin
@@ -163,6 +170,135 @@ module Admin
 
       # Para requisições GET, apenas renderizar a view de agendamento
       # A lógica de POST já foi tratada acima
+    end
+
+    def reschedule_anamnesis
+      authorize @portal_intake, policy_class: Admin::PortalIntakePolicy
+
+      unless @portal_intake.can_reschedule_anamnesis?
+        redirect_to admin_portal_intake_path(@portal_intake),
+                    alert: 'Não é possível reagendar esta anamnese.'
+        return
+      end
+
+      # Buscar agendas de anamnese ativas
+      @anamnesis_agendas = Agenda.active.by_service_type(:anamnese).includes(:professionals)
+
+      Rails.logger.debug { "🔍 reschedule_anamnesis: request.patch? = #{request.patch?}, format = #{request.format}" }
+
+      return unless request.patch?
+
+      agenda_id = params[:agenda_id]
+      professional_id = params[:professional_id]
+      scheduled_date = params[:scheduled_date]
+      scheduled_time = params[:scheduled_time]
+      reason = params[:reason]
+
+      if agenda_id.present? && professional_id.present? && scheduled_date.present? && scheduled_time.present?
+        begin
+          Rails.logger.debug do
+            "📅 Iniciando reagendamento: agenda_id=#{agenda_id}, professional_id=#{professional_id}, date=#{scheduled_date}, time=#{scheduled_time}"
+          end
+
+          scheduled_datetime = Time.zone.parse("#{scheduled_date} #{scheduled_time}")
+          agenda = Agenda.find(agenda_id)
+          professional_user = User.find(professional_id)
+          professional = professional_user.professional
+
+          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
+          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
+          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
+
+          if professional.nil?
+            Rails.logger.error { "❌ Professional é nil para User ID: #{professional_id}" }
+            flash.now[:alert] = 'Profissional não encontrado.'
+            render :reschedule_anamnesis
+            return
+          end
+
+          # Verificar se o horário está disponível usando o service
+          scheduling_service = AppointmentSchedulingService.new(professional, agenda)
+          availability_check = scheduling_service.check_availability(scheduled_datetime, agenda.slot_duration_minutes)
+
+          unless availability_check[:available]
+            flash.now[:alert] = 'Este horário já está ocupado. Por favor, selecione outro horário.'
+            render :reschedule_anamnesis
+            return
+          end
+
+          # Reagendar a anamnese
+          if @portal_intake.reschedule_anamnesis!(scheduled_datetime, current_user, reason)
+            # Atualizar a anamnese associada se existir
+            if @portal_intake.anamnesis.present?
+              @portal_intake.anamnesis.update!(
+                performed_at: scheduled_datetime,
+                professional: professional_user
+              )
+
+              # Criar novo MedicalAppointment para o novo horário
+              scheduling_service = AppointmentSchedulingService.new(professional, agenda)
+
+              appointment_data = {
+                scheduled_datetime: scheduled_datetime,
+                appointment_type: 'initial_consultation',
+                priority: 'normal',
+                notes: "Anamnese reagendada para #{@portal_intake.beneficiary_name} - #{@portal_intake.plan_name}",
+                title: "Anamnese - #{@portal_intake.beneficiary_name}",
+                description: "Anamnese para #{@portal_intake.plan_name}",
+                created_by: professional,
+                patient: nil,
+                source_context: {
+                  type: 'portal_intake',
+                  id: @portal_intake.id
+                }
+              }
+
+              result = scheduling_service.schedule_appointment(appointment_data)
+
+              if result[:success]
+                medical_appointment = result[:medical_appointment]
+                medical_appointment.update(anamnesis: @portal_intake.anamnesis) if medical_appointment
+              end
+            end
+
+            Rails.logger.debug '✅ Reagendamento realizado com sucesso, redirecionando...'
+            redirect_to admin_portal_intake_path(@portal_intake),
+                        notice: 'Anamnese reagendada com sucesso!'
+          else
+            flash.now[:alert] = 'Erro ao reagendar anamnese.'
+            render :reschedule_anamnesis
+          end
+        rescue StandardError => e
+          flash.now[:alert] = "Erro ao reagendar: #{e.message}"
+          render :reschedule_anamnesis
+        end
+      else
+        flash.now[:alert] = 'Todos os campos são obrigatórios.'
+        render :reschedule_anamnesis
+      end
+
+      # Para requisições GET, apenas renderizar a view de reagendamento
+      # A lógica de PATCH já foi tratada acima
+    end
+
+    def cancel_anamnesis
+      authorize @portal_intake, policy_class: Admin::PortalIntakePolicy
+
+      unless @portal_intake.can_cancel_anamnesis?
+        redirect_to admin_portal_intake_path(@portal_intake),
+                    alert: 'Não é possível cancelar esta anamnese.'
+        return
+      end
+
+      reason = params[:reason]
+
+      if @portal_intake.cancel_anamnesis!(current_user, reason)
+        redirect_to admin_portal_intake_path(@portal_intake),
+                    notice: 'Anamnese cancelada com sucesso. Status retornado para aguardando agendamento.'
+      else
+        redirect_to admin_portal_intake_path(@portal_intake),
+                    alert: 'Erro ao cancelar anamnese.'
+      end
     end
 
     def agenda_view

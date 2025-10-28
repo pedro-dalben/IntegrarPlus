@@ -14,6 +14,14 @@ module Admin
       user.is_a?(User) && user.permit?('portal_intakes.schedule_anamnesis')
     end
 
+    def reschedule_anamnesis?
+      user.is_a?(User) && user.permit?('portal_intakes.schedule_anamnesis')
+    end
+
+    def cancel_anamnesis?
+      user.is_a?(User) && user.permit?('portal_intakes.schedule_anamnesis')
+    end
+
     def update?
       user.is_a?(User) && user.permit?('portal_intakes.update')
     end

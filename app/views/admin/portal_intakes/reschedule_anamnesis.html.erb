@@ -1,10 +1,10 @@
-<% content_for(:title, "Agendar Anamnese - Entrada ##{@portal_intake.id}") %>
+<% content_for(:title, "Reagendar Anamnese - Entrada ##{@portal_intake.id}") %>
 
 <div class="mb-6">
   <div class="md:flex md:items-center md:justify-between">
     <div class="flex-1 min-w-0">
       <h2 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
-        Agendar Anamnese
+        Reagendar Anamnese
       </h2>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
         Entrada #<%= @portal_intake.id %> - <%= @portal_intake.beneficiary_name %>
@@ -47,26 +47,64 @@
     </div>
   </div>
 
-  <!-- Formulário de Agendamento -->
+  <!-- Agendamento Atual -->
+  <div class="rounded-2xl border border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-900/10">
+    <div class="px-6 py-4 border-b border-orange-200 dark:border-orange-800">
+      <h3 class="text-lg font-medium text-orange-900 dark:text-orange-400">
+        Agendamento Atual
+      </h3>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center space-x-4">
+        <div class="flex-shrink-0">
+          <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-orange-900 dark:text-orange-400">
+            Data e Horário Atual
+          </p>
+          <p class="text-lg text-orange-700 dark:text-orange-300">
+            <%= @portal_intake.anamnesis_scheduled_on&.strftime("%d/%m/%Y às %H:%M") || "Não agendado" %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulário de Reagendamento -->
   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
       <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-        Selecionar Agenda e Horário
+        Selecionar Nova Data e Horário
       </h3>
       <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        Escolha a agenda de anamnese, o profissional e o horário disponível
+        Escolha a agenda de anamnese, o profissional e o novo horário disponível
       </p>
     </div>
     <div class="p-6">
       <% if @anamnesis_agendas.any? %>
-        <%= form_with url: schedule_anamnesis_admin_portal_intake_path(@portal_intake),
-                      method: :post, local: true,
+        <%= form_with url: reschedule_anamnesis_admin_portal_intake_path(@portal_intake),
+                      method: :patch, local: true,
                       data: {
                         controller: "agenda-scheduler",
                         turbo: false,
                         "agenda-scheduler-portal-intake-id-value": @portal_intake.id
                       },
                       class: "space-y-6" do |form| %>
+
+          <!-- Motivo do Reagendamento -->
+          <div>
+            <%= form.label :reason, "Motivo do Reagendamento", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.text_area :reason,
+                               rows: 3,
+                               placeholder: "Descreva o motivo do reagendamento (opcional)",
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Informe o motivo do reagendamento para fins de auditoria
+            </p>
+          </div>
 
           <!-- Seleção da Agenda -->
           <div>
@@ -82,7 +120,7 @@
                              }
                            } %>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Selecione a agenda que será usada para o agendamento
+              Selecione a agenda que será usada para o reagendamento
             </p>
           </div>
 
@@ -108,7 +146,7 @@
           <div data-agenda-scheduler-target="datetimeSection" class="hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <%= form.label :scheduled_date, "Data Selecionada", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.label :scheduled_date, "Nova Data", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
                 <%= form.date_field :scheduled_date,
                                    min: Date.current,
                                    class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
@@ -117,11 +155,11 @@
                                    },
                                    readonly: true %>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Data selecionada na grade de horários
+                  Nova data selecionada na grade de horários
                 </p>
               </div>
               <div>
-                <%= form.label :scheduled_time, "Horário Selecionado", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.label :scheduled_time, "Novo Horário", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
                 <%= form.text_field :scheduled_time,
                                    class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
                                    data: {
@@ -130,7 +168,7 @@
                                    readonly: true,
                                    placeholder: "Selecione um horário na grade" %>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Horário selecionado na grade de horários
+                  Novo horário selecionado na grade de horários
                 </p>
               </div>
             </div>
@@ -155,25 +193,25 @@
             </div>
           </div>
 
-          <!-- Preview do Agendamento -->
+          <!-- Preview do Reagendamento -->
           <div data-agenda-scheduler-target="previewSection" class="hidden">
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-800/10 dark:border-blue-900">
-              <h4 class="text-sm font-medium text-blue-900 dark:text-blue-400 mb-2">Resumo do Agendamento</h4>
+              <h4 class="text-sm font-medium text-blue-900 dark:text-blue-400 mb-2">Resumo do Reagendamento</h4>
               <div class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                 <p><strong>Beneficiário:</strong> <span data-agenda-scheduler-target="beneficiaryName"><%= @portal_intake.beneficiary_name %></span></p>
                 <p><strong>Agenda:</strong> <span data-agenda-scheduler-target="agendaName">-</span></p>
                 <p><strong>Profissional:</strong> <span data-agenda-scheduler-target="professionalName">-</span></p>
-                <p><strong>Data e Horário:</strong> <span data-agenda-scheduler-target="scheduledDateTime">-</span></p>
+                <p><strong>Nova Data e Horário:</strong> <span data-agenda-scheduler-target="scheduledDateTime">-</span></p>
               </div>
             </div>
           </div>
 
           <!-- Botões -->
           <div class="flex space-x-3">
-            <%= form.submit "Confirmar Agendamento",
+            <%= form.submit "Confirmar Reagendamento",
                            class: "ta-btn ta-btn-primary",
                            data: {
-                             confirm: "Confirma o agendamento da anamnese?",
+                             confirm: "Confirma o reagendamento da anamnese?",
                              'agenda-scheduler-target': "submitButton"
                            },
                            disabled: true %>
@@ -195,7 +233,7 @@
             Nenhuma agenda de anamnese disponível
           </h3>
           <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            É necessário criar uma agenda de anamnese ativa para poder agendar.
+            É necessário criar uma agenda de anamnese ativa para poder reagendar.
           </p>
           <div class="mt-4">
             <%= link_to "Criar Agenda de Anamnese", new_admin_agenda_path,
@@ -228,7 +266,7 @@ function selectSlot(datetime, timeSlot) {
     return;
   }
 
-  if (confirm(`Deseja agendar para ${timeSlot}?`)) {
+  if (confirm(`Deseja reagendar para ${timeSlot}?`)) {
     console.log('✅ Usuário confirmou a seleção');
 
     const gridSection = document.getElementById('agenda-grid-section');

@@ -2,10 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [
-    "agendaSelect", 
-    "professionalSelect", 
+    "agendaSelect",
+    "professionalSelect",
     "professionalSection",
-    "datetimeSection", 
+    "datetimeSection",
     "dateSelect",
     "timeSelect",
     "previewSection",
@@ -16,6 +16,10 @@ export default class extends Controller {
     "scheduledDateTime",
     "agendasData"
   ]
+
+  static values = {
+    portalIntakeId: Number
+  }
 
   connect() {
     this.agendas = this.parseAgendasData()
@@ -28,13 +32,14 @@ export default class extends Controller {
         return JSON.parse(dataElement.textContent)
       }
     } catch (error) {
+      console.error('Erro ao carregar dados das agendas:', error)
     }
     return []
   }
 
   onAgendaChange() {
     const agendaId = this.agendaSelectTarget.value
-    
+
     if (agendaId) {
       const agenda = this.agendas.find(a => a.id == agendaId)
       if (agenda) {
@@ -52,7 +57,7 @@ export default class extends Controller {
 
   onProfessionalChange() {
     const professionalId = this.professionalSelectTarget.value
-    
+
     if (professionalId) {
       const professional = this.getSelectedProfessional()
       if (professional) {
@@ -67,7 +72,7 @@ export default class extends Controller {
   }
 
   onDateTimeSelected(date, time) {
-    
+
     if (date && time) {
       this.dateSelectTarget.value = date
       this.timeSelectTarget.value = time
@@ -79,7 +84,7 @@ export default class extends Controller {
   populateProfessionals(professionals) {
     const select = this.professionalSelectTarget
     select.innerHTML = '<option value="">Selecione um profissional</option>'
-    
+
     professionals.forEach(professional => {
       const option = document.createElement('option')
       option.value = professional.id
@@ -148,11 +153,11 @@ export default class extends Controller {
     }
 
     // Verificar se todos os campos estão preenchidos
-    const allFieldsFilled = this.agendaSelectTarget.value && 
-        this.professionalSelectTarget.value && 
-        this.dateSelectTarget.value && 
+    const allFieldsFilled = this.agendaSelectTarget.value &&
+        this.professionalSelectTarget.value &&
+        this.dateSelectTarget.value &&
         this.timeSelectTarget.value
-    
+
     if (allFieldsFilled) {
       this.showSection(this.previewSectionTarget)
       this.enableSubmit()
@@ -184,27 +189,27 @@ export default class extends Controller {
   showAgendaGrid(agendaId) {
     const gridSection = document.getElementById('agenda-grid-section')
     const gridContent = document.getElementById('agenda-grid-content')
-    
+
     if (!gridSection || !gridContent) {
       return
     }
-    
+
     gridContent.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-sm text-gray-600">Carregando grade de horários...</p></div>'
     gridSection.classList.remove('hidden')
-    
+
     const professionalId = this.professionalSelectTarget ? this.professionalSelectTarget.value : ''
     let url = `/admin/portal_intakes/${this.getPortalIntakeId()}/agenda_view?agenda_id=${agendaId}`
     if (professionalId) {
       url += `&professional_id=${professionalId}`
     }
-    
+
     fetch(url)
       .then(response => response.text())
       .then(html => {
         const parser = new DOMParser()
         const doc = parser.parseFromString(html, 'text/html')
         const agendaContent = doc.querySelector('.agenda-grid-content')
-        
+
         if (agendaContent) {
           gridContent.innerHTML = agendaContent.innerHTML
         } else {
@@ -224,6 +229,9 @@ export default class extends Controller {
   }
 
   getPortalIntakeId() {
+    if (this.hasPortalIntakeIdValue) {
+      return this.portalIntakeIdValue
+    }
     const url = window.location.pathname
     const matches = url.match(/\/admin\/portal_intakes\/(\d+)/)
     return matches ? matches[1] : null
