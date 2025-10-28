@@ -82,4 +82,6 @@ gem 'rubocop-performance', '~> 1.25', group: :development
 gem 'rubocop-rails', '~> 2.33', group: :development
 gem 'standardrb', '~> 1.0', group: :development
 
+gem 'bullet', group: :development
+
 gem 'pagy', '~> 9.4'

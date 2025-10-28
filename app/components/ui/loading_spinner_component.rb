@@ -12,7 +12,7 @@ module Ui
       base = "animate-spin rounded-full border-t-2 border-b-2"
       size_class = size_classes
       color_class = color_classes
-      
+
       "#{base} #{size_class} #{color_class}"
     end
 
@@ -42,4 +42,3 @@ module Ui
     end
   end
 end
-
