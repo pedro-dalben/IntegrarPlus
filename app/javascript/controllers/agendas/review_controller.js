@@ -1,45 +1,52 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["professionalsCount", "professionalsList", "workingHoursSummary", "previewContainer"]
+  static targets = [
+    'professionalsCount',
+    'professionalsList',
+    'workingHoursSummary',
+    'previewContainer',
+  ];
 
   connect() {
-    this.updateReviewData()
+    this.updateReviewData();
   }
 
   updateReviewData() {
-    this.updateProfessionalsCount()
-    this.updateProfessionalsList()
-    this.updateWorkingHoursSummary()
+    this.updateProfessionalsCount();
+    this.updateProfessionalsList();
+    this.updateWorkingHoursSummary();
   }
 
   updateProfessionalsCount() {
-    const selectedProfessionals = document.querySelectorAll('input[name="agenda[professional_ids][]"]')
-    const count = selectedProfessionals.length
-    
+    const selectedProfessionals = document.querySelectorAll(
+      'input[name="agenda[professional_ids][]"]'
+    );
+    const count = selectedProfessionals.length;
+
     if (this.hasProfessionalsCountTarget) {
-      this.professionalsCountTarget.textContent = count
+      this.professionalsCountTarget.textContent = count;
     }
   }
 
   updateProfessionalsList() {
-    const selectedProfessionals = document.querySelectorAll('input[name*="professional_ids"]')
-    
+    const selectedProfessionals = document.querySelectorAll('input[name*="professional_ids"]');
+
     if (selectedProfessionals.length === 0) {
       if (this.hasProfessionalsListTarget) {
         this.professionalsListTarget.innerHTML = `
           <div class="text-sm text-gray-500">Nenhum profissional selecionado</div>
-        `
+        `;
       }
-      return
+      return;
     }
 
-    let html = ''
+    let html = '';
     selectedProfessionals.forEach(input => {
-      const professionalId = input.value
-      const name = input.dataset.professionalName || ''
-      const specialties = input.dataset.professionalSpecialties || ''
-      
+      const professionalId = input.value;
+      const name = input.dataset.professionalName || '';
+      const specialties = input.dataset.professionalSpecialties || '';
+
       html += `
         <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
           <div>
@@ -50,37 +57,38 @@ export default class extends Controller {
             Ativo
           </span>
         </div>
-      `
-    })
-    
+      `;
+    });
+
     if (this.hasProfessionalsListTarget) {
-      this.professionalsListTarget.innerHTML = html
+      this.professionalsListTarget.innerHTML = html;
     }
   }
 
   updateWorkingHoursSummary() {
-    const workingHoursInput = document.querySelector('input[name*="working_hours"]')
-    let summary = 'Não configurado'
-    
+    const workingHoursInput = document.querySelector('input[name*="working_hours"]');
+    let summary = 'Não configurado';
+
     if (workingHoursInput && workingHoursInput.value) {
       try {
-        const workingHours = JSON.parse(workingHoursInput.value)
-        const weekdays = workingHours.weekdays || []
-        
+        const workingHours = JSON.parse(workingHoursInput.value);
+        const weekdays = workingHours.weekdays || [];
+
         if (weekdays.length > 0) {
           const dayNames = weekdays.map(day => {
-            const dayName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][day.wday]
-            const periods = day.periods.map(p => `${p.start}-${p.end}`).join(', ')
-            return `${dayName}: ${periods}`
-          })
-          summary = dayNames.join(' | ')
+            const dayName = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][
+              day.wday
+            ];
+            const periods = day.periods.map(p => `${p.start}-${p.end}`).join(', ');
+            return `${dayName}: ${periods}`;
+          });
+          summary = dayNames.join(' | ');
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     }
-    
+
     if (this.hasWorkingHoursSummaryTarget) {
-      this.workingHoursSummaryTarget.textContent = summary
+      this.workingHoursSummaryTarget.textContent = summary;
     }
   }
 
@@ -93,13 +101,13 @@ export default class extends Controller {
           </svg>
           <p class="text-sm">Gerando preview...</p>
         </div>
-      `
+      `;
     }
-    
+
     // Simulate AJAX call
     setTimeout(() => {
-      this.showPreviewData()
-    }, 1000)
+      this.showPreviewData();
+    }, 1000);
   }
 
   showPreviewData() {
@@ -119,7 +127,7 @@ export default class extends Controller {
             <div class="text-xs text-gray-600">Seg 15/01 - 09:10-10:10</div>
           </div>
         </div>
-      `
+      `;
     }
   }
 }

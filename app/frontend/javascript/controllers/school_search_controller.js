@@ -1,66 +1,65 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["input", "results", "selectedSchool"]
+  static targets = ['input', 'results', 'selectedSchool'];
   static values = {
     url: String,
     minLength: { type: Number, default: 3 },
-    debounceMs: { type: Number, default: 300 }
-  }
+    debounceMs: { type: Number, default: 300 },
+  };
 
   connect() {
-    this.debounceTimer = null
-    this.selectedSchoolData = null
-    document.addEventListener('click', this.handleClickOutside.bind(this))
+    this.debounceTimer = null;
+    this.selectedSchoolData = null;
+    document.addEventListener('click', this.handleClickOutside.bind(this));
   }
 
   disconnect() {
     if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer)
+      clearTimeout(this.debounceTimer);
     }
-    document.removeEventListener('click', this.handleClickOutside.bind(this))
+    document.removeEventListener('click', this.handleClickOutside.bind(this));
   }
 
   search() {
-    const query = this.inputTarget.value.trim()
+    const query = this.inputTarget.value.trim();
 
     if (query.length < this.minLengthValue) {
-      this.hideResults()
-      return
+      this.hideResults();
+      return;
     }
 
     // Debounce para evitar muitas requisições
     if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer)
+      clearTimeout(this.debounceTimer);
     }
 
     this.debounceTimer = setTimeout(() => {
-      this.performSearch(query)
-    }, this.debounceMsValue)
+      this.performSearch(query);
+    }, this.debounceMsValue);
   }
 
   async performSearch(query) {
     try {
-      this.showLoading()
+      this.showLoading();
 
       const response = await fetch(`${this.urlValue}?q=${encodeURIComponent(query)}`, {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
+          Accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json()
-      this.displayResults(data.schools || [])
-
+      const data = await response.json();
+      this.displayResults(data.schools || []);
     } catch (error) {
-      console.error('Erro ao buscar escolas:', error)
-      this.showError('Erro ao buscar escolas. Tente novamente.')
+      console.error('Erro ao buscar escolas:', error);
+      this.showError('Erro ao buscar escolas. Tente novamente.');
     }
   }
 
@@ -70,12 +69,14 @@ export default class extends Controller {
         <div class="p-3 text-sm text-gray-500 text-center">
           Nenhuma escola encontrada
         </div>
-      `
-      this.showResults()
-      return
+      `;
+      this.showResults();
+      return;
     }
 
-    const resultsHtml = schools.map(school => `
+    const resultsHtml = schools
+      .map(
+        school => `
       <div class="school-result p-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0"
            data-school-id="${school.id}"
            data-school-name="${school.name}"
@@ -89,14 +90,16 @@ export default class extends Controller {
         <div class="text-sm text-gray-600 dark:text-gray-400">${school.address}</div>
         <div class="text-xs text-gray-500 dark:text-gray-500">${school.city} - ${school.state} • ${school.type}</div>
       </div>
-    `).join('')
+    `
+      )
+      .join('');
 
-    this.resultsTarget.innerHTML = resultsHtml
-    this.showResults()
+    this.resultsTarget.innerHTML = resultsHtml;
+    this.showResults();
   }
 
   selectSchool(event) {
-    const element = event.currentTarget
+    const element = event.currentTarget;
     const schoolData = {
       id: element.dataset.schoolId,
       name: element.dataset.schoolName,
@@ -104,13 +107,13 @@ export default class extends Controller {
       address: element.dataset.schoolAddress,
       city: element.dataset.schoolCity,
       state: element.dataset.schoolState,
-      type: element.dataset.schoolType
-    }
+      type: element.dataset.schoolType,
+    };
 
-    this.selectedSchoolData = schoolData
-    this.inputTarget.value = schoolData.name
-    this.hideResults()
-    this.updateSelectedSchoolDisplay(schoolData)
+    this.selectedSchoolData = schoolData;
+    this.inputTarget.value = schoolData.name;
+    this.hideResults();
+    this.updateSelectedSchoolDisplay(schoolData);
   }
 
   updateSelectedSchoolDisplay(schoolData) {
@@ -132,17 +135,17 @@ export default class extends Controller {
             </button>
           </div>
         </div>
-      `
+      `;
     }
   }
 
   clearSelection() {
-    this.selectedSchoolData = null
-    this.inputTarget.value = ''
-    this.hideResults()
+    this.selectedSchoolData = null;
+    this.inputTarget.value = '';
+    this.hideResults();
 
     if (this.hasSelectedSchoolTarget) {
-      this.selectedSchoolTarget.innerHTML = ''
+      this.selectedSchoolTarget.innerHTML = '';
     }
   }
 
@@ -156,8 +159,8 @@ export default class extends Controller {
           Buscando escolas...
         </div>
       </div>
-    `
-    this.showResults()
+    `;
+    this.showResults();
   }
 
   showError(message) {
@@ -165,22 +168,22 @@ export default class extends Controller {
       <div class="p-3 text-sm text-red-600 dark:text-red-400 text-center">
         ${message}
       </div>
-    `
-    this.showResults()
+    `;
+    this.showResults();
   }
 
   showResults() {
-    this.resultsTarget.classList.remove('hidden')
+    this.resultsTarget.classList.remove('hidden');
   }
 
   hideResults() {
-    this.resultsTarget.classList.add('hidden')
+    this.resultsTarget.classList.add('hidden');
   }
 
   // Esconder resultados quando clicar fora
   handleClickOutside(event) {
     if (!this.element.contains(event.target)) {
-      this.hideResults()
+      this.hideResults();
     }
   }
 }

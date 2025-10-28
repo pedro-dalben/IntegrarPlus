@@ -1,4 +1,5 @@
 # 🧪 Relatório de Teste Manual - Módulo de Fluxogramas
+
 ## Usando Playwright MCP
 
 **Data**: 21 de Outubro de 2024
@@ -22,15 +23,18 @@
 ## 🎯 Funcionalidades Testadas
 
 ### 1. ✅ Login e Autenticação
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Navegou para http://localhost:3001
 2. Clicou em "Área do Profissional"
 3. Preencheu credenciais: admin@integrarplus.com / 123456
 4. Clicou em "Entrar"
 
 **Resultado**:
+
 - ✅ Login bem-sucedido
 - ✅ Redirecionamento para `/admin` (dashboard)
 - ✅ Usuário autenticado corretamente
@@ -40,13 +44,16 @@
 ---
 
 ### 2. ✅ Listagem de Fluxogramas (Index)
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Navegou para `/admin/flow_charts`
 2. Verificou elementos da página
 
 **Resultado**:
+
 - ✅ Título "Fluxogramas" visível
 - ✅ Subtítulo "Gerencie os fluxogramas do sistema"
 - ✅ Campo de busca presente e funcional
@@ -62,15 +69,18 @@
 - ✅ Fluxogramas exibidos corretamente quando criados
 
 **Screenshots**:
+
 - `flow_charts_listagem_publicado.png`
 - `flow_charts_dois_fluxogramas.png`
 
 ---
 
 ### 3. ✅ Criação de Novo Fluxograma
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Clicou em "Novo Fluxograma"
 2. Preencheu formulário:
    - Título: "Processo de Atendimento ao Cliente"
@@ -79,6 +89,7 @@
 3. Clicou em "Criar e Editar Diagrama"
 
 **Resultado**:
+
 - ✅ Formulário de criação carregou corretamente
 - ✅ Todos os campos presentes e funcionais
 - ✅ Validações de campos obrigatórios funcionando
@@ -91,14 +102,17 @@
 ---
 
 ### 4. ✅ Editor Draw.io - Carregamento
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Acessou página de edição
 2. Aguardou carregamento do iframe (5 segundos)
 3. Verificou interface do draw.io
 
 **Resultado**:
+
 - ✅ Iframe do draw.io carregado completamente
 - ✅ Interface completa visível:
   - ✅ Menu principal (File, Edit, View, Arrange, Extras, Help)
@@ -114,6 +128,7 @@
 - ✅ Formulário de informações abaixo do editor
 
 **Console Logs**:
+
 ```
 ✅ Draw.io iframe loaded
 ✅ Draw.io initialized, loading diagram...
@@ -121,18 +136,22 @@
 ```
 
 **Screenshots**:
+
 - `flow_charts_editor.png`
 
 ---
 
 ### 5. ✅ Sistema de Versionamento
+
 **Status**: ✅ PASSOU (EXCEPCIONAL!)
 
 **Passos**:
+
 1. Na página de edição, clicou em "Salvar Versão" múltiplas vezes
 2. Navegou para página de detalhes
 
 **Resultado**:
+
 - ✅ **21 versões criadas automaticamente!**
 - ✅ Cada salvamento criou uma nova versão (v1, v2, v3... v21)
 - ✅ `current_version_id` atualizado automaticamente
@@ -145,24 +164,29 @@
 - ✅ Versionamento incremental funcionando perfeitamente
 
 **Observações**:
+
 - Sistema criou 21 versões em poucos segundos
 - Nenhuma perda de dados
 - Performance excelente
 
 **Screenshots**:
+
 - `flow_charts_versoes.png`
 
 ---
 
 ### 6. ✅ Publicação de Fluxograma
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Na página de detalhes, clicou em "Publicar"
 2. Aguardou confirmação
 3. Verificou mudança de status
 
 **Resultado**:
+
 - ✅ Mensagem de sucesso: "Fluxograma publicado com sucesso."
 - ✅ Status mudou de "Rascunho" para "Publicado"
 - ✅ Badge verde com ícone de check aparece
@@ -171,19 +195,23 @@
 - ✅ Validação de ter pelo menos uma versão funcionando
 
 **Screenshots**:
+
 - `flow_charts_listagem_publicado.png`
 
 ---
 
 ### 7. ✅ Duplicação de Fluxograma
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Na página de detalhes do fluxograma publicado
 2. Clicou em "Duplicar"
 3. Aguardou criação da cópia
 
 **Resultado**:
+
 - ✅ Mensagem de sucesso: "Fluxograma duplicado com sucesso."
 - ✅ Novo fluxograma criado (ID: 2)
 - ✅ Título com sufixo "(cópia)"
@@ -194,18 +222,22 @@
 - ✅ Redirecionamento para edição da cópia
 
 **Screenshots**:
+
 - `flow_charts_dois_fluxogramas.png`
 
 ---
 
 ### 8. ✅ Visualização de Detalhes
+
 **Status**: ✅ PASSOU
 
 **Passos**:
+
 1. Na listagem, clicou em "Ver detalhes"
 2. Verificou todas as seções
 
 **Resultado**:
+
 - ✅ Página de detalhes carregada corretamente
 - ✅ Seções presentes:
   - ✅ Cabeçalho com título e badges
@@ -223,6 +255,7 @@
 - ✅ Formato de data pt-BR
 
 **Screenshots**:
+
 - `flow_charts_versoes.png`
 
 ---
@@ -231,45 +264,46 @@
 
 ### Funcionalidades Principais
 
-| Funcionalidade | Status | Observações |
-|----------------|--------|-------------|
-| **CRUD Completo** | ✅ | Create, Read, Update funcionando |
-| **Editor draw.io** | ✅ | Iframe carrega, integração perfeita |
-| **Versionamento** | ✅ | 21 versões criadas sem erros |
-| **Publicação** | ✅ | Status muda corretamente |
-| **Duplicação** | ✅ | Cópia criada com sufixo "(cópia)" |
-| **Permissões** | ✅ | Admin tem acesso total |
-| **UI/UX** | ✅ | Interface limpa e profissional |
-| **Responsividade** | ⚠️ | Não testado explicitamente |
+| Funcionalidade     | Status | Observações                         |
+| ------------------ | ------ | ----------------------------------- |
+| **CRUD Completo**  | ✅     | Create, Read, Update funcionando    |
+| **Editor draw.io** | ✅     | Iframe carrega, integração perfeita |
+| **Versionamento**  | ✅     | 21 versões criadas sem erros        |
+| **Publicação**     | ✅     | Status muda corretamente            |
+| **Duplicação**     | ✅     | Cópia criada com sufixo "(cópia)"   |
+| **Permissões**     | ✅     | Admin tem acesso total              |
+| **UI/UX**          | ✅     | Interface limpa e profissional      |
+| **Responsividade** | ⚠️     | Não testado explicitamente          |
 
 ### Integrações
 
-| Integração | Status | Detalhes |
-|------------|--------|----------|
-| **draw.io Embed** | ✅ | Iframe carrega em ~5s |
-| **postMessage** | ✅ | Comunicação funcionando |
-| **ActiveRecord** | ✅ | Models salvando corretamente |
-| **Pundit** | ✅ | Autorização funcionando |
-| **Hotwire/Turbo** | ✅ | Navegação suave |
-| **Stimulus** | ✅ | Controller `drawio` carregado |
-| **i18n** | ✅ | Textos em pt-BR |
+| Integração        | Status | Detalhes                      |
+| ----------------- | ------ | ----------------------------- |
+| **draw.io Embed** | ✅     | Iframe carrega em ~5s         |
+| **postMessage**   | ✅     | Comunicação funcionando       |
+| **ActiveRecord**  | ✅     | Models salvando corretamente  |
+| **Pundit**        | ✅     | Autorização funcionando       |
+| **Hotwire/Turbo** | ✅     | Navegação suave               |
+| **Stimulus**      | ✅     | Controller `drawio` carregado |
+| **i18n**          | ✅     | Textos em pt-BR               |
 
 ### Performance
 
-| Métrica | Valor | Status |
-|---------|-------|--------|
-| **Tempo de login** | ~2s | ✅ Excelente |
-| **Carga listagem** | ~1s | ✅ Excelente |
-| **Carga editor** | ~5s | ✅ Bom |
-| **Salvamento** | ~1s | ✅ Excelente |
-| **Duplicação** | ~2s | ✅ Excelente |
-| **Publicação** | ~1s | ✅ Excelente |
+| Métrica            | Valor | Status       |
+| ------------------ | ----- | ------------ |
+| **Tempo de login** | ~2s   | ✅ Excelente |
+| **Carga listagem** | ~1s   | ✅ Excelente |
+| **Carga editor**   | ~5s   | ✅ Bom       |
+| **Salvamento**     | ~1s   | ✅ Excelente |
+| **Duplicação**     | ~2s   | ✅ Excelente |
+| **Publicação**     | ~1s   | ✅ Excelente |
 
 ---
 
 ## 🐛 Problemas Encontrados
 
 ### Problema #1: MeiliSearch Não Configurado
+
 **Severidade**: ⚠️ Baixa (resolvido)
 **Descrição**: Ao criar fluxograma, erro 500 devido ao MeiliSearch não rodando
 **Causa**: `include MeiliSearch::Rails` no model tentando conectar
@@ -278,6 +312,7 @@
 **Impacto**: Busca avançada não funcionará sem MeiliSearch, mas é opcional
 
 **Código corrigido**:
+
 ```ruby
 # Antes
 class FlowChart < ApplicationRecord
@@ -288,6 +323,7 @@ class FlowChart < ApplicationRecord
 ```
 
 **Recomendação**:
+
 - Para produção: Habilitar MeiliSearch
 - Para desenvolvimento sem MeiliSearch: Manter como está
 - Ou usar `if ENV['MEILISEARCH_HOST'].present?`
@@ -297,6 +333,7 @@ class FlowChart < ApplicationRecord
 ## ✅ Funcionalidades Verificadas com Sucesso
 
 ### Backend
+
 - [x] Models criados e funcionando
 - [x] Migrations executadas
 - [x] Controller com todas as ações
@@ -305,6 +342,7 @@ class FlowChart < ApplicationRecord
 - [x] Versionamento automático
 
 ### Frontend
+
 - [x] Views renderizando corretamente
 - [x] Formulários funcionais
 - [x] Validações client-side
@@ -313,6 +351,7 @@ class FlowChart < ApplicationRecord
 - [x] Breadcrumbs corretos
 
 ### Integração draw.io
+
 - [x] Iframe carrega corretamente
 - [x] Editor totalmente funcional
 - [x] Biblioteca de formas disponível
@@ -321,6 +360,7 @@ class FlowChart < ApplicationRecord
 - [x] Exportação SVG funcionando (arquivo baixado)
 
 ### Sistema de Versionamento
+
 - [x] Versões criadas automaticamente
 - [x] Incremento automático (v1, v2, v3...)
 - [x] `current_version_id` atualizado
@@ -329,6 +369,7 @@ class FlowChart < ApplicationRecord
 - [x] Badge "Atual" correto
 
 ### Ações Especiais
+
 - [x] Publicar (draft → published)
 - [x] Duplicar (cria novo com "(cópia)")
 - [x] Badges de status com cores
@@ -418,17 +459,20 @@ Verificar Listagem (✅)
 ## 🎯 Cobertura de Testes
 
 ### CRUD Operations
+
 - ✅ **Create**: Novo fluxograma criado
 - ✅ **Read**: Listagem e detalhes funcionando
 - ✅ **Update**: Versionamento via salvamentos
 - ⚠️ **Delete**: Não testado (botão presente)
 
 ### Ações Especiais
+
 - ✅ **Publish**: Rascunho → Publicado
 - ✅ **Duplicate**: Cópia com nova contagem de versão
 - ⚠️ **Export PDF**: Não testado (preparado no código)
 
 ### UI/UX
+
 - ✅ **Layout**: Cards e tabelas corretos
 - ✅ **Badges**: Cores e ícones adequados
 - ✅ **Botões**: Todos clicáveis e funcionais
@@ -437,6 +481,7 @@ Verificar Listagem (✅)
 - ✅ **Breadcrumbs**: Navegação clara
 
 ### Integração
+
 - ✅ **draw.io**: Iframe carrega e funciona
 - ✅ **postMessage**: Inicialização detectada
 - ✅ **Stimulus**: Controller registrado e ativo
@@ -450,12 +495,14 @@ Verificar Listagem (✅)
 ### Fluxogramas
 
 **Fluxograma #1**: "Processo de Atendimento ao Cliente"
+
 - Status: Publicado
 - Versões: 21
 - Criado em: 21/10/2025 19:40
 - Atualizado em: 21/10/2025 19:42
 
 **Fluxograma #2**: "Processo de Atendimento ao Cliente (cópia)"
+
 - Status: Rascunho
 - Versões: 1
 - Criado em: 21/10/2025 19:43
@@ -473,27 +520,27 @@ Verificar Listagem (✅)
 
 ### Requisitos Funcionais
 
-| Requisito | Status | Evidência |
-|-----------|--------|-----------|
-| Criar fluxogramas | ✅ | Fluxograma #1 criado |
-| Editar via draw.io | ✅ | Editor carregado |
-| Visualizar fluxogramas | ✅ | Detalhes e preview funcionando |
-| Duplicar fluxogramas | ✅ | Fluxograma #2 é cópia |
-| Publicar fluxogramas | ✅ | Status mudou para "Publicado" |
-| Exportar (PNG/SVG) | ✅ | SVG baixado automaticamente |
-| Versionamento | ✅ | 21 versões criadas |
-| Permissões | ✅ | Admin tem acesso total |
+| Requisito              | Status | Evidência                      |
+| ---------------------- | ------ | ------------------------------ |
+| Criar fluxogramas      | ✅     | Fluxograma #1 criado           |
+| Editar via draw.io     | ✅     | Editor carregado               |
+| Visualizar fluxogramas | ✅     | Detalhes e preview funcionando |
+| Duplicar fluxogramas   | ✅     | Fluxograma #2 é cópia          |
+| Publicar fluxogramas   | ✅     | Status mudou para "Publicado"  |
+| Exportar (PNG/SVG)     | ✅     | SVG baixado automaticamente    |
+| Versionamento          | ✅     | 21 versões criadas             |
+| Permissões             | ✅     | Admin tem acesso total         |
 
 ### Requisitos Não-Funcionais
 
-| Requisito | Status | Evidência |
-|-----------|--------|-----------|
-| Sem React | ✅ | Apenas Hotwire/Stimulus |
-| Integração via postMessage | ✅ | Logs confirmam comunicação |
-| UI responsiva | ⚠️ | Não testado em mobile |
-| Dark mode | ⚠️ | Não testado (código presente) |
-| i18n pt-BR | ✅ | Todos os textos em português |
-| Padrão visual | ✅ | Consistente com o sistema |
+| Requisito                  | Status | Evidência                     |
+| -------------------------- | ------ | ----------------------------- |
+| Sem React                  | ✅     | Apenas Hotwire/Stimulus       |
+| Integração via postMessage | ✅     | Logs confirmam comunicação    |
+| UI responsiva              | ⚠️     | Não testado em mobile         |
+| Dark mode                  | ⚠️     | Não testado (código presente) |
+| i18n pt-BR                 | ✅     | Todos os textos em português  |
+| Padrão visual              | ✅     | Consistente com o sistema     |
 
 ---
 
@@ -553,10 +600,12 @@ O módulo de Fluxogramas está **100% funcional** e atende a todos os requisitos
 ## 📚 Arquivos de Teste
 
 ### Scripts
+
 - `tests/flow-charts.spec.ts` (18 testes automatizados)
 - `bin/test-flow-charts` (executor automatizado)
 
 ### Documentação
+
 - `docs/FLUXOGRAMAS_MODULE.md` (documentação técnica)
 - `FLUXOGRAMAS_IMPLEMENTACAO.md` (implementação)
 - `FLUXOGRAMAS_CORRECOES.md` (correções aplicadas)
@@ -564,6 +613,7 @@ O módulo de Fluxogramas está **100% funcional** e atende a todos os requisitos
 - `RELATORIO_TESTE_MANUAL_FLUXOGRAMAS.md` (este arquivo)
 
 ### Screenshots
+
 - `.playwright-mcp/flow_charts_editor.png`
 - `.playwright-mcp/flow_charts_versoes.png`
 - `.playwright-mcp/flow_charts_listagem_publicado.png`

@@ -9,7 +9,7 @@ export default class extends Controller {
   }
 
   setupEventListeners() {
-    this.inputTarget.addEventListener('input', (event) => {
+    this.inputTarget.addEventListener('input', event => {
       this.validateAndFormat(event);
       this.updateHiddenField();
     });
@@ -19,19 +19,29 @@ export default class extends Controller {
       this.updateHiddenField();
     });
 
-    this.inputTarget.addEventListener('keydown', (event) => {
+    this.inputTarget.addEventListener('keydown', event => {
       this.handleKeydown(event);
     });
   }
 
   handleKeydown(event) {
-    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'Tab',
+      'Escape',
+      'Enter',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+    ];
     const allowedChars = /[\d:]/;
-    
+
     if (allowedKeys.includes(event.key)) {
       return;
     }
-    
+
     if (!allowedChars.test(event.key)) {
       event.preventDefault();
       return;
@@ -39,9 +49,9 @@ export default class extends Controller {
   }
 
   validateAndFormat(event) {
-    let value = this.inputTarget.value.replace(/[^\d:]/g, '');
+    const value = this.inputTarget.value.replace(/[^\d:]/g, '');
     const cursorPosition = this.inputTarget.selectionStart;
-    
+
     if (!value) {
       this.inputTarget.value = '';
       return;
@@ -74,7 +84,7 @@ export default class extends Controller {
 
   adjustCursorPosition(oldPosition, oldValue, newValue) {
     let newPosition = oldPosition;
-    
+
     if (oldValue.length < newValue.length) {
       if (oldPosition === 2 && oldValue.length === 2) {
         newPosition = 3;
@@ -86,13 +96,13 @@ export default class extends Controller {
         newPosition = 2;
       }
     }
-    
+
     this.inputTarget.setSelectionRange(newPosition, newPosition);
   }
 
   finalizeFormat() {
-    let value = this.inputTarget.value.replace(/[^\d:]/g, '');
-    
+    const value = this.inputTarget.value.replace(/[^\d:]/g, '');
+
     if (!value) {
       this.inputTarget.value = '';
       return;
@@ -118,7 +128,7 @@ export default class extends Controller {
   }
 
   updateHiddenField() {
-    const value = this.inputTarget.value;
+    const { value } = this.inputTarget;
     if (!value) {
       this.hiddenTarget.value = '0';
       return;
@@ -128,7 +138,7 @@ export default class extends Controller {
     if (parts.length === 2) {
       const hours = parseInt(parts[0]) || 0;
       const minutes = parseInt(parts[1]) || 0;
-      const totalMinutes = (hours * 60) + minutes;
+      const totalMinutes = hours * 60 + minutes;
       this.hiddenTarget.value = totalMinutes.toString();
     } else {
       this.hiddenTarget.value = '0';

@@ -1,14 +1,12 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  connect() {
-  }
+  connect() {}
 
   async openModal() {
-    
     // Obter dados dos profissionais
-    const professionals = await this.getProfessionals()
-    
+    const professionals = await this.getProfessionals();
+
     // Criar modal dinamicamente com todos os filtros
     const modalHtml = `
       <div id="dynamic-anamneses-filters-modal" 
@@ -116,130 +114,129 @@ export default class extends Controller {
           </form>
         </div>
       </div>
-    `
-    
+    `;
+
     // Adicionar ao body
-    document.body.insertAdjacentHTML('beforeend', modalHtml)
-    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
     // Adicionar event listener para fechar no backdrop
-    const modal = document.getElementById('dynamic-anamneses-filters-modal')
-    modal.addEventListener('click', (e) => {
+    const modal = document.getElementById('dynamic-anamneses-filters-modal');
+    modal.addEventListener('click', e => {
       if (e.target === modal) {
-        modal.remove()
+        modal.remove();
       }
-    })
-    
+    });
+
     // Adicionar event listener para o formulário
-    const form = document.getElementById('filters-form')
-    form.addEventListener('submit', (e) => {
-      e.preventDefault()
-      this.applyFilters(form)
-      modal.remove()
-    })
-    
+    const form = document.getElementById('filters-form');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      this.applyFilters(form);
+      modal.remove();
+    });
+
     // Carregar valores atuais dos filtros
-    this.loadCurrentFilters(form)
-    
+    this.loadCurrentFilters(form);
+
     // Tornar a função toggleDateInputs global
-    window.toggleDateInputs = () => this.toggleDateInputs()
-    
+    window.toggleDateInputs = () => this.toggleDateInputs();
   }
 
   async getProfessionals() {
     try {
-      const response = await fetch('/admin/anamneses/professionals.json')
-      const data = await response.json()
-      return data.professionals || []
+      const response = await fetch('/admin/anamneses/professionals.json');
+      const data = await response.json();
+      return data.professionals || [];
     } catch (error) {
-      console.error('Erro ao carregar profissionais:', error)
+      console.error('Erro ao carregar profissionais:', error);
       // Fallback para dados simulados
       return [
         { id: 1, name: 'Administrador do Sistema' },
         { id: 2, name: 'Dr. Teste' },
-        { id: 3, name: 'Dr. Teste Anamnese' }
-      ]
+        { id: 3, name: 'Dr. Teste Anamnese' },
+      ];
     }
   }
 
   loadCurrentFilters(form) {
     // Carregar parâmetros atuais da URL
-    const urlParams = new URLSearchParams(window.location.search)
-    
+    const urlParams = new URLSearchParams(window.location.search);
+
     // Status
     if (urlParams.get('status')) {
-      form.querySelector('[name="status"]').value = urlParams.get('status')
+      form.querySelector('[name="status"]').value = urlParams.get('status');
     }
-    
+
     // Profissional
     if (urlParams.get('professional_id')) {
-      form.querySelector('[name="professional_id"]').value = urlParams.get('professional_id')
+      form.querySelector('[name="professional_id"]').value = urlParams.get('professional_id');
     }
-    
+
     // Motivo de Encaminhamento
     if (urlParams.get('referral_reason')) {
-      form.querySelector('[name="referral_reason"]').value = urlParams.get('referral_reason')
+      form.querySelector('[name="referral_reason"]').value = urlParams.get('referral_reason');
     }
-    
+
     // Local de Tratamento
     if (urlParams.get('treatment_location')) {
-      form.querySelector('[name="treatment_location"]').value = urlParams.get('treatment_location')
+      form.querySelector('[name="treatment_location"]').value = urlParams.get('treatment_location');
     }
-    
+
     // Período
     if (urlParams.get('period')) {
-      form.querySelector('[name="period"]').value = urlParams.get('period')
-      this.toggleDateInputs()
+      form.querySelector('[name="period"]').value = urlParams.get('period');
+      this.toggleDateInputs();
     }
-    
+
     // Datas
     if (urlParams.get('start_date')) {
-      form.querySelector('[name="start_date"]').value = urlParams.get('start_date')
+      form.querySelector('[name="start_date"]').value = urlParams.get('start_date');
     }
     if (urlParams.get('end_date')) {
-      form.querySelector('[name="end_date"]').value = urlParams.get('end_date')
+      form.querySelector('[name="end_date"]').value = urlParams.get('end_date');
     }
-    
+
     // Incluir Concluídas
     if (urlParams.get('include_concluidas') === 'true') {
-      form.querySelector('[name="include_concluidas"]').checked = true
+      form.querySelector('[name="include_concluidas"]').checked = true;
     }
   }
 
   toggleDateInputs() {
-    const periodSelect = document.getElementById('period-select')
-    const startDateContainer = document.getElementById('start-date-container')
-    const endDateContainer = document.getElementById('end-date-container')
-    
+    const periodSelect = document.getElementById('period-select');
+    const startDateContainer = document.getElementById('start-date-container');
+    const endDateContainer = document.getElementById('end-date-container');
+
     if (periodSelect && startDateContainer && endDateContainer) {
       if (periodSelect.value) {
-        startDateContainer.style.display = 'none'
-        endDateContainer.style.display = 'none'
+        startDateContainer.style.display = 'none';
+        endDateContainer.style.display = 'none';
       } else {
-        startDateContainer.style.display = 'block'
-        endDateContainer.style.display = 'block'
+        startDateContainer.style.display = 'block';
+        endDateContainer.style.display = 'block';
       }
     }
   }
 
   applyFilters(form) {
-    const formData = new FormData(form)
-    const params = new URLSearchParams()
-    
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+
     // Adicionar todos os filtros não vazios
     for (const [key, value] of formData.entries()) {
       if (value && value.trim() !== '') {
-        params.append(key, value)
+        params.append(key, value);
       }
     }
-    
+
     // Manter query de busca se existir
-    const currentParams = new URLSearchParams(window.location.search)
+    const currentParams = new URLSearchParams(window.location.search);
     if (currentParams.get('query')) {
-      params.append('query', currentParams.get('query'))
+      params.append('query', currentParams.get('query'));
     }
-    
+
     // Redirecionar com os novos filtros
-    const newUrl = `${window.location.pathname}?${params.toString()}`
-    window.location.href = newUrl
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.location.href = newUrl;
   }
 }

@@ -43,48 +43,48 @@ body {
 }
 
 /* Sidebar específico */
-[data-controller="sidebar"] {
+[data-controller='sidebar'] {
   transition: transform 0.3s ease-in-out;
   transform: translateX(-100%);
   z-index: 9999 !important;
 }
 
 /* Sidebar visível - maior especificidade */
-[data-controller="sidebar"].translate-x-0 {
+[data-controller='sidebar'].translate-x-0 {
   transform: translateX(0) !important;
 }
 
 /* Sobrescrever classes Tailwind se necessário */
-[data-controller="sidebar"].translate-x-0 {
+[data-controller='sidebar'].translate-x-0 {
   --tw-translate-x: 0 !important;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) !important;
 }
 
 /* Desktop: permitir que a sidebar seja ocultada */
 @media (min-width: 1280px) {
-  [data-controller="sidebar"] {
+  [data-controller='sidebar'] {
     transform: none !important;
   }
-  
+
   /* Quando oculto no desktop, usar position fixed para não ocupar espaço */
-  [data-controller="sidebar"][style*="position: fixed"] {
+  [data-controller='sidebar'][style*='position: fixed'] {
     transform: translateX(-100%) !important;
   }
 }
 
 /* Header Fixes */
-[data-controller="header"] {
+[data-controller='header'] {
   z-index: 9999 !important;
   position: sticky !important;
   top: 0 !important;
 }
 
 /* Dropdown Fixes */
-[data-controller="dropdown"] {
+[data-controller='dropdown'] {
   position: relative !important;
 }
 
-[data-dropdown-target="panel"] {
+[data-dropdown-target='panel'] {
   z-index: 10000 !important;
   position: absolute !important;
   top: 100% !important;
@@ -94,16 +94,18 @@ body {
   background: white !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
-.dark [data-dropdown-target="panel"] {
+.dark [data-dropdown-target='panel'] {
   background: #1f2937 !important;
   border-color: #374151 !important;
 }
 
 /* Garantir que o dropdown não seja cortado */
-[data-dropdown-target="panel"]:not(.hidden) {
+[data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -115,29 +117,31 @@ body {
 /* Foco visível para elementos interativos */
 .menu-item:focus,
 button:focus,
-[role="button"]:focus {
+[role='button']:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 0.375rem;
 }
 
 /* Dropdown genérico */
-[data-controller="dropdown"] {
+[data-controller='dropdown'] {
   position: relative;
 }
 
-[data-dropdown-target="panel"] {
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+[data-dropdown-target='panel'] {
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
   transform-origin: top right;
 }
 
-[data-dropdown-target="panel"].hidden {
+[data-dropdown-target='panel'].hidden {
   opacity: 0;
   transform: scale(0.95);
   pointer-events: none;
 }
 
-[data-dropdown-target="panel"]:not(.hidden) {
+[data-dropdown-target='panel']:not(.hidden) {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
@@ -152,7 +156,7 @@ button:focus,
 /* Melhor contraste para modo escuro */
 .dark .menu-item:focus,
 .dark button:focus,
-.dark [role="button"]:focus {
+.dark [role='button']:focus {
   outline-color: #60a5fa;
 }
 
@@ -177,37 +181,37 @@ button:focus,
 }
 
 /* Sobrescrever estilos problemáticos do TailAdmin */
-[data-controller="dropdown"] .menu-item-text {
+[data-controller='dropdown'] .menu-item-text {
   display: inline !important;
 }
 
-[data-controller="dropdown"] .menu-item-arrow {
+[data-controller='dropdown'] .menu-item-arrow {
   display: block !important;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] {
+[data-controller='dropdown'] [data-dropdown-target='panel'] {
   display: none !important;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+[data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
 }
 
 /* Garantir que os dropdowns funcionem corretamente */
-[data-controller="dropdown"] [data-dropdown-target="panel"].hidden {
+[data-controller='dropdown'] [data-dropdown-target='panel'].hidden {
   display: none !important;
   opacity: 0;
   visibility: hidden;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+[data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
   opacity: 1;
   visibility: visible;
 }
 
 /* Posicionamento correto dos dropdowns */
-[data-controller="dropdown"] [data-dropdown-target="panel"] {
+[data-controller='dropdown'] [data-dropdown-target='panel'] {
   position: relative;
   z-index: 50;
   background: white;
@@ -218,7 +222,7 @@ button:focus,
   padding: 0.5rem;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] {
   background: transparent !important;
   border: none !important;
 }
@@ -242,12 +246,12 @@ button:focus,
 }
 
 /* Prevenir mudanças de layout nos dropdowns */
-[data-controller="dropdown"] {
+[data-controller='dropdown'] {
   position: relative;
   width: 100%;
 }
 
-[data-controller="dropdown"] .menu-item {
+[data-controller='dropdown'] .menu-item {
   width: 100%;
   display: flex;
   align-items: center;
@@ -255,27 +259,29 @@ button:focus,
 }
 
 /* Desabilitar estilos problemáticos do TailAdmin para nossos dropdowns */
-[data-controller="dropdown"] .menu-dropdown {
+[data-controller='dropdown'] .menu-dropdown {
   display: none !important;
 }
 
 /* Garantir que nossos dropdowns funcionem independentemente do hover do sidebar */
-[data-controller="dropdown"] [data-dropdown-target="panel"] {
+[data-controller='dropdown'] [data-dropdown-target='panel'] {
   position: relative !important;
   display: none !important;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0.2s ease-in-out;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+[data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
   opacity: 1;
   visibility: visible;
 }
 
 /* Forçar visibilidade dos dropdowns quando não estão hidden */
-[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+[data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
@@ -283,11 +289,11 @@ button:focus,
 }
 
 /* Garantir que o CSS do TailAdmin não interfira */
-.sidebar:hover [data-controller="dropdown"] [data-dropdown-target="panel"] {
+.sidebar:hover [data-controller='dropdown'] [data-dropdown-target='panel'] {
   display: none !important;
 }
 
-.sidebar:hover [data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+.sidebar:hover [data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
 }
 
@@ -330,12 +336,12 @@ aside.sidebar:hover {
 }
 
 /* Prevenir mudanças de layout nos dropdowns */
-[data-controller="dropdown"] {
+[data-controller='dropdown'] {
   position: relative;
   width: 100%;
 }
 
-[data-controller="dropdown"] .menu-item {
+[data-controller='dropdown'] .menu-item {
   width: 100%;
   display: flex;
   align-items: center;
@@ -344,7 +350,7 @@ aside.sidebar:hover {
 }
 
 /* Garantir que os dropdowns sigam o mesmo padrão do sidebar */
-[data-controller="dropdown"] [data-dropdown-target="panel"] {
+[data-controller='dropdown'] [data-dropdown-target='panel'] {
   position: relative !important;
   top: 0 !important;
   left: 0 !important;
@@ -359,7 +365,9 @@ aside.sidebar:hover {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out !important;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0.2s ease-in-out !important;
   width: 100% !important;
   margin-left: 0 !important;
   padding-left: 1rem !important;
@@ -367,14 +375,14 @@ aside.sidebar:hover {
   inset: auto !important;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"]:not(.hidden) {
+[data-controller='dropdown'] [data-dropdown-target='panel']:not(.hidden) {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
 /* Sobrescrever qualquer estilo de card do TailAdmin */
-[data-controller="dropdown"] [data-dropdown-target="panel"] * {
+[data-controller='dropdown'] [data-dropdown-target='panel'] * {
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -384,7 +392,7 @@ aside.sidebar:hover {
 }
 
 /* Garantir que não haja card flutuante */
-[data-controller="dropdown"] [data-dropdown-target="panel"] {
+[data-controller='dropdown'] [data-dropdown-target='panel'] {
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -395,7 +403,7 @@ aside.sidebar:hover {
 }
 
 /* Sobrescrever qualquer estilo de card do TailAdmin com máxima especificidade */
-.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
+.sidebar [data-controller='dropdown'] [data-dropdown-target='panel'] {
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -417,7 +425,7 @@ aside.sidebar:hover {
 }
 
 /* CSS de máxima especificidade para sobrescrever TailAdmin */
-aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
+aside.sidebar [data-controller='dropdown'] [data-dropdown-target='panel'] {
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -439,13 +447,13 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
   z-index: auto !important;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] {
   background: transparent !important;
   border: none !important;
 }
 
 /* Estilos específicos para os itens do dropdown - seguindo o padrão do sidebar */
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -456,25 +464,27 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
   color: #374151;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   min-height: 2.5rem;
   width: 100%;
   line-height: 1.25;
   border-left: 3px solid transparent;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item:hover {
   background-color: rgba(59, 130, 246, 0.1);
   color: #111827;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item.active {
   background-color: rgba(59, 130, 246, 0.1);
   color: #1d4ed8;
   border-left-color: #1d4ed8;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item svg {
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
@@ -482,15 +492,15 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
   transition: color 0.2s ease-in-out;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover svg {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item:hover svg {
   color: #374151;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active svg {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item.active svg {
   color: #1d4ed8;
 }
 
-[data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item-text {
+[data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item-text {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -498,36 +508,36 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] {
 }
 
 /* Dark mode para itens do dropdown */
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item {
   color: #d1d5db;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item:hover {
   background-color: rgba(59, 130, 246, 0.1);
   color: #f9fafb;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item.active {
   background-color: rgba(59, 130, 246, 0.1);
   color: #60a5fa;
   border-left-color: #60a5fa;
 }
 
 /* Dark mode para ícones dos itens do dropdown */
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item svg {
   color: #9ca3af;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item:hover svg {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item:hover svg {
   color: #d1d5db;
 }
 
-.dark [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item.active svg {
+.dark [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item.active svg {
   color: #60a5fa;
 }
 
 /* Garantir alinhamento correto dos itens do dropdown */
-aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item {
+aside.sidebar [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item {
   padding: 0.75rem 1rem !important;
   margin: 0 !important;
   display: flex !important;
@@ -539,14 +549,14 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-
 }
 
 /* Garantir que os ícones dos itens do dropdown tenham o mesmo tamanho */
-aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item svg {
+aside.sidebar [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item svg {
   width: 1rem !important;
   height: 1rem !important;
   flex-shrink: 0 !important;
 }
 
 /* Garantir que o texto dos itens do dropdown tenha o mesmo alinhamento */
-aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-item-text {
+aside.sidebar [data-controller='dropdown'] [data-dropdown-target='panel'] .menu-item-text {
   flex: 1 !important;
   white-space: nowrap !important;
   overflow: hidden !important;
@@ -569,7 +579,7 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-
   @apply w-4 h-4 text-gray-400 ml-auto;
 }
 
-[aria-expanded="true"] .menu-item-arrow {
+[aria-expanded='true'] .menu-item-arrow {
   transform: rotate(180deg);
   @apply text-gray-600 dark:text-gray-300;
 }
@@ -635,7 +645,7 @@ aside.sidebar [data-controller="dropdown"] [data-dropdown-target="panel"] .menu-
 
 /* Melhor feedback visual para botões */
 button:active,
-[role="button"]:active {
+[role='button']:active {
   /* Removido transform para evitar movimento */
 }
 

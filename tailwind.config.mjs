@@ -6,7 +6,7 @@ export default {
     './app/javascript/**/*.js',
     './app/frontend/**/*.{js,css}',
     './app/frontend/styles/tailadmin-pro.css',
-    './app/assets/stylesheets/**/*.css'
+    './app/assets/stylesheets/**/*.css',
   ],
   theme: {
     extend: {
@@ -17,8 +17,8 @@ export default {
           500: '#F04438',
           600: '#D92D20',
           700: '#B42318',
-        }
-      }
-    }
-  }
-}
+        },
+      },
+    },
+  },
+};

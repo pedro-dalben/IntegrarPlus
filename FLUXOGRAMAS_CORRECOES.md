@@ -7,11 +7,13 @@
 **Sintoma**: Ninguém conseguiria acessar o módulo, nem mesmo para visualização.
 
 **Causa**:
+
 - O `BaseController` verifica permissões usando `controller_name.action_name` (ex: `flow_charts.index`)
 - As permissões iniciais no seed só incluíam `flow_charts.manage`
 - Faltavam `flow_charts.index`, `flow_charts.show`, e todas as outras ações
 
 **Solução Aplicada**:
+
 ```ruby
 # db/seeds/permissionamento_setup.rb (ATUALIZADO)
 { key: 'flow_charts.index', description: 'Listar fluxogramas' },
@@ -36,14 +38,16 @@
 **Sintoma**: Editor draw.io não funcionaria (nenhuma interação via postMessage).
 
 **Causa**:
+
 - `drawio_controller.js` foi criado em `app/javascript/controllers/`
 - Não foi registrado no manifesto Stimulus em `app/frontend/javascript/controllers/index.js`
 
 **Solução Aplicada**:
+
 ```javascript
 // app/frontend/javascript/controllers/index.js (ATUALIZADO)
-import DrawioController from "../../../javascript/controllers/drawio_controller"
-application.register("drawio", DrawioController)
+import DrawioController from '../../../javascript/controllers/drawio_controller';
+application.register('drawio', DrawioController);
 ```
 
 **Status**: ✅ Corrigido
@@ -55,9 +59,11 @@ application.register("drawio", DrawioController)
 **Sintoma**: Usuários não encontrariam o módulo no menu lateral.
 
 **Causa**:
+
 - Faltava adicionar entrada no `AdminNav.items`
 
 **Solução Aplicada**:
+
 ```ruby
 # app/navigation/admin_nav.rb (ATUALIZADO)
 { label: 'Fluxogramas', path: '/admin/flow_charts', icon: 'bi-diagram-3', required_permission: 'flow_charts.index' }
@@ -81,6 +87,7 @@ application.register("drawio", DrawioController)
 ## 🚀 Ações Executadas
 
 ### 1. Permissões Criadas no Banco
+
 ```bash
 ✅ Executado via Rails runner
 ✅ 11 permissões de flow_charts criadas
@@ -88,18 +95,21 @@ application.register("drawio", DrawioController)
 ```
 
 ### 2. Stimulus Controller Registrado
+
 ```bash
 ✅ Atualizado manifesto do Stimulus
 ✅ drawio_controller.js agora é carregado automaticamente
 ```
 
 ### 3. Menu de Navegação Atualizado
+
 ```bash
 ✅ AdminNav.items atualizado
 ✅ Item "Fluxogramas" adicionado com ícone e permissão
 ```
 
 ### 4. Seed Atualizado
+
 ```bash
 ✅ permissionamento_setup.rb com 11 permissões
 ✅ Seed pode ser reexecutado sem problemas (idempotente)
@@ -110,6 +120,7 @@ application.register("drawio", DrawioController)
 ## 📋 Checklist Final de Funcionamento
 
 ### Backend
+
 - [x] Models criados e migrados
 - [x] Controller implementado
 - [x] Policy configurada
@@ -118,6 +129,7 @@ application.register("drawio", DrawioController)
 - [x] Autorização funcionando
 
 ### Frontend
+
 - [x] Views criadas
 - [x] **CORRIGIDO**: Stimulus controller registrado
 - [x] Busca avançada configurada
@@ -125,6 +137,7 @@ application.register("drawio", DrawioController)
 - [x] Traduções pt-BR completas
 
 ### Integração
+
 - [x] draw.io embed configurado
 - [x] postMessage protocol implementado
 - [x] Exportação PNG/SVG
@@ -135,6 +148,7 @@ application.register("drawio", DrawioController)
 ## 🧪 Como Testar
 
 ### 1. Verificar Permissões
+
 ```bash
 bin/rails console
 
@@ -149,6 +163,7 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ```
 
 ### 2. Verificar Menu
+
 ```bash
 # Fazer login como admin
 # URL: http://localhost:3000/admin
@@ -159,6 +174,7 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ```
 
 ### 3. Acessar Módulo
+
 ```bash
 # URL: http://localhost:3000/admin/flow_charts
 
@@ -168,6 +184,7 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ```
 
 ### 4. Criar Fluxograma
+
 ```bash
 # Clicar em "Novo Fluxograma"
 # Preencher título e descrição
@@ -179,6 +196,7 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ```
 
 ### 5. Verificar Console do Navegador
+
 ```javascript
 // Abrir DevTools (F12)
 // Console não deve ter erros
@@ -192,11 +210,13 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ## 📊 Estatísticas das Correções
 
 ### Arquivos Modificados
+
 - `db/seeds/permissionamento_setup.rb` → 11 permissões adicionadas
 - `app/frontend/javascript/controllers/index.js` → 1 controller registrado
 - `app/navigation/admin_nav.rb` → 1 item de menu adicionado
 
 ### Comandos Executados
+
 ```bash
 ✅ bin/rails stimulus:manifest:update
 ✅ bin/rails runner "load Rails.root.join('db/seeds/permissionamento_setup.rb')"
@@ -204,6 +224,7 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ```
 
 ### Permissões Adicionadas
+
 1. `flow_charts.index` → Listar (TODOS podem usar)
 2. `flow_charts.show` → Ver detalhes (TODOS podem usar)
 3. `flow_charts.new` → Formulário novo (ADMIN/MANAGE)
@@ -221,12 +242,14 @@ admin_group.permissions.where("key LIKE 'flow_charts.%'").count
 ## 🎯 Resultado Final
 
 ### Antes das Correções
+
 ❌ Módulo não acessível
 ❌ Menu sem item
 ❌ Editor não funcionaria
 ❌ Permissões bloqueando acesso
 
 ### Depois das Correções
+
 ✅ Módulo 100% funcional
 ✅ Menu com item "Fluxogramas"
 ✅ Editor draw.io integrado
@@ -261,12 +284,14 @@ bin/rails runner "load Rails.root.join('db/seeds/flow_charts_setup.rb')"
 ```
 
 Isso criará:
+
 - 1 fluxograma publicado com diagrama completo
 - 1 fluxograma rascunho vazio
 
 ### 3. Testar em Produção
 
 Antes de deploy:
+
 ```bash
 # Verificar se MeiliSearch está configurado (se usar busca)
 # Verificar se Content Security Policy permite embed.diagrams.net
@@ -291,6 +316,7 @@ end
 ### MeiliSearch (Busca Avançada)
 
 A busca avançada requer MeiliSearch rodando:
+
 ```bash
 # Desenvolvimento
 meilisearch --master-key="masterKey"
@@ -303,6 +329,7 @@ meilisearch --master-key="masterKey"
 ### Performance
 
 Para melhor performance em produção:
+
 - Considere adicionar cache para listagem
 - Thumbnails podem ser gerados via job assíncrono
 - Exportação PDF pode usar serviço externo (se implementar)

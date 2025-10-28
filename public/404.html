@@ -1,18 +1,20 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, width=device-width">
-    <meta name="robots" content="noindex, nofollow">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <link rel="icon" type="image/png" href="/icon.png">
-    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <title>Erro 404 - Página não encontrada</title>
 
     <style>
-      *, *::before, *::after {
+      *,
+      *::before,
+      *::after {
         box-sizing: border-box;
       }
 
@@ -26,9 +28,20 @@
 
       body {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #261B23;
+        color: #261b23;
         display: flex;
-        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Aptos, Roboto, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          Aptos,
+          Roboto,
+          'Segoe UI',
+          'Helvetica Neue',
+          Helvetica,
+          Arial,
+          sans-serif;
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
         align-items: center;
@@ -39,7 +52,9 @@
       .container {
         background: white;
         border-radius: 1rem;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
         max-width: 32rem;
         padding: 3rem 2rem;
         text-align: center;
@@ -113,8 +128,8 @@
       <div class="error-code">404</div>
       <h1>Página não encontrada</h1>
       <p>
-        Desculpe, a página que você está procurando não existe.
-        Ela pode ter sido movida ou removida.
+        Desculpe, a página que você está procurando não existe. Ela pode ter sido movida ou
+        removida.
       </p>
       <a href="/" class="button" onclick="clearCache(); return true;">
         Voltar para a página inicial
@@ -124,7 +139,7 @@
     <script>
       function clearCache() {
         if ('caches' in window) {
-          caches.keys().then(function(names) {
+          caches.keys().then(function (names) {
             for (let name of names) caches.delete(name);
           });
         }
@@ -134,7 +149,7 @@
         window.history.replaceState(null, '', window.location.href);
       }
 
-      window.addEventListener('pageshow', function(event) {
+      window.addEventListener('pageshow', function (event) {
         if (event.persisted) {
           window.location.reload();
         }

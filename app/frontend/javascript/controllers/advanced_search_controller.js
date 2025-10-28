@@ -1,188 +1,185 @@
-import { Controller } from '@hotwired/stimulus'
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['input', 'results', 'loading', 'error', 'suggestions']
+  static targets = ['input', 'results', 'loading', 'error', 'suggestions'];
   static values = {
     url: String,
     debounceMs: { type: Number, default: 500 },
-    minLength: { type: Number, default: 2 }
-  }
+    minLength: { type: Number, default: 2 },
+  };
 
   connect() {
-
-    this.debouncedSearch = this.debounce(this.performSearch.bind(this), this.debounceMsValue)
-    this.isSearching = false
-    this.currentRequest = null
+    this.debouncedSearch = this.debounce(this.performSearch.bind(this), this.debounceMsValue);
+    this.isSearching = false;
+    this.currentRequest = null;
   }
 
   disconnect() {
     if (this.currentRequest) {
-      this.currentRequest.abort()
+      this.currentRequest.abort();
     }
   }
 
   search() {
-    const query = this.inputTarget.value.trim()
+    const query = this.inputTarget.value.trim();
 
     if (query.length === 0) {
-      this.clearSearch()
-      return
+      this.clearSearch();
+      return;
     }
 
     if (query.length < this.minLengthValue) {
-      this.showSuggestions()
-      return
+      this.showSuggestions();
+      return;
     }
 
-    this.debouncedSearch()
+    this.debouncedSearch();
   }
 
   async performSearch() {
-    const query = this.inputTarget.value.trim()
+    const query = this.inputTarget.value.trim();
 
     if (query.length === 0 || query.length < this.minLengthValue) {
-      this.clearSearch()
-      return
+      this.clearSearch();
+      return;
     }
 
-    this.isSearching = true
-    this.showLoading()
-    this.hideError()
-    this.hideSuggestions()
+    this.isSearching = true;
+    this.showLoading();
+    this.hideError();
+    this.hideSuggestions();
 
     try {
       if (this.currentRequest) {
-        this.currentRequest.abort()
+        this.currentRequest.abort();
       }
 
-      const url = new URL(this.urlValue, window.location.origin)
-      url.searchParams.set('query', query)
-      url.searchParams.set('page', '1')
+      const url = new URL(this.urlValue, window.location.origin);
+      url.searchParams.set('query', query);
+      url.searchParams.set('page', '1');
 
-
-      const controller = new AbortController()
-      this.currentRequest = controller
+      const controller = new AbortController();
+      this.currentRequest = controller;
 
       const response = await fetch(url.toString(), {
         headers: {
           Accept: 'text/html',
           'X-Requested-With': 'XMLHttpRequest',
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        signal: controller.signal
-      })
+        signal: controller.signal,
+      });
 
       if (response.ok) {
-        const html = await response.text()
-        this.updateResults(html)
-        this.hideError()
+        const html = await response.text();
+        this.updateResults(html);
+        this.hideError();
       } else {
-        throw new Error(`HTTP ${response.status}`)
+        throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
       if (error.name === 'AbortError') {
-        return
+        return;
       }
-      this.showError()
+      this.showError();
     } finally {
-      this.isSearching = false
-      this.hideLoading()
-      this.currentRequest = null
+      this.isSearching = false;
+      this.hideLoading();
+      this.currentRequest = null;
     }
   }
 
   clearSearch() {
-    this.inputTarget.value = ''
-    this.hideResults()
-    this.hideLoading()
-    this.hideError()
-    this.hideSuggestions()
+    this.inputTarget.value = '';
+    this.hideResults();
+    this.hideLoading();
+    this.hideError();
+    this.hideSuggestions();
 
     // Mostrar a lista principal novamente
-    const mainList = document.querySelector('.main-document-list')
+    const mainList = document.querySelector('.main-document-list');
     if (mainList) {
-      mainList.classList.remove('hidden')
+      mainList.classList.remove('hidden');
     }
   }
 
   showLoading() {
     if (this.hasLoadingTarget) {
-      this.loadingTarget.classList.remove('hidden')
+      this.loadingTarget.classList.remove('hidden');
     }
   }
 
   hideLoading() {
     if (this.hasLoadingTarget) {
-      this.loadingTarget.classList.add('hidden')
+      this.loadingTarget.classList.add('hidden');
     }
   }
 
   showError() {
     if (this.hasErrorTarget) {
-      this.errorTarget.classList.remove('hidden')
+      this.errorTarget.classList.remove('hidden');
     }
   }
 
   hideError() {
     if (this.hasErrorTarget) {
-      this.errorTarget.classList.add('hidden')
+      this.errorTarget.classList.add('hidden');
     }
   }
 
   showSuggestions() {
     if (this.hasSuggestionsTarget) {
-      this.suggestionsTarget.classList.remove('hidden')
+      this.suggestionsTarget.classList.remove('hidden');
     }
   }
 
   hideSuggestions() {
     if (this.hasSuggestionsTarget) {
-      this.suggestionsTarget.classList.add('hidden')
+      this.suggestionsTarget.classList.add('hidden');
     }
   }
 
   updateResults(html) {
     // Procurar o target results
-    let resultsContainer = null
+    let resultsContainer = null;
 
     if (this.hasResultsTarget) {
-      resultsContainer = this.resultsTarget
+      resultsContainer = this.resultsTarget;
     } else {
       // Fallback: procurar por atributo data diretamente
-      resultsContainer = document.querySelector('[data-advanced-search-target="results"]')
+      resultsContainer = document.querySelector('[data-advanced-search-target="results"]');
     }
 
     if (resultsContainer) {
-      resultsContainer.innerHTML = html
-      resultsContainer.classList.remove('hidden')
+      resultsContainer.innerHTML = html;
+      resultsContainer.classList.remove('hidden');
 
       // Esconder a lista principal quando há resultados de busca
-      const mainList = document.querySelector('.main-document-list')
+      const mainList = document.querySelector('.main-document-list');
       if (mainList) {
-        mainList.classList.add('hidden')
+        mainList.classList.add('hidden');
       }
-
     } else {
-      this.showError()
+      this.showError();
     }
   }
 
   hideResults() {
     if (this.hasResultsTarget) {
-      this.resultsTarget.classList.add('hidden')
+      this.resultsTarget.classList.add('hidden');
     }
   }
 
   debounce(func, wait) {
-    let timeout
+    let timeout;
     return function executedFunction(...args) {
       const later = () => {
-        clearTimeout(timeout)
-        func(...args)
-      }
-      clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
-    }
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
   showSearchTips() {
@@ -191,8 +188,8 @@ export default class extends Controller {
       'Busque por tipo: tipo:relatorio',
       'Busque por autor: autor:"João Silva"',
       'Busque por categoria: categoria:tecnica',
-      'Use * para busca parcial: relator*'
-    ]
+      'Use * para busca parcial: relator*',
+    ];
 
     if (this.hasSuggestionsTarget) {
       this.suggestionsTarget.innerHTML = `
@@ -202,8 +199,8 @@ export default class extends Controller {
             ${tips.map(tip => `<li>• ${tip}</li>`).join('')}
           </ul>
         </div>
-      `
-      this.showSuggestions()
+      `;
+      this.showSuggestions();
     }
   }
 }

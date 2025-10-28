@@ -2,82 +2,82 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from './application';
 
-import AdvancedSearchController from "./advanced_search_controller"
-application.register("advanced-search", AdvancedSearchController)
+import AdvancedSearchController from './advanced_search_controller';
+application.register('advanced-search', AdvancedSearchController);
 
-import CommentsController from "./comments_controller"
-application.register("comments", CommentsController)
+import CommentsController from './comments_controller';
+application.register('comments', CommentsController);
 
-import ContractFieldsController from "./contract_fields_controller"
-application.register("contract-fields", ContractFieldsController)
+import ContractFieldsController from './contract_fields_controller';
+application.register('contract-fields', ContractFieldsController);
 
-import DependentSpecializationsController from "./dependent_specializations_controller"
-application.register("dependent-specializations", DependentSpecializationsController)
+import DependentSpecializationsController from './dependent_specializations_controller';
+application.register('dependent-specializations', DependentSpecializationsController);
 
-import DocumentUploadController from "./document_upload_controller"
-application.register("document-upload", DocumentUploadController)
+import DocumentUploadController from './document_upload_controller';
+application.register('document-upload', DocumentUploadController);
 
-import FlashController from "./flash_controller"
-application.register("flash", FlashController)
+import FlashController from './flash_controller';
+application.register('flash', FlashController);
 
-import MaskController from "./mask_controller"
-application.register("mask", MaskController)
+import MaskController from './mask_controller';
+application.register('mask', MaskController);
 
-import PermissionsController from "./permissions_controller"
-application.register("permissions", PermissionsController)
+import PermissionsController from './permissions_controller';
+application.register('permissions', PermissionsController);
 
-import SelectSearchController from "./select_search_controller"
-application.register("select-search", SelectSearchController)
+import SelectSearchController from './select_search_controller';
+application.register('select-search', SelectSearchController);
 
-import TimeHhmmController from "./time_hhmm_controller"
-application.register("time-hhmm", TimeHhmmController)
+import TimeHhmmController from './time_hhmm_controller';
+application.register('time-hhmm', TimeHhmmController);
 
-import TomSelectController from "./tom_select_controller"
-application.register("tom-select", TomSelectController)
+import TomSelectController from './tom_select_controller';
+application.register('tom-select', TomSelectController);
 
-import MaskedInputController from "./masked_input_controller"
-application.register("masked-input", MaskedInputController)
+import MaskedInputController from './masked_input_controller';
+application.register('masked-input', MaskedInputController);
 
-import CalendarViewsController from "../../../javascript/controllers/calendar_views_controller"
-application.register("calendar-views", CalendarViewsController)
+import CalendarViewsController from '../../../javascript/controllers/calendar_views_controller';
+application.register('calendar-views', CalendarViewsController);
 
-import BasicCalendarController from "../../../javascript/controllers/basic_calendar_controller"
-application.register("basic-calendar", BasicCalendarController)
+import BasicCalendarController from '../../../javascript/controllers/basic_calendar_controller';
+application.register('basic-calendar', BasicCalendarController);
 
-import Agendas__MetadataController from "../../../javascript/controllers/agendas/metadata_controller"
-application.register("agendas--metadata", Agendas__MetadataController)
+import Agendas__MetadataController from '../../../javascript/controllers/agendas/metadata_controller';
+application.register('agendas--metadata', Agendas__MetadataController);
 
-import Agendas__ProfessionalsController from "../../../javascript/controllers/agendas/professionals_controller"
-application.register("agendas--professionals", Agendas__ProfessionalsController)
+import Agendas__ProfessionalsController from '../../../javascript/controllers/agendas/professionals_controller';
+application.register('agendas--professionals', Agendas__ProfessionalsController);
 
-import Agendas__ReviewController from "../../../javascript/controllers/agendas/review_controller"
-application.register("agendas--review", Agendas__ReviewController)
+import Agendas__ReviewController from '../../../javascript/controllers/agendas/review_controller';
+application.register('agendas--review', Agendas__ReviewController);
 
-import Agendas__WizardController from "../../../javascript/controllers/agendas/wizard_controller"
-application.register("agendas--wizard", Agendas__WizardController)
+import Agendas__WizardController from '../../../javascript/controllers/agendas/wizard_controller';
+application.register('agendas--wizard', Agendas__WizardController);
 
-import Agendas__WorkingHoursController from "../../../javascript/controllers/agendas/working_hours_controller"
-application.register("agendas--working-hours", Agendas__WorkingHoursController)
+import Agendas__WorkingHoursController from '../../../javascript/controllers/agendas/working_hours_controller';
+application.register('agendas--working-hours', Agendas__WorkingHoursController);
 
-import AgendaSchedulerController from "../../../javascript/controllers/agenda_scheduler_controller"
-application.register("agenda-scheduler", AgendaSchedulerController)
+import AgendaSchedulerController from '../../../javascript/controllers/agenda_scheduler_controller';
+application.register('agenda-scheduler', AgendaSchedulerController);
 
-import ProfessionalSelectorController from "../../../javascript/controllers/professional_selector_controller"
-application.register("professional-selector", ProfessionalSelectorController)
+import ProfessionalSelectorController from '../../../javascript/controllers/professional_selector_controller';
+application.register('professional-selector', ProfessionalSelectorController);
 
-import SessionTimeoutController from "./session_timeout_controller"
-application.register("session-timeout", SessionTimeoutController)
+import SessionTimeoutController from './session_timeout_controller';
+application.register('session-timeout', SessionTimeoutController);
 
-import DisableAutofillController from "./disable_autofill_controller"
-application.register("disable-autofill", DisableAutofillController)
+import DisableAutofillController from './disable_autofill_controller';
+application.register('disable-autofill', DisableAutofillController);
 
-import AnamnesesFiltersController from "./anamneses_filters_controller"
-application.register("anamneses-filters", AnamnesesFiltersController)
+import AnamnesesFiltersController from './anamneses_filters_controller';
+application.register('anamneses-filters', AnamnesesFiltersController);
 
-import DrawioController from "./drawio_controller"
-application.register("drawio", DrawioController)
+import DrawioController from './drawio_controller';
+application.register('drawio', DrawioController);
 
-import SchoolSearchController from "./school_search_controller"
-application.register("school-search", SchoolSearchController)
+import SchoolSearchController from './school_search_controller';
+application.register('school-search', SchoolSearchController);

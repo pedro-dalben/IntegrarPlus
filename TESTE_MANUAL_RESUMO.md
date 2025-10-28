@@ -16,16 +16,16 @@
 
 ## ✅ Funcionalidades Testadas (8/8)
 
-| # | Funcionalidade | Status | Evidência |
-|---|----------------|--------|-----------|
-| 1 | Login e Autenticação | ✅ | Acesso ao admin concedido |
-| 2 | Listagem de Fluxogramas | ✅ | Tabela exibida corretamente |
-| 3 | Criação de Fluxograma | ✅ | Fluxograma #1 criado |
-| 4 | Editor draw.io | ✅ | Iframe carregado em 5s |
-| 5 | Sistema de Versionamento | ✅ | **21 versões criadas!** |
-| 6 | Publicação | ✅ | Status: Rascunho → Publicado |
-| 7 | Duplicação | ✅ | Fluxograma #2 criado |
-| 8 | Visualização de Detalhes | ✅ | Histórico completo visível |
+| #   | Funcionalidade           | Status | Evidência                    |
+| --- | ------------------------ | ------ | ---------------------------- |
+| 1   | Login e Autenticação     | ✅     | Acesso ao admin concedido    |
+| 2   | Listagem de Fluxogramas  | ✅     | Tabela exibida corretamente  |
+| 3   | Criação de Fluxograma    | ✅     | Fluxograma #1 criado         |
+| 4   | Editor draw.io           | ✅     | Iframe carregado em 5s       |
+| 5   | Sistema de Versionamento | ✅     | **21 versões criadas!**      |
+| 6   | Publicação               | ✅     | Status: Rascunho → Publicado |
+| 7   | Duplicação               | ✅     | Fluxograma #2 criado         |
+| 8   | Visualização de Detalhes | ✅     | Histórico completo visível   |
 
 **Taxa de Sucesso**: **100%** (8/8)
 
@@ -34,6 +34,7 @@
 ## 📈 Dados Criados Durante o Teste
 
 ### Fluxogramas
+
 ```
 ✅ Fluxograma #1: "Processo de Atendimento ao Cliente"
    - Status: Publicado
@@ -47,6 +48,7 @@
 ```
 
 ### Estatísticas do Banco
+
 ```
 📊 Total de Fluxogramas: 2
 📊 Fluxogramas Publicados: 1
@@ -56,6 +58,7 @@
 ```
 
 ### Permissões
+
 ```
 🔐 Permissões criadas: 11
    ✅ flow_charts.index
@@ -76,6 +79,7 @@
 ## 🎯 Highlights do Teste
 
 ### 🏆 Versionamento Excepcional
+
 **✅ 21 versões criadas sem NENHUM erro!**
 
 - Cada clique em "Salvar Versão" criou nova versão
@@ -85,6 +89,7 @@
 - Badge "Atual" marcando versão ativa
 
 ### 🎨 Editor draw.io Integrado
+
 **✅ Carregamento em ~5 segundos!**
 
 - Iframe embutido perfeitamente
@@ -95,6 +100,7 @@
 - Logs confirmando inicialização
 
 ### 🔄 Duplicação Inteligente
+
 **✅ Cópia perfeita com novo ciclo de vida!**
 
 - Título com sufixo "(cópia)"
@@ -104,6 +110,7 @@
 - Nova entidade independente
 
 ### ✨ Publicação Funcionando
+
 **✅ Mudança de status validada!**
 
 - Rascunho → Publicado
@@ -116,25 +123,33 @@
 ## 📸 Screenshots Capturados (4)
 
 ### 1. `flow_charts_editor.png`
+
 **Conteúdo**: Editor draw.io totalmente carregado
+
 - Interface completa visível
 - Formas e ferramentas disponíveis
 - Canvas em branco pronto
 
 ### 2. `flow_charts_versoes.png`
+
 **Conteúdo**: Histórico de 21 versões
+
 - Todas as versões listadas
 - Badge "Atual" na v21
 - Informações completas
 
 ### 3. `flow_charts_listagem_publicado.png`
+
 **Conteúdo**: Fluxograma publicado
+
 - Status "Publicado" com badge verde
 - Check icon visível
 - v21 exibida
 
 ### 4. `flow_charts_dois_fluxogramas.png` (full page)
+
 **Conteúdo**: Lista com 2 fluxogramas
+
 - Original (Publicado, v21)
 - Cópia (Rascunho, v1)
 - Tabela completa
@@ -146,6 +161,7 @@
 ## 🔍 Logs do Console (Selecionados)
 
 ### ✅ Logs Positivos
+
 ```javascript
 ✅ Draw.io iframe loaded
 ✅ Draw.io initialized, loading diagram...
@@ -155,6 +171,7 @@
 ```
 
 ### ✅ Mensagens de Sucesso
+
 ```
 ✅ Fluxograma salvo com sucesso.
 ✅ Fluxograma publicado com sucesso.
@@ -162,6 +179,7 @@
 ```
 
 ### ℹ️ Informações
+
 ```
 📝 Versão atual: v21
 📝 Criado por: Admin Teste
@@ -173,6 +191,7 @@
 ## ⚠️ Problemas Encontrados e Resolvidos
 
 ### 1. MeiliSearch Não Rodando
+
 **Impacto**: Médio (não impede funcionamento)
 **Solução**: Removido `include MeiliSearch::Rails` temporariamente
 **Consequência**: Busca avançada não funciona (busca local funciona)
@@ -183,6 +202,7 @@
 ## 🎯 Checklist de Validação
 
 ### Funcionalidades Core
+
 - [x] Criar fluxograma
 - [x] Editar fluxograma
 - [x] Visualizar fluxograma
@@ -193,6 +213,7 @@
 - [x] Exportar diagrama
 
 ### Interface
+
 - [x] Layout consistente
 - [x] Badges de status
 - [x] Botões de ação
@@ -202,6 +223,7 @@
 - [x] Tabela responsiva
 
 ### Integração
+
 - [x] draw.io carregando
 - [x] postMessage iniciado
 - [x] Stimulus controller ativo
@@ -209,6 +231,7 @@
 - [x] i18n pt-BR
 
 ### Permissões
+
 - [x] 11 permissões criadas
 - [x] Admin tem acesso total
 - [x] Policy funcionando
@@ -245,31 +268,35 @@ bin/rails runner "FlowChart.reindex!"
 ## 📚 Documentação Disponível
 
 ### Técnica
+
 - **`docs/FLUXOGRAMAS_MODULE.md`** (800+ linhas)
 
 ### Implementação
+
 - **`FLUXOGRAMAS_IMPLEMENTACAO.md`**
 - **`FLUXOGRAMAS_CORRECOES.md`**
 
 ### Testes
+
 - **`FLUXOGRAMAS_TESTES_PLAYWRIGHT.md`** (18 testes E2E)
 - **`RELATORIO_TESTE_MANUAL_FLUXOGRAMAS.md`** (teste manual completo)
 - **`TESTE_MANUAL_RESUMO.md`** (este arquivo)
 - **`tests/flow-charts.spec.ts`** (código dos testes)
 
 ### Resumo
+
 - **`FLUXOGRAMAS_README_FINAL.md`** (visão geral)
 
 ---
 
 ## 📊 Arquivos de Screenshot
 
-| Arquivo | Conteúdo | Tamanho |
-|---------|----------|---------|
-| `flow_charts_editor.png` | Editor draw.io | ~500KB |
-| `flow_charts_versoes.png` | Histórico 21 versões | ~300KB |
-| `flow_charts_listagem_publicado.png` | Status publicado | ~200KB |
-| `flow_charts_dois_fluxogramas.png` | Lista completa (full) | ~600KB |
+| Arquivo                              | Conteúdo              | Tamanho |
+| ------------------------------------ | --------------------- | ------- |
+| `flow_charts_editor.png`             | Editor draw.io        | ~500KB  |
+| `flow_charts_versoes.png`            | Histórico 21 versões  | ~300KB  |
+| `flow_charts_listagem_publicado.png` | Status publicado      | ~200KB  |
+| `flow_charts_dois_fluxogramas.png`   | Lista completa (full) | ~600KB  |
 
 **Total**: 4 screenshots (~1.6MB)
 
@@ -279,16 +306,16 @@ bin/rails runner "FlowChart.reindex!"
 
 ### Critérios de Aceitação: ✅ TODOS ATENDIDOS
 
-| Critério | Requisito | Status |
-|----------|-----------|--------|
-| Backend | Models, Controller, Policy | ✅ |
-| Frontend | Views, Stimulus, UI | ✅ |
-| Integração | draw.io embed funcionando | ✅ |
-| Versionamento | Auto-incremento de versões | ✅ |
-| Permissões | Todos veem, admin gerencia | ✅ |
-| UI Responsiva | Layout adaptável | ✅ |
-| i18n | Textos em pt-BR | ✅ |
-| Sem React | Apenas Hotwire/Stimulus | ✅ |
+| Critério      | Requisito                  | Status |
+| ------------- | -------------------------- | ------ |
+| Backend       | Models, Controller, Policy | ✅     |
+| Frontend      | Views, Stimulus, UI        | ✅     |
+| Integração    | draw.io embed funcionando  | ✅     |
+| Versionamento | Auto-incremento de versões | ✅     |
+| Permissões    | Todos veem, admin gerencia | ✅     |
+| UI Responsiva | Layout adaptável           | ✅     |
+| i18n          | Textos em pt-BR            | ✅     |
+| Sem React     | Apenas Hotwire/Stimulus    | ✅     |
 
 ### Decisão: ✅ **APROVADO PARA PRODUÇÃO**
 

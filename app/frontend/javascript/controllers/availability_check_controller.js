@@ -1,55 +1,58 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["startTime", "endTime", "result"]
+  static targets = ['startTime', 'endTime', 'result'];
 
   async checkAvailability() {
-    const startTime = this.startTimeTarget.value
-    const endTime = this.endTimeTarget.value
-    
+    const startTime = this.startTimeTarget.value;
+    const endTime = this.endTimeTarget.value;
+
     if (!startTime || !endTime) {
-      this.showError('Por favor, preencha ambos os horários')
-      return
+      this.showError('Por favor, preencha ambos os horários');
+      return;
     }
 
-    const startDateTime = new Date(startTime)
-    const endDateTime = new Date(endTime)
-    
+    const startDateTime = new Date(startTime);
+    const endDateTime = new Date(endTime);
+
     if (endDateTime <= startDateTime) {
-      this.showError('A data de fim deve ser posterior à data de início')
-      return
+      this.showError('A data de fim deve ser posterior à data de início');
+      return;
     }
 
-    this.showLoading()
-    
+    this.showLoading();
+
     try {
-      const response = await fetch(`/professional_agendas/${this.getProfessionalId()}/availability`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          start_time: startDateTime.toISOString(),
-          end_time: endDateTime.toISOString()
-        })
-      })
+      const response = await fetch(
+        `/professional_agendas/${this.getProfessionalId()}/availability`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+          },
+          body: JSON.stringify({
+            start_time: startDateTime.toISOString(),
+            end_time: endDateTime.toISOString(),
+          }),
+        }
+      );
 
       if (response.ok) {
-        const data = await response.json()
-        this.showResult(data)
+        const data = await response.json();
+        this.showResult(data);
       } else {
-        throw new Error('Erro ao verificar disponibilidade')
+        throw new Error('Erro ao verificar disponibilidade');
       }
     } catch (error) {
-      this.showError('Erro ao verificar disponibilidade. Tente novamente.')
+      this.showError('Erro ao verificar disponibilidade. Tente novamente.');
     }
   }
 
   getProfessionalId() {
-    const path = window.location.pathname
-    const match = path.match(/\/professional_agendas\/(\d+)/)
-    return match ? match[1] : null
+    const path = window.location.pathname;
+    const match = path.match(/\/professional_agendas\/(\d+)/);
+    return match ? match[1] : null;
   }
 
   showLoading() {
@@ -58,12 +61,12 @@ export default class extends Controller {
         <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
         <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Verificando disponibilidade...</span>
       </div>
-    `
+    `;
   }
 
   showResult(data) {
-    const { available, conflicting_events } = data
-    
+    const { available, conflicting_events } = data;
+
     if (available) {
       this.resultTarget.innerHTML = `
         <div class="rounded-md bg-green-50 p-4 dark:bg-green-900/20">
@@ -83,10 +86,10 @@ export default class extends Controller {
             </div>
           </div>
         </div>
-      `
+      `;
     } else {
-      let conflictsHtml = ''
-      
+      let conflictsHtml = '';
+
       if (conflicting_events && conflicting_events.length > 0) {
         conflictsHtml = `
           <div class="mt-3">
@@ -94,17 +97,21 @@ export default class extends Controller {
               Eventos Conflitantes:
             </h4>
             <div class="space-y-2">
-              ${conflicting_events.map(event => `
+              ${conflicting_events
+                .map(
+                  event => `
                 <div class="flex items-center gap-2 text-sm text-red-700 dark:text-red-300">
                   <div class="h-2 w-2 rounded-full bg-red-500"></div>
                   <span>${event.title} - ${this.formatTime(event.start_time)} às ${this.formatTime(event.end_time)}</span>
                 </div>
-              `).join('')}
+              `
+                )
+                .join('')}
             </div>
           </div>
-        `
+        `;
       }
-      
+
       this.resultTarget.innerHTML = `
         <div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
           <div class="flex">
@@ -124,7 +131,7 @@ export default class extends Controller {
             </div>
           </div>
         </div>
-      `
+      `;
     }
   }
 
@@ -147,16 +154,16 @@ export default class extends Controller {
           </div>
         </div>
       </div>
-    `
+    `;
   }
 
   formatTime(dateTimeString) {
-    const date = new Date(dateTimeString)
+    const date = new Date(dateTimeString);
     return date.toLocaleString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
-    })
+      minute: '2-digit',
+    });
   }
 }

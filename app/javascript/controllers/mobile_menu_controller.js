@@ -1,21 +1,20 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["menu"]
+  static targets = ['menu'];
 
-  connect() {
-  }
+  connect() {}
 
   toggle() {
     if (this.hasMenuTarget) {
-      this.menuTarget.classList.toggle("hidden");
+      this.menuTarget.classList.toggle('hidden');
     } else {
     }
   }
 
   close() {
     if (this.hasMenuTarget) {
-      this.menuTarget.classList.add("hidden");
+      this.menuTarget.classList.add('hidden');
     }
   }
 }

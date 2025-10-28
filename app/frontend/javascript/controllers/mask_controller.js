@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ['input'];
   static values = {
     type: String,
-    options: Object
+    options: Object,
   };
 
   connect() {
@@ -29,24 +29,21 @@ export default class extends Controller {
       case 'cpf':
         maskOptions = {
           mask: '000.000.000-00',
-          lazy: false
+          lazy: false,
         };
         break;
 
       case 'cnpj':
         maskOptions = {
           mask: '00.000.000/0000-00',
-          lazy: false
+          lazy: false,
         };
         break;
 
       case 'phone':
         maskOptions = {
-          mask: [
-            { mask: '(00) 0000-0000' },
-            { mask: '(00) 00000-0000' }
-          ],
-          lazy: false
+          mask: [{ mask: '(00) 0000-0000' }, { mask: '(00) 00000-0000' }],
+          lazy: false,
         };
         break;
 
@@ -55,10 +52,10 @@ export default class extends Controller {
           mask: 'DD/MM/YYYY',
           lazy: false,
           blocks: {
-            'DD': { mask: IMask.MaskedRange, from: 1, to: 31 },
-            'MM': { mask: IMask.MaskedRange, from: 1, to: 12 },
-            'YYYY': { mask: IMask.MaskedRange, from: 1900, to: 9999 }
-          }
+            DD: { mask: IMask.MaskedRange, from: 1, to: 31 },
+            MM: { mask: IMask.MaskedRange, from: 1, to: 12 },
+            YYYY: { mask: IMask.MaskedRange, from: 1900, to: 9999 },
+          },
         };
         break;
 

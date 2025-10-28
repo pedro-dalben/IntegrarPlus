@@ -1,52 +1,52 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["searchInput", "availableList", "selectedList", "checkbox", "hiddenInputs"]
+  static targets = ['searchInput', 'availableList', 'selectedList', 'checkbox', 'hiddenInputs'];
 
   connect() {
-    this.selectedProfessionals = new Set()
+    this.selectedProfessionals = new Set();
     if (this.hasSelectedListTarget) {
-      this.updateSelectedList()
+      this.updateSelectedList();
     }
-    this.loadProfessionals()
+    this.loadProfessionals();
   }
 
   filterProfessionals() {
-    const searchTerm = this.searchInputTarget.value.toLowerCase()
-    
+    const searchTerm = this.searchInputTarget.value.toLowerCase();
+
     if (searchTerm.length >= 2) {
-      this.searchProfessionals(searchTerm)
+      this.searchProfessionals(searchTerm);
     } else {
-      this.loadProfessionals()
+      this.loadProfessionals();
     }
   }
-  
+
   async searchProfessionals(searchTerm) {
     try {
-      const response = await fetch(`/admin/agendas/search_professionals?search=${encodeURIComponent(searchTerm)}`)
-      const data = await response.json()
-      
-      this.renderProfessionals(data.professionals)
-    } catch (error) {
-    }
+      const response = await fetch(
+        `/admin/agendas/search_professionals?search=${encodeURIComponent(searchTerm)}`
+      );
+      const data = await response.json();
+
+      this.renderProfessionals(data.professionals);
+    } catch (error) {}
   }
-  
+
   async loadProfessionals() {
     try {
-      const response = await fetch('/admin/agendas/search_professionals')
-      const data = await response.json()
-      
-      this.renderProfessionals(data.professionals)
-    } catch (error) {
-    }
+      const response = await fetch('/admin/agendas/search_professionals');
+      const data = await response.json();
+
+      this.renderProfessionals(data.professionals);
+    } catch (error) {}
   }
-  
+
   renderProfessionals(professionals) {
-    let html = ''
-    
+    let html = '';
+
     professionals.forEach(professional => {
-      const specialties = professional.specialties.join(', ')
-      
+      const specialties = professional.specialties.join(', ');
+
       html += `
         <div class="professional-item p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
              data-professional-id="${professional.id}"
@@ -66,77 +66,81 @@ export default class extends Controller {
             </div>
           </div>
         </div>
-      `
-    })
-    
-    this.availableListTarget.innerHTML = html
+      `;
+    });
+
+    this.availableListTarget.innerHTML = html;
   }
 
   selectProfessional(event) {
-    const item = event.currentTarget
-    const professionalId = item.dataset.professionalId
-    const checkbox = item.querySelector('input[type="checkbox"]')
-    
+    const item = event.currentTarget;
+    const { professionalId } = item.dataset;
+    const checkbox = item.querySelector('input[type="checkbox"]');
+
     if (this.selectedProfessionals.has(professionalId)) {
-      this.selectedProfessionals.delete(professionalId)
-      checkbox.checked = false
+      this.selectedProfessionals.delete(professionalId);
+      checkbox.checked = false;
     } else {
-      this.selectedProfessionals.add(professionalId)
-      checkbox.checked = true
+      this.selectedProfessionals.add(professionalId);
+      checkbox.checked = true;
     }
-    
-    this.updateSelectedList()
-    this.updateHiddenInputs()
+
+    this.updateSelectedList();
+    this.updateHiddenInputs();
   }
 
   selectAllApt() {
-    const items = this.availableListTarget.querySelectorAll('.professional-item')
-    
+    const items = this.availableListTarget.querySelectorAll('.professional-item');
+
     items.forEach(item => {
-      const professionalId = item.dataset.professionalId
-      const checkbox = item.querySelector('input[type="checkbox"]')
-      
-      this.selectedProfessionals.add(professionalId)
-      checkbox.checked = true
-    })
-    
-    this.updateSelectedList()
-    this.updateHiddenInputs()
+      const { professionalId } = item.dataset;
+      const checkbox = item.querySelector('input[type="checkbox"]');
+
+      this.selectedProfessionals.add(professionalId);
+      checkbox.checked = true;
+    });
+
+    this.updateSelectedList();
+    this.updateHiddenInputs();
   }
 
   removeProfessional(event) {
-    const professionalId = event.currentTarget.dataset.professionalId
-    this.selectedProfessionals.delete(professionalId)
-    
+    const { professionalId } = event.currentTarget.dataset;
+    this.selectedProfessionals.delete(professionalId);
+
     // Uncheck the checkbox in available list
-    const checkbox = this.availableListTarget.querySelector(`input[data-professional-id="${professionalId}"]`)
+    const checkbox = this.availableListTarget.querySelector(
+      `input[data-professional-id="${professionalId}"]`
+    );
     if (checkbox) {
-      checkbox.checked = false
+      checkbox.checked = false;
     }
-    
-    this.updateSelectedList()
-    this.updateHiddenInputs()
+
+    this.updateSelectedList();
+    this.updateHiddenInputs();
   }
 
   updateSelectedList() {
-    if (!this.hasSelectedListTarget) return
-    
+    if (!this.hasSelectedListTarget) return;
+
     if (this.selectedProfessionals.size === 0) {
       this.selectedListTarget.innerHTML = `
         <div class="text-sm text-gray-500 text-center py-8">
           Nenhum profissional selecionado
         </div>
-      `
-      return
+      `;
+      return;
     }
 
-    let html = ''
+    let html = '';
     this.selectedProfessionals.forEach(professionalId => {
-      const item = this.availableListTarget.querySelector(`[data-professional-id="${professionalId}"]`)
+      const item = this.availableListTarget.querySelector(
+        `[data-professional-id="${professionalId}"]`
+      );
       if (item) {
-        const name = item.dataset.professionalName
-        const specialties = item.dataset.professionalSpecialties
-        
+        const name = item.dataset.professionalName;
+        const specialties = item.dataset.professionalSpecialties;
+
         html += `
           <div class="flex items-center justify-between py-2 px-3 bg-blue-50 border border-blue-200 rounded-lg">
             <div>
@@ -152,26 +156,26 @@ export default class extends Controller {
               </svg>
             </button>
           </div>
-        `
+        `;
       }
-    })
-    
-    this.selectedListTarget.innerHTML = html
+    });
+
+    this.selectedListTarget.innerHTML = html;
   }
 
   updateHiddenInputs() {
-    if (!this.hasHiddenInputsTarget) return
-    
+    if (!this.hasHiddenInputsTarget) return;
+
     // Clear existing hidden inputs
-    this.hiddenInputsTarget.innerHTML = ''
-    
+    this.hiddenInputsTarget.innerHTML = '';
+
     // Add hidden inputs for selected professionals
     this.selectedProfessionals.forEach(professionalId => {
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'agenda[professional_ids][]'
-      input.value = professionalId
-      this.hiddenInputsTarget.appendChild(input)
-    })
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'agenda[professional_ids][]';
+      input.value = professionalId;
+      this.hiddenInputsTarget.appendChild(input);
+    });
   }
 }

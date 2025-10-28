@@ -1,21 +1,21 @@
-import { defineConfig } from "vite";
-import ViteRails from "vite-plugin-rails";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from 'vite';
+import ViteRails from 'vite-plugin-rails';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
     ViteRails({
-      envVars: { RAILS_ENV: "development" },
-      envOptions: { defineOn: "import.meta.env" },
+      envVars: { RAILS_ENV: 'development' },
+      envOptions: { defineOn: 'import.meta.env' },
       fullReload: {
-        additionalPaths: ["config/routes.rb", "app/views/**/*"],
+        additionalPaths: ['config/routes.rb', 'app/views/**/*'],
         delay: 300,
       },
     }),
   ],
   build: {
     sourcemap: false,
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
   },
 });

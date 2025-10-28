@@ -1,64 +1,63 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["calendar", "viewSelector", "eventTypeFilter", "eventModal"]
-  static values = { 
-    eventsData: Array, 
-    readOnly: Boolean, 
-    professionalId: Number 
-  }
+  static targets = ['calendar', 'viewSelector', 'eventTypeFilter', 'eventModal'];
+  static values = {
+    eventsData: Array,
+    readOnly: Boolean,
+    professionalId: Number,
+  };
 
   connect() {
-    this.initializeCalendar()
-    this.setupEventListeners()
+    this.initializeCalendar();
+    this.setupEventListeners();
   }
 
   disconnect() {
     if (this.calendar) {
-      this.calendar.destroy()
+      this.calendar.destroy();
     }
   }
 
   async initializeCalendar() {
-    const calendarEl = this.calendarTarget
-    let eventsData = this.eventsDataValue || []
-    
+    const calendarEl = this.calendarTarget;
+    let eventsData = this.eventsDataValue || [];
+
     // Se eventsData é uma string JSON, parse ela
     if (typeof eventsData === 'string') {
       try {
-        eventsData = JSON.parse(eventsData)
+        eventsData = JSON.parse(eventsData);
       } catch (e) {
-        eventsData = []
+        eventsData = [];
       }
     }
-    
 
     try {
       // Carregar FullCalendar dinamicamente
-      const { Calendar } = await import('@fullcalendar/core')
-      const dayGridPlugin = await import('@fullcalendar/daygrid')
-      const timeGridPlugin = await import('@fullcalendar/timegrid')
-      const interactionPlugin = await import('@fullcalendar/interaction')
-      const listPlugin = await import('@fullcalendar/list')
+      const { Calendar } = await import('@fullcalendar/core');
+      const dayGridPlugin = await import('@fullcalendar/daygrid');
+      const timeGridPlugin = await import('@fullcalendar/timegrid');
+      const interactionPlugin = await import('@fullcalendar/interaction');
+      const listPlugin = await import('@fullcalendar/list');
 
       this.calendar = new Calendar(calendarEl, {
         plugins: [
           dayGridPlugin.default,
           timeGridPlugin.default,
           interactionPlugin.default,
-          listPlugin.default
+          listPlugin.default,
         ],
         initialView: 'dayGridMonth',
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
         buttonText: {
           today: 'Hoje',
           month: 'Mês',
           week: 'Semana',
-          day: 'Dia'
+          day: 'Dia',
         },
         height: 'auto',
         events: eventsData,
@@ -70,10 +69,10 @@ export default class extends Controller {
         slotMaxTime: '20:00:00',
         allDaySlot: false,
         firstDay: 1,
-        nowIndicator: true
-      })
+        nowIndicator: true,
+      });
 
-      this.calendar.render()
+      this.calendar.render();
     } catch (error) {
       // Mostrar mensagem de erro no elemento
       calendarEl.innerHTML = `
@@ -87,27 +86,27 @@ export default class extends Controller {
             <p class="text-xs text-gray-400 mt-2">Erro: ${error.message}</p>
           </div>
         </div>
-      `
+      `;
     }
   }
 
   setupEventListeners() {
     if (this.hasViewSelectorTarget) {
-      this.viewSelectorTarget.addEventListener('change', (e) => {
-        this.calendar.changeView(e.target.value)
-      })
+      this.viewSelectorTarget.addEventListener('change', e => {
+        this.calendar.changeView(e.target.value);
+      });
     }
 
     if (this.hasEventTypeFilterTarget) {
-      this.eventTypeFilterTarget.addEventListener('change', (e) => {
-        this.filterEventsByType(e.target.value)
-      })
+      this.eventTypeFilterTarget.addEventListener('change', e => {
+        this.filterEventsByType(e.target.value);
+      });
     }
   }
 
   handleEventClick(info) {
-    const event = info.event
-    const extendedProps = event.extendedProps
+    const { event } = info;
+    const { extendedProps } = event;
 
     const eventDetails = `
       <div class="space-y-2">
@@ -123,118 +122,118 @@ export default class extends Controller {
           ${extendedProps.description ? `<p><strong>Descrição:</strong> ${extendedProps.description}</p>` : ''}
         </div>
       </div>
-    `
+    `;
 
-    document.getElementById('calendar-event-details').innerHTML = eventDetails
-    document.getElementById('calendar-event-title').textContent = event.title
-    this.showEventModal()
+    document.getElementById('calendar-event-details').innerHTML = eventDetails;
+    document.getElementById('calendar-event-title').textContent = event.title;
+    this.showEventModal();
   }
 
   handleEventDidMount(info) {
-    const event = info.event
-    const extendedProps = event.extendedProps
+    const { event } = info;
+    const { extendedProps } = event;
 
     // Adicionar tooltip
-    info.el.setAttribute('title', `${event.title} - ${extendedProps.professional_name}`)
-    
+    info.el.setAttribute('title', `${event.title} - ${extendedProps.professional_name}`);
+
     // Adicionar classes CSS personalizadas
-    info.el.classList.add('event-item')
-    
+    info.el.classList.add('event-item');
+
     // Adicionar indicador de tipo
-    const typeIndicator = document.createElement('div')
-    typeIndicator.className = 'event-type-indicator'
-    typeIndicator.style.backgroundColor = event.color
-    typeIndicator.style.width = '4px'
-    typeIndicator.style.height = '100%'
-    typeIndicator.style.position = 'absolute'
-    typeIndicator.style.left = '0'
-    typeIndicator.style.top = '0'
-    info.el.appendChild(typeIndicator)
+    const typeIndicator = document.createElement('div');
+    typeIndicator.className = 'event-type-indicator';
+    typeIndicator.style.backgroundColor = event.color;
+    typeIndicator.style.width = '4px';
+    typeIndicator.style.height = '100%';
+    typeIndicator.style.position = 'absolute';
+    typeIndicator.style.left = '0';
+    typeIndicator.style.top = '0';
+    info.el.appendChild(typeIndicator);
   }
 
   handleDateSelect(selectInfo) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
 
-    const startDate = selectInfo.start
-    const endDate = selectInfo.end
-    const allDay = selectInfo.allDay
+    const startDate = selectInfo.start;
+    const endDate = selectInfo.end;
+    const { allDay } = selectInfo;
 
     // Aqui você pode implementar a lógica para criar um novo evento
-    
+
     // Exemplo: abrir modal para criar evento
-    this.createNewEvent(startDate, endDate, allDay)
+    this.createNewEvent(startDate, endDate, allDay);
   }
 
   handleEventDrop(info) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
 
-    const event = info.event
-    const newStart = event.start
-    const newEnd = event.end
+    const { event } = info;
+    const newStart = event.start;
+    const newEnd = event.end;
 
     // Aqui você pode implementar a lógica para atualizar o evento
-    
+
     // Exemplo: enviar requisição para atualizar
-    this.updateEvent(event.id, { start: newStart, end: newEnd })
+    this.updateEvent(event.id, { start: newStart, end: newEnd });
   }
 
   handleEventResize(info) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
 
-    const event = info.event
-    const newStart = event.start
-    const newEnd = event.end
+    const { event } = info;
+    const newStart = event.start;
+    const newEnd = event.end;
 
     // Aqui você pode implementar a lógica para redimensionar o evento
-    
+
     // Exemplo: enviar requisição para atualizar
-    this.updateEvent(event.id, { start: newStart, end: newEnd })
+    this.updateEvent(event.id, { start: newStart, end: newEnd });
   }
 
   filterEventsByType(eventType) {
     if (eventType === 'all') {
-      this.calendar.removeAllEventSources()
-      this.calendar.addEventSource(this.eventsDataValue)
+      this.calendar.removeAllEventSources();
+      this.calendar.addEventSource(this.eventsDataValue);
     } else {
-      const filteredEvents = this.eventsDataValue.filter(event => 
-        event.extendedProps.event_type === eventType
-      )
-      this.calendar.removeAllEventSources()
-      this.calendar.addEventSource(filteredEvents)
+      const filteredEvents = this.eventsDataValue.filter(
+        event => event.extendedProps.event_type === eventType
+      );
+      this.calendar.removeAllEventSources();
+      this.calendar.addEventSource(filteredEvents);
     }
   }
 
   prev() {
-    this.calendar.prev()
+    this.calendar.prev();
   }
 
   next() {
-    this.calendar.next()
+    this.calendar.next();
   }
 
   today() {
-    this.calendar.today()
+    this.calendar.today();
   }
 
   refreshEvents() {
-    this.calendar.refetchEvents()
+    this.calendar.refetchEvents();
   }
 
   showEventModal() {
     if (this.hasEventModalTarget) {
-      this.eventModalTarget.classList.remove('hidden')
+      this.eventModalTarget.classList.remove('hidden');
     }
   }
 
   closeEventModal() {
     if (this.hasEventModalTarget) {
-      this.eventModalTarget.classList.add('hidden')
+      this.eventModalTarget.classList.add('hidden');
     }
   }
 
   editEvent() {
     // Implementar lógica de edição
-    this.closeEventModal()
+    this.closeEventModal();
   }
 
   createNewEvent(startDate, endDate, allDay) {
@@ -250,14 +249,14 @@ export default class extends Controller {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
-    })
+      day: 'numeric',
+    });
   }
 
   formatTime(date) {
     return date.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
-      minute: '2-digit'
-    })
+      minute: '2-digit',
+    });
   }
 }

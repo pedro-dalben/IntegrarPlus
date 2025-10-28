@@ -8,7 +8,7 @@ export default class extends Controller {
     url: String,
     valuefield: String,
     labelfield: String,
-    searchfield: String
+    searchfield: String,
   };
 
   connect() {
@@ -25,18 +25,16 @@ export default class extends Controller {
         item(data, escape) {
           const text = data.text || data.label || data.name || '';
           return `<div class="item-tag">${escape(text)}</div>`;
-        }
-      }
+        },
+      },
     };
 
-    const remoteOptions = this.hasUrlValue
-      ? this.buildRemoteOptions()
-      : {};
+    const remoteOptions = this.hasUrlValue ? this.buildRemoteOptions() : {};
 
     this.tomSelect = new TomSelect(this.selectTarget, {
       ...baseOptions,
       ...remoteOptions,
-      ...(this.hasOptionsValue ? this.optionsValue : {})
+      ...(this.hasOptionsValue ? this.optionsValue : {}),
     });
 
     this.selectTarget.tomSelect = this.tomSelect;
@@ -56,13 +54,13 @@ export default class extends Controller {
       load: (query, callback) => {
         const url = `${this.urlValue}?search=${encodeURIComponent(query || '')}`;
         fetch(url, { headers: { Accept: 'application/json' } })
-          .then((res) => res.json())
-          .then((json) => {
-            const items = Array.isArray(json) ? json : (json.professionals || []);
+          .then(res => res.json())
+          .then(json => {
+            const items = Array.isArray(json) ? json : json.professionals || [];
             callback(items);
           })
           .catch(() => callback());
-      }
+      },
     };
   }
 

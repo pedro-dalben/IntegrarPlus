@@ -1,11 +1,13 @@
 # 📋 Regras do Projeto IntegrarPlus
 
 ## 🎯 Objetivo
+
 Este documento define as convenções, padrões e regras que devem ser seguidas no desenvolvimento do projeto IntegrarPlus.
 
 ## 🏗️ Arquitetura Frontend
 
 ### Estrutura de Pastas
+
 ```
 app/frontend/
 ├── entrypoints/           # Entry points do Vite
@@ -23,6 +25,7 @@ app/frontend/
 ```
 
 ### Convenções de Nomenclatura
+
 - **Arquivos JavaScript**: `kebab-case.js`
 - **Componentes**: `component-name.js`
 - **Controllers Stimulus**: `component_controller.js`
@@ -31,15 +34,17 @@ app/frontend/
 ## 🧩 Componentização
 
 ### Princípios
+
 1. **Componentização criteriosa**: Criar componentes apenas quando reutilizáveis
 2. **Evitar componentes desnecessários**: Não criar componentes para lógica simples
 3. **Padrão de função**: Todos os componentes exportam uma função que verifica existência do elemento
 
 ### Padrão de Componente TailAdmin
+
 ```javascript
 // components/widget-name.js
 export default function widgetName() {
-  const el = document.querySelector("#widget-selector");
+  const el = document.querySelector('#widget-selector');
   if (!el) return;
 
   // inicialização do widget
@@ -47,9 +52,10 @@ export default function widgetName() {
 ```
 
 ### Padrão de Controller Stimulus
+
 ```javascript
 // controllers/widget_controller.js
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   connect() {
@@ -65,12 +71,14 @@ export default class extends Controller {
 ## 🎨 UI/UX
 
 ### Design System
+
 - **Profissional**: Interfaces completas e elegantes
 - **Moderno**: Design atual e sofisticado
 - **Responsivo**: Funcionamento em todos os dispositivos
 - **Acessível**: Seguir padrões de acessibilidade
 
 ### Framework CSS
+
 - **Tailwind CSS**: Framework principal
 - **TailAdmin Pro**: Template base
 - **Componentes customizados**: Quando necessário
@@ -78,6 +86,7 @@ export default class extends Controller {
 ## 🔧 Tecnologias
 
 ### Frontend
+
 - **Rails 7**: Framework backend
 - **Hotwire/Turbo**: Navegação SPA
 - **Stimulus**: Controllers JavaScript
@@ -86,6 +95,7 @@ export default class extends Controller {
 - **Tailwind CSS**: Framework CSS
 
 ### Bibliotecas JavaScript
+
 - **ApexCharts**: Gráficos
 - **Swiper**: Carousels
 - **Flatpickr**: Datepickers
@@ -96,11 +106,13 @@ export default class extends Controller {
 ## 📁 Organização de Componentes
 
 ### Componentes Específicos
+
 - **Login**: `app/frontend/javascript/login/`
 - **Dashboard**: `app/frontend/javascript/dashboard/`
 - **Admin**: `app/frontend/javascript/admin/`
 
 ### Componentes Compartilhados
+
 - **Shared**: `app/frontend/javascript/shared/`
 - **UI**: `app/frontend/javascript/shared/ui/`
 - **Utils**: `app/frontend/javascript/shared/utils/`
@@ -108,27 +120,34 @@ export default class extends Controller {
 ## 🔄 Integração TailAdmin + Turbo
 
 ### Princípios
+
 1. **Idempotência**: `bootTailadmin()` pode ser chamada múltiplas vezes sem efeitos colaterais
 2. **Verificação de existência**: Componentes só inicializam se elementos existirem
 3. **Limpeza**: Destruir instâncias anteriores antes de recriar
 4. **Compatibilidade**: Funcionar com todas as navegações Turbo
 
 ### Padrão de Inicialização
+
 ```javascript
 // Verificação de existência
-const el = document.querySelector("#element");
+const el = document.querySelector('#element');
 if (!el) return;
 
 // Limpeza de instâncias anteriores
 if (el._instance) el._instance.destroy();
 
 // Inicialização segura
-const safe = (fn) => { try { fn?.(); } catch (_) {} };
+const safe = fn => {
+  try {
+    fn?.();
+  } catch (_) {}
+};
 ```
 
 ## ⚠️ JavaScript e Event Listeners Globais
 
 ### ❌ NUNCA FAÇA ISSO (Event Listeners Duplicados)
+
 ```javascript
 // ERRADO: Event listeners serão duplicados a cada navegação Turbo
 document.addEventListener('DOMContentLoaded', initializeWidget);
@@ -137,6 +156,7 @@ document.addEventListener('turbo:render', initializeWidget);
 ```
 
 ### ✅ FAÇA ISSO (Event Listeners Protegidos)
+
 ```javascript
 // CORRETO: Proteger contra duplicação de listeners globais
 if (!window.widgetListenersAttached) {
@@ -150,9 +170,10 @@ if (!window.widgetListenersAttached) {
 ```
 
 ### ✅ MELHOR: Use Stimulus Controllers
+
 ```javascript
 // MELHOR OPÇÃO: Usar Stimulus que gerencia lifecycle automaticamente
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   connect() {
@@ -163,13 +184,14 @@ export default class extends Controller {
     this.element.removeEventListener('click', this.handleClick);
   }
 
-  handleClick = (e) => {
+  handleClick = e => {
     // lógica do evento
-  }
+  };
 }
 ```
 
 ### Regras de Event Listeners
+
 1. **PREFIRA Stimulus Controllers**: Sempre que possível, use Stimulus para gerenciar eventos
 2. **Scripts Inline**: Evite scripts inline em arquivos `.erb` - use Stimulus
 3. **Event Listeners Globais**: Se necessário usar, sempre proteja contra duplicação
@@ -179,7 +201,9 @@ export default class extends Controller {
 ## 🐛 Debug e Logging
 
 ### Console.log em Produção
+
 **NUNCA** deixe `console.log()` no código de produção:
+
 - ❌ **ERRADO**: `console.log('Dropdown opened')`
 - ✅ **CORRETO**: Remover todos os console.log antes do commit
 - ⚠️ **EXCEÇÃO**: Use apenas em desenvolvimento com conditional check:
@@ -191,37 +215,82 @@ if (import.meta.env.DEV) {
 ```
 
 ### Monitoramento
+
 Para logging em produção, use ferramentas apropriadas:
+
 - **Sentry**: Para erros e exceptions
 - **Analytics**: Para tracking de eventos
 - **APM**: Para performance monitoring
 
+### ESLint e Qualidade de Código
+
+#### Configuração ESLint
+
+O projeto usa ESLint para garantir qualidade de código:
+
+```bash
+# Verificar problemas
+npm run lint
+
+# Corrigir automaticamente
+npm run lint:fix
+
+# Verificar formatação
+npm run format:check
+
+# Corrigir formatação
+npm run format
+```
+
+#### Regras Importantes
+
+- **`no-console`**: `error` - Console.log é proibido (exceto `console.warn` e `console.error`)
+- **`no-debugger`**: `error` - Debugger não é permitido
+- **`prefer-const`**: `error` - Use const sempre que possível
+- **`no-var`**: `error` - Use let/const ao invés de var
+
+#### Git Hooks
+
+O projeto usa Husky para executar ESLint antes de cada commit:
+
+- **pre-commit**: Executa `npm run lint` automaticamente
+- Commits serão bloqueados se houver erros de lint
+- Use `npm run lint:fix` para corrigir erros automaticamente
+
 ## 📝 Documentação
 
 ### Arquivos Obrigatórios
+
 - **README.md**: Documentação principal do componente
 - **PROJECT_RULES.md**: Regras do projeto (este arquivo)
 - **CHANGELOG.md**: Histórico de mudanças
 
 ### Padrão de Documentação
-```markdown
+
+````markdown
 # Nome do Componente
 
 ## Descrição
+
 Breve descrição do que o componente faz.
 
 ## Uso
+
 ```html
 <div id="component-id">
   <!-- estrutura HTML -->
 </div>
 ```
+````
 
 ## Dependências
+
 - Lista de dependências externas
 
 ## Configuração
+
 Parâmetros de configuração disponíveis.
+
 ```
 
 ## 🔄 Versionamento
@@ -233,10 +302,12 @@ Parâmetros de configuração disponíveis.
 
 ### Exemplos de Commits
 ```
+
 feat: adiciona componente de gráfico de vendas
 fix: corrige inicialização do flatpickr após navegação
 docs: atualiza documentação do TailAdmin
 refactor: reorganiza estrutura de componentes
+
 ```
 
 ## 🧪 Testes
@@ -310,3 +381,4 @@ refactor: reorganiza estrutura de componentes
 
 **Última atualização**: Dezembro 2024
 **Versão**: 1.0.0
+```

@@ -62,7 +62,7 @@ export default class extends Controller {
     this._resizeHandler = () => {
       const isDesktop = window.innerWidth >= 1280;
       const currentState = localStorage.getItem(K.SIDEBAR) === 'true';
-      
+
       // Em desktop: manter estado atual, em mobile: fechar se estiver aberto
       let shouldBeOpen;
       if (isDesktop) {
@@ -70,7 +70,7 @@ export default class extends Controller {
       } else {
         shouldBeOpen = false;
       }
-      
+
       this.apply(shouldBeOpen);
     };
 

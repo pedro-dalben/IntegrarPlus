@@ -183,8 +183,7 @@ export default class extends Controller {
     }
   }
 
-  showError() {
-  }
+  showError() {}
 
   debounce(func, wait) {
     let timeout;

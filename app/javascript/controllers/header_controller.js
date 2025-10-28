@@ -1,20 +1,19 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["sidebar"]
+  static targets = ['sidebar'];
 
-  connect() {
-  }
+  connect() {}
 
   toggleSidebar() {
     if (this.hasSidebarTarget) {
-      this.sidebarTarget.classList.toggle("hidden")
+      this.sidebarTarget.classList.toggle('hidden');
     }
   }
 
   outside(event) {
     if (this.hasSidebarTarget && !this.element.contains(event.target)) {
-      this.sidebarTarget.classList.add("hidden")
+      this.sidebarTarget.classList.add('hidden');
     }
   }
 }

@@ -15,96 +15,114 @@ Suite completa de **18 testes end-to-end** para o módulo de Fluxogramas usando 
 ### Grupo 1: Testes Funcionais (16 testes)
 
 #### 1. ✅ Verificar item no menu de navegação
+
 - Valida presença do item "Fluxogramas" no menu
 - Testa navegação ao clicar
 - Verifica redirecionamento correto
 
 #### 2. ✅ Listar fluxogramas - Layout e Estrutura
+
 - Verifica título da página
 - Valida campo de busca
 - Confirma botão "Novo Fluxograma"
 - Valida estrutura da tabela (colunas)
 
 #### 3. ✅ Criar novo fluxograma
+
 - Acessa formulário de criação
 - Valida todos os campos (título, descrição, status)
 - Preenche formulário com dados de teste
 - Confirma criação e redirecionamento para editor
 
 #### 4. ✅ Editor draw.io - Verificar carregamento
+
 - Confirma carregamento do iframe do draw.io
 - Valida botões de ação (Salvar, Exportar PNG, Exportar SVG)
 - Verifica campo de notas de versão
 - Timeout aumentado (15s) para carregamento do iframe
 
 #### 5. ✅ Editar informações do fluxograma
+
 - Cria fluxograma de teste
 - Edita título e descrição
 - Salva alterações
 - Verifica se mudanças foram aplicadas
 
 #### 6. ✅ Visualizar detalhes do fluxograma
+
 - Acessa página de detalhes
 - Valida badges de status
 - Confirma botões de ação
 - Verifica presença de informações completas
 
 #### 7. ✅ Duplicar fluxograma
+
 - Cria fluxograma original
 - Executa duplicação
 - Verifica criação da cópia
 - Valida título com sufixo "(cópia)"
 
 #### 8. ✅ Publicar fluxograma
+
 - Verifica visibilidade do botão publicar
 - Valida comportamento com/sem versões
 - Testa fluxo de publicação
 
 #### 9. ✅ Excluir fluxograma
+
 - Cria fluxograma de teste
 - Aceita confirmação de exclusão
 - Valida remoção da lista
 
 #### 10. ✅ Busca avançada
+
 - Testa campo de busca
 - Valida funcionamento da busca
 - Verifica debounce
 
 #### 11. ✅ Navegação entre páginas
+
 - Testa navegação para criação
 - Valida botão cancelar
 - Confirma retorno à lista
 
 #### 12. ✅ Validação de formulário
+
 - Tenta submeter formulário vazio
 - Verifica mensagens de erro
 - Valida campos obrigatórios
 
 #### 13. ✅ Responsividade - Mobile
+
 - Testa viewport mobile (375x667)
 - Valida visibilidade de elementos
 - Confirma layout responsivo
 
 #### 14. ✅ Dark Mode
+
 - Detecta se dark mode está ativo
 - Valida classes CSS apropriadas
 
 #### 15. ✅ Permissões - Visualização para todos
+
 - Confirma acesso sem bloqueio 403
 - Valida que usuário autenticado pode visualizar
 
 #### 16. ✅ Histórico de Versões
+
 - Verifica seção de histórico
 - Valida presença de versões (se houver)
 
 ### Grupo 2: Testes de Performance (2 testes)
 
 #### 17. ✅ Tempo de carregamento da listagem
+
 - Mede tempo de carregamento da página index
 - Valida que carrega em < 5s
 - Log do tempo real de carregamento
 
 #### 18. ✅ Tempo de carregamento do editor
+
 - Mede tempo até iframe estar visível
 - Valida que carrega em < 30s
 - Log do tempo real de carregamento
@@ -116,18 +134,21 @@ Suite completa de **18 testes end-to-end** para o módulo de Fluxogramas usando 
 ### Pré-requisitos
 
 1. **Servidor Rails rodando na porta 3001**
+
 ```bash
 # Terminal 1 - Iniciar servidor de testes
 bin/rails server -p 3001 -e test
 ```
 
 2. **Banco de dados populado**
+
 ```bash
 # Executar seeds
 RAILS_ENV=test bin/rails db:seed
 ```
 
 3. **Usuário admin criado**
+
 ```bash
 # Via console
 RAILS_ENV=test bin/rails console
@@ -257,15 +278,15 @@ test('03 - Criar novo fluxograma', async ({ page }) => {
 
 ### Cenários Cobertos
 
-| Cenário | Status | Descrição |
-|---------|--------|-----------|
-| Happy Path | ✅ | Fluxo completo sem erros |
-| Validações | ✅ | Campos obrigatórios |
-| Permissões | ✅ | Acesso autorizado |
-| Responsividade | ✅ | Mobile e desktop |
-| Performance | ✅ | Tempos de resposta |
-| Erros | ⚠️ | Tratamento parcial |
-| Integração | ✅ | draw.io iframe |
+| Cenário        | Status | Descrição                |
+| -------------- | ------ | ------------------------ |
+| Happy Path     | ✅     | Fluxo completo sem erros |
+| Validações     | ✅     | Campos obrigatórios      |
+| Permissões     | ✅     | Acesso autorizado        |
+| Responsividade | ✅     | Mobile e desktop         |
+| Performance    | ✅     | Tempos de resposta       |
+| Erros          | ⚠️     | Tratamento parcial       |
+| Integração     | ✅     | draw.io iframe           |
 
 ---
 
@@ -304,6 +325,7 @@ export default defineConfig({
 
 **Problema**: Servidor não está rodando
 **Solução**: Iniciar servidor na porta 3001
+
 ```bash
 bin/rails server -p 3001 -e test
 ```
@@ -326,6 +348,7 @@ bin/rails server -p 3001 -e test
 ### Screenshots de Falhas
 
 Automaticamente salvos em:
+
 ```
 test-results/[test-name]/test-failed-1.png
 ```

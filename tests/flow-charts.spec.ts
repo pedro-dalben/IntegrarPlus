@@ -67,7 +67,10 @@ test.describe('Fluxogramas - Teste Completo E2E', () => {
     const titulo = `Fluxograma Teste ${timestamp}`;
 
     await page.fill('input[name="flow_chart[title]"]', titulo);
-    await page.fill('textarea[name="flow_chart[description]"]', 'Este é um fluxograma criado via teste automatizado do Playwright');
+    await page.fill(
+      'textarea[name="flow_chart[description]"]',
+      'Este é um fluxograma criado via teste automatizado do Playwright'
+    );
     await page.selectOption('select[name="flow_chart[status]"]', 'draft');
 
     await page.click('input[type="submit"]');
@@ -138,7 +141,7 @@ test.describe('Fluxogramas - Teste Completo E2E', () => {
     const primeiroFluxograma = page.locator('table tbody tr').first();
     const linkVer = primeiroFluxograma.locator('a[title="Ver detalhes"]');
 
-    if (await linkVer.count() > 0) {
+    if ((await linkVer.count()) > 0) {
       await linkVer.click();
       await page.waitForURL('**/admin/flow_charts/*');
 
@@ -179,12 +182,14 @@ test.describe('Fluxogramas - Teste Completo E2E', () => {
     await page.goto(`http://localhost:3001/admin/flow_charts/${flowChartId}`);
 
     const duplicateButton = page.locator('button:has-text("Duplicar")');
-    if (await duplicateButton.count() > 0) {
+    if ((await duplicateButton.count()) > 0) {
       await duplicateButton.click();
 
       await page.waitForLoadState('networkidle');
 
-      await expect(page.locator(`text=${tituloOriginal} (cópia)`).or(page.locator(`text=${tituloOriginal}`))).toBeVisible({ timeout: 10000 });
+      await expect(
+        page.locator(`text=${tituloOriginal} (cópia)`).or(page.locator(`text=${tituloOriginal}`))
+      ).toBeVisible({ timeout: 10000 });
 
       console.log('✅ Fluxograma duplicado com sucesso');
     } else {
@@ -241,7 +246,7 @@ test.describe('Fluxogramas - Teste Completo E2E', () => {
     const row = page.locator(`tr:has-text("${titulo}")`);
     const deleteButton = row.locator('button[title="Excluir"]');
 
-    if (await deleteButton.count() > 0) {
+    if ((await deleteButton.count()) > 0) {
       await deleteButton.click();
 
       await page.waitForLoadState('networkidle');
@@ -351,12 +356,12 @@ test.describe('Fluxogramas - Teste Completo E2E', () => {
     const primeiroFluxograma = page.locator('table tbody tr').first();
     const linkVer = primeiroFluxograma.locator('a[title="Ver detalhes"]');
 
-    if (await linkVer.count() > 0) {
+    if ((await linkVer.count()) > 0) {
       await linkVer.click();
       await page.waitForURL('**/admin/flow_charts/*');
 
       const versionHistory = page.locator('h3:has-text("Histórico de Versões")');
-      if (await versionHistory.count() > 0) {
+      if ((await versionHistory.count()) > 0) {
         await expect(versionHistory).toBeVisible();
         console.log('✅ Seção de histórico de versões presente');
       } else {

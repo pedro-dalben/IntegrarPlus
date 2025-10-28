@@ -1,24 +1,42 @@
-node_modules/
-vendor/
-public/assets/
-tmp/
-log/
-coverage/
-dist/
-build/
-.git/
-.github/
-storage/
-dumps/
-test-results/
-playwright-report/
-tests-examples/
+# Dependencies
+node_modules
+vendor
+
+# Build outputs
+public/assets
+public/vite
+public/vite-dev
+dist
+build
+
+# Rails  
+tmp
+log
+storage
+db/*.sqlite3
+db/*.sqlite3-*
+**/*.erb
+
+# Config files
+config/locales/**/*.yml
+*.yml
+
+# Coverage
+coverage
+
+# Compiled files
 *.min.js
 *.bundle.js
 *.vendor.js
-*.min.css
-*.bundle.css
-*.vendor.css
+
+# Lock files
 package-lock.json
 yarn.lock
 Gemfile.lock
+
+# Generated files
+.git
+.eslintrc.js
+
+# Docs
+docs/**

@@ -1,210 +1,236 @@
-import { Controller } from "@hotwired/stimulus"
-
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["step", "previousBtn", "nextBtn", "activateBtn", "tab", "currentStepInput"]
-  
-  static values = { currentStep: String }
+  static targets = ['step', 'previousBtn', 'nextBtn', 'activateBtn', 'tab', 'currentStepInput'];
+
+  static values = { currentStep: String };
 
   connect() {
     if (!this.hasCurrentStepValue || !this.currentStepValue) {
-      this.currentStepValue = "metadata"
+      this.currentStepValue = 'metadata';
     }
-    this.showStep(this.currentStepValue)
-    this.updateNavigation()
-    this.updateTabs()
-    this.initializeDataPersistence()
-    this.professionalsData = {}
+    this.showStep(this.currentStepValue);
+    this.updateNavigation();
+    this.updateTabs();
+    this.initializeDataPersistence();
+    this.professionalsData = {};
   }
 
   initializeDataPersistence() {
     this.persistentData = {
-      professionals: []
-    }
-    
-    const savedData = localStorage.getItem('agenda_wizard_data')
+      professionals: [],
+    };
+
+    const savedData = localStorage.getItem('agenda_wizard_data');
     if (savedData) {
       try {
-        this.persistentData = JSON.parse(savedData)
-      } catch (e) {
-      }
+        this.persistentData = JSON.parse(savedData);
+      } catch (e) {}
     }
   }
 
   savePersistentData() {
-    localStorage.setItem('agenda_wizard_data', JSON.stringify(this.persistentData))
+    localStorage.setItem('agenda_wizard_data', JSON.stringify(this.persistentData));
   }
 
   addProfessional(professionalId) {
-    const idString = professionalId.toString()
+    const idString = professionalId.toString();
     if (!this.persistentData.professionals.includes(idString)) {
-      this.persistentData.professionals.push(idString)
-      this.savePersistentData()
-      this.updateHiddenInputs()
+      this.persistentData.professionals.push(idString);
+      this.savePersistentData();
+      this.updateHiddenInputs();
     }
   }
 
   removeProfessional(professionalId) {
-    const idString = professionalId.toString()
-    this.persistentData.professionals = this.persistentData.professionals.filter(id => id !== idString)
-    this.savePersistentData()
-    this.updateHiddenInputs()
+    const idString = professionalId.toString();
+    this.persistentData.professionals = this.persistentData.professionals.filter(
+      id => id !== idString
+    );
+    this.savePersistentData();
+    this.updateHiddenInputs();
   }
 
   updateHiddenInputs() {
-    const hasProfessionalSelector = this.element.querySelector('[data-controller~="professional-selector"]')
-    if (hasProfessionalSelector) return
-    const existingInputs = this.element.querySelectorAll('input[name="agenda[professional_ids][]"]')
-    existingInputs.forEach(input => input.remove())
+    const hasProfessionalSelector = this.element.querySelector(
+      '[data-controller~="professional-selector"]'
+    );
+    if (hasProfessionalSelector) return;
+    const existingInputs = this.element.querySelectorAll(
+      'input[name="agenda[professional_ids][]"]'
+    );
+    existingInputs.forEach(input => input.remove());
     this.persistentData.professionals.forEach(professionalId => {
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'agenda[professional_ids][]'
-      input.value = professionalId
-      this.element.appendChild(input)
-    })
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'agenda[professional_ids][]';
+      input.value = professionalId;
+      this.element.appendChild(input);
+    });
   }
 
   saveCurrentStepData() {
     // Salvar dados específicos da etapa atual
     if (this.currentStepValue === 'professionals') {
       // Coletar profissionais selecionados da etapa de profissionais
-      const selectedProfessionals = this.collectSelectedProfessionals()
-      this.persistentData.professionals = selectedProfessionals
-      this.savePersistentData()
-      this.updateHiddenInputs()
+      const selectedProfessionals = this.collectSelectedProfessionals();
+      this.persistentData.professionals = selectedProfessionals;
+      this.savePersistentData();
+      this.updateHiddenInputs();
     }
   }
 
   collectSelectedProfessionals() {
-    const professionals = []
-    
+    const professionals = [];
+
     // Verificar checkboxes selecionados
-    const checkboxes = this.element.querySelectorAll('input[type="checkbox"][data-professional-id]:checked')
+    const checkboxes = this.element.querySelectorAll(
+      'input[type="checkbox"][data-professional-id]:checked'
+    );
     checkboxes.forEach(checkbox => {
-      const professionalId = checkbox.dataset.professionalId
+      const { professionalId } = checkbox.dataset;
       if (professionalId) {
-        professionals.push(professionalId)
+        professionals.push(professionalId);
       }
-    })
-    
-    return professionals
+    });
+
+    return professionals;
   }
 
   nextStep() {
-    const steps = ["metadata", "professionals", "working_hours", "review"]
-    const currentIndex = steps.indexOf(this.currentStepValue)
-    
+    const steps = ['metadata', 'professionals', 'working_hours', 'review'];
+    const currentIndex = steps.indexOf(this.currentStepValue);
+
     if (currentIndex < steps.length - 1) {
       try {
-        this.saveCurrentStepData()
-      } catch (e) {
-      }
-      
-      this.currentStepValue = steps[currentIndex + 1]
-      try { this.showStep(this.currentStepValue) } catch (e) {}
-      try { this.updateNavigation() } catch (e) {}
-      try { this.updateTabs() } catch (e) {}
-      try { this.updateStepInput() } catch (e) {}
-      
-      try { this.updateHiddenInputs() } catch (e) {}
+        this.saveCurrentStepData();
+      } catch (e) {}
+
+      this.currentStepValue = steps[currentIndex + 1];
+      try {
+        this.showStep(this.currentStepValue);
+      } catch (e) {}
+      try {
+        this.updateNavigation();
+      } catch (e) {}
+      try {
+        this.updateTabs();
+      } catch (e) {}
+      try {
+        this.updateStepInput();
+      } catch (e) {}
+
+      try {
+        this.updateHiddenInputs();
+      } catch (e) {}
     }
   }
 
   previousStep() {
-    const steps = ["metadata", "professionals", "working_hours", "review"]
-    const currentIndex = steps.indexOf(this.currentStepValue)
-    
+    const steps = ['metadata', 'professionals', 'working_hours', 'review'];
+    const currentIndex = steps.indexOf(this.currentStepValue);
+
     if (currentIndex > 0) {
-      this.currentStepValue = steps[currentIndex - 1]
-      this.showStep(this.currentStepValue)
-      this.updateNavigation()
-      this.updateTabs()
-      this.updateStepInput()
+      this.currentStepValue = steps[currentIndex - 1];
+      this.showStep(this.currentStepValue);
+      this.updateNavigation();
+      this.updateTabs();
+      this.updateStepInput();
     }
   }
 
   showStep(stepName) {
     this.stepTargets.forEach(step => {
       if (step.dataset.step === stepName) {
-        step.classList.remove("hidden")
+        step.classList.remove('hidden');
         // Restaurar dados específicos da etapa
-        this.restoreStepData(stepName)
+        this.restoreStepData(stepName);
       } else {
-        step.classList.add("hidden")
+        step.classList.add('hidden');
       }
-    })
+    });
   }
 
   restoreStepData(stepName) {
     if (stepName === 'professionals') {
-      try { this.restoreProfessionalSelection() } catch (e) {}
-      try { this.updateHiddenInputs() } catch (e) {}
+      try {
+        this.restoreProfessionalSelection();
+      } catch (e) {}
+      try {
+        this.updateHiddenInputs();
+      } catch (e) {}
       setTimeout(() => {
-        try { this.updateSelectedProfessionalsList() } catch (e) {}
-      }, 100)
+        try {
+          this.updateSelectedProfessionalsList();
+        } catch (e) {}
+      }, 100);
     }
   }
 
   restoreProfessionalSelection() {
     // Marcar checkboxes dos profissionais selecionados
     this.persistentData.professionals.forEach(professionalId => {
-      const checkbox = this.element.querySelector(`input[type="checkbox"][data-professional-id="${professionalId}"]`)
+      const checkbox = this.element.querySelector(
+        `input[type="checkbox"][data-professional-id="${professionalId}"]`
+      );
       if (checkbox) {
-        checkbox.checked = true
+        checkbox.checked = true;
       }
-    })
+    });
   }
 
   searchProfessionals(event) {
-    const query = event.target.value.trim()
-    
+    const query = event.target.value.trim();
+
     if (query.length < 2) {
-      this.clearProfessionalResults()
-      return
+      this.clearProfessionalResults();
+      return;
     }
 
-    this.showProfessionalLoading()
-    
+    this.showProfessionalLoading();
+
     fetch(`/admin/agendas/search_professionals?search=${encodeURIComponent(query)}`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
     })
-    .then(response => response.json())
-    .then(data => {
-      this.hideProfessionalLoading()
-      this.renderProfessionalResults(data.professionals || [])
-      this.updateSelectedProfessionalsList()
-    })
-    .catch(error => {
-      this.hideProfessionalLoading()
-      this.showProfessionalError('Erro ao buscar profissionais')
-    })
+      .then(response => response.json())
+      .then(data => {
+        this.hideProfessionalLoading();
+        this.renderProfessionalResults(data.professionals || []);
+        this.updateSelectedProfessionalsList();
+      })
+      .catch(error => {
+        this.hideProfessionalLoading();
+        this.showProfessionalError('Erro ao buscar profissionais');
+      });
   }
 
   renderProfessionalResults(professionals) {
-    const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
-    if (!professionalList) return
-    
+    const professionalList = this.element.querySelector(
+      '[data-professional-selector-target="professionalList"]'
+    );
+    if (!professionalList) return;
+
     professionals.forEach(prof => {
-      this.professionalsData[prof.id] = prof
-    })
-    
+      this.professionalsData[prof.id] = prof;
+    });
+
     if (professionals.length === 0) {
       professionalList.innerHTML = `
         <div class="p-4 text-center text-gray-500">
           <p class="text-sm">Nenhum profissional encontrado</p>
         </div>
-      `
-      return
+      `;
+      return;
     }
 
-    const resultsHTML = professionals.map(professional => {
-      const isChecked = this.persistentData.professionals.includes(professional.id.toString())
-      return `
+    const resultsHTML = professionals
+      .map(professional => {
+        const isChecked = this.persistentData.professionals.includes(professional.id.toString());
+        return `
         <div class="professional-item flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50" data-professional-id="${professional.id}">
           <div class="flex items-center space-x-3">
             <div class="flex-shrink-0">
@@ -231,45 +257,49 @@ export default class extends Controller {
             />
           </div>
         </div>
-      `
-    }).join('')
+      `;
+      })
+      .join('');
 
-    professionalList.innerHTML = resultsHTML
+    professionalList.innerHTML = resultsHTML;
   }
 
   toggleProfessional(event) {
-    const professionalId = event.target.dataset.professionalId
-    const isChecked = event.target.checked
+    const { professionalId } = event.target.dataset;
+    const isChecked = event.target.checked;
 
     if (isChecked) {
-      this.addProfessional(professionalId)
+      this.addProfessional(professionalId);
     } else {
-      this.removeProfessional(professionalId)
+      this.removeProfessional(professionalId);
     }
-    
-    this.updateSelectedProfessionalsList()
+
+    this.updateSelectedProfessionalsList();
   }
-  
+
   updateSelectedProfessionalsList() {
-    const selectedContainer = this.element.querySelector('[data-professional-selector-target="selectedProfessionalsContainer"]')
-    if (!selectedContainer) return
-    
-    const selectedIds = this.persistentData.professionals
-    
+    const selectedContainer = this.element.querySelector(
+      '[data-professional-selector-target="selectedProfessionalsContainer"]'
+    );
+    if (!selectedContainer) return;
+
+    const selectedIds = this.persistentData.professionals;
+
     if (selectedIds.length === 0) {
       selectedContainer.innerHTML = `
         <div class="text-sm text-gray-500 text-center py-2">
           Nenhum profissional selecionado
         </div>
-      `
-      return
+      `;
+      return;
     }
-    
-    const selectedHTML = selectedIds.map(id => {
-      const professional = this.professionalsData[id]
-      if (!professional) return ''
-      
-      return `
+
+    const selectedHTML = selectedIds
+      .map(id => {
+        const professional = this.professionalsData[id];
+        if (!professional) return '';
+
+        return `
         <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-200 mb-2">
           <div class="flex items-center space-x-2 flex-1 min-w-0">
             <div class="flex-shrink-0">
@@ -296,27 +326,32 @@ export default class extends Controller {
             </svg>
           </button>
         </div>
-      `
-    }).join('')
-    
-    selectedContainer.innerHTML = selectedHTML
+      `;
+      })
+      .join('');
+
+    selectedContainer.innerHTML = selectedHTML;
   }
-  
+
   removeProfessionalFromSelected(event) {
-    const professionalId = event.currentTarget.dataset.professionalId
-    this.removeProfessional(professionalId)
-    this.updateSelectedProfessionalsList()
-    
-    const checkbox = this.element.querySelector(`input[type="checkbox"][data-professional-id="${professionalId}"]`)
+    const { professionalId } = event.currentTarget.dataset;
+    this.removeProfessional(professionalId);
+    this.updateSelectedProfessionalsList();
+
+    const checkbox = this.element.querySelector(
+      `input[type="checkbox"][data-professional-id="${professionalId}"]`
+    );
     if (checkbox) {
-      checkbox.checked = false
+      checkbox.checked = false;
     }
   }
 
   clearProfessionalResults() {
-    const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
-    if (!professionalList) return
-    
+    const professionalList = this.element.querySelector(
+      '[data-professional-selector-target="professionalList"]'
+    );
+    if (!professionalList) return;
+
     professionalList.innerHTML = `
       <div class="p-4 text-center text-gray-500">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,149 +359,158 @@ export default class extends Controller {
         </svg>
         <p class="mt-2 text-sm">Digite para buscar profissionais</p>
       </div>
-    `
+    `;
   }
 
   showProfessionalLoading() {
-    const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
+    const professionalList = this.element.querySelector(
+      '[data-professional-selector-target="professionalList"]'
+    );
     if (professionalList) {
-      professionalList.style.opacity = '0.5'
+      professionalList.style.opacity = '0.5';
     }
   }
 
   hideProfessionalLoading() {
-    const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
+    const professionalList = this.element.querySelector(
+      '[data-professional-selector-target="professionalList"]'
+    );
     if (professionalList) {
-      professionalList.style.opacity = '1'
+      professionalList.style.opacity = '1';
     }
   }
 
   showProfessionalError(message) {
-    const professionalList = this.element.querySelector('[data-professional-selector-target="professionalList"]')
-    if (!professionalList) return
-    
+    const professionalList = this.element.querySelector(
+      '[data-professional-selector-target="professionalList"]'
+    );
+    if (!professionalList) return;
+
     professionalList.innerHTML = `
       <div class="p-4 text-center text-red-500">
         <p class="text-sm">${message}</p>
       </div>
-    `
+    `;
   }
 
   updateNavigation() {
-    const steps = ["metadata", "professionals", "working_hours", "review"]
-    const currentIndex = steps.indexOf(this.currentStepValue)
-    
+    const steps = ['metadata', 'professionals', 'working_hours', 'review'];
+    const currentIndex = steps.indexOf(this.currentStepValue);
+
     // Update previous button
     if (currentIndex === 0) {
-      this.previousBtnTarget.classList.add("hidden")
+      this.previousBtnTarget.classList.add('hidden');
     } else {
-      this.previousBtnTarget.classList.remove("hidden")
+      this.previousBtnTarget.classList.remove('hidden');
     }
-    
+
     // Update next button
     if (currentIndex === steps.length - 1) {
-      this.nextBtnTarget.classList.add("hidden")
+      this.nextBtnTarget.classList.add('hidden');
       if (this.hasActivateBtnTarget) {
-        this.activateBtnTarget.classList.remove("hidden")
+        this.activateBtnTarget.classList.remove('hidden');
       }
     } else {
-      this.nextBtnTarget.classList.remove("hidden")
+      this.nextBtnTarget.classList.remove('hidden');
       if (this.hasActivateBtnTarget) {
-        this.activateBtnTarget.classList.add("hidden")
+        this.activateBtnTarget.classList.add('hidden');
       }
     }
   }
 
   updateTabs() {
-    if (!this.hasTabTarget) return
+    if (!this.hasTabTarget) return;
     this.tabTargets.forEach(tab => {
-      const active = tab.dataset.step === this.currentStepValue
-      tab.classList.toggle('border-blue-500', active)
-      tab.classList.toggle('border-transparent', !active)
-      const span = tab.querySelector('span')
+      const active = tab.dataset.step === this.currentStepValue;
+      tab.classList.toggle('border-blue-500', active);
+      tab.classList.toggle('border-transparent', !active);
+      const span = tab.querySelector('span');
       if (span) {
-        span.classList.toggle('text-blue-600', active)
-        span.classList.toggle('dark:text-blue-400', active)
-        span.classList.toggle('text-gray-500', !active)
-        span.classList.toggle('dark:text-gray-400', !active)
+        span.classList.toggle('text-blue-600', active);
+        span.classList.toggle('dark:text-blue-400', active);
+        span.classList.toggle('text-gray-500', !active);
+        span.classList.toggle('dark:text-gray-400', !active);
       }
-    })
+    });
   }
 
   currentStepValueChanged() {
-    this.updateNavigation()
-    this.updateTabs()
-    this.updateStepInput()
+    this.updateNavigation();
+    this.updateTabs();
+    this.updateStepInput();
   }
 
   goToStep(event) {
-    event.preventDefault()
-    const target = event.currentTarget
-    if (!target) return
-    const step = target.dataset.step
-    if (!step) return
-    this.currentStepValue = step
-    this.showStep(step)
-    this.updateNavigation()
-    this.updateTabs()
-    this.updateStepInput()
+    event.preventDefault();
+    const target = event.currentTarget;
+    if (!target) return;
+    const { step } = target.dataset;
+    if (!step) return;
+    this.currentStepValue = step;
+    this.showStep(step);
+    this.updateNavigation();
+    this.updateTabs();
+    this.updateStepInput();
   }
 
   updateStepInput() {
     if (this.hasCurrentStepInputTarget) {
-      this.currentStepInputTarget.value = this.currentStepValue
+      this.currentStepInputTarget.value = this.currentStepValue;
     } else {
-      const input = this.element.querySelector('input[name="step"]')
-      if (input) input.value = this.currentStepValue
+      const input = this.element.querySelector('input[name="step"]');
+      if (input) input.value = this.currentStepValue;
     }
   }
 
   clearPersistentData() {
-    localStorage.removeItem('agenda_wizard_data')
+    localStorage.removeItem('agenda_wizard_data');
     this.persistentData = {
-      professionals: []
-    }
+      professionals: [],
+    };
   }
 
   // Método para ser chamado quando a agenda for salva com sucesso
   onAgendaSaved() {
-    this.clearPersistentData()
+    this.clearPersistentData();
   }
 
   // Método para garantir que os dados sejam persistidos antes do envio
   ensureDataPersistence() {
     // Salvar dados da etapa atual
-    this.saveCurrentStepData()
-    
+    this.saveCurrentStepData();
+
     // Garantir que os inputs hidden existam
-    this.updateHiddenInputs()
-    
+    this.updateHiddenInputs();
+
     // Adicionar professional_ids como parâmetro separado
-    this.addProfessionalIdsParameter()
-    
-    const hiddenInputs = this.element.querySelectorAll('input[name="agenda[professional_ids][]"]')
-    hiddenInputs.forEach((input, index) => {
-    })
+    this.addProfessionalIdsParameter();
+
+    const hiddenInputs = this.element.querySelectorAll('input[name="agenda[professional_ids][]"]');
+    hiddenInputs.forEach((input, index) => {});
   }
 
   addProfessionalIdsParameter() {
-    const oldParams = this.element.querySelectorAll('input[name="professional_ids[]"]')
-    oldParams.forEach(el => el.remove())
-    const form = this.element.querySelector('form')
-    if (!form) return
-    let ids = []
-    const compHidden = this.element.querySelector('[data-professional-selector-target="hiddenInputs"]')
+    const oldParams = this.element.querySelectorAll('input[name="professional_ids[]"]');
+    oldParams.forEach(el => el.remove());
+    const form = this.element.querySelector('form');
+    if (!form) return;
+    let ids = [];
+    const compHidden = this.element.querySelector(
+      '[data-professional-selector-target="hiddenInputs"]'
+    );
     if (compHidden) {
-      ids = Array.from(compHidden.querySelectorAll('input[name="agenda[professional_ids][]"]')).map(i => i.value)
+      ids = Array.from(compHidden.querySelectorAll('input[name="agenda[professional_ids][]"]')).map(
+        i => i.value
+      );
     } else {
-      ids = this.persistentData.professionals
+      ids = this.persistentData.professionals;
     }
     ids.forEach(professionalId => {
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.name = 'professional_ids[]'
-      input.value = professionalId
-      form.appendChild(input)
-    })
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'professional_ids[]';
+      input.value = professionalId;
+      form.appendChild(input);
+    });
   }
 }

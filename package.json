@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "@playwright/test": "^1.55.0",
@@ -13,6 +14,7 @@
     "eslint-plugin-n": "^17.21.3",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-unicorn": "^60.0.0",
+    "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "prettier-plugin-ruby": "^0.3.1",
     "rollup": "^4.46.3",
@@ -49,6 +51,7 @@
     "lint:fix": "eslint . --ext .js,.mjs,.cjs --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "npm run lint && npm run format:check"
+    "check": "npm run lint && npm run format:check",
+    "prepare": "husky"
   }
 }

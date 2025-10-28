@@ -63,11 +63,11 @@
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.125rem;
   }
-  
+
   .feature-grid {
     grid-template-columns: 1fr;
   }
@@ -90,5 +90,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #764ba2;
 }
-
-

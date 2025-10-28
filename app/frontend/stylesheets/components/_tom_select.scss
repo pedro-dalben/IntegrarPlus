@@ -1,23 +1,23 @@
 // TomSelect Custom Styles - TailAdmin Integration
 
 // Estilos globais para todos os selects com Tom Select
-select[data-tom-select-target="select"] {
+select[data-tom-select-target='select'] {
   @apply hidden;
 }
 
 .ts-wrapper {
   @apply relative;
-  
+
   .ts-control {
     @apply h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400;
     @apply flex flex-wrap items-center gap-1;
     @apply transition-all duration-200;
     @apply min-h-0;
-    
+
     &.focus {
       @apply border-blue-500 ring-2 ring-blue-500/20;
     }
-    
+
     &:after {
       display: none !important;
     }
@@ -26,7 +26,7 @@ select[data-tom-select-target="select"] {
   .ts-dropdown {
     @apply rounded-lg border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800 max-h-60 overflow-y-auto z-50;
     @apply mt-1;
-    
+
     .ts-dropdown-content {
       @apply py-1;
     }
@@ -35,7 +35,7 @@ select[data-tom-select-target="select"] {
   .ts-input {
     @apply bg-transparent border-none outline-none flex-1 min-w-0 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400;
     @apply h-6;
-    
+
     &::placeholder {
       @apply text-gray-500 dark:text-gray-400;
     }
@@ -43,11 +43,11 @@ select[data-tom-select-target="select"] {
 
   .option {
     @apply px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-150;
-    
+
     &.active {
       @apply bg-blue-50 text-blue-900 dark:bg-blue-900/20 dark:text-blue-200;
     }
-    
+
     &.selected {
       @apply bg-blue-100 text-blue-900 dark:bg-blue-900/30 dark:text-blue-200;
     }
@@ -56,21 +56,21 @@ select[data-tom-select-target="select"] {
   .item {
     @apply inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded border border-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500;
     @apply transition-all duration-200;
-    
+
     .remove {
       @apply ml-1 text-gray-500 hover:text-gray-700 cursor-pointer dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-150;
       @apply w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-500;
-      
+
       &:hover {
         @apply text-red-500 dark:text-red-400;
       }
-      
+
       &:before {
-        content: "×";
+        content: '×';
         @apply text-sm font-bold;
       }
     }
-    
+
     &:hover {
       @apply bg-gray-200 dark:bg-gray-500;
       @apply border-gray-300 dark:border-gray-400;
@@ -81,21 +81,21 @@ select[data-tom-select-target="select"] {
   .ts-item-subtle {
     @apply inline-flex items-center gap-1 px-2 py-1 bg-gray-50 text-gray-600 text-xs font-normal rounded border border-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600;
     @apply transition-all duration-200;
-    
+
     .remove {
       @apply ml-1 text-gray-400 hover:text-gray-600 cursor-pointer dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-150;
       @apply w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-600;
-      
+
       &:hover {
         @apply text-red-500 dark:text-red-400;
       }
-      
+
       &:before {
-        content: "×";
+        content: '×';
         @apply text-sm font-bold;
       }
     }
-    
+
     &:hover {
       @apply bg-gray-100 dark:bg-gray-600;
       @apply border-gray-300 dark:border-gray-500;
@@ -106,21 +106,21 @@ select[data-tom-select-target="select"] {
   .ts-item-integrated {
     @apply inline-flex items-center gap-1 px-2 py-0.5 bg-transparent text-gray-700 text-xs font-normal border-none;
     @apply transition-all duration-200;
-    
+
     .remove {
       @apply ml-1 text-gray-400 hover:text-gray-600 cursor-pointer dark:text-gray-500 dark:hover:text-gray-300 transition-colors duration-150;
       @apply w-4 h-4 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-600;
-      
+
       &:hover {
         @apply text-red-500 dark:text-red-400;
       }
-      
+
       &:before {
-        content: "×";
+        content: '×';
         @apply text-sm font-bold;
       }
     }
-    
+
     &:hover {
       @apply bg-gray-50 dark:bg-gray-600;
     }
@@ -137,12 +137,12 @@ select[data-tom-select-target="select"] {
   &.success .ts-control {
     @apply border-green-300 focus:border-green-500 focus:ring-green-500/20;
   }
-  
+
   // Estado quando não há itens selecionados - igual ao input normal
   .ts-control:empty {
     @apply py-3;
   }
-  
+
   // Estado quando há itens selecionados - ajustar altura para manter consistência
   .ts-control:not(:empty) {
     @apply py-2;
@@ -184,15 +184,15 @@ select[data-tom-select-target="select"] {
     .ts-control {
       @apply h-10 px-3 py-2 text-sm;
     }
-    
+
     .item {
       @apply text-xs px-2 py-1;
     }
-    
+
     .ts-item-subtle {
       @apply text-xs px-2 py-1;
     }
-    
+
     .ts-item-integrated {
       @apply text-xs px-2 py-0.5;
     }

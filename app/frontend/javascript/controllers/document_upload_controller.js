@@ -85,8 +85,7 @@ export default class extends Controller {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         fileInput.files = dataTransfer.files;
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   }
 

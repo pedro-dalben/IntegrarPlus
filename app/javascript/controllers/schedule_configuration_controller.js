@@ -1,100 +1,100 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["dayPeriods", "hiddenInputs"]
-  
+  static targets = ['dayPeriods', 'hiddenInputs'];
+
   connect() {
-    this.scheduleData = this.initializeScheduleData()
-    this.updateHiddenInputs()
+    this.scheduleData = this.initializeScheduleData();
+    this.updateHiddenInputs();
   }
-  
+
   initializeScheduleData() {
-    const data = {}
-    
+    const data = {};
+
     for (let day = 0; day < 7; day++) {
-      const dayElement = this.dayPeriodsTargets.find(el => el.dataset.day == day)
+      const dayElement = this.dayPeriodsTargets.find(el => el.dataset.day == day);
       if (dayElement) {
-        const checkbox = dayElement.closest('.flex').querySelector('input[type="checkbox"]')
+        const checkbox = dayElement.closest('.flex').querySelector('input[type="checkbox"]');
         data[day] = {
           enabled: checkbox.checked,
-          periods: this.extractPeriodsFromDay(dayElement)
-        }
+          periods: this.extractPeriodsFromDay(dayElement),
+        };
       } else {
-        data[day] = { enabled: false, periods: [] }
+        data[day] = { enabled: false, periods: [] };
       }
     }
-    
-    return data
+
+    return data;
   }
-  
+
   extractPeriodsFromDay(dayElement) {
-    const periods = []
-    const periodElements = dayElement.querySelectorAll('.flex.items-center.space-x-2')
-    
+    const periods = [];
+    const periodElements = dayElement.querySelectorAll('.flex.items-center.space-x-2');
+
     periodElements.forEach(element => {
-      const startTime = element.querySelector('input[data-field="start_time"]')?.value
-      const endTime = element.querySelector('input[data-field="end_time"]')?.value
-      
+      const startTime = element.querySelector('input[data-field="start_time"]')?.value;
+      const endTime = element.querySelector('input[data-field="end_time"]')?.value;
+
       if (startTime && endTime) {
-        periods.push({ start_time: startTime, end_time: endTime })
+        periods.push({ start_time: startTime, end_time: endTime });
       }
-    })
-    
-    return periods
+    });
+
+    return periods;
   }
-  
+
   toggleDay(event) {
-    const day = parseInt(event.target.dataset.day)
-    const enabled = event.target.checked
-    
-    this.scheduleData[day].enabled = enabled
-    
+    const day = parseInt(event.target.dataset.day);
+    const enabled = event.target.checked;
+
+    this.scheduleData[day].enabled = enabled;
+
     if (enabled && this.scheduleData[day].periods.length === 0) {
-      this.scheduleData[day].periods = [{ start_time: '08:00', end_time: '17:00' }]
+      this.scheduleData[day].periods = [{ start_time: '08:00', end_time: '17:00' }];
     }
-    
-    this.updateDayDisplay(day)
-    this.updateHiddenInputs()
+
+    this.updateDayDisplay(day);
+    this.updateHiddenInputs();
   }
-  
+
   addPeriod(event) {
-    const day = parseInt(event.target.dataset.day)
-    
-    this.scheduleData[day].periods.push({ start_time: '08:00', end_time: '17:00' })
-    this.updateDayDisplay(day)
-    this.updateHiddenInputs()
+    const day = parseInt(event.target.dataset.day);
+
+    this.scheduleData[day].periods.push({ start_time: '08:00', end_time: '17:00' });
+    this.updateDayDisplay(day);
+    this.updateHiddenInputs();
   }
-  
+
   removePeriod(event) {
-    const day = parseInt(event.target.dataset.day)
-    const period = parseInt(event.target.dataset.period)
-    
-    this.scheduleData[day].periods.splice(period, 1)
-    this.updateDayDisplay(day)
-    this.updateHiddenInputs()
+    const day = parseInt(event.target.dataset.day);
+    const period = parseInt(event.target.dataset.period);
+
+    this.scheduleData[day].periods.splice(period, 1);
+    this.updateDayDisplay(day);
+    this.updateHiddenInputs();
   }
-  
+
   updatePeriod(event) {
-    const day = parseInt(event.target.dataset.day)
-    const period = parseInt(event.target.dataset.period)
-    const field = event.target.dataset.field
-    
+    const day = parseInt(event.target.dataset.day);
+    const period = parseInt(event.target.dataset.period);
+    const { field } = event.target.dataset;
+
     if (this.scheduleData[day].periods[period]) {
-      this.scheduleData[day].periods[period][field] = event.target.value
-      this.updateHiddenInputs()
+      this.scheduleData[day].periods[period][field] = event.target.value;
+      this.updateHiddenInputs();
     }
   }
-  
+
   updateDayDisplay(day) {
-    const dayElement = this.dayPeriodsTargets.find(el => el.dataset.day == day)
-    if (!dayElement) return
-    
-    const checkbox = dayElement.closest('.flex').querySelector('input[type="checkbox"]')
-    const enabled = checkbox.checked
-    
+    const dayElement = this.dayPeriodsTargets.find(el => el.dataset.day == day);
+    if (!dayElement) return;
+
+    const checkbox = dayElement.closest('.flex').querySelector('input[type="checkbox"]');
+    const enabled = checkbox.checked;
+
     if (enabled) {
-      let html = '<div class="space-y-2">'
-      
+      let html = '<div class="space-y-2">';
+
       this.scheduleData[day].periods.forEach((period, index) => {
         html += `
           <div class="flex items-center space-x-2">
@@ -123,9 +123,9 @@ export default class extends Controller {
               </svg>
             </button>
           </div>
-        `
-      })
-      
+        `;
+      });
+
       html += `
         <button type="button"
                 class="text-blue-600 hover:text-blue-800 text-sm"
@@ -134,147 +134,177 @@ export default class extends Controller {
           + Adicionar período
         </button>
       </div>
-      `
-      
-      dayElement.innerHTML = html
+      `;
+
+      dayElement.innerHTML = html;
     } else {
-      dayElement.innerHTML = '<div class="text-sm text-gray-500">Não disponível</div>'
+      dayElement.innerHTML = '<div class="text-sm text-gray-500">Não disponível</div>';
     }
   }
-  
+
   applyTemplate(event) {
-    const templateId = event.target.dataset.templateId
-    
+    const { templateId } = event.target.dataset;
+
     const templates = {
-      'standard_business_hours': {
-        1: { enabled: true, periods: [{ start_time: '08:00', end_time: '12:00' }, { start_time: '13:00', end_time: '17:00' }] },
-        2: { enabled: true, periods: [{ start_time: '08:00', end_time: '12:00' }, { start_time: '13:00', end_time: '17:00' }] },
-        3: { enabled: true, periods: [{ start_time: '08:00', end_time: '12:00' }, { start_time: '13:00', end_time: '17:00' }] },
-        4: { enabled: true, periods: [{ start_time: '08:00', end_time: '12:00' }, { start_time: '13:00', end_time: '17:00' }] },
-        5: { enabled: true, periods: [{ start_time: '08:00', end_time: '12:00' }, { start_time: '13:00', end_time: '17:00' }] }
+      standard_business_hours: {
+        1: {
+          enabled: true,
+          periods: [
+            { start_time: '08:00', end_time: '12:00' },
+            { start_time: '13:00', end_time: '17:00' },
+          ],
+        },
+        2: {
+          enabled: true,
+          periods: [
+            { start_time: '08:00', end_time: '12:00' },
+            { start_time: '13:00', end_time: '17:00' },
+          ],
+        },
+        3: {
+          enabled: true,
+          periods: [
+            { start_time: '08:00', end_time: '12:00' },
+            { start_time: '13:00', end_time: '17:00' },
+          ],
+        },
+        4: {
+          enabled: true,
+          periods: [
+            { start_time: '08:00', end_time: '12:00' },
+            { start_time: '13:00', end_time: '17:00' },
+          ],
+        },
+        5: {
+          enabled: true,
+          periods: [
+            { start_time: '08:00', end_time: '12:00' },
+            { start_time: '13:00', end_time: '17:00' },
+          ],
+        },
       },
-      'extended_hours': {
+      extended_hours: {
         1: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] },
         2: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] },
         3: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] },
         4: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] },
-        5: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] }
+        5: { enabled: true, periods: [{ start_time: '07:00', end_time: '19:00' }] },
       },
-      'weekend_coverage': {
+      weekend_coverage: {
         1: { enabled: true, periods: [{ start_time: '08:00', end_time: '17:00' }] },
         2: { enabled: true, periods: [{ start_time: '08:00', end_time: '17:00' }] },
         3: { enabled: true, periods: [{ start_time: '08:00', end_time: '17:00' }] },
         4: { enabled: true, periods: [{ start_time: '08:00', end_time: '17:00' }] },
         5: { enabled: true, periods: [{ start_time: '08:00', end_time: '17:00' }] },
         6: { enabled: true, periods: [{ start_time: '09:00', end_time: '13:00' }] },
-        0: { enabled: true, periods: [{ start_time: '09:00', end_time: '13:00' }] }
-      }
-    }
-    
+        0: { enabled: true, periods: [{ start_time: '09:00', end_time: '13:00' }] },
+      },
+    };
+
     if (templates[templateId]) {
-      this.scheduleData = { ...this.scheduleData, ...templates[templateId] }
-      
+      this.scheduleData = { ...this.scheduleData, ...templates[templateId] };
+
       for (let day = 0; day < 7; day++) {
-        const checkbox = document.querySelector(`input[data-day="${day}"]`)
+        const checkbox = document.querySelector(`input[data-day="${day}"]`);
         if (checkbox) {
-          checkbox.checked = this.scheduleData[day].enabled
-          this.updateDayDisplay(day)
+          checkbox.checked = this.scheduleData[day].enabled;
+          this.updateDayDisplay(day);
         }
       }
-      
-      this.updateHiddenInputs()
+
+      this.updateHiddenInputs();
     }
   }
-  
+
   resetSchedule() {
-    this.scheduleData = {}
+    this.scheduleData = {};
     for (let day = 0; day < 7; day++) {
-      this.scheduleData[day] = { enabled: false, periods: [] }
+      this.scheduleData[day] = { enabled: false, periods: [] };
     }
-    
+
     for (let day = 0; day < 7; day++) {
-      const checkbox = document.querySelector(`input[data-day="${day}"]`)
+      const checkbox = document.querySelector(`input[data-day="${day}"]`);
       if (checkbox) {
-        checkbox.checked = false
-        this.updateDayDisplay(day)
+        checkbox.checked = false;
+        this.updateDayDisplay(day);
       }
     }
-    
-    this.updateHiddenInputs()
+
+    this.updateHiddenInputs();
   }
-  
+
   saveSchedule() {
-    const formData = new FormData()
-    
+    const formData = new FormData();
+
     Object.keys(this.scheduleData).forEach(day => {
-      const dayData = this.scheduleData[day]
-      formData.append(`schedule[${day}][enabled]`, dayData.enabled)
-      
+      const dayData = this.scheduleData[day];
+      formData.append(`schedule[${day}][enabled]`, dayData.enabled);
+
       dayData.periods.forEach((period, index) => {
-        formData.append(`schedule[${day}][periods][${index}][start_time]`, period.start_time)
-        formData.append(`schedule[${day}][periods][${index}][end_time]`, period.end_time)
-      })
-    })
-    
+        formData.append(`schedule[${day}][periods][${index}][start_time]`, period.start_time);
+        formData.append(`schedule[${day}][periods][${index}][end_time]`, period.end_time);
+      });
+    });
+
     fetch('/admin/agendas/configure_schedule', {
       method: 'POST',
       body: formData,
       headers: {
-        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
-      }
+        'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+      },
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        this.showNotification('Horários salvos com sucesso!', 'success')
-      } else {
-        this.showNotification('Erro ao salvar horários: ' + data.error, 'error')
-      }
-    })
-    .catch(error => {
-      this.showNotification('Erro ao salvar horários', 'error')
-    })
-  }
-  
-  updateHiddenInputs() {
-    this.hiddenInputsTarget.innerHTML = ''
-    
-    Object.keys(this.scheduleData).forEach(day => {
-      const dayData = this.scheduleData[day]
-      
-      const enabledInput = document.createElement('input')
-      enabledInput.type = 'hidden'
-      enabledInput.name = `schedule[${day}][enabled]`
-      enabledInput.value = dayData.enabled
-      this.hiddenInputsTarget.appendChild(enabledInput)
-      
-      dayData.periods.forEach((period, index) => {
-        const startInput = document.createElement('input')
-        startInput.type = 'hidden'
-        startInput.name = `schedule[${day}][periods][${index}][start_time]`
-        startInput.value = period.start_time
-        this.hiddenInputsTarget.appendChild(startInput)
-        
-        const endInput = document.createElement('input')
-        endInput.type = 'hidden'
-        endInput.name = `schedule[${day}][periods][${index}][end_time]`
-        endInput.value = period.end_time
-        this.hiddenInputsTarget.appendChild(endInput)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          this.showNotification('Horários salvos com sucesso!', 'success');
+        } else {
+          this.showNotification(`Erro ao salvar horários: ${data.error}`, 'error');
+        }
       })
-    })
+      .catch(error => {
+        this.showNotification('Erro ao salvar horários', 'error');
+      });
   }
-  
+
+  updateHiddenInputs() {
+    this.hiddenInputsTarget.innerHTML = '';
+
+    Object.keys(this.scheduleData).forEach(day => {
+      const dayData = this.scheduleData[day];
+
+      const enabledInput = document.createElement('input');
+      enabledInput.type = 'hidden';
+      enabledInput.name = `schedule[${day}][enabled]`;
+      enabledInput.value = dayData.enabled;
+      this.hiddenInputsTarget.appendChild(enabledInput);
+
+      dayData.periods.forEach((period, index) => {
+        const startInput = document.createElement('input');
+        startInput.type = 'hidden';
+        startInput.name = `schedule[${day}][periods][${index}][start_time]`;
+        startInput.value = period.start_time;
+        this.hiddenInputsTarget.appendChild(startInput);
+
+        const endInput = document.createElement('input');
+        endInput.type = 'hidden';
+        endInput.name = `schedule[${day}][periods][${index}][end_time]`;
+        endInput.value = period.end_time;
+        this.hiddenInputsTarget.appendChild(endInput);
+      });
+    });
+  }
+
   showNotification(message, type) {
-    const notification = document.createElement('div')
+    const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${
       type === 'success' ? 'bg-green-600' : 'bg-red-600'
-    }`
-    notification.textContent = message
-    
-    document.body.appendChild(notification)
-    
+    }`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
     setTimeout(() => {
-      notification.remove()
-    }, 3000)
+      notification.remove();
+    }, 3000);
   }
 }

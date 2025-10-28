@@ -204,15 +204,22 @@
       <h3 class="text-lg font-medium text-gray-900">Dados Escolares</h3>
     </div>
     <div class="px-6 py-4">
-      <div class="space-y-4">
+      <div class="space-y-4" data-controller="toggle-fields">
         <div>
           <%= form.label :attends_school, class: "flex items-center gap-2" do %>
-            <%= form.check_box :attends_school, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <%= form.check_box :attends_school,
+                class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded",
+                data: {
+                  toggle_fields_target: "trigger",
+                  action: "change->toggle-fields#update"
+                } %>
             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta escola?</span>
           <% end %>
         </div>
 
-        <div id="school-fields" class="space-y-4" style="<%= 'display: none;' unless anamnesis.attends_school? %>">
+        <div class="space-y-4"
+             data-toggle-fields-target="content"
+             style="<%= 'display: none;' unless anamnesis.attends_school? %>">
           <div>
             <%= form.label :school_name, "Nome da Escola", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
             <%= render Ui::SchoolSearchComponent.new(
@@ -394,15 +401,21 @@
       <h3 class="text-lg font-medium text-gray-900">Tratamentos</h3>
     </div>
     <div class="px-6 py-4">
-      <div class="space-y-6">
+      <div class="space-y-6" data-controller="toggle-fields">
         <div>
           <%= form.label :previous_treatment, class: "flex items-center gap-2" do %>
-            <%= form.check_box :previous_treatment, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+            <%= form.check_box :previous_treatment,
+                class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded",
+                data: {
+                  toggle_fields_target: "trigger",
+                  action: "change->toggle-fields#update"
+                } %>
             <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Já realizou algum tratamento?</span>
           <% end %>
         </div>
 
-        <div id="previous-treatments" style="<%= 'display: none;' unless anamnesis.previous_treatment? %>">
+        <div data-toggle-fields-target="content"
+             style="<%= 'display: none;' unless anamnesis.previous_treatment? %>">
           <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Qual tratamento já realizou?</label>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
             <% treatments = ['ABA', 'FONO', 'TO', 'PSICOPEDAGOGIA', 'PSICOLOGIA', 'PSICOMOTRICIDADE', 'FISIOTERAPIA', 'EQUOTERAPIA', 'MUSICOTERAPIA'] %>
@@ -415,22 +428,30 @@
           </div>
         </div>
 
-        <div>
-          <%= form.label :continue_external_treatment, class: "flex items-center gap-2" do %>
-            <%= form.check_box :continue_external_treatment, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
-            <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Vai continuar com algum tratamento externo?</span>
-          <% end %>
-        </div>
-
-        <div id="external-treatments" style="<%= 'display: none;' unless anamnesis.continue_external_treatment? %>">
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Qual tratamento vai continuar?</label>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-            <% treatments.each do |treatment| %>
-              <label class="flex items-center gap-2">
-                <%= check_box_tag "anamnesis[external_treatments][]", treatment, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
-                <span class="text-sm"><%= treatment %></span>
-              </label>
+        <div data-controller="toggle-fields">
+          <div>
+            <%= form.label :continue_external_treatment, class: "flex items-center gap-2" do %>
+              <%= form.check_box :continue_external_treatment,
+                  class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded",
+                  data: {
+                    toggle_fields_target: "trigger",
+                    action: "change->toggle-fields#update"
+                  } %>
+              <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Vai continuar com algum tratamento externo?</span>
             <% end %>
+          </div>
+
+          <div data-toggle-fields-target="content"
+               style="<%= 'display: none;' unless anamnesis.continue_external_treatment? %>">
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Qual tratamento vai continuar?</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+              <% treatments.each do |treatment| %>
+                <label class="flex items-center gap-2">
+                  <%= check_box_tag "anamnesis[external_treatments][]", treatment, false, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+                  <span class="text-sm"><%= treatment %></span>
+                </label>
+              <% end %>
+            </div>
           </div>
         </div>
       </div>
@@ -488,37 +509,3 @@
     </div>
   </div>
 <% end %>
-
-<script>
-  // Toggle school fields
-  document.addEventListener('DOMContentLoaded', function() {
-    const attendsSchoolCheckbox = document.getElementById('anamnesis_attends_school');
-    const schoolFields = document.getElementById('school-fields');
-
-    if (attendsSchoolCheckbox) {
-      attendsSchoolCheckbox.addEventListener('change', function() {
-        schoolFields.style.display = this.checked ? 'grid' : 'none';
-      });
-    }
-
-    // Toggle previous treatments
-    const previousTreatmentCheckbox = document.getElementById('anamnesis_previous_treatment');
-    const previousTreatmentsDiv = document.getElementById('previous-treatments');
-
-    if (previousTreatmentCheckbox) {
-      previousTreatmentCheckbox.addEventListener('change', function() {
-        previousTreatmentsDiv.style.display = this.checked ? 'block' : 'none';
-      });
-    }
-
-    // Toggle external treatments
-    const externalTreatmentCheckbox = document.getElementById('anamnesis_continue_external_treatment');
-    const externalTreatmentsDiv = document.getElementById('external-treatments');
-
-    if (externalTreatmentCheckbox) {
-      externalTreatmentCheckbox.addEventListener('change', function() {
-        externalTreatmentsDiv.style.display = this.checked ? 'block' : 'none';
-      });
-    }
-  });
-</script>

@@ -1,38 +1,39 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ["calendar", "viewSelector", "eventTypeFilter", "eventModal"]
+  static targets = ['calendar', 'viewSelector', 'eventTypeFilter', 'eventModal'];
   static values = {
     eventsUrl: String,
     readOnly: Boolean,
-    professionalId: Number
-  }
+    professionalId: Number,
+  };
 
   connect() {
     // Verificar se o FullCalendar global está disponível
     if (window.FullCalendar) {
-      this.initializeCalendar()
+      this.initializeCalendar();
     } else {
-      this.showError('FullCalendar não está disponível')
+      this.showError('FullCalendar não está disponível');
     }
   }
 
   disconnect() {
     if (this.calendar) {
-      this.calendar.destroy()
+      this.calendar.destroy();
     }
   }
 
   initializeCalendar() {
-    const calendarEl = this.calendarTarget
-    
+    const calendarEl = this.calendarTarget;
+
     if (!calendarEl) {
-      return
+      return;
     }
-    
+
     try {
-      const { Calendar, dayGridPlugin, timeGridPlugin, interactionPlugin, ptBrLocale } = window.FullCalendar
-      
+      const { Calendar, dayGridPlugin, timeGridPlugin, interactionPlugin, ptBrLocale } =
+        window.FullCalendar;
+
       this.calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: ptBrLocale,
@@ -40,13 +41,13 @@ export default class extends Controller {
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay',
         },
         buttonText: {
           today: 'Hoje',
           month: 'Mês',
           week: 'Semana',
-          day: 'Dia'
+          day: 'Dia',
         },
         height: '600px',
         events: this.eventsUrlValue || '/admin/events/calendar_data',
@@ -68,30 +69,29 @@ export default class extends Controller {
         eventTimeFormat: {
           hour: '2-digit',
           minute: '2-digit',
-          meridiem: false
-        }
-      })
+          meridiem: false,
+        },
+      });
 
-      this.calendar.render()
-      
+      this.calendar.render();
+
       // Remover o placeholder de carregamento
-      this.removeLoadingPlaceholder()
-      
+      this.removeLoadingPlaceholder();
     } catch (error) {
-      this.showError('Erro ao inicializar calendário: ' + error.message)
+      this.showError(`Erro ao inicializar calendário: ${error.message}`);
     }
   }
 
   removeLoadingPlaceholder() {
-    const calendarEl = this.calendarTarget
-    const placeholder = calendarEl.querySelector('.flex.items-center.justify-center.h-96')
+    const calendarEl = this.calendarTarget;
+    const placeholder = calendarEl.querySelector('.flex.items-center.justify-center.h-96');
     if (placeholder) {
-      placeholder.remove()
+      placeholder.remove();
     }
   }
 
   showError(message) {
-    const calendarEl = this.calendarTarget
+    const calendarEl = this.calendarTarget;
     calendarEl.innerHTML = `
       <div class="flex items-center justify-center h-96 text-red-500">
         <div class="text-center">
@@ -102,54 +102,52 @@ export default class extends Controller {
           <p class="mt-1 text-sm">${message}</p>
         </div>
       </div>
-    `
+    `;
   }
 
   handleEventClick(info) {
-    this.showEventModal(info.event)
+    this.showEventModal(info.event);
   }
 
-  handleEventDidMount(info) {
-  }
+  handleEventDidMount(info) {}
 
   handleDateSelect(selectInfo) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
   }
 
   handleEventDrop(dropInfo) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
   }
 
   handleEventResize(resizeInfo) {
-    if (this.readOnlyValue) return
+    if (this.readOnlyValue) return;
   }
 
   showEventModal(event) {
-    const modal = this.eventModalTarget
-    modal.classList.remove('hidden')
+    const modal = this.eventModalTarget;
+    modal.classList.remove('hidden');
   }
 
   closeEventModal() {
-    const modal = this.eventModalTarget
-    modal.classList.add('hidden')
+    const modal = this.eventModalTarget;
+    modal.classList.add('hidden');
   }
 
-  editEvent() {
-  }
+  editEvent() {}
 
   prev() {
-    if (this.calendar) this.calendar.prev()
+    if (this.calendar) this.calendar.prev();
   }
 
   next() {
-    if (this.calendar) this.calendar.next()
+    if (this.calendar) this.calendar.next();
   }
 
   today() {
-    if (this.calendar) this.calendar.today()
+    if (this.calendar) this.calendar.today();
   }
 
   refreshEvents() {
-    if (this.calendar) this.calendar.refetchEvents()
+    if (this.calendar) this.calendar.refetchEvents();
   }
 }
