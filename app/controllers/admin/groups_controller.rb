@@ -19,7 +19,8 @@ module Admin
           per_page = 10
           offset = (page - 1) * per_page
 
-          @groups = search_results[offset, per_page] || []
+          group_ids = search_results[offset, per_page].map(&:id)
+          @groups = Group.includes(:permissions, :group_permissions, :users).where(id: group_ids)
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
           Rails.logger.error "Erro na busca avançada: #{e.message}"
@@ -88,7 +89,7 @@ module Admin
     private
 
     def perform_local_search
-      Group.includes(:permissions).order(created_at: :desc)
+      Group.includes(:permissions, :group_permissions, :users).order(created_at: :desc)
     end
 
     def build_search_filters

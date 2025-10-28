@@ -19,7 +19,8 @@ module Admin
           per_page = 20
           offset = (page - 1) * per_page
 
-          @beneficiaries = search_results[offset, per_page] || []
+          beneficiary_ids = search_results[offset, per_page].map(&:id)
+          @beneficiaries = Beneficiary.includes(:anamneses, :portal_intake).where(id: beneficiary_ids)
           @pagy = Pagy.new(count: search_results.length, page: page, items: per_page)
         rescue StandardError => e
           Rails.logger.error "Erro na busca avançada: #{e.message}"

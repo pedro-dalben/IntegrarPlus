@@ -84,7 +84,7 @@ Rails.application.configure do
     Bullet.console = true
     Bullet.rails_logger = true
     Bullet.add_footer = true
-    
+
     # Configurações adicionais
     Bullet.unused_eager_loading_enable = true
     Bullet.counter_cache_enable = true
