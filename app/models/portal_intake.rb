@@ -209,13 +209,13 @@ class PortalIntake < ApplicationRecord
       )
 
       if anamnesis.present?
-        if anamnesis.medical_appointment.present?
-          appointment = anamnesis.medical_appointment
-
+        medical_appointments = MedicalAppointment.where(anamnesis_id: anamnesis.id)
+        medical_appointments.each do |appointment|
           appointment.update!(
             status: 'cancelled',
             cancellation_reason: reason,
-            cancelled_at: Time.current
+            cancelled_at: Time.current,
+            anamnesis_id: nil
           )
 
           if appointment.event.present?

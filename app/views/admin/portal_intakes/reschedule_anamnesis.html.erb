@@ -88,7 +88,7 @@
         <%= form_with url: reschedule_anamnesis_admin_portal_intake_path(@portal_intake),
                       method: :patch, local: true,
                       data: {
-                        controller: "agenda-scheduler",
+                        controller: "agenda-scheduler agenda-grid",
                         turbo: false,
                         "agenda-scheduler-portal-intake-id-value": @portal_intake.id
                       },
@@ -175,12 +175,12 @@
           </div>
 
           <!-- Grade de Horários -->
-          <div id="agenda-grid-section" class="hidden">
+          <div id="agenda-grid-section" data-agenda-grid-target="gridSection" class="hidden">
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-700">
               <div class="flex items-center justify-between mb-4">
                 <h4 class="text-lg font-medium text-gray-900 dark:text-white">Grade de Horários</h4>
                 <button type="button"
-                        onclick="hideAgendaGrid()"
+                        data-action="click->agenda-grid#hideGrid"
                         class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -244,78 +244,3 @@
     </div>
   </div>
 </div>
-
-<script>
-function hideAgendaGrid() {
-  const gridSection = document.getElementById('agenda-grid-section');
-  if (gridSection) {
-    gridSection.classList.add('hidden');
-  }
-}
-
-function selectSlot(datetime, timeSlot) {
-
-  const professionalSelect = document.querySelector('select[name="professional_id"]');
-  const professionalId = professionalSelect?.value;
-
-
-  if (!professionalId) {
-    alert('Por favor, selecione um profissional antes de escolher o horário.');
-    return;
-  }
-
-  if (confirm(`Deseja reagendar para ${timeSlot}?`)) {
-
-    const gridSection = document.getElementById('agenda-grid-section');
-    if (gridSection) {
-      gridSection.classList.add('hidden');
-    }
-
-    const date = new Date(datetime);
-    const dateString = date.toISOString().split('T')[0];
-    const timeString = timeSlot.split(' - ')[0];
-
-
-    const dateInput = document.querySelector('[data-agenda-scheduler-target="dateSelect"]');
-    const timeInput = document.querySelector('[data-agenda-scheduler-target="timeSelect"]');
-    const datetimeSection = document.querySelector('[data-agenda-scheduler-target="datetimeSection"]');
-    const previewSection = document.querySelector('[data-agenda-scheduler-target="previewSection"]');
-    const submitButton = document.querySelector('[data-agenda-scheduler-target="submitButton"]');
-
-      dateInput: !!dateInput,
-      timeInput: !!timeInput,
-      datetimeSection: !!datetimeSection,
-      previewSection: !!previewSection,
-      submitButton: !!submitButton
-    });
-
-    if (dateInput) {
-      dateInput.value = dateString;
-    }
-
-    if (timeInput) {
-      timeInput.value = timeString;
-    }
-
-    if (datetimeSection) {
-      datetimeSection.classList.remove('hidden');
-    }
-
-    const scheduledDateTimeTarget = document.querySelector('[data-agenda-scheduler-target="scheduledDateTime"]');
-    if (scheduledDateTimeTarget) {
-      const formattedDate = new Date(dateString).toLocaleDateString('pt-BR');
-      scheduledDateTimeTarget.textContent = `${formattedDate} às ${timeString}`;
-    }
-
-    if (previewSection) {
-      previewSection.classList.remove('hidden');
-    }
-
-    if (submitButton) {
-      submitButton.disabled = false;
-    }
-
-  } else {
-  }
-}
-</script>

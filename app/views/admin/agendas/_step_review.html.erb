@@ -8,7 +8,7 @@
     <div class="space-y-6">
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Resumo da Agenda</h3>
-        
+
         <div class="space-y-4">
           <div class="flex items-center">
             <div class="w-3 h-3 rounded-full mr-3" style="background-color: <%= form.object.color_theme || '#3B82F6' %>"></div>
@@ -17,7 +17,7 @@
               <div class="text-sm text-gray-500"><%= form.object.service_type&.humanize || 'Tipo não definido' %></div>
             </div>
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span class="text-gray-500">Visibilidade:</span>
@@ -36,7 +36,7 @@
               <span class="ml-1 font-medium">Rascunho</span>
             </div>
           </div>
-          
+
           <% if form.object.notes.present? %>
             <div>
               <span class="text-sm text-gray-500">Observações:</span>
@@ -48,7 +48,7 @@
 
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Profissionais Vinculados</h3>
-        
+
         <div data-agendas--review-target="professionalsList" class="space-y-2">
           <% if form.object.professionals.any? %>
             <% form.object.professionals.includes(professional: :specialities).each do |user| %>
@@ -70,7 +70,7 @@
 
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Grade de Horários</h3>
-        
+
         <div class="space-y-3">
           <div class="text-sm">
             <span class="text-gray-500">Duração do atendimento:</span>
@@ -85,14 +85,13 @@
               <strong>Exemplo de horários:</strong> 09:00-09:50, 10:00-10:50, 11:00-11:50...
             </p>
           </div>
-          
+
           <div class="mt-4">
             <div class="text-sm text-gray-500 mb-2">Horários configurados:</div>
             <div data-agendas--review-target="workingHoursSummary" class="text-sm text-gray-900">
               Não configurado
             </div>
           </div>
-          <%= form.hidden_field :working_hours, value: (form.object.working_hours.present? ? form.object.working_hours.to_json : "") %>
         </div>
       </div>
     </div>
@@ -101,17 +100,17 @@
       <div class="bg-white border border-gray-200 rounded-lg p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-medium text-gray-900">Previsualização de Slots</h3>
-          <button type="button" 
+          <button type="button"
                   class="ta-btn ta-btn-primary ta-btn-sm"
                   data-action="click->agendas--review#generatePreview">
             Atualizar Preview
           </button>
         </div>
-        
+
         <div class="text-sm text-gray-600 mb-4">
           Próximos 14 dias - Slots disponíveis por profissional
         </div>
-        
+
         <div data-agendas--review-target="previewContainer" class="space-y-4 max-h-96 overflow-y-auto">
           <div class="text-center text-gray-500 py-8">
             <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

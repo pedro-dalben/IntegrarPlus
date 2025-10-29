@@ -182,22 +182,31 @@ class Agenda < ApplicationRecord
         'saturday' => 6
       }
 
-      weekdays = day_names.filter_map do |name, wday|
-        periods_arr = working[name]
-        next nil unless periods_arr.is_a?(Array) && periods_arr.any?
+      weekdays = day_names.filter_map do |name, _wday|
+        day_data = working[name]
+        next nil unless day_data.is_a?(Hash) && day_data['available'] == true
 
-        periods = periods_arr.map do |p|
-          s = p['start'] || p[:start]
-          e = p['end'] || p[:end]
-          { 'start' => s, 'end' => e }
-        end.select { |p| p['start'].present? && p['end'].present? }
+        start_time = day_data['start']
+        end_time = day_data['end']
+        next nil unless start_time.present? && end_time.present?
 
-        next nil if periods.empty?
+        [{ 'start' => start_time, 'end' => end_time }]
+      end.compact
 
-        { 'wday' => wday, 'periods' => periods }
+      if weekdays.any?
+        weekdays_with_wday = day_names.map do |name, wday|
+          day_data = working[name]
+          next nil unless day_data.is_a?(Hash) && day_data['available'] == true
+
+          start_time = day_data['start']
+          end_time = day_data['end']
+          next nil unless start_time.present? && end_time.present?
+
+          { 'wday' => wday, 'periods' => [{ 'start' => start_time, 'end' => end_time }] }
+        end.compact
+
+        working['weekdays'] = weekdays_with_wday
       end
-
-      working['weekdays'] = weekdays if weekdays.any?
     end
 
     working['slot_duration'] ||= slot_duration_minutes if slot_duration_minutes.present?
@@ -273,14 +282,18 @@ class Agenda < ApplicationRecord
       end
 
       day['periods'].each_with_index do |period, period_index|
-        unless period.is_a?(Hash) && period['start'].present? && period['end'].present?
-          errors.add(:working_hours, "período #{period_index + 1} do dia #{index + 1} deve ter start e end")
+        start_val = period['start'] || period['start_time']
+        end_val = period['end'] || period['end_time']
+
+        unless period.is_a?(Hash) && start_val.present? && end_val.present?
+          errors.add(:working_hours,
+                     "período #{period_index + 1} do dia #{index + 1} deve ter start/start_time e end/end_time")
           next
         end
 
         begin
-          start_time = Time.zone.parse(period['start'])
-          end_time = Time.zone.parse(period['end'])
+          start_time = Time.zone.parse(start_val)
+          end_time = Time.zone.parse(end_val)
 
           if end_time <= start_time
             errors.add(:working_hours,
@@ -294,10 +307,10 @@ class Agenda < ApplicationRecord
   end
 
   def validate_professionals_present
-    # Temporariamente desabilitado para permitir testes
-    # return unless agenda_professionals.empty? || agenda_professionals.none?(&:active?)
+    return if agenda_professionals.empty?
+    return if agenda_professionals.any?(&:active?)
 
-    # errors.add(:professionals, 'deve ter pelo menos um profissional ativo')
+    errors.add(:professionals, 'deve ter pelo menos um profissional ativo')
   end
 
   def set_default_working_hours

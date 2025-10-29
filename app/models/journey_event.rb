@@ -18,6 +18,10 @@ class JourneyEvent < ApplicationRecord
       "Anamnese agendada para #{Date.parse(data).strftime('%d/%m/%Y')}" if data
     when 'finished_anamnesis'
       'Anamnese concluída'
+    when 'cancelled_anamnesis'
+      'Anamnese cancelada'
+    when 'rescheduled_anamnesis'
+      'Anamnese reagendada'
     when 'status_changed'
       from = metadata['from']
       to = metadata['to']
@@ -35,6 +39,10 @@ class JourneyEvent < ApplicationRecord
       'calendar'
     when 'finished_anamnesis'
       'check-circle'
+    when 'cancelled_anamnesis'
+      'x-circle'
+    when 'rescheduled_anamnesis'
+      'calendar-days'
     when 'status_changed'
       'arrow-right'
     else

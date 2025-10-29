@@ -10,6 +10,9 @@ application.register('accordion', AccordionController);
 import AgendaDashboardController from './agenda_dashboard_controller';
 application.register('agenda-dashboard', AgendaDashboardController);
 
+import AgendaGridController from './agenda_grid_controller';
+application.register('agenda-grid', AgendaGridController);
+
 import AgendaSchedulerController from './agenda_scheduler_controller';
 application.register('agenda-scheduler', AgendaSchedulerController);
 

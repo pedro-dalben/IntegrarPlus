@@ -66,6 +66,13 @@ module Admin
           end
 
           scheduled_datetime = Time.zone.parse("#{scheduled_date} #{scheduled_time}")
+
+          if scheduled_datetime < Time.current
+            flash.now[:alert] = 'Não é possível agendar para um horário que já passou.'
+            render :schedule_anamnesis
+            return
+          end
+
           agenda = Agenda.find(agenda_id)
           professional_user = User.find(professional_id)
           professional = professional_user.professional
@@ -339,7 +346,11 @@ module Admin
       query
     end
 
-    helper_method :generate_time_slots, :is_slot_available?, :is_working_hour?
+    helper_method :generate_time_slots, :is_slot_available?, :is_working_hour?, :is_past_slot?
+
+    def is_past_slot?(datetime)
+      datetime < Time.current
+    end
 
     def generate_time_slots
       # Gerar slots baseado na configuração da agenda
@@ -374,21 +385,19 @@ module Admin
     end
 
     def is_slot_available?(datetime, professional = nil)
-      # Verificar se já existe um agendamento neste horário
+      return false if is_past_slot?(datetime)
+
       query = MedicalAppointment.where(scheduled_at: datetime)
 
-      # Se um profissional específico foi selecionado, verificar apenas para ele
-      # professional é um objeto Professional, não User
       query = query.where(professional: professional) if professional.present?
 
-      # Verificar se há conflitos de horário (considerando duração + buffer)
       if @agenda.present?
         duration_minutes = @agenda.slot_duration_minutes + @agenda.buffer_minutes
         start_time = datetime
         end_time = datetime + duration_minutes.minutes
 
         conflict_query = MedicalAppointment.where(
-          scheduled_at: start_time..end_time
+          'scheduled_at >= ? AND scheduled_at < ?', start_time, end_time
         )
 
         conflict_query = conflict_query.where(professional: professional) if professional.present?
@@ -400,30 +409,72 @@ module Admin
     end
 
     def is_working_hour?(date, time_slot)
-      # Verificar se é um horário de funcionamento da agenda
-      # Por enquanto, consideramos segunda a sexta, 08:00 às 17:00
       Rails.logger.debug { "🔍 Verificando horário: #{date} - #{time_slot}" }
 
-      if date.saturday? || date.sunday?
-        Rails.logger.debug { "❌ Fim de semana: #{date.strftime('%A')}" }
-        return false
+      if @selected_professional.present? && @agenda.present?
+        professional_record = @selected_professional.is_a?(User) ? @selected_professional.professional : @selected_professional
+
+        if professional_record.present?
+          availabilities = professional_record.professional_availabilities
+                                             .where(agenda: @agenda)
+                                             .for_day(date.wday)
+                                             .active
+
+          unless availabilities.empty?
+            slot_time = time_slot.split(' - ').first
+            hour, minute = slot_time.split(':').map(&:to_i)
+            slot_start_minutes = (hour * 60) + minute
+
+            return availabilities.any? do |availability|
+              availability.periods.any? do |period|
+                start_time = period['start'] || period['start_time']
+                end_time = period['end'] || period['end_time']
+                next false unless start_time.present? && end_time.present?
+
+                start_hour, start_min = start_time.split(':').map(&:to_i)
+                end_hour, end_min = end_time.split(':').map(&:to_i)
+                start_minutes = (start_hour * 60) + start_min
+                end_minutes = (end_hour * 60) + end_min
+
+                slot_start_minutes >= start_minutes && slot_start_minutes < end_minutes
+              end
+            end
+          end
+        end
+
+        # Fallback para horários da agenda
+        day_config = @agenda.working_hours['weekdays']&.find { |d| d['wday'] == date.wday }
+        return false if day_config.blank? || day_config['periods'].blank?
+
+        slot_time = time_slot.split(' - ').first
+        hour, minute = slot_time.split(':').map(&:to_i)
+        slot_start_minutes = (hour * 60) + minute
+
+        return day_config['periods'].any? do |period|
+          start_time = period['start'] || period['start_time']
+          end_time = period['end'] || period['end_time']
+          next false unless start_time.present? && end_time.present?
+
+          start_hour, start_min = start_time.split(':').map(&:to_i)
+          end_hour, end_min = end_time.split(':').map(&:to_i)
+          start_minutes = (start_hour * 60) + start_min
+          end_minutes = (end_hour * 60) + end_min
+
+          slot_start_minutes >= start_minutes && slot_start_minutes < end_minutes
+        end
+      else
+        if date.saturday? || date.sunday?
+          return false
+        end
+
+        hour = time_slot.split(' - ').first.split(':').first.to_i
+        minute = time_slot.split(' - ').first.split(':').last.to_i
+        total_minutes = (hour * 60) + minute
+        start_minutes = 8 * 60
+        end_minutes = 17 * 60
+
+        total_minutes >= start_minutes && total_minutes < end_minutes
       end
-
-      hour = time_slot.split(' - ').first.split(':').first.to_i
-      minute = time_slot.split(' - ').first.split(':').last.to_i
-
-      # Verificar se está dentro do horário de funcionamento (8h às 17h)
-      total_minutes = (hour * 60) + minute
-      start_minutes = 8 * 60  # 8:00
-      end_minutes = 17 * 60   # 17:00
-
-      is_working = total_minutes >= start_minutes && total_minutes < end_minutes
-      Rails.logger.debug do
-        "⏰ Horário #{time_slot} (#{hour}:#{minute.to_s.rjust(2,
-                                                              '0')}) é horário de trabalho: #{is_working}"
-      end
-
-      is_working
     end
 
     def portal_intake_params

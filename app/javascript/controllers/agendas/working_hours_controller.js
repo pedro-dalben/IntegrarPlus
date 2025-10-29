@@ -64,16 +64,18 @@ export default class extends Controller {
 
     const periodHtml = `
       <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-        <input type="time" 
+        <input type="time"
                class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                data-period-start
-               value="08:00">
+               value="08:00"
+               step="900">
         <span class="text-sm text-gray-500">até</span>
-        <input type="time" 
+        <input type="time"
                class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                data-period-end
-               value="12:00">
-        <button type="button" 
+               value="12:00"
+               step="900">
+        <button type="button"
                 class="text-red-600 hover:text-red-800"
                 data-action="click->agendas--working-hours#removePeriod">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +226,7 @@ export default class extends Controller {
 
     const exceptionHtml = `
       <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-        <input type="date" 
+        <input type="date"
                class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                data-exception-date>
         <select class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -232,7 +234,7 @@ export default class extends Controller {
           <option value="closed">Fechado</option>
           <option value="special">Horário Especial</option>
         </select>
-        <button type="button" 
+        <button type="button"
                 class="text-red-600 hover:text-red-800"
                 data-action="click->agendas--working-hours#removeException">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -344,18 +346,23 @@ export default class extends Controller {
     if (!periodsContainer) return;
 
     periods.forEach(period => {
+      const startTime = period.start || period.start_time || '08:00';
+      const endTime = period.end || period.end_time || '12:00';
+
       const periodHtml = `
         <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-          <input type="time" 
+          <input type="time"
                  class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                  data-period-start
-                 value="${period.start}">
+                 value="${startTime}"
+                 step="900">
           <span class="text-sm text-gray-500">até</span>
-          <input type="time" 
+          <input type="time"
                  class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                  data-period-end
-                 value="${period.end}">
-          <button type="button" 
+                 value="${endTime}"
+                 step="900">
+          <button type="button"
                   class="text-red-600 hover:text-red-800"
                   data-action="click->agendas--working-hours#removePeriod">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,7 +380,7 @@ export default class extends Controller {
 
     const exceptionHtml = `
       <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-        <input type="date" 
+        <input type="date"
                class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                data-exception-date
                value="${exception.date || ''}">
@@ -382,7 +389,7 @@ export default class extends Controller {
           <option value="closed" ${exception.closed ? 'selected' : ''}>Fechado</option>
           <option value="special" ${!exception.closed ? 'selected' : ''}>Horário Especial</option>
         </select>
-        <button type="button" 
+        <button type="button"
                 class="text-red-600 hover:text-red-800"
                 data-action="click->agendas--working-hours#removeException">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

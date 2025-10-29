@@ -18,6 +18,10 @@ module PortalIntakeComponents
         'text-green-500'
       when 'finished_anamnesis'
         'text-purple-500'
+      when 'cancelled_anamnesis'
+        'text-red-500'
+      when 'rescheduled_anamnesis'
+        'text-yellow-500'
       else
         'text-gray-500'
       end
@@ -31,6 +35,10 @@ module PortalIntakeComponents
         calendar_icon
       when 'finished_anamnesis'
         check_circle_icon
+      when 'cancelled_anamnesis'
+        x_circle_icon
+      when 'rescheduled_anamnesis'
+        calendar_icon
       else
         circle_icon
       end
@@ -60,6 +68,13 @@ module PortalIntakeComponents
     def circle_icon
       content_tag :svg, class: 'h-5 w-5', fill: 'currentColor', viewBox: '0 0 20 20' do
         content_tag :circle, '', cx: '10', cy: '10', r: '4'
+      end
+    end
+
+    def x_circle_icon
+      content_tag :svg, class: 'h-5 w-5', fill: 'currentColor', viewBox: '0 0 20 20' do
+        content_tag :path, '', 'fill-rule': 'evenodd',
+                               d: 'M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z', 'clip-rule': 'evenodd'
       end
     end
   end

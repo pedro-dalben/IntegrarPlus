@@ -43,10 +43,21 @@ export default class extends Controller {
     if (agendaId) {
       const agenda = this.agendas.find(a => a.id == agendaId);
       if (agenda) {
-        this.populateProfessionals(agenda.professionals);
-        this.showSection(this.professionalSectionTarget);
-        this.updatePreview('agenda', agenda.name);
-        this.showAgendaGrid(agendaId);
+        if (agenda.professionals && agenda.professionals.length > 0) {
+          this.populateProfessionals(agenda.professionals);
+          this.showSection(this.professionalSectionTarget);
+          this.updatePreview('agenda', agenda.name);
+          this.hideAgendaGrid();
+        } else {
+          // eslint-disable-next-line no-alert
+          alert(
+            'Esta agenda não possui profissionais cadastrados. Por favor, adicione profissionais à agenda primeiro.'
+          );
+          this.agendaSelectTarget.value = '';
+          this.hideAllSections();
+          this.clearPreview();
+          this.hideAgendaGrid();
+        }
       }
     } else {
       this.hideAllSections();
@@ -59,15 +70,26 @@ export default class extends Controller {
     const professionalId = this.professionalSelectTarget.value;
 
     if (professionalId) {
-      const professional = this.getSelectedProfessional();
-      if (professional) {
-        this.updatePreview('professional', professional.name);
-        this.reloadAgendaGrid();
+      if (professionalId === 'all') {
+        this.updatePreview('professional', 'Todos os Profissionais');
+        const agendaId = this.agendaSelectTarget.value;
+        if (agendaId) {
+          this.showAgendaGrid(agendaId);
+        }
+      } else {
+        const professional = this.getSelectedProfessional();
+        if (professional) {
+          this.updatePreview('professional', professional.name);
+          const agendaId = this.agendaSelectTarget.value;
+          if (agendaId) {
+            this.showAgendaGrid(agendaId);
+          }
+        }
       }
     } else {
       this.hideSectionsAfter('professional');
       this.clearPreview();
-      this.reloadAgendaGrid();
+      this.hideAgendaGrid();
     }
   }
 
@@ -84,6 +106,13 @@ export default class extends Controller {
     const select = this.professionalSelectTarget;
     select.innerHTML = '<option value="">Selecione um profissional</option>';
 
+    if (professionals.length > 1) {
+      const allOption = document.createElement('option');
+      allOption.value = 'all';
+      allOption.textContent = 'Todos os Profissionais';
+      select.appendChild(allOption);
+    }
+
     professionals.forEach(professional => {
       const option = document.createElement('option');
       option.value = professional.id;
@@ -99,6 +128,9 @@ export default class extends Controller {
 
   getSelectedProfessional() {
     const professionalId = this.professionalSelectTarget.value;
+    if (professionalId === 'all') {
+      return { id: 'all', name: 'Todos os Profissionais' };
+    }
     const agenda = this.getSelectedAgenda();
     if (agenda) {
       return agenda.professionals.find(p => p.id == professionalId);
@@ -196,6 +228,16 @@ export default class extends Controller {
     gridSection.classList.remove('hidden');
 
     const professionalId = this.professionalSelectTarget ? this.professionalSelectTarget.value : '';
+
+    if (professionalId === 'all') {
+      this.showAllProfessionalsGrid(agendaId);
+    } else {
+      this.showSingleProfessionalGrid(agendaId, professionalId);
+    }
+  }
+
+  showSingleProfessionalGrid(agendaId, professionalId) {
+    const gridContent = document.getElementById('agenda-grid-content');
     let url = `/admin/portal_intakes/${this.getPortalIntakeId()}/agenda_view?agenda_id=${agendaId}`;
     if (professionalId) {
       url += `&professional_id=${professionalId}`;
@@ -218,6 +260,50 @@ export default class extends Controller {
       .catch(error => {
         gridContent.innerHTML =
           '<div class="text-center py-4 text-red-600">Erro ao carregar a grade de horários</div>';
+      });
+  }
+
+  showAllProfessionalsGrid(agendaId) {
+    const gridContent = document.getElementById('agenda-grid-content');
+    const agenda = this.getSelectedAgenda();
+
+    if (!agenda || !agenda.professionals) {
+      gridContent.innerHTML =
+        '<div class="text-center py-4 text-red-600">Nenhum profissional encontrado</div>';
+      return;
+    }
+
+    Promise.all(
+      agenda.professionals.map(professional => {
+        const url = `/admin/portal_intakes/${this.getPortalIntakeId()}/agenda_view?agenda_id=${agendaId}&professional_id=${professional.id}`;
+        return fetch(url)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const agendaContent = doc.querySelector('.agenda-grid-content');
+            return { professional, content: agendaContent ? agendaContent.innerHTML : '' };
+          });
+      })
+    )
+      .then(results => {
+        let html = '<div class="space-y-6">';
+
+        results.forEach((result, index) => {
+          html += `
+          <div class="border-b border-gray-200 pb-4">
+            <h5 class="text-lg font-semibold text-gray-900 mb-2">${agenda.professionals[index].name}</h5>
+            <div>${result.content}</div>
+          </div>
+        `;
+        });
+
+        html += '</div>';
+        gridContent.innerHTML = html;
+      })
+      .catch(error => {
+        gridContent.innerHTML =
+          '<div class="text-center py-4 text-red-600">Erro ao carregar as grades de horários</div>';
       });
   }
 
