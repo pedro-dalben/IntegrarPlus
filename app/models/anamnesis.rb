@@ -38,6 +38,14 @@ class Anamnesis < ApplicationRecord
     integral: 'integral'
   }
 
+  enum :attendance_status, {
+    scheduled: 'scheduled',
+    attended: 'attended',
+    no_show: 'no_show',
+    cancelled: 'cancelled',
+    rescheduled: 'rescheduled'
+  }
+
   # Validações
   validates :performed_at, presence: true
   validates :status, presence: true
@@ -183,6 +191,50 @@ class Anamnesis < ApplicationRecord
       # Criar beneficiário se veio do portal
       create_beneficiary_from_portal_intake if portal_intake_id?
     end
+  end
+
+  def marcar_como_compareceu!(professional)
+    update!(
+      attendance_status: 'attended',
+      attended_at: Time.current,
+      updated_by_professional: professional
+    )
+  end
+
+  def marcar_como_nao_compareceu!(professional, reason = nil)
+    update!(
+      attendance_status: 'no_show',
+      no_show_at: Time.current,
+      no_show_reason: reason,
+      updated_by_professional: professional
+    )
+  end
+
+  def cancelar!(professional, reason)
+    update!(
+      attendance_status: 'cancelled',
+      cancelled_at: Time.current,
+      cancellation_reason: reason,
+      status: 'pendente',
+      updated_by_professional: professional
+    )
+  end
+
+  def reagendar!(professional, new_datetime)
+    update!(
+      attendance_status: 'rescheduled',
+      performed_at: new_datetime,
+      status: 'pendente',
+      updated_by_professional: professional
+    )
+  end
+
+  def pode_marcar_comparecimento?
+    scheduled? && (pendente? || em_andamento?)
+  end
+
+  def pode_reagendar?
+    no_show? || cancelled?
   end
 
   def specialties_array

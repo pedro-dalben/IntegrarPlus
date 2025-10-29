@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_28_205503) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_29_130606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -159,6 +159,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_28_205503) do
     t.bigint "updated_by_professional_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "attendance_status", default: "scheduled"
+    t.datetime "attended_at"
+    t.datetime "no_show_at"
+    t.datetime "cancelled_at"
+    t.text "cancellation_reason"
+    t.text "no_show_reason"
+    t.index ["attendance_status"], name: "index_anamneses_on_attendance_status"
     t.index ["beneficiary_id", "status"], name: "index_anamneses_on_beneficiary_id_and_status"
     t.index ["beneficiary_id"], name: "index_anamneses_on_beneficiary_id"
     t.index ["created_at"], name: "index_anamneses_on_created_at"

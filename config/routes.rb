@@ -100,9 +100,15 @@ Rails.application.routes.draw do
       resources :anamneses, except: [:index]
     end
 
-    resources :anamneses, only: %i[index show] do
+    resources :anamneses, only: %i[index show edit update] do
       member do
+        patch :start
         patch :complete
+        patch :mark_attended
+        patch :mark_no_show
+        patch :cancel_anamnesis
+        get :reschedule_form
+        patch :reschedule
       end
       collection do
         get :today

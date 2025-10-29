@@ -149,14 +149,14 @@
       </div>
 
       <!-- Navigation Arrows -->
-      <button class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200 z-10" 
+      <button class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200 z-10"
               data-action="click->carousel#previous"
               aria-label="Anterior">
         <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       </button>
-      
+
       <button class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200 z-10"
               data-action="click->carousel#next"
               aria-label="Próximo">
@@ -177,3 +177,72 @@
     </div>
   </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🎠 Script inline do carrossel carregado!');
+
+  const carousel = document.querySelector('[data-controller="carousel"]');
+  if (!carousel) {
+    console.log('❌ Carrossel não encontrado');
+    return;
+  }
+
+  const container = carousel.querySelector('.flex.space-x-8');
+  const btnNext = carousel.querySelector('[data-action="click->carousel#next"]');
+  const btnPrev = carousel.querySelector('[data-action="click->carousel#previous"]');
+
+  console.log('📦 Elementos:', { carousel, container, btnNext, btnPrev });
+
+  let currentIndex = 0;
+  const itemWidth = 320;
+  const gap = 32;
+
+  function getVisibleItems() {
+    const containerWidth = carousel.querySelector('.overflow-hidden')?.offsetWidth || carousel.offsetWidth;
+    return Math.max(1, Math.floor(containerWidth / (itemWidth + gap)));
+  }
+
+  function scrollToIndex() {
+    const scrollAmount = currentIndex * (itemWidth + gap);
+    container.style.transform = `translateX(-${scrollAmount}px)`;
+    console.log('✅ Movido para índice:', currentIndex);
+  }
+
+  if (btnNext) {
+    btnNext.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('➡️ NEXT CLICADO (vanilla JS)!');
+
+      const totalItems = container.children.length;
+      const visibleItems = getVisibleItems();
+      const maxIndex = Math.max(0, totalItems - visibleItems);
+
+      if (currentIndex < maxIndex) {
+        currentIndex++;
+        scrollToIndex();
+      } else {
+        console.log('⚠️ Já está no fim');
+      }
+    });
+  }
+
+  if (btnPrev) {
+    btnPrev.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('⬅️ PREV CLICADO (vanilla JS)!');
+
+      if (currentIndex > 0) {
+        currentIndex--;
+        scrollToIndex();
+      } else {
+        console.log('⚠️ Já está no início');
+      }
+    });
+  }
+
+  console.log('✅ Carrossel inicializado com vanilla JS!');
+});
+</script>

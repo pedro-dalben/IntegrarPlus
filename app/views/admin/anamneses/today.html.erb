@@ -111,7 +111,67 @@
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <% if anamnesis.pode_marcar_comparecimento? && current_user.permit?('anamneses.edit') %>
+                    <%= link_to mark_attended_admin_anamnese_path(anamnesis),
+                        method: :patch,
+                        class: "bg-green-600 shadow-theme-xs hover:bg-green-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition",
+                        title: "Paciente Compareceu",
+                        data: {
+                          turbo_method: :patch,
+                          confirm: "Confirmar que o paciente compareceu?"
+                        } do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      Compareceu
+                    <% end %>
+
+                    <%= link_to mark_no_show_admin_anamnese_path(anamnesis),
+                        method: :patch,
+                        class: "bg-red-600 shadow-theme-xs hover:bg-red-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition",
+                        title: "Paciente Não Compareceu",
+                        data: {
+                          turbo_method: :patch,
+                          confirm: "Confirmar que o paciente NÃO compareceu?"
+                        } do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      Não Compareceu
+                    <% end %>
+                  <% end %>
+
+                  <% if anamnesis.pode_ser_iniciada? && !anamnesis.pode_marcar_comparecimento? && current_user.permit?('anamneses.edit') %>
+                    <%= link_to start_admin_anamnese_path(anamnesis),
+                        method: :patch,
+                        class: "bg-blue-600 shadow-theme-xs hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition",
+                        title: "Iniciar Atendimento",
+                        data: {
+                          turbo_method: :patch
+                        } do %>
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      Iniciar Atendimento
+                    <% end %>
+                  <% end %>
+
+                  <% if anamnesis.attended? %>
+                    <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                      ✓ Compareceu
+                    </span>
+                  <% elsif anamnesis.no_show? %>
+                    <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
+                      ✗ Não Compareceu
+                    </span>
+                  <% elsif anamnesis.cancelled? %>
+                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-900 dark:text-gray-300">
+                      Cancelada
+                    </span>
+                  <% end %>
+
                   <% if anamnesis.beneficiary.present? %>
                     <%= link_to [:admin, anamnesis.beneficiary, anamnesis], class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]", title: "Ver detalhes" do %>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,8 +202,57 @@
                         </svg>
                       <% end %>
                     <% end %>
+                  <% else %>
+                    <% if anamnesis.em_andamento? && current_user.permit?('anamneses.edit') %>
+                      <%= link_to edit_admin_anamnese_path(anamnesis), class: "bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition", title: "Editar" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Editar
+                      <% end %>
+                    <% end %>
                   <% end %>
                 </div>
+
+                <% if anamnesis.no_show? %>
+                  <div id="no-show-options-<%= anamnesis.id %>" class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                    <p class="text-sm text-yellow-800 dark:text-yellow-300 mb-3">
+                      <strong>Paciente não compareceu.</strong> Escolha uma ação:
+                    </p>
+                    <div class="flex gap-3">
+                      <%= link_to reschedule_form_admin_anamnese_path(anamnesis),
+                          class: "bg-blue-600 shadow-theme-xs hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition" do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Reagendar
+                      <% end %>
+
+                      <%= link_to "#",
+                          class: "bg-red-600 shadow-theme-xs hover:bg-red-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition",
+                          data: {
+                            controller: "toggle",
+                            action: "click->toggle#toggle",
+                            toggle_target_value: "cancel-form-#{anamnesis.id}"
+                          } do %>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cancelar
+                      <% end %>
+                    </div>
+
+                    <div id="cancel-form-<%= anamnesis.id %>" class="hidden mt-3">
+                      <%= form_with url: cancel_anamnesis_admin_anamnese_path(anamnesis), method: :patch, local: true do |f| %>
+                        <div class="mb-3">
+                          <%= f.label :reason, "Motivo do cancelamento:", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+                          <%= f.text_area :reason, rows: 2, required: true, class: "w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm" %>
+                        </div>
+                        <%= f.submit "Confirmar Cancelamento", class: "bg-red-600 shadow-theme-xs hover:bg-red-700 inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition" %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
               </div>
             </div>
           <% end %>

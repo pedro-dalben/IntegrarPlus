@@ -2,7 +2,7 @@
 
 module Admin
   class AnamnesesController < BaseController
-    before_action :set_anamnesis, only: %i[show edit update complete]
+    before_action :set_anamnesis, only: %i[show edit update start complete mark_attended mark_no_show cancel_anamnesis]
     before_action :convert_date_params, only: %i[create update]
 
     def index
@@ -89,6 +89,16 @@ module Admin
       end
     end
 
+    def start
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      if @anamnesis.iniciar!(current_user)
+        redirect_to edit_admin_anamnese_path(@anamnesis), notice: 'Atendimento iniciado! Preencha os dados da anamnese.'
+      else
+        redirect_to admin_anamneses_today_path, alert: 'Não foi possível iniciar o atendimento.'
+      end
+    end
+
     def complete
       authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
 
@@ -135,6 +145,67 @@ module Admin
       respond_to do |format|
         format.html
         format.json { render json: { results: @anamneses } }
+      end
+    end
+
+    def mark_attended
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      if @anamnesis.marcar_como_compareceu!(current_user)
+        redirect_to admin_anamneses_today_path, notice: 'Comparecimento registrado com sucesso!'
+      else
+        redirect_to admin_anamneses_today_path, alert: 'Não foi possível registrar o comparecimento.'
+      end
+    end
+
+    def mark_no_show
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      reason = params[:reason]
+      if @anamnesis.marcar_como_nao_compareceu!(current_user, reason)
+        redirect_to admin_anamneses_today_path,
+                    notice: 'Falta registrada. Escolha reagendar ou cancelar.',
+                    flash: { show_reschedule_options: @anamnesis.id }
+      else
+        redirect_to admin_anamneses_today_path, alert: 'Não foi possível registrar a falta.'
+      end
+    end
+
+    def cancel_anamnesis
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      reason = params[:reason]
+      if reason.blank?
+        redirect_to admin_anamneses_today_path, alert: 'É necessário informar o motivo do cancelamento.'
+        return
+      end
+
+      if @anamnesis.cancelar!(current_user, reason)
+        redirect_to admin_anamneses_today_path, notice: 'Anamnese cancelada com sucesso!'
+      else
+        redirect_to admin_anamneses_today_path, alert: 'Não foi possível cancelar a anamnese.'
+      end
+    end
+
+    def reschedule_form
+      @anamnesis = Anamnesis.find(params[:id])
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+    end
+
+    def reschedule
+      @anamnesis = Anamnesis.find(params[:id])
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      new_datetime = params[:new_datetime]
+      if new_datetime.blank?
+        redirect_to admin_anamneses_today_path, alert: 'É necessário informar a nova data e hora.'
+        return
+      end
+
+      if @anamnesis.reagendar!(current_user, new_datetime)
+        redirect_to admin_anamneses_today_path, notice: 'Anamnese reagendada com sucesso!'
+      else
+        redirect_to admin_anamneses_today_path, alert: 'Não foi possível reagendar a anamnese.'
       end
     end
 

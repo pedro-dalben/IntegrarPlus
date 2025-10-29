@@ -1,0 +1,53 @@
+<% content_for :title, "Reagendar Anamnese - #{@anamnesis.beneficiary_name}" %>
+
+<%= render ::Layouts::AdminComponent.new do |c| %>
+  <% c.with_actions do %>
+    <%= link_to admin_anamneses_today_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar
+    <% end %>
+  <% end %>
+
+  <div class="space-y-6">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Reagendar Anamnese</h2>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <strong>Paciente:</strong> <%= @anamnesis.beneficiary_name %>
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          <strong>Data/Hora Original:</strong> <%= @anamnesis.performed_at.strftime("%d/%m/%Y às %H:%M") %>
+        </p>
+      </div>
+
+      <div class="p-4 sm:p-6">
+        <%= form_with url: reschedule_admin_anamnese_path(@anamnesis), method: :patch, local: true do |f| %>
+          <div class="space-y-4">
+            <div>
+              <%= f.label :new_datetime, "Nova Data e Hora", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+              <%= f.datetime_local_field :new_datetime,
+                  value: (@anamnesis.performed_at + 1.day).strftime("%Y-%m-%dT%H:%M"),
+                  min: Time.current.strftime("%Y-%m-%dT%H:%M"),
+                  required: true,
+                  class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Escolha a nova data e hora para a anamnese.
+              </p>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+              <%= f.submit "Confirmar Reagendamento",
+                  class: "bg-blue-600 shadow-theme-xs hover:bg-blue-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition" %>
+
+              <%= link_to "Cancelar",
+                  admin_anamneses_today_path,
+                  class: "shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

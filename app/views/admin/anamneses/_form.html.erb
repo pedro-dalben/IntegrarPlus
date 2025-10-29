@@ -34,39 +34,105 @@
   </div>
 
   <!-- Dados do Beneficiário (Read-only) -->
-  <div class="bg-white shadow rounded-lg">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <h3 class="text-lg font-medium text-gray-900">Dados do Beneficiário</h3>
-    </div>
-    <div class="px-6 py-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome</label>
-          <p class="text-gray-900 dark:text-gray-100 font-medium"><%= beneficiary.name %></p>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
-          <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Idade</label>
-          <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.age %> anos</p>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
-          <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.cpf %></p>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código Integrar</label>
-          <p class="text-gray-900 dark:text-gray-100 font-mono"><%= beneficiary.integrar_code %></p>
-        </div>
-        <div>
-          <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
-          <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.formatted_phone %></p>
+  <% if beneficiary.present? %>
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Dados do Beneficiário</h3>
+      </div>
+      <div class="px-6 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome</label>
+            <p class="text-gray-900 dark:text-gray-100 font-medium"><%= beneficiary.name %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
+            <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Idade</label>
+            <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.age %> anos</p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
+            <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.cpf %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código Integrar</label>
+            <p class="text-gray-900 dark:text-gray-100 font-mono"><%= beneficiary.integrar_code %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
+            <p class="text-gray-900 dark:text-gray-100"><%= beneficiary.formatted_phone %></p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% elsif anamnesis.portal_intake.present? %>
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Dados do Beneficiário (Portal)</h3>
+          <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+            Novo
+          </span>
+        </div>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Após preencher e concluir a anamnese, o beneficiário será criado automaticamente.
+        </p>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome</label>
+            <p class="text-gray-900 dark:text-gray-100 font-medium"><%= anamnesis.portal_intake.nome || anamnesis.portal_intake.beneficiary_name %></p>
+          </div>
+          <% if anamnesis.portal_intake.data_nascimento.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.data_nascimento.strftime("%d/%m/%Y") rescue anamnesis.portal_intake.data_nascimento %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.cpf.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.cpf %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.plan_name.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Plano de Saúde</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.plan_name %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.card_code.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código do Cartão</label>
+              <p class="text-gray-900 dark:text-gray-100 font-mono"><%= anamnesis.portal_intake.card_code %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.telefone_responsavel.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.telefone_formatado %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.responsavel.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Responsável</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.responsavel %></p>
+            </div>
+          <% end %>
+          <% if anamnesis.portal_intake.endereco.present? %>
+            <div class="md:col-span-3">
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Endereço</label>
+              <p class="text-gray-900 dark:text-gray-100"><%= anamnesis.portal_intake.endereco %></p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 
   <!-- Dados da Família -->
   <div class="bg-white shadow rounded-lg">
