@@ -3,7 +3,7 @@
     <label class="ta-label" for="professional-search">
       Buscar <%= multiple? ? "Profissionais" : "Profissional" %>
     </label>
-    
+
     <% if searchable? %>
       <div class="relative">
         <select multiple data-professional-selector-target="tomselect" data-url="/admin/agendas/search_professionals"></select>
@@ -23,22 +23,26 @@
   <!-- Hidden inputs para enviar os dados do formulário -->
   <div data-professional-selector-target="hiddenInputs">
     <% if multiple? %>
-      <% selected_professionals.each do |professional| %>
-        <input 
-          type="hidden" 
-          name="agenda[professional_ids][]" 
-          value="<%= professional.id %>"
-          data-professional-id="<%= professional.id %>"
-          data-professional-name="<%= professional.name %>"
-          data-professional-specialties="<%= professional.professional&.specialities&.pluck(:name)&.join(', ') %>"
+      <% selected_professionals.each do |prof| %>
+        <% pid = professional_id_of(prof) %>
+        <% pname = professional_name_of(prof) %>
+        <% pspecs = professional_specialties_of(prof).join(', ') %>
+        <input
+          type="hidden"
+          name="agenda[professional_ids][]"
+          value="<%= pid %>"
+          data-professional-id="<%= pid %>"
+          data-professional-name="<%= pname %>"
+          data-professional-specialties="<%= pspecs %>"
         />
       <% end %>
     <% else %>
       <% if selected_professionals.first %>
-        <input 
-          type="hidden" 
-          name="agenda[professional_id]" 
-          value="<%= selected_professionals.first.id %>"
+        <% pid = professional_id_of(selected_professionals.first) %>
+        <input
+          type="hidden"
+          name="agenda[professional_id]"
+          value="<%= pid %>"
         />
       <% end %>
     <% end %>

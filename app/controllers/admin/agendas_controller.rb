@@ -156,9 +156,8 @@ module Admin
     end
 
     def search_professionals
-      @professionals = User.professionals
+      @professionals = User.joins(:professional)
                            .includes(professional: :specialities)
-                           .joins(:professional)
                            .where(professionals: { active: true })
 
       if params[:search].present?
@@ -177,8 +176,8 @@ module Admin
             professionals: @professionals.map do |professional|
               {
                 id: professional.id,
-                name: professional.name,
-                specialties: professional.professional.specialities.pluck(:name)
+                name: professional.respond_to?(:full_name) && professional.full_name.present? ? professional.full_name : professional.name,
+                specialties: professional.professional&.specialities&.pluck(:name) || []
               }
             end
           }
