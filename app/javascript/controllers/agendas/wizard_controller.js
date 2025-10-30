@@ -457,11 +457,33 @@ export default class extends Controller {
     if (!target) return;
     const { step } = target.dataset;
     if (!step) return;
-    this.currentStepValue = step;
-    this.showStep(step);
-    this.updateNavigation();
-    this.updateTabs();
-    this.updateStepInput();
+
+    const form = this.element.querySelector('form');
+    if (!form) return;
+
+    const requestedInput =
+      this.element.querySelector('input[name="requested_step"]') ||
+      (() => {
+        const i = document.createElement('input');
+        i.type = 'hidden';
+        i.name = 'requested_step';
+        this.element.appendChild(i);
+        return i;
+      })();
+    requestedInput.value = step;
+
+    const commitInput = document.createElement('input');
+    commitInput.type = 'hidden';
+    commitInput.name = 'commit';
+    commitInput.value = 'Salvar e Continuar';
+    form.appendChild(commitInput);
+
+    try {
+      form.requestSubmit ? form.requestSubmit() : form.submit();
+    } finally {
+      // não remover requested_step; servidor pode precisar em re-render
+      commitInput.remove();
+    }
   }
 
   updateStepInput() {

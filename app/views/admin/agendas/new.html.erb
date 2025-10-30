@@ -60,6 +60,7 @@
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
           <%= hidden_field_tag :step, 'metadata', data: { 'agendas--wizard-target': 'currentStepInput' } %>
+          <%= hidden_field_tag :requested_step, params[:requested_step] %>
           <button type="button"
                   data-action="click->agendas--wizard#previousStep"
                   data-agendas--wizard-target="previousBtn"

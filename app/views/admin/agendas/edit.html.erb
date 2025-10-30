@@ -40,6 +40,33 @@
             </div>
           <% end %>
 
+          <% if defined?(@impacts) && @impacts.present? %>
+            <div class="ta-alert ta-alert-warning mb-6">
+              <div class="flex items-start gap-3">
+                <div>
+                  <h4 class="text-sm font-medium">Agendamentos futuros impactados</h4>
+                  <p class="text-xs text-gray-600">Estes agendamentos não se encaixam na nova grade. Cancele ou reagende antes de continuar.</p>
+                </div>
+              </div>
+              <div class="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white">
+                <% @impacts.first(10).each do |impact| %>
+                  <div class="flex items-center justify-between p-3">
+                    <div class="text-sm">
+                      <div class="font-medium">#<%= impact.appointment_id %> • <%= l(impact.scheduled_at, format: :short) %></div>
+                      <div class="text-gray-600"><%= impact.professional_name %> • <%= impact.reason %></div>
+                    </div>
+                    <div>
+                      <%= link_to "Abrir", admin_medical_appointment_path(impact.appointment_id), class: "text-blue-600 hover:text-blue-800 text-sm" %>
+                    </div>
+                  </div>
+                <% end %>
+                <% if @impacts.size > 10 %>
+                  <div class="p-3 text-xs text-gray-500">E mais <%= @impacts.size - 10 %> agendamento(s)...</div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
           <div data-agendas--wizard-target="step" data-step="metadata" class="<%= 'hidden' unless @current_step == 'metadata' %>">
             <%= render 'step_metadata', form: form %>
           </div>
@@ -58,6 +85,7 @@
 
           <div class="flex flex-col gap-3 sm:flex-row sm:justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
             <%= hidden_field_tag :step, @current_step, data: { 'agendas--wizard-target': 'currentStepInput' } %>
+            <%= hidden_field_tag :requested_step, params[:requested_step] %>
             <button type="button"
                     data-action="click->agendas--wizard#previousStep"
                     data-agendas--wizard-target="previousBtn"

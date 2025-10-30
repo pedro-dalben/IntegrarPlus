@@ -6,7 +6,7 @@ class EventAvailabilityService
   end
 
   def check_availability(start_time, end_time)
-    conflicting_events = Event.available_slots(@professional_id, start_time, end_time)
+    conflicting_events = Event.active_in_time_range(@professional_id, start_time, end_time)
 
     {
       professional_id: @professional_id,
@@ -26,7 +26,7 @@ class EventAvailabilityService
       slot_end = current_time + duration_minutes.minutes
 
       if slot_end <= end_date.end_of_day
-        conflicting_events = Event.available_slots(@professional_id, current_time, slot_end)
+        conflicting_events = Event.active_in_time_range(@professional_id, current_time, slot_end)
 
         if conflicting_events.empty?
           slots << {
@@ -138,7 +138,7 @@ class EventAvailabilityService
     total_minutes = ((end_time - start_time) / 1.minute).to_i
     available_minutes = total_minutes
 
-    conflicting_events = Event.available_slots(@professional_id, start_time, end_time)
+    conflicting_events = Event.active_in_time_range(@professional_id, start_time, end_time)
 
     conflicting_events.each do |event|
       overlap_start = [start_time, event.start_time].max

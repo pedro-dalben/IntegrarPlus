@@ -40,6 +40,12 @@ class Event < ApplicationRecord
       .active_events
   }
 
+  scope :active_in_time_range, lambda { |professional_id, start_time, end_time|
+    where(professional_id: professional_id)
+      .in_time_range(start_time, end_time)
+      .active_events
+  }
+
   def duration_minutes
     ((end_time - start_time) / 1.minute).to_i
   end

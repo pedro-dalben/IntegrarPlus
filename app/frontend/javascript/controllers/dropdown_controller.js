@@ -5,10 +5,41 @@ export default class extends Controller {
 
   connect() {
     this.closeDropdown = this.closeDropdown.bind(this);
+
+    if (this.hasPanelTarget) {
+      const hasActiveItem = !!this.panelTarget.querySelector('.menu-item.active');
+      const startsOpen = hasActiveItem || !this.panelTarget.classList.contains('hidden');
+
+      if (startsOpen) {
+        this.panelTarget.classList.remove('hidden');
+        if (this.hasButtonTarget) {
+          this.buttonTarget.setAttribute('aria-expanded', 'true');
+        } else {
+          this.element.setAttribute('aria-expanded', 'true');
+        }
+        if (this.hasArrowTarget) {
+          this.arrowTarget.classList.add('rotate-180');
+        }
+      } else {
+        this.panelTarget.classList.add('hidden');
+        if (this.hasButtonTarget) {
+          this.buttonTarget.setAttribute('aria-expanded', 'false');
+        } else {
+          this.element.setAttribute('aria-expanded', 'false');
+        }
+        if (this.hasArrowTarget) {
+          this.arrowTarget.classList.remove('rotate-180');
+        }
+      }
+    }
+
+    this._onTurboLoad = () => this.closeDropdown();
+    document.addEventListener('turbo:load', this._onTurboLoad);
   }
 
   toggle(event) {
     event.preventDefault();
+    if (!this.hasPanelTarget) return;
     const isOpen = this.panelTarget.classList.contains('hidden');
 
     if (isOpen) {
@@ -19,6 +50,7 @@ export default class extends Controller {
   }
 
   openDropdown() {
+    if (!this.hasPanelTarget) return;
     this.panelTarget.classList.remove('hidden');
 
     // Atualiza aria-expanded
@@ -41,11 +73,11 @@ export default class extends Controller {
     // Adiciona listener para click fora
     document.addEventListener('click', this.closeDropdown);
 
-    // Fecha em turbo:load
-    document.addEventListener('turbo:load', this.closeDropdown);
+    document.addEventListener('turbo:render', this.closeDropdown);
   }
 
   closeDropdown(event) {
+    if (!this.hasPanelTarget) return;
     // Se foi um click dentro do dropdown, não fechar
     if (event && this.element.contains(event.target)) {
       return;
@@ -72,7 +104,7 @@ export default class extends Controller {
 
     // Remove listeners
     document.removeEventListener('click', this.closeDropdown);
-    document.removeEventListener('turbo:load', this.closeDropdown);
+    document.removeEventListener('turbo:render', this.closeDropdown);
   }
 
   handleKeydown(event) {
@@ -86,6 +118,10 @@ export default class extends Controller {
 
   disconnect() {
     document.removeEventListener('click', this.closeDropdown);
-    document.removeEventListener('turbo:load', this.closeDropdown);
+    document.removeEventListener('turbo:render', this.closeDropdown);
+    if (this._onTurboLoad) {
+      document.removeEventListener('turbo:load', this._onTurboLoad);
+      this._onTurboLoad = null;
+    }
   }
 }

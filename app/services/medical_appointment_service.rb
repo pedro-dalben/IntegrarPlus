@@ -30,6 +30,8 @@ class MedicalAppointmentService
       cancelled_at: Time.current
     )
 
+    appointment.event&.update!(status: :cancelled)
+
     appointment.send_notifications
     NotificationService.send_appointment_notification(appointment, 'cancelled')
     cancel_reminders(appointment)
@@ -46,6 +48,15 @@ class MedicalAppointmentService
       rescheduled_at: Time.current
     )
 
+    if appointment.event
+      duration = appointment.duration_minutes || 60
+      appointment.event.update!(
+        start_time: new_time,
+        end_time: new_time + duration.minutes,
+        status: :active
+      )
+    end
+
     appointment.send_notifications
     NotificationService.send_appointment_notification(appointment, 'rescheduled')
     reschedule_reminders(appointment, old_time, new_time)
@@ -58,6 +69,8 @@ class MedicalAppointmentService
       completed_at: Time.current,
       completion_notes: notes
     )
+
+    appointment.event&.update!(status: :completed)
 
     appointment.send_notifications
     NotificationService.send_appointment_notification(appointment, 'completed')

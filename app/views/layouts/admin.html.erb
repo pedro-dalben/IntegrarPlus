@@ -17,7 +17,9 @@
     <%= vite_client_tag %>
     <%= vite_stylesheet_tag "application" %>
     <%= vite_javascript_tag "entrypoints/application" %>
-    <script type="importmap">{"imports":{}}</script>
+    <% if Rails.env.development? %>
+      <script type="importmap">{"imports":{}}</script>
+    <% end %>
   </head>
 
   <body class="bg-gray-50 dark:bg-gray-900"

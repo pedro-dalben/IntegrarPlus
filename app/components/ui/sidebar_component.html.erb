@@ -26,10 +26,12 @@
           <% menu_items.each do |item| %>
             <li>
               <% if item[:type] == 'dropdown' %>
+                <% is_open = item[:items].any? { |subitem| subitem[:active] } %>
                 <div class="dropdown-container" data-controller="dropdown">
                   <button
                     type="button"
                     data-action="click->dropdown#toggle"
+                    aria-expanded="<%= is_open ? 'true' : 'false' %>"
                     class="menu-item group flex items-center justify-between w-full <%= 'active' if item[:active] %>"
                   >
                     <div class="flex items-center gap-3">
@@ -38,14 +40,14 @@
                         <%= item[:title] %>
                       </span>
                     </div>
-                    <svg class="w-4 h-4 transition-transform duration-200" data-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 shrink-0 transition-transform duration-200 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-200 <%= 'rotate-180' if is_open %>" data-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                   </button>
 
                   <div
                     data-dropdown-target="panel"
-                    class="hidden"
+                    class="<%= is_open ? '' : 'hidden' %>"
                   >
                     <% item[:items].each do |subitem| %>
                       <% if user_can_access?(subitem[:permission]) %>

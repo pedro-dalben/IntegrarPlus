@@ -429,15 +429,17 @@ module Admin
       return false if is_past_slot?(datetime)
 
       query = MedicalAppointment.where(scheduled_at: datetime)
+                                .where.not(status: %w[cancelled no_show])
 
       query = query.where(professional: professional) if professional.present?
 
       if @agenda.present?
-        duration_minutes = @agenda.slot_duration_minutes + @agenda.buffer_minutes
+        duration_minutes = @agenda.slot_duration_minutes
         start_time = datetime
         end_time = datetime + duration_minutes.minutes
 
         conflict_query = MedicalAppointment.where(scheduled_at: start_time...end_time)
+                                           .where.not(status: %w[cancelled no_show])
 
         conflict_query = conflict_query.where(professional: professional) if professional.present?
 

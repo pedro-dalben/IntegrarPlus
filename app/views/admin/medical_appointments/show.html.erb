@@ -30,7 +30,7 @@
           <div>
             <dt class="text-sm font-medium text-gray-500">Profissional</dt>
             <dd class="mt-1 text-sm text-gray-900">
-              <%= @medical_appointment.professional.name %>
+              <%= @medical_appointment.professional&.full_name || @medical_appointment.professional&.name %>
             </dd>
           </div>
           <div>

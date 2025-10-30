@@ -70,6 +70,27 @@ module Admin
     def update
       @agenda.professional_ids = params[:professional_ids] if params[:professional_ids].present?
 
+      incoming_working = params.dig(:agenda, :working_hours)
+      if incoming_working.present?
+        guard = AgendaUpdateGuardService.new(@agenda, incoming_working)
+        impacts = guard.impacted_future_appointments
+        if impacts.any?
+          @current_step = params[:step] || 'metadata'
+          begin
+            @agenda.working_hours = JSON.parse(incoming_working)
+          rescue JSON::ParserError
+            @agenda.working_hours = incoming_working
+          end
+          @impacts = impacts
+          first = impacts.first
+          msg = "Atualização bloqueada: #{impacts.count} agendamento(s) futuro(s) seriam impactados. Ex.: ##{first.appointment_id} em #{I18n.l(
+            first.scheduled_at, format: :short
+          )} (#{first.professional_name}). Cancele/reagende antes de prosseguir."
+          flash.now[:alert] = msg
+          return render :edit, status: :unprocessable_entity
+        end
+      end
+
       if @agenda.update(agenda_params.merge(updated_by: current_user))
         if params[:commit] == 'Salvar e Continuar'
           next_step = determine_next_step
@@ -78,6 +99,8 @@ module Admin
           @agenda.update!(status: :active)
           redirect_to admin_agenda_path(@agenda), notice: 'Agenda ativada com sucesso.'
         else
+          # Sincronizar disponibilidades dos profissionais
+          AgendaProfessionalSyncJob.perform_later(@agenda.id)
           redirect_to admin_agenda_path(@agenda), notice: 'Agenda atualizada com sucesso.'
         end
       else
@@ -284,6 +307,10 @@ module Admin
     end
 
     def determine_next_step
+      steps = %w[metadata professionals working_hours review]
+      requested = params[:requested_step]
+      return requested if requested.present? && steps.include?(requested)
+
       case params[:step]
       when 'metadata'
         'professionals'

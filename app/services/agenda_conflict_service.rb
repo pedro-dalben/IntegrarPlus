@@ -39,7 +39,7 @@ class AgendaConflictService
   end
 
   def self.check_event_conflicts(professional, start_time, end_time)
-    conflicting_events = Event.available_slots(professional.id, start_time, end_time)
+    conflicting_events = Event.active_in_time_range(professional.id, start_time, end_time)
 
     conflicting_events.map do |event|
       {
@@ -81,7 +81,7 @@ class AgendaConflictService
 
     return conflicts unless professional_id
 
-    existing_events = Event.available_slots(professional_id, start_time, end_time)
+    existing_events = Event.active_in_time_range(professional_id, start_time, end_time)
 
     if existing_events.any?
       conflicts << {
