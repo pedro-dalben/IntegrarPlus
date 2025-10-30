@@ -68,17 +68,15 @@
           </button>
 
           <div class="flex gap-3">
+            <%= form.submit "Salvar e Continuar",
+                  name: "commit",
+                  value: "Salvar e Continuar",
+                  class: "ta-btn ta-btn-primary" %>
+
             <%= form.submit "Salvar como Rascunho",
                   name: "commit",
                   value: "Salvar como Rascunho",
                   class: "ta-btn ta-btn-secondary" %>
-
-            <button type="button"
-                    data-action="click->agendas--wizard#nextStep"
-                    data-agendas--wizard-target="nextBtn"
-                    class="ta-btn ta-btn-primary">
-              Próximo
-            </button>
 
             <%= form.submit "Ativar Agenda",
                   name: "commit",

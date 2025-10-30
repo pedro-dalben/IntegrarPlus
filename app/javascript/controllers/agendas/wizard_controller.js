@@ -248,8 +248,8 @@ export default class extends Controller {
             </div>
           </div>
           <div class="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               class="professional-checkbox rounded border-gray-300 text-brand-600 focus:ring-brand-500"
               data-professional-id="${professional.id}"
               data-action="change->agendas--wizard#toggleProfessional"
@@ -316,7 +316,7 @@ export default class extends Controller {
               </p>
             </div>
           </div>
-          <button 
+          <button
             type="button"
             class="ml-2 text-red-600 hover:text-red-800 flex-shrink-0"
             data-action="click->agendas-wizard#removeProfessionalFromSelected"
@@ -405,15 +405,26 @@ export default class extends Controller {
     }
 
     // Update next button
-    if (currentIndex === steps.length - 1) {
-      this.nextBtnTarget.classList.add('hidden');
-      if (this.hasActivateBtnTarget) {
-        this.activateBtnTarget.classList.remove('hidden');
+    if (this.hasNextBtnTarget) {
+      if (currentIndex === steps.length - 1) {
+        this.nextBtnTarget.classList.add('hidden');
+        if (this.hasActivateBtnTarget) {
+          this.activateBtnTarget.classList.remove('hidden');
+        }
+      } else {
+        this.nextBtnTarget.classList.remove('hidden');
+        if (this.hasActivateBtnTarget) {
+          this.activateBtnTarget.classList.add('hidden');
+        }
       }
     } else {
-      this.nextBtnTarget.classList.remove('hidden');
+      // If there is no next button in the view, ensure activate button visibility on last step
       if (this.hasActivateBtnTarget) {
-        this.activateBtnTarget.classList.add('hidden');
+        if (currentIndex === steps.length - 1) {
+          this.activateBtnTarget.classList.remove('hidden');
+        } else {
+          this.activateBtnTarget.classList.add('hidden');
+        }
       }
     }
   }

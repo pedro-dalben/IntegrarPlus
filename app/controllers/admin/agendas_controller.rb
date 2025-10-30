@@ -82,6 +82,13 @@ module Admin
         end
       else
         @current_step = params[:step] || 'metadata'
+        if params.dig(:agenda, :working_hours).present?
+          begin
+            @agenda.working_hours = JSON.parse(params[:agenda][:working_hours])
+          rescue JSON::ParserError
+            @agenda.working_hours = params[:agenda][:working_hours]
+          end
+        end
         render :edit, status: :unprocessable_entity
       end
     end

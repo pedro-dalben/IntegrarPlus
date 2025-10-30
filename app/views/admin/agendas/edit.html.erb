@@ -71,15 +71,6 @@
                     value: "Salvar e Continuar",
                     class: "ta-btn ta-btn-primary" %>
 
-              <% unless @current_step == 'review' %>
-                <button type="button"
-                        data-action="click->agendas--wizard#nextStep"
-                        data-agendas--wizard-target="nextBtn"
-                        class="ta-btn ta-btn-primary">
-                  Próximo
-                </button>
-              <% end %>
-
               <% if @current_step == 'review' && @agenda.status == 'draft' %>
                 <%= form.submit "Ativar Agenda",
                       name: "commit",

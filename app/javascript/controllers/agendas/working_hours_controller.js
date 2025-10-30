@@ -15,7 +15,26 @@ export default class extends Controller {
     };
 
     this.loadExistingSchedule();
+    const form = this.element.closest('form');
+    if (form) {
+      this._submitHandler = e => {
+        this.updateWorkingHoursInput();
+        const validation = this.validateWorkingHours();
+        if (!validation.valid) {
+          e.preventDefault();
+          alert(validation.message);
+        }
+      };
+      form.addEventListener('submit', this._submitHandler);
+    }
     this.updatePreview();
+  }
+
+  disconnect() {
+    const form = this.element.closest('form');
+    if (form && this._submitHandler) {
+      form.removeEventListener('submit', this._submitHandler);
+    }
   }
 
   updatePreview() {
@@ -63,7 +82,7 @@ export default class extends Controller {
     if (!periodsContainer) return;
 
     const periodHtml = `
-      <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+      <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg period-row">
         <input type="time"
                class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                data-period-start
@@ -86,12 +105,21 @@ export default class extends Controller {
     `;
 
     periodsContainer.insertAdjacentHTML('beforeend', periodHtml);
+    const lastRow = periodsContainer.querySelector('.period-row:last-child');
+    if (lastRow) {
+      const startInput = lastRow.querySelector('[data-period-start]');
+      const endInput = lastRow.querySelector('[data-period-end]');
+      ['input', 'change', 'blur'].forEach(evt => {
+        startInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+        endInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+      });
+    }
     this.updateWorkingHoursInput();
   }
 
   removePeriod(event) {
     const target = event.currentTarget || event.target;
-    const container = target.closest('.flex');
+    const container = target.closest('.period-row');
     if (container) container.remove();
     this.updateWorkingHoursInput();
   }
@@ -122,6 +150,15 @@ export default class extends Controller {
           `[data-day="${day}"] [data-agendas--working-hours-target="periods"]`
         );
         periodsContainer.innerHTML = sourcePeriods.innerHTML;
+        // Rebind listeners after cloning content
+        periodsContainer.querySelectorAll('.period-row').forEach(row => {
+          const startInput = row.querySelector('[data-period-start]');
+          const endInput = row.querySelector('[data-period-end]');
+          ['input', 'change', 'blur'].forEach(evt => {
+            startInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+            endInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+          });
+        });
       }
     });
 
@@ -267,7 +304,7 @@ export default class extends Controller {
         );
         const periods = [];
 
-        periodsContainer.querySelectorAll('.flex').forEach(periodDiv => {
+        periodsContainer.querySelectorAll('.period-row').forEach(periodDiv => {
           const start = periodDiv.querySelector('[data-period-start]').value;
           const end = periodDiv.querySelector('[data-period-end]').value;
 
@@ -311,6 +348,47 @@ export default class extends Controller {
     this.updateWorkingHoursInput();
   }
 
+  validateWorkingHours() {
+    const weekdays = this.workingHours.weekdays || [];
+
+    for (const day of weekdays) {
+      const periods = (day.periods || []).map(p => ({
+        start: this.parseTime(p.start || p.start_time),
+        end: this.parseTime(p.end || p.end_time),
+      }));
+
+      for (const p of periods) {
+        if (p.start == null || p.end == null || p.start >= p.end) {
+          return {
+            valid: false,
+            message: 'Há horários inválidos (início >= fim). Corrija antes de continuar.',
+          };
+        }
+      }
+
+      periods.sort((a, b) => a.start - b.start);
+      for (let i = 0; i < periods.length - 1; i++) {
+        const current = periods[i];
+        const next = periods[i + 1];
+        if (current.end > next.start) {
+          return {
+            valid: false,
+            message: 'Há sobreposição de horários em um ou mais dias. Corrija antes de continuar.',
+          };
+        }
+      }
+    }
+
+    return { valid: true };
+  }
+
+  parseTime(hhmm) {
+    if (!hhmm || typeof hhmm !== 'string') return null;
+    const [h, m] = hhmm.split(':').map(Number);
+    if (Number.isNaN(h) || Number.isNaN(m)) return null;
+    return h * 60 + m;
+  }
+
   loadExistingWorkingHours() {
     if (this.hasWorkingHoursInputTarget && this.workingHoursInputTarget.value) {
       try {
@@ -350,7 +428,7 @@ export default class extends Controller {
       const endTime = period.end || period.end_time || '12:00';
 
       const periodHtml = `
-        <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+        <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg period-row">
           <input type="time"
                  class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                  data-period-start
@@ -372,6 +450,15 @@ export default class extends Controller {
         </div>
       `;
       periodsContainer.insertAdjacentHTML('beforeend', periodHtml);
+      const lastRow = periodsContainer.querySelector('.period-row:last-child');
+      if (lastRow) {
+        const startInput = lastRow.querySelector('[data-period-start]');
+        const endInput = lastRow.querySelector('[data-period-end]');
+        ['input', 'change', 'blur'].forEach(evt => {
+          startInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+          endInput?.addEventListener(evt, () => this.updateWorkingHoursInput());
+        });
+      }
     });
   }
 
