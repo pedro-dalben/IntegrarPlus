@@ -12,6 +12,7 @@ class Agenda < ApplicationRecord
   has_many :professionals, through: :agenda_professionals, source: :professional
   has_many :professional_availabilities, dependent: :destroy
   has_many :availability_exceptions, dependent: :destroy
+  has_many :medical_appointments, dependent: :restrict_with_error
 
   enum :service_type, {
     anamnese: 0,
@@ -66,9 +67,13 @@ class Agenda < ApplicationRecord
   end
 
   def can_be_deleted?
-    # Uma agenda pode ser deletada se não tiver eventos associados
-    # Como não temos eventos ainda, sempre retorna true
-    true
+    !has_future_appointments?
+  end
+
+  def has_future_appointments?
+    medical_appointments.where(scheduled_at: Time.current..)
+                        .where.not(status: %w[cancelled no_show])
+                        .exists?
   end
 
   def check_conflicts_for_professional(professional, start_time, end_time)

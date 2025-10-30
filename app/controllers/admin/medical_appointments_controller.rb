@@ -10,6 +10,8 @@ module Admin
       @medical_appointments = MedicalAppointment.includes(:agenda, :professional, :patient)
                                                 .order(scheduled_at: :desc)
 
+      @agendas = Agenda.order(:name)
+      @medical_appointments = @medical_appointments.where(agenda_id: params[:agenda_id]) if params[:agenda_id].present?
       if params[:professional].present?
         @medical_appointments = @medical_appointments.where(professional: params[:professional])
       end

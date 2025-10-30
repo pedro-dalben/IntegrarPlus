@@ -7,37 +7,42 @@
   </div>
   <div class="flex gap-3">
     <%= link_to "Relatórios", reports_admin_medical_appointments_path, class: "ta-btn ta-btn-secondary" %>
-    <%= link_to "Nova Consulta", new_admin_medical_appointment_path, class: "ta-btn ta-btn-primary" %>
   </div>
 </div>
 
 <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
   <div class="p-6">
-    <%= form_with url: admin_medical_appointments_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-5 gap-4" do |form| %>
+    <%= form_with url: admin_medical_appointments_path, method: :get, local: true, class: "grid grid-cols-1 md:grid-cols-6 gap-4" do |form| %>
+      <div>
+        <%= form.label :agenda_id, "Agenda", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.select :agenda_id, options_from_collection_for_select(@agendas, :id, :name, params[:agenda_id]),
+                        { prompt: "Todas as agendas" },
+                        { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
+      </div>
       <div>
         <%= form.label :professional, "Profissional", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :professional, options_from_collection_for_select(@professionals, :id, :name, params[:professional]),
+        <%= form.select :professional, options_from_collection_for_select(@professionals, :id, :full_name, params[:professional]),
                         { prompt: "Todos os profissionais" },
                         { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
       </div>
 
       <div>
         <%= form.label :appointment_type, "Tipo de Consulta", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :appointment_type, options_for_select(@appointment_types.map { |type| [type.humanize, type] }, params[:appointment_type]),
+        <%= form.select :appointment_type, options_for_select(@appointment_types.map { |type| [MedicalAppointment::TYPE_LABELS[type], type] }, params[:appointment_type]),
                         { prompt: "Todos os tipos" },
                         { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
       </div>
 
       <div>
         <%= form.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :status, options_for_select(@statuses.map { |status| [status.humanize, status] }, params[:status]),
+        <%= form.select :status, options_for_select(@statuses.map { |status| [MedicalAppointment::STATUS_LABELS[status], status] }, params[:status]),
                         { prompt: "Todos os status" },
                         { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
       </div>
 
       <div>
         <%= form.label :priority, "Prioridade", class: "block text-sm font-medium text-gray-700 mb-2" %>
-        <%= form.select :priority, options_for_select(@priorities.map { |priority| [priority.humanize, priority] }, params[:priority]),
+        <%= form.select :priority, options_for_select(@priorities.map { |priority| [MedicalAppointment::PRIORITY_LABELS[priority], priority] }, params[:priority]),
                         { prompt: "Todas as prioridades" },
                         { class: "w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" } %>
       </div>
@@ -94,7 +99,7 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">
-                <%= appointment.professional.name %>
+                <%= appointment.professional&.full_name || '—' %>
               </div>
               <div class="text-sm text-gray-500">
                 <%= appointment.agenda.name %>
@@ -118,12 +123,12 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= appointment.status_color %>-100 text-<%= appointment.status_color %>-800">
-                <%= appointment.status.humanize %>
+                <%= appointment.display_status %>
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= appointment.priority_color %>-100 text-<%= appointment.priority_color %>-800">
-                <%= appointment.priority.humanize %>
+                <%= appointment.display_priority %>
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

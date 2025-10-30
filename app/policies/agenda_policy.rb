@@ -26,7 +26,7 @@ class AgendaPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.admin? && record.can_be_deleted?
+    user.admin?
   end
 
   def archive?

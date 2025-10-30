@@ -185,6 +185,45 @@ class MedicalAppointment < ApplicationRecord
     end
   end
 
+  STATUS_LABELS = {
+    'scheduled' => 'Agendado',
+    'confirmed' => 'Confirmado',
+    'in_progress' => 'Em andamento',
+    'completed' => 'Concluído',
+    'cancelled' => 'Cancelado',
+    'no_show' => 'Não compareceu',
+    'rescheduled' => 'Reagendado'
+  }.freeze
+
+  PRIORITY_LABELS = {
+    'low' => 'Baixa',
+    'normal' => 'Normal',
+    'high' => 'Alta',
+    'urgent' => 'Urgente'
+  }.freeze
+
+  TYPE_LABELS = {
+    'initial_consultation' => 'Consulta inicial',
+    'return_consultation' => 'Retorno',
+    'emergency_consultation' => 'Emergência',
+    'procedure' => 'Procedimento',
+    'exam' => 'Exame',
+    'therapy' => 'Terapia',
+    'evaluation' => 'Avaliação'
+  }.freeze
+
+  def display_status
+    STATUS_LABELS[status] || status.to_s.humanize
+  end
+
+  def display_priority
+    PRIORITY_LABELS[priority] || priority.to_s.humanize
+  end
+
+  def display_appointment_type
+    TYPE_LABELS[appointment_type] || appointment_type.to_s.humanize
+  end
+
   def send_notifications
     notification_methods = {
       'scheduled' => :send_initial_notifications,

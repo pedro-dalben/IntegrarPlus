@@ -28,6 +28,12 @@
         <% end %>
 
         <div class="flex gap-2">
+          <%= link_to admin_agendas_path, class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Voltar
+          <% end %>
           <%= link_to edit_admin_agenda_path(@agenda), class: "ta-btn ta-btn-secondary inline-flex items-center gap-2" do %>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -228,6 +234,38 @@
     </div>
 
     <div class="space-y-6">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-medium text-gray-900">Agendamentos vinculados</h2>
+          <%= link_to "Ver agendamentos", admin_medical_appointments_path(agenda_id: @agenda.id), class: "ta-btn ta-btn-secondary" %>
+        </div>
+        <% total_appointments = @agenda.medical_appointments.count %>
+        <% if total_appointments.zero? %>
+          <p class="text-sm text-gray-500">Nenhum agendamento vinculado a esta agenda.</p>
+        <% else %>
+          <p class="text-sm text-gray-700 mb-3"><strong><%= total_appointments %></strong> agendamento(s) associado(s)</p>
+          <div class="divide-y divide-gray-200">
+            <% @agenda.medical_appointments.includes(:patient, :professional).order(scheduled_at: :desc).limit(5).each do |appt| %>
+              <div class="py-3 flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">
+                    <%= appt.patient&.name || "Paciente não informado" %>
+                  </div>
+                  <div class="text-xs text-gray-500">
+                    <%= appt.scheduled_at.strftime('%d/%m/%Y %H:%M') %> • <%= appt.professional&.full_name %> • <%= appt.display_status %>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <%= link_to "Abrir", admin_medical_appointment_path(appt), class: "text-blue-600 hover:text-blue-800 text-sm" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4">
+            <%= link_to "Ver todos os agendamentos desta agenda", admin_medical_appointments_path(agenda_id: @agenda.id), class: "text-sm text-blue-600 hover:text-blue-800" %>
+          </div>
+        <% end %>
+      </div>
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Profissionais</h2>
 

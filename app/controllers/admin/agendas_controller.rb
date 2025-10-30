@@ -87,11 +87,23 @@ module Admin
     end
 
     def destroy
-      if @agenda.can_be_deleted?
-        @agenda.destroy!
-        redirect_to admin_agendas_path, notice: 'Agenda excluída com sucesso.'
-      else
-        redirect_to admin_agenda_path(@agenda), alert: 'Não é possível excluir uma agenda que possui eventos.'
+      future_active = @agenda.medical_appointments.where(scheduled_at: Time.current..)
+                             .where.not(status: %w[cancelled no_show])
+
+      if future_active.exists?
+        future_count = future_active.count
+        redirect_to admin_agenda_path(@agenda),
+                    alert: "Não é possível excluir esta agenda: há #{future_count} agendamento(s) futuro(s). Cancele/remova os agendamentos futuros antes de excluir a agenda.", status: :see_other and return
+      end
+
+      begin
+        ActiveRecord::Base.transaction do
+          @agenda.medical_appointments.find_each(&:destroy!)
+          @agenda.destroy!
+        end
+        redirect_to admin_agendas_path, notice: 'Agenda excluída com sucesso.', status: :see_other
+      rescue StandardError => e
+        redirect_to admin_agenda_path(@agenda), alert: e.message, status: :see_other
       end
     end
 

@@ -2,47 +2,47 @@
 
 class MedicalAppointmentPolicy < ApplicationPolicy
   def index?
-    user.can_view_medical_appointments?
+    user.admin? || user.secretary?
   end
 
   def show?
-    user.can_view_medical_appointments? || user.can_access_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def create?
-    user.can_create_medical_appointments?
+    user.admin? || user.secretary?
   end
 
   def update?
-    user.can_update_medical_appointments? || user.can_edit_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def destroy?
-    user.can_delete_medical_appointments?
+    user.admin? || user.secretary?
   end
 
   def cancel?
-    user.can_cancel_medical_appointments? || user.can_cancel_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def reschedule?
-    user.can_reschedule_medical_appointments? || user.can_edit_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def complete?
-    user.can_complete_medical_appointments? || user.can_complete_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def mark_no_show?
-    user.can_mark_no_show_medical_appointments? || user.can_complete_appointment?(record)
+    user.admin? || user.secretary?
   end
 
   def reports?
-    user.can_view_medical_appointment_reports?
+    user.admin? || user.secretary?
   end
 
   def professional_report?
-    user.can_view_medical_appointment_reports? || record.professional == user
+    user.admin? || user.secretary?
   end
 
   class Scope < Scope
