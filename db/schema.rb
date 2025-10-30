@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_29_130606) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_29_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -636,7 +636,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_130606) do
     t.string "responsavel"
     t.string "tipo_convenio"
     t.string "cpf"
+    t.date "data_recebimento_email"
     t.index ["anamnesis_scheduled_on"], name: "index_portal_intakes_on_anamnesis_scheduled_on"
+    t.index ["data_recebimento_email"], name: "index_portal_intakes_on_data_recebimento_email"
     t.index ["operator_id"], name: "index_portal_intakes_on_operator_id"
     t.index ["requested_at"], name: "index_portal_intakes_on_requested_at"
     t.index ["status"], name: "index_portal_intakes_on_status"

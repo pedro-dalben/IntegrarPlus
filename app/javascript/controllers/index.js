@@ -66,3 +66,6 @@ application.register('schedule-configuration', ScheduleConfigurationController);
 
 import UnifiedCalendarController from './unified_calendar_controller';
 application.register('unified-calendar', UnifiedCalendarController);
+
+import NestedFormController from './nested_form_controller';
+application.register('nested-form', NestedFormController);

@@ -1,0 +1,126 @@
+<% content_for(:title, "Nova Entrada do Portal") %>
+
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Nova Entrada do Portal</h1>
+    <%= link_to "Voltar", admin_portal_intakes_path, class: "ta-btn ta-btn-secondary" %>
+  </div>
+
+  <%= form_with model: [:admin, @portal_intake], url: admin_portal_intakes_path, local: true, class: "space-y-6" do |form| %>
+    <% if @portal_intake.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+        <div class="flex">
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
+              Foram encontrados <%= pluralize(@portal_intake.errors.count, "erro") %>:
+            </h3>
+            <div class="mt-2">
+              <ul class="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+                <% @portal_intake.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados da Operadora</h2>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2">
+          <%= form.label :operator_id, "Operadora *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.select :operator_id,
+                          options_for_select([['Selecione...', '']] + @operators.map { |op| [op.company_name, op.id] }, params.dig(:portal_intake, :operator_id)),
+                          {},
+                          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados do Beneficiário</h2>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2">
+          <%= form.label :nome, "Nome do Beneficiário *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.text_field :nome, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <div>
+          <%= form.label :card_code, "Código da Carteirinha *", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.text_field :card_code, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <%= render MaskedFieldComponent.new(
+              form: form,
+              field: :cpf,
+              type: 'cpf',
+              label: 'CPF',
+              placeholder: '000.000.000-00'
+            ) %>
+        <div>
+          <%= form.label :data_nascimento, "Data de Nascimento", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.date_field :data_nascimento, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <div class="md:col-span-2">
+          <%= form.label :endereco, "Endereço", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.text_area :endereco, rows: 3, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <div>
+          <%= form.label :responsavel, "Responsável", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.text_field :responsavel, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <%= render MaskedFieldComponent.new(
+              form: form,
+              field: :telefone_responsavel,
+              type: 'phone',
+              label: 'Telefone do Responsável',
+              placeholder: '(11) 99999-9999'
+            ) %>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white">Dados do Convênio</h2>
+      </div>
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <%= form.label :tipo_convenio, "Tipo de Convênio", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.select :tipo_convenio,
+                          options_for_select([['Selecione...', ''], ['Particular', 'particular'], ['Empresarial', 'empresarial'], ['Familiar', 'familiar']], @portal_intake.tipo_convenio),
+                          {},
+                          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data de Encaminhamento</label>
+          <div class="block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+            <%= Date.current.strftime('%d/%m/%Y') %>
+          </div>
+          <%= form.hidden_field :data_encaminhamento, value: Date.current %>
+        </div>
+
+        <div>
+          <%= form.label :data_recebimento_email, "Data de Recebimento do E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+          <%= form.date_field :data_recebimento_email, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+        </div>
+      </div>
+    </div>
+
+    <%= render PortalIntakes::ReferralsComponent.new(
+          form: form,
+          title: 'Dados dos Encaminhamentos (Opcional)',
+          container_id: 'admin-referrals-container',
+          add_button_id: 'admin-add-referral',
+          remove_button_class: 'admin-remove-referral'
+        ) %>
+
+    <div class="flex justify-end space-x-3">
+      <%= link_to "Cancelar", admin_portal_intakes_path, class: "ta-btn ta-btn-secondary" %>
+      <%= form.submit "Criar Entrada", class: "ta-btn ta-btn-primary" %>
+    </div>
+  <% end %>
+</div>

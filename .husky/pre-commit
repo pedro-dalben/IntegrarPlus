@@ -1,12 +1,9 @@
 #!/usr/bin/env sh
 
-echo "🔍 Verificando código..."
-
-echo "📝 Verificando formatação (Prettier)..."
-npm run format:check || {
-  echo "❌ Erros de formatação encontrados!"
-  echo "💡 Execute 'npm run format' para corrigir automaticamente"
+echo "🔍 Formatando arquivos staged..."
+npx lint-staged || {
+  echo "❌ Falha ao formatar arquivos staged!"
   exit 1
 }
 
-echo "✅ Código verificado com sucesso!"
+echo "✅ Arquivos staged formatados"

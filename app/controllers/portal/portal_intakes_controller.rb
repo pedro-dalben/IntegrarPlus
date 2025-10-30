@@ -38,10 +38,15 @@ module Portal
       @portal_intake.beneficiary_name = @portal_intake.nome # beneficiary_name é o mesmo que nome
       authorize @portal_intake
 
+      Rails.logger.info("[Portal::PortalIntakes#create] referrals_params=#{params.dig(:portal_intake,
+                                                                                      :portal_intake_referrals_attributes).inspect}")
+      Rails.logger.info("[Portal::PortalIntakes#create] nested size before save=#{@portal_intake.portal_intake_referrals.size}")
+
       if @portal_intake.save
         redirect_to portal_portal_intake_path(@portal_intake),
                     notice: 'Solicitação enviada com sucesso! Aguarde o agendamento da anamnese.'
       else
+        Rails.logger.warn("[Portal::PortalIntakes#create] save_failed errors=#{@portal_intake.errors.full_messages}")
         # Reconstruir os encaminhamentos em caso de erro
         @portal_intake.portal_intake_referrals.build if @portal_intake.portal_intake_referrals.empty?
         render :new, status: :unprocessable_entity
@@ -56,15 +61,14 @@ module Portal
 
     def portal_intake_params
       permitted_params = params.expect(
-        portal_intake: [
-          :beneficiary_name, :plan_name, :card_code,
-          :carteira_codigo, :nome, :telefone_responsavel,
-          :data_encaminhamento, :data_nascimento, :endereco, :responsavel,
-          :tipo_convenio, :cpf,
-          { portal_intake_referrals_attributes: %i[
-            id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
-          ] }
-        ]
+        portal_intake: [:beneficiary_name, :plan_name, :card_code,
+                        :carteira_codigo, :nome, :telefone_responsavel,
+                        :data_encaminhamento, :data_nascimento, :endereco, :responsavel,
+                        :data_recebimento_email,
+                        :tipo_convenio, :cpf,
+                        { portal_intake_referrals_attributes: %i[
+                          id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
+                        ] }]
       )
 
       # Sanitizar parâmetros adicionais

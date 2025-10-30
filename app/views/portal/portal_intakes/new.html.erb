@@ -181,114 +181,25 @@
             </p>
             <%= form.hidden_field :data_encaminhamento, value: Date.current %>
           </div>
+
+          <!-- Data de Recebimento do E-mail (opcional) -->
+          <div>
+            <%= form.label :data_recebimento_email, "Data de Recebimento do E-mail", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+            <%= form.date_field :data_recebimento_email,
+                               class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+          </div>
         </div>
       </div>
     </div>
 
 
-    <!-- Dados dos Encaminhamentos (Opcional) -->
-    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h2 class="text-lg font-medium text-gray-900 dark:text-white">
-          Dados dos Encaminhamentos (Opcional)
-        </h2>
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          Informações sobre os encaminhamentos para tratamentos especializados
-        </p>
-      </div>
-
-      <div class="p-6">
-        <div id="referrals-container">
-          <%= form.fields_for :portal_intake_referrals do |referral_form| %>
-            <div class="referral-form border border-gray-200 rounded-lg p-4 mb-4 dark:border-gray-700">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-medium text-gray-900 dark:text-white">
-                  Encaminhamento
-                </h3>
-                <button type="button" class="remove-referral text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-                  Remover
-                </button>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- CID -->
-                <div>
-                  <%= referral_form.label :cid, "CID",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.text_field :cid,
-                                             placeholder: "Ex: F84.0",
-                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
-                </div>
-
-                <!-- Encaminhado Para -->
-                <div>
-                  <%= referral_form.label :encaminhado_para, "Encaminhado Para",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.select :encaminhado_para,
-                                          options_for_select([
-                                            ['Selecione...', ''],
-                                            ['ABA', 'ABA'],
-                                            ['FONO', 'FONO'],
-                                            ['TO', 'TO'],
-                                            ['PSICOPEDAGOGIA', 'PSICOPEDAGOGIA'],
-                                            ['PSICOLOGIA', 'PSICOLOGIA'],
-                                            ['PSICOMOTRICIDADE', 'PSICOMOTRICIDADE'],
-                                            ['FISIOTERAPIA', 'FISIOTERAPIA'],
-                                            ['EQUOTERAPIA', 'EQUOTERAPIA'],
-                                            ['MUSICOTERAPIA', 'MUSICOTERAPIA']
-                                          ], referral_form.object.encaminhado_para),
-                                          {},
-                                          class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
-                </div>
-
-                <!-- Médico -->
-                <div>
-                  <%= referral_form.label :medico, "Médico",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.text_field :medico,
-                                             placeholder: "Nome do médico",
-                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
-                </div>
-
-                <!-- CRM -->
-                <div>
-                  <%= referral_form.label :medico_crm, "CRM",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.text_field :medico_crm,
-                                             placeholder: "Número do CRM",
-                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
-                </div>
-
-                <!-- Data de Encaminhamento -->
-                <div>
-                  <%= referral_form.label :data_encaminhamento, "Data de Encaminhamento",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.date_field :data_encaminhamento,
-                                             class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
-                </div>
-
-                <!-- Descrição -->
-                <div class="md:col-span-2">
-                  <%= referral_form.label :descricao, "Descrição",
-                                         class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
-                  <%= referral_form.text_area :descricao,
-                                            rows: 3,
-                                            placeholder: "Descrição do encaminhamento (opcional)",
-                                            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-
-          <button type="button" id="add-referral" class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:text-gray-700 hover:border-gray-400 dark:border-gray-600 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500">
-            <svg class="mx-auto h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            <span class="mt-2 block text-sm font-medium">Adicionar Encaminhamento</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <%= render PortalIntakes::ReferralsComponent.new(
+          form: form,
+          title: 'Dados dos Encaminhamentos (Opcional)',
+          container_id: 'referrals-container',
+          add_button_id: 'add-referral',
+          remove_button_class: 'remove-referral'
+        ) %>
 
     <!-- Informações importantes -->
     <div class="bg-blue-50 border border-blue-200 rounded-md p-4 dark:bg-blue-800/10 dark:border-blue-900">
@@ -324,82 +235,3 @@
     </div>
   <% end %>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const addReferralBtn = document.getElementById('add-referral');
-  const referralsContainer = document.getElementById('referrals-container');
-  let referralIndex = <%= @portal_intake.portal_intake_referrals.length %>;
-
-  addReferralBtn.addEventListener('click', function() {
-    const newReferral = createReferralForm(referralIndex);
-    referralsContainer.insertBefore(newReferral, addReferralBtn);
-    referralIndex++;
-  });
-
-  referralsContainer.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-referral')) {
-      e.target.closest('.referral-form').remove();
-    }
-  });
-
-  function createReferralForm(index) {
-    const div = document.createElement('div');
-    div.className = 'referral-form border border-gray-200 rounded-lg p-4 mb-4 dark:border-gray-700';
-    div.innerHTML = `
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-md font-medium text-gray-900 dark:text-white">
-          Encaminhamento
-        </h3>
-        <button type="button" class="remove-referral text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
-          Remover
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CID</label>
-          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][cid]" placeholder="Ex: F84.0" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Encaminhado Para</label>
-          <select name="portal_intake[portal_intake_referrals_attributes][${index}][encaminhado_para]" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <option value="">Selecione...</option>
-            <option value="ABA">ABA</option>
-            <option value="FONO">FONO</option>
-            <option value="TO">TO</option>
-            <option value="PSICOPEDAGOGIA">PSICOPEDAGOGIA</option>
-            <option value="PSICOLOGIA">PSICOLOGIA</option>
-            <option value="PSICOMOTRICIDADE">PSICOMOTRICIDADE</option>
-            <option value="FISIOTERAPIA">FISIOTERAPIA</option>
-            <option value="EQUOTERAPIA">EQUOTERAPIA</option>
-            <option value="MUSICOTERAPIA">MUSICOTERAPIA</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Médico</label>
-          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][medico]" placeholder="Nome do médico" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CRM</label>
-          <input type="text" name="portal_intake[portal_intake_referrals_attributes][${index}][medico_crm]" placeholder="Número do CRM" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data de Encaminhamento</label>
-          <input type="date" name="portal_intake[portal_intake_referrals_attributes][${index}][data_encaminhamento]" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição</label>
-          <textarea name="portal_intake[portal_intake_referrals_attributes][${index}][descricao]" rows="3" placeholder="Descrição do encaminhamento (opcional)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"></textarea>
-        </div>
-      </div>
-    `;
-    return div;
-  }
-});
-</script>

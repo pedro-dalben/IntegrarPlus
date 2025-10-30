@@ -19,7 +19,4 @@ Rails.application.configure do
   protocol  = ENV.fetch('APP_PROTOCOL', 'http')
   config.action_mailer.default_url_options = { host: host, protocol: protocol }
   config.action_mailer.asset_host = "#{protocol}://#{host}"
-
-  # Em dev, se quiser ver erros:
-  # config.action_mailer.raise_delivery_errors = true
 end

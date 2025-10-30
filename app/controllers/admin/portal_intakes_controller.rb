@@ -2,7 +2,8 @@
 
 module Admin
   class PortalIntakesController < BaseController
-    before_action :set_portal_intake, only: %i[show update schedule_anamnesis reschedule_anamnesis cancel_anamnesis agenda_view]
+    before_action :set_portal_intake,
+                  only: %i[show update schedule_anamnesis reschedule_anamnesis cancel_anamnesis agenda_view]
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: Admin::PortalIntakePolicy::Scope)
@@ -24,6 +25,46 @@ module Admin
     def show
       authorize @portal_intake, policy_class: Admin::PortalIntakePolicy
       @journey_events = @portal_intake.journey_events.recent
+    end
+
+    def new
+      authorize PortalIntake, policy_class: Admin::PortalIntakePolicy
+      @portal_intake = PortalIntake.new
+      @portal_intake.data_encaminhamento = Date.current
+      @portal_intake.portal_intake_referrals.build
+      @operators = ExternalUser.active.order(:company_name)
+    end
+
+    def create
+      authorize PortalIntake, policy_class: Admin::PortalIntakePolicy
+
+      @portal_intake = PortalIntake.new(portal_intake_params)
+      @operators = ExternalUser.active.order(:company_name)
+
+      Rails.logger.info("[Admin::PortalIntakes#create] referrals_params=#{params.dig(:portal_intake,
+                                                                                     :portal_intake_referrals_attributes).inspect}")
+      Rails.logger.info("[Admin::PortalIntakes#create] nested size before save=#{@portal_intake.portal_intake_referrals.size}")
+
+      selected_operator = ExternalUser.find_by(id: params[:portal_intake][:operator_id])
+      if selected_operator.nil?
+        flash.now[:alert] = 'Operadora é obrigatória.'
+        render :new, status: :unprocessable_entity
+        return
+      end
+
+      @portal_intake.operator = selected_operator
+      @portal_intake.requested_at = Time.current
+      @portal_intake.data_encaminhamento = Date.current
+      @portal_intake.convenio = selected_operator.company_name
+      @portal_intake.plan_name = selected_operator.company_name
+      @portal_intake.beneficiary_name = @portal_intake.nome
+
+      if @portal_intake.save
+        redirect_to admin_portal_intake_path(@portal_intake), notice: 'Entrada criada com sucesso.'
+      else
+        Rails.logger.warn("[Admin::PortalIntakes#create] save_failed errors=#{@portal_intake.errors.full_messages}")
+        render :new, status: :unprocessable_entity
+      end
     end
 
     def update
@@ -52,12 +93,12 @@ module Admin
       scheduled_date = params[:scheduled_date]
       scheduled_time = params[:scheduled_time]
 
-      Rails.logger.debug "🔍 Parâmetros recebidos:"
-      Rails.logger.debug "  agenda_id: #{agenda_id.inspect} (present? #{agenda_id.present?})"
-      Rails.logger.debug "  professional_id: #{professional_id.inspect} (present? #{professional_id.present?})"
-      Rails.logger.debug "  scheduled_date: #{scheduled_date.inspect} (present? #{scheduled_date.present?})"
-      Rails.logger.debug "  scheduled_time: #{scheduled_time.inspect} (present? #{scheduled_time.present?})"
-      Rails.logger.debug "  Todos os params: #{params.inspect}"
+      Rails.logger.debug '🔍 Parâmetros recebidos:'
+      Rails.logger.debug { "  agenda_id: #{agenda_id.inspect} (present? #{agenda_id.present?})" }
+      Rails.logger.debug { "  professional_id: #{professional_id.inspect} (present? #{professional_id.present?})" }
+      Rails.logger.debug { "  scheduled_date: #{scheduled_date.inspect} (present? #{scheduled_date.present?})" }
+      Rails.logger.debug { "  scheduled_time: #{scheduled_time.inspect} (present? #{scheduled_time.present?})" }
+      Rails.logger.debug { "  Todos os params: #{params.inspect}" }
 
       if agenda_id.present? && professional_id.present? && scheduled_date.present? && scheduled_time.present?
         begin
@@ -161,7 +202,7 @@ module Admin
           end
 
           medical_appointment = result[:medical_appointment]
-          medical_appointment.update(anamnesis: anamnesis) if medical_appointment
+          medical_appointment&.update(anamnesis: anamnesis)
 
           Rails.logger.debug '✅ Agendamento criado com sucesso, redirecionando...'
           redirect_to admin_portal_intake_path(@portal_intake),
@@ -264,7 +305,7 @@ module Admin
 
               if result[:success]
                 medical_appointment = result[:medical_appointment]
-                medical_appointment.update(anamnesis: @portal_intake.anamnesis) if medical_appointment
+                medical_appointment&.update(anamnesis: @portal_intake.anamnesis)
               end
             end
 
@@ -396,9 +437,7 @@ module Admin
         start_time = datetime
         end_time = datetime + duration_minutes.minutes
 
-        conflict_query = MedicalAppointment.where(
-          'scheduled_at >= ? AND scheduled_at < ?', start_time, end_time
-        )
+        conflict_query = MedicalAppointment.where(scheduled_at: start_time...end_time)
 
         conflict_query = conflict_query.where(professional: professional) if professional.present?
 
@@ -416,9 +455,9 @@ module Admin
 
         if professional_record.present?
           availabilities = professional_record.professional_availabilities
-                                             .where(agenda: @agenda)
-                                             .for_day(date.wday)
-                                             .active
+                                              .where(agenda: @agenda)
+                                              .for_day(date.wday)
+                                              .active
 
           unless availabilities.empty?
             slot_time = time_slot.split(' - ').first
@@ -450,7 +489,7 @@ module Admin
         hour, minute = slot_time.split(':').map(&:to_i)
         slot_start_minutes = (hour * 60) + minute
 
-        return day_config['periods'].any? do |period|
+        day_config['periods'].any? do |period|
           start_time = period['start'] || period['start_time']
           end_time = period['end'] || period['end_time']
           next false unless start_time.present? && end_time.present?
@@ -463,9 +502,7 @@ module Admin
           slot_start_minutes >= start_minutes && slot_start_minutes < end_minutes
         end
       else
-        if date.saturday? || date.sunday?
-          return false
-        end
+        return false if date.saturday? || date.sunday?
 
         hour = time_slot.split(' - ').first.split(':').first.to_i
         minute = time_slot.split(' - ').first.split(':').last.to_i
@@ -478,14 +515,19 @@ module Admin
     end
 
     def portal_intake_params
-      params.expect(
-        portal_intake: %i[
-          beneficiary_name plan_name card_code
-          convenio carteira_codigo nome telefone_responsavel
-          data_encaminhamento data_nascimento endereco responsavel
-          tipo_convenio cpf
-        ]
+      portal_params = params.expect(
+        portal_intake: [:beneficiary_name, :plan_name, :card_code,
+                        :convenio, :carteira_codigo, :nome, :telefone_responsavel,
+                        :data_encaminhamento, :data_nascimento, :endereco, :responsavel,
+                        :data_recebimento_email,
+                        :tipo_convenio, :cpf, :operator_id,
+                        { portal_intake_referrals_attributes: %i[
+                          id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
+                        ] }]
       )
+
+      Rails.logger.info("[Admin::PortalIntakes#portal_intake_params] permitted=#{portal_params.to_h.inspect}")
+      portal_params
     end
 
     def apply_filters(scope)

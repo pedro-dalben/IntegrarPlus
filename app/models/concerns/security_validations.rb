@@ -178,15 +178,15 @@ module SecurityValidations
   end
 
   def cpf_present?
-    cpf.present?
+    respond_to?(:cpf) && cpf.present?
   end
 
   def data_nascimento_present?
-    data_nascimento.present?
+    respond_to?(:data_nascimento) && data_nascimento.present?
   end
 
   def telefone_responsavel_present?
-    telefone_responsavel.present?
+    respond_to?(:telefone_responsavel) && telefone_responsavel.present?
   end
 
   # Validações específicas para PortalIntakeReferral

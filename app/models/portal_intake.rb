@@ -5,7 +5,7 @@ class PortalIntake < ApplicationRecord
 
   belongs_to :operator, class_name: 'ExternalUser'
   has_many :journey_events, dependent: :destroy
-  has_many :portal_intake_referrals, dependent: :destroy
+  has_many :portal_intake_referrals, dependent: :destroy, inverse_of: :portal_intake
   has_one :anamnesis, dependent: :destroy
 
   validates :nome, presence: true, length: { minimum: 2, maximum: 100 }
@@ -21,9 +21,8 @@ class PortalIntake < ApplicationRecord
   validates :responsavel, length: { maximum: 100 }
   validates :cpf, length: { maximum: 14 }, format: {
     with: /\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/,
-    message: 'deve estar no formato 000.000.000-00',
-    allow_blank: true
-  }
+    message: 'deve estar no formato 000.000.000-00'
+  }, allow_blank: true
   validates :endereco, length: { maximum: 1000 }
 
   accepts_nested_attributes_for :portal_intake_referrals, allow_destroy: true, reject_if: :all_blank
@@ -168,9 +167,7 @@ class PortalIntake < ApplicationRecord
             cancelled_at: Time.current
           )
 
-          if old_appointment.event.present?
-            old_appointment.event.update!(status: 'cancelled')
-          end
+          old_appointment.event.update!(status: 'cancelled') if old_appointment.event.present?
         end
 
         anamnesis.update!(performed_at: new_date)
@@ -218,9 +215,7 @@ class PortalIntake < ApplicationRecord
             anamnesis_id: nil
           )
 
-          if appointment.event.present?
-            appointment.event.update!(status: 'cancelled')
-          end
+          appointment.event.update!(status: 'cancelled') if appointment.event.present?
         end
 
         anamnesis.destroy
