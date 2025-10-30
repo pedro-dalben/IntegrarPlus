@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BrazilianDocumentValidation
   extend ActiveSupport::Concern
 
@@ -17,16 +19,19 @@ module BrazilianDocumentValidation
 
   def normalize_cnpj
     return if cnpj.blank?
+
     self.cnpj = cnpj.to_s.gsub(/\D/, '')
   end
 
   def cpf_must_be_valid
     return if valid_cpf?(cpf)
+
     errors.add(:cpf, 'não é válido')
   end
 
   def cnpj_must_be_valid
     return if valid_cnpj?(cnpj)
+
     errors.add(:cnpj, 'não é válido')
   end
 

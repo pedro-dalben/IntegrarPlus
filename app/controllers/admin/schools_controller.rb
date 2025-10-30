@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class SchoolsController < BaseController
     before_action :set_school, only: %i[show edit update destroy activate deactivate]
@@ -5,7 +7,7 @@ module Admin
     def index
       authorize School, policy_class: Admin::SchoolPolicy
 
-      @schools = School.all.order(:name)
+      @schools = School.order(:name)
 
       @schools = @schools.search_by_name(params[:query]) if params[:query].present?
       @schools = @schools.by_city(params[:city]) if params[:city].present?
@@ -25,6 +27,10 @@ module Admin
       authorize @school, policy_class: Admin::SchoolPolicy
     end
 
+    def edit
+      authorize @school, policy_class: Admin::SchoolPolicy
+    end
+
     def create
       @school = School.new(school_params)
       @school.created_by = current_user
@@ -35,10 +41,6 @@ module Admin
       else
         render :new, status: :unprocessable_entity
       end
-    end
-
-    def edit
-      authorize @school, policy_class: Admin::SchoolPolicy
     end
 
     def update
@@ -104,9 +106,9 @@ module Admin
     end
 
     def school_params
-      params.require(:school).permit(
-        :name, :code, :address, :neighborhood, :city, :state, :zip_code,
-        :phone, :email, :school_type, :network, :active
+      params.expect(
+        school: %i[name code address neighborhood city state zip_code
+                   phone email school_type network active]
       )
     end
   end

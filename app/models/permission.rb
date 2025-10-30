@@ -13,6 +13,6 @@ class Permission < ApplicationRecord
   end
 
   def self.exists_by_key?(key)
-    where(key: key).exists?
+    exists?(key: key)
   end
 end

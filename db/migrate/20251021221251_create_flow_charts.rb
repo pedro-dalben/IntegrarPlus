@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateFlowCharts < ActiveRecord::Migration[8.0]
   def change
     create_table :flow_charts do |t|

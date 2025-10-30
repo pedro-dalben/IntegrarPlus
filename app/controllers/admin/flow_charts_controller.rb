@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class FlowChartsController < BaseController
     before_action :set_flow_chart, only: %i[show edit update destroy publish duplicate]

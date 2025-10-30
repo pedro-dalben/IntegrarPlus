@@ -206,7 +206,7 @@ module Admin
     end
 
     def has_future_appointments?
-      @professional.medical_appointments.where('scheduled_at > ?', Time.current).exists?
+      @professional.medical_appointments.exists?(['scheduled_at > ?', Time.current])
     end
   end
 end

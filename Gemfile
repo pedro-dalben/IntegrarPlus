@@ -51,8 +51,8 @@ gem 'premailer-rails'
 gem 'kamal', require: false
 gem 'thruster', require: false
 
-gem 'sentry-ruby'
 gem 'sentry-rails'
+gem 'sentry-ruby'
 
 group :development do
   gem 'foreman', '~> 0.90.0'

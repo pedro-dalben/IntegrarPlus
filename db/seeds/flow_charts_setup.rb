@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.logger.debug '📊 Configurando Fluxogramas de exemplo...'
 
 admin_professional = Professional.find_by(email: 'admin@integrarplus.com')

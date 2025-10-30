@@ -454,8 +454,8 @@ class Document < ApplicationRecord
         .gsub(/[ìíîï]/, 'i')
         .gsub(/[òóôõö]/, 'o')
         .gsub(/[ùúûü]/, 'u')
-        .gsub(/[ç]/, 'c')
-        .gsub(/[ñ]/, 'n')
+        .gsub(/ç/, 'c')
+        .gsub(/ñ/, 'n')
         .gsub(/[^\p{L}\p{N}\s]/, ' ')
         .gsub(/\s+/, ' ')
         .strip
@@ -529,8 +529,8 @@ class Document < ApplicationRecord
          .gsub(/[ìíîï]/, 'i')
          .gsub(/[òóôõö]/, 'o')
          .gsub(/[ùúûü]/, 'u')
-         .gsub(/[ç]/, 'c')
-         .gsub(/[ñ]/, 'n')
+         .gsub(/ç/, 'c')
+         .gsub(/ñ/, 'n')
   end
 
   def self.search_partial_words(query, filters)

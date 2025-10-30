@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class FlowChart < ApplicationRecord
-  belongs_to :created_by, class_name: 'Professional', foreign_key: :created_by_id
-  belongs_to :updated_by, class_name: 'Professional', foreign_key: :updated_by_id, optional: true
+  belongs_to :created_by, class_name: 'Professional'
+  belongs_to :updated_by, class_name: 'Professional', optional: true
   belongs_to :current_version, class_name: 'FlowChartVersion', optional: true
 
   has_many :versions, class_name: 'FlowChartVersion', dependent: :destroy
@@ -30,16 +32,14 @@ class FlowChart < ApplicationRecord
     new_chart.status = :draft
     new_chart.current_version = nil
 
-    if save
-      if current_version.present?
-        new_version = current_version.dup
-        new_version.flow_chart = new_chart
-        new_version.version = 1
-        new_version.notes = 'Versão inicial (duplicada)'
-        new_version.save!
+    if save && current_version.present?
+      new_version = current_version.dup
+      new_version.flow_chart = new_chart
+      new_version.version = 1
+      new_version.notes = 'Versão inicial (duplicada)'
+      new_version.save!
 
-        new_chart.update!(current_version: new_version)
-      end
+      new_chart.update!(current_version: new_version)
     end
 
     new_chart

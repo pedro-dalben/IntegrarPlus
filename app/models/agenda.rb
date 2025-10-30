@@ -194,7 +194,7 @@ class Agenda < ApplicationRecord
       end.compact
 
       if weekdays.any?
-        weekdays_with_wday = day_names.map do |name, wday|
+        weekdays_with_wday = day_names.filter_map do |name, wday|
           day_data = working[name]
           next nil unless day_data.is_a?(Hash) && day_data['available'] == true
 
@@ -203,7 +203,7 @@ class Agenda < ApplicationRecord
           next nil unless start_time.present? && end_time.present?
 
           { 'wday' => wday, 'periods' => [{ 'start' => start_time, 'end' => end_time }] }
-        end.compact
+        end
 
         working['weekdays'] = weekdays_with_wday
       end

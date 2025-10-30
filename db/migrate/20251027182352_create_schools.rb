@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateSchools < ActiveRecord::Migration[8.0]
   def change
     create_table :schools do |t|
@@ -20,10 +22,10 @@ class CreateSchools < ActiveRecord::Migration[8.0]
     end
 
     add_index :schools, :name
-    add_index :schools, :code, unique: true, where: "code IS NOT NULL"
+    add_index :schools, :code, unique: true, where: 'code IS NOT NULL'
     add_index :schools, :city
     add_index :schools, :state
     add_index :schools, :active
-    add_index :schools, [:city, :state]
+    add_index :schools, %i[city state]
   end
 end

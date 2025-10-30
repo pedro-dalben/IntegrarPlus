@@ -17,7 +17,6 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_many :notification_preferences, dependent: :destroy
 
-  validates :professional, presence: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
   validate :professional_must_be_active, on: :create
@@ -51,6 +50,7 @@ class User < ApplicationRecord
 
   def professional_must_be_active
     return if professional&.active?
+
     errors.add(:professional, 'deve estar ativo para criar um usuário')
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Alerts
   class ErrorComponent < ViewComponent::Base
     def initialize(model:, title: nil)
@@ -14,7 +16,7 @@ module Alerts
     attr_reader :model
 
     def default_title
-      count = @model.errors.count
+      @model.errors.count
       "Erro ao salvar #{@model.class.model_name.human.downcase}"
     end
 

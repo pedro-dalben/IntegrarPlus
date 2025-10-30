@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class PublicFlowChartsController < BaseController
     before_action :set_flow_chart, only: %i[show view]

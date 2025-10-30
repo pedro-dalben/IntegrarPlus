@@ -38,7 +38,7 @@ class BasicCalendarComponent < ViewComponent::Base
                        end
 
         appointment_type_label = I18n.t("admin.medical_appointments.appointment_types.#{appointment.appointment_type}",
-                                         default: appointment.appointment_type.humanize)
+                                        default: appointment.appointment_type.humanize)
 
         title = "#{appointment_type_label} - #{patient_name}"
         description = appointment.notes || event.description || ''
