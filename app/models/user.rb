@@ -21,7 +21,7 @@ class User < ApplicationRecord
 
   validate :professional_must_be_active, on: :create
 
-  delegate :full_name, :groups, :permit?, :admin?, to: :professional, allow_nil: true
+  delegate :full_name, :groups, :permit?, :admin?, :secretary?, to: :professional, allow_nil: true
 
   scope :professionals, -> { joins(:professional) }
   scope :active, -> { joins(:professional).where(professionals: { active: true }) }

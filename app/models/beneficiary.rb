@@ -8,6 +8,10 @@ class Beneficiary < ApplicationRecord
   belongs_to :created_by_professional, class_name: 'User', optional: true
   belongs_to :updated_by_professional, class_name: 'User', optional: true
   has_many :anamneses, class_name: 'Anamnesis', dependent: :destroy
+  has_many :beneficiary_professionals, dependent: :destroy
+  has_many :professionals, through: :beneficiary_professionals
+  has_many :beneficiary_chat_messages, dependent: :destroy
+  has_many :beneficiary_tickets, dependent: :destroy
 
   # Enums
   enum :status, {

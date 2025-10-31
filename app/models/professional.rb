@@ -102,6 +102,10 @@ class Professional < ApplicationRecord
     groups.any?(&:admin?)
   end
 
+  def secretary?
+    groups.any? { |group| group.name == 'Secretárias' }
+  end
+
   def active_for_authentication?
     super && active?
   end
