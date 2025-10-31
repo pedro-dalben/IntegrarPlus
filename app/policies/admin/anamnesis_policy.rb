@@ -26,6 +26,10 @@ module Admin
       user.permit?('anamneses.edit')
     end
 
+    def start?
+      user.permit?('anamneses.start') && record.pode_ser_iniciada? && can_edit_anamnesis?
+    end
+
     def complete?
       user.permit?('anamneses.complete') && can_edit_anamnesis?
     end
@@ -62,6 +66,26 @@ module Admin
       user.permit?('anamneses.by_professional')
     end
 
+    def mark_attended?
+      user.permit?('anamneses.mark_attended') && can_manage_attendance?
+    end
+
+    def mark_no_show?
+      user.permit?('anamneses.mark_no_show') && can_manage_attendance?
+    end
+
+    def cancel_anamnesis?
+      user.permit?('anamneses.cancel_anamnesis') && can_edit_anamnesis?
+    end
+
+    def reschedule_form?
+      user.permit?('anamneses.reschedule_form') && can_reschedule_anamnesis?
+    end
+
+    def reschedule?
+      user.permit?('anamneses.reschedule') && can_reschedule_anamnesis?
+    end
+
     class Scope < Scope
       def resolve
         if user.permit?('anamneses.view_all')
@@ -95,6 +119,14 @@ module Admin
       return true if record.professional == user.professional
 
       false
+    end
+
+    def can_manage_attendance?
+      can_edit_anamnesis? && record.pode_marcar_comparecimento?
+    end
+
+    def can_reschedule_anamnesis?
+      can_edit_anamnesis? && record.pode_reagendar?
     end
   end
 end
