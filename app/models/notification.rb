@@ -19,7 +19,13 @@ class Notification < ApplicationRecord
     emergency_alert: 'emergency_alert',
     daily_report: 'daily_report',
     weekly_report: 'weekly_report',
-    monthly_report: 'monthly_report'
+    monthly_report: 'monthly_report',
+    chat_message_received: 'chat_message_received',
+    ticket_created: 'ticket_created',
+    ticket_assigned: 'ticket_assigned',
+    ticket_status_changed: 'ticket_status_changed',
+    ticket_resolved: 'ticket_resolved',
+    ticket_closed: 'ticket_closed'
   }
 
   enum :status, {

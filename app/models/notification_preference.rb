@@ -19,7 +19,11 @@ class NotificationPreference < ApplicationRecord
     emergency_alert: 'emergency_alert',
     daily_report: 'daily_report',
     weekly_report: 'weekly_report',
-    monthly_report: 'monthly_report'
+    monthly_report: 'monthly_report',
+    chat_message_received: 'chat_message_received',
+    ticket_created: 'ticket_created',
+    ticket_assigned: 'ticket_assigned',
+    ticket_updates: 'ticket_updates'
   }
 
   validates :user_id, uniqueness: { scope: :type }
@@ -86,6 +90,10 @@ class NotificationPreference < ApplicationRecord
       true
     when 'appointment_reminder', 'low_occupancy'
       false
+    when 'chat_message_received'
+      false
+    when 'ticket_created', 'ticket_assigned', 'ticket_updates'
+      true
     else
       true
     end
@@ -103,6 +111,10 @@ class NotificationPreference < ApplicationRecord
   def self.default_push_enabled?(type)
     case type
     when 'appointment_reminder', 'emergency_alert', 'conflict_detected'
+      true
+    when 'chat_message_received'
+      true
+    when 'ticket_created', 'ticket_assigned', 'ticket_updates'
       true
     else
       false

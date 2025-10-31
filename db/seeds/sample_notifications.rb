@@ -67,8 +67,12 @@ if admin_user
   end
 
   # Criar preferências de notificação para o usuário admin se não existirem
-  NotificationPreference.create_default_preferences_for_user(admin_user)
-  Rails.logger.debug '✅ Preferências de notificação criadas para o usuário admin'
+  if admin_user.notification_preferences.any?
+    Rails.logger.debug '⚠️  Preferências de notificação já existem para o usuário admin'
+  else
+    NotificationPreference.create_default_preferences_for_user(admin_user)
+    Rails.logger.debug '✅ Preferências de notificação criadas para o usuário admin'
+  end
 
   Rails.logger.debug "\n📊 Resumo das notificações:"
   Rails.logger.debug { "   Total: #{admin_user.notifications.count}" }

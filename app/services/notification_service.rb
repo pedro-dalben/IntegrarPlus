@@ -51,6 +51,135 @@ class NotificationService
     end
   end
 
+  # CHAT
+  def self.send_chat_message_notification(message)
+    beneficiary = message.beneficiary
+    recipients = beneficiary.professionals.includes(:user).filter_map(&:user).uniq
+    recipients -= [message.user]
+
+    recipients.each do |user|
+      # In-app sempre
+      create_notification(
+        user,
+        'chat_message_received',
+        "Nova mensagem no chat de #{beneficiary.name}",
+        "#{message.user.full_name} enviou: #{message.content.truncate(100)}",
+        channel: 'in_app',
+        metadata: { beneficiary_id: beneficiary.id, message_id: message.id, sender_id: message.user_id },
+        send_immediately: true
+      )
+
+      pref = NotificationPreference.get_preference(user, 'chat_message_received')
+      pref.enabled_channels.each do |channel|
+        create_notification(
+          user,
+          'chat_message_received',
+          "Nova mensagem no chat de #{beneficiary.name}",
+          "#{message.user.full_name} enviou: #{message.content.truncate(100)}",
+          channel: channel,
+          metadata: { beneficiary_id: beneficiary.id, message_id: message.id, sender_id: message.user_id },
+          send_immediately: true
+        )
+      end
+    end
+  end
+
+  # TICKETS
+  def self.send_ticket_created_notification(ticket)
+    beneficiary = ticket.beneficiary
+    recipients = beneficiary.professionals.includes(:user).filter_map(&:user).uniq
+    recipients << ticket.assigned_professional&.user if ticket.assigned_professional
+    recipients -= [ticket.created_by]
+
+    recipients.compact.uniq.each do |user|
+      create_notification(
+        user,
+        'ticket_created',
+        "Novo chamado: #{ticket.title}",
+        "#{ticket.created_by.full_name} criou um chamado para #{beneficiary.name}: #{ticket.title}",
+        channel: 'in_app',
+        metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id, creator_id: ticket.created_by_id },
+        send_immediately: true
+      )
+
+      pref = NotificationPreference.get_preference(user, 'ticket_created')
+      pref.enabled_channels.each do |channel|
+        create_notification(
+          user,
+          'ticket_created',
+          "Novo chamado: #{ticket.title}",
+          "#{ticket.created_by.full_name} criou um chamado para #{beneficiary.name}: #{ticket.title}",
+          channel: channel,
+          metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id, creator_id: ticket.created_by_id },
+          send_immediately: true
+        )
+      end
+    end
+  end
+
+  def self.send_ticket_assigned_notification(ticket)
+    return unless ticket.assigned_professional&.user
+
+    user = ticket.assigned_professional.user
+    beneficiary = ticket.beneficiary
+
+    create_notification(
+      user,
+      'ticket_assigned',
+      'Chamado atribuído a você',
+      "Você foi atribuído ao chamado '#{ticket.title}' do beneficiário #{beneficiary.name}",
+      channel: 'in_app',
+      metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id },
+      send_immediately: true
+    )
+
+    pref = NotificationPreference.get_preference(user, 'ticket_assigned')
+    pref.enabled_channels.each do |channel|
+      create_notification(
+        user,
+        'ticket_assigned',
+        'Chamado atribuído a você',
+        "Você foi atribuído ao chamado '#{ticket.title}' do beneficiário #{beneficiary.name}",
+        channel: channel,
+        metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id },
+        send_immediately: true
+      )
+    end
+  end
+
+  def self.send_ticket_status_changed_notification(ticket, old_status, changed_by)
+    beneficiary = ticket.beneficiary
+    recipients = [ticket.created_by, ticket.assigned_professional&.user].compact.uniq
+    recipients -= [changed_by]
+
+    recipients.each do |user|
+      create_notification(
+        user,
+        'ticket_status_changed',
+        'Status do chamado atualizado',
+        "O chamado '#{ticket.title}' foi atualizado para #{ticket.status.humanize}",
+        channel: 'in_app',
+        metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id, old_status: old_status,
+                    new_status: ticket.status, changed_by_id: changed_by.id },
+        send_immediately: true
+      )
+
+      pref = NotificationPreference.get_preference(user, 'ticket_updates')
+      pref.enabled_channels.each do |channel|
+        create_notification(
+          user,
+          'ticket_status_changed',
+          'Status do chamado atualizado',
+          "O chamado '#{ticket.title}' foi atualizado para #{ticket.status.humanize}",
+          channel: channel,
+          metadata: { ticket_id: ticket.id, beneficiary_id: beneficiary.id, old_status: old_status,
+                      new_status: ticket.status, changed_by_id: changed_by.id },
+          send_immediately: true
+        )
+      end
+    end
+  end
+
   def self.schedule_reminder(appointment, reminder_type)
     case reminder_type
     when '48h'
