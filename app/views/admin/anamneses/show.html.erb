@@ -103,7 +103,7 @@
                   <% if @anamnesis.father_education.present? %>
                     <div>
                       <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Escolaridade</label>
-                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.father_education %></p>
+                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.education_label(@anamnesis.father_education) %></p>
                     </div>
                   <% end %>
                   <% if @anamnesis.father_profession.present? %>
@@ -134,7 +134,7 @@
                   <% if @anamnesis.mother_education.present? %>
                     <div>
                       <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Escolaridade</label>
-                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.mother_education %></p>
+                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.education_label(@anamnesis.mother_education) %></p>
                     </div>
                   <% end %>
                   <% if @anamnesis.mother_profession.present? %>
@@ -165,7 +165,7 @@
                   <% if @anamnesis.responsible_education.present? %>
                     <div>
                       <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Escolaridade</label>
-                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.responsible_education %></p>
+                      <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= @anamnesis.education_label(@anamnesis.responsible_education) %></p>
                     </div>
                   <% end %>
                   <% if @anamnesis.responsible_profession.present? %>
@@ -302,13 +302,10 @@
             <% end %>
 
             <% if @anamnesis.pode_ser_concluida? && current_user.permit?('anamneses.complete') %>
-              <%= link_to complete_admin_anamnese_path(@anamnesis),
+              <%= button_to complete_admin_anamnese_path(@anamnesis),
                   method: :patch,
                   class: "bg-green-600 shadow-theme-xs hover:bg-green-700 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition w-full",
-                  data: {
-                    confirm: "Tem certeza que deseja concluir esta anamnese?",
-                    turbo_method: :patch
-                  } do %>
+                  form: { data: { turbo: false, turbo_confirm: "Tem certeza que deseja concluir esta anamnese?" } } do %>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>

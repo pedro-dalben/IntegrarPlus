@@ -2,6 +2,7 @@
 
 class Anamnesis < ApplicationRecord
   include MeiliSearch::Rails unless Rails.env.test?
+  include EducationOptions
 
   # Relacionamentos
   belongs_to :beneficiary, optional: true
@@ -10,6 +11,14 @@ class Anamnesis < ApplicationRecord
   belongs_to :created_by_professional, class_name: 'User', optional: true
   belongs_to :updated_by_professional, class_name: 'User', optional: true
   has_one :medical_appointment, dependent: :nullify
+
+  SPECIALTIES = [
+    { key: 'fono',              label: 'Fonoaudiologia' },
+    { key: 'to',                label: 'Terapia Ocupacional' },
+    { key: 'psicopedagogia',    label: 'Psicopedagogia' },
+    { key: 'psicomotricidade',  label: 'Psicomotricidade' },
+    { key: 'psicologia',        label: 'Psicologia' }
+  ].freeze
 
   # Enums
   enum :status, {
@@ -182,6 +191,11 @@ class Anamnesis < ApplicationRecord
   def concluir!(professional)
     return false unless pode_ser_concluida?
 
+    unless beneficiary.present? || portal_intake_has_minimum_data?
+      errors.add(:base, I18n.t('admin.anamneses.errors.missing_beneficiary_data'))
+      return false
+    end
+
     transaction do
       update!(
         status: 'concluida',
@@ -191,6 +205,17 @@ class Anamnesis < ApplicationRecord
       # Criar beneficiário se veio do portal
       create_beneficiary_from_portal_intake if portal_intake_id?
     end
+  rescue StandardError
+    errors.add(:base, I18n.t('admin.anamneses.errors.beneficiary_creation_failed'))
+    false
+  end
+
+  def portal_intake_has_minimum_data?
+    return false if portal_intake.blank?
+
+    cpf = portal_intake.cpf.to_s
+    birth = portal_intake.data_nascimento
+    cpf.present? && cpf.match?(/\A\d{3}\.\d{3}\.\d{3}-\d{2}\z/) && birth.present?
   end
 
   def marcar_como_compareceu!(professional)

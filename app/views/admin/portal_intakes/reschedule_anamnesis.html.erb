@@ -20,6 +20,56 @@
     </div>
   </div>
 </div>
+<script>
+  window.handleSlotButtonClick = function(button, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const datetime = button.getAttribute('data-datetime');
+    const timeSlot = button.getAttribute('data-time-slot');
+    if (!datetime || !timeSlot) return;
+
+    const professionalSelect = document.querySelector('select[name="professional_id"]');
+    const professionalId = professionalSelect && professionalSelect.value;
+    if (!professionalId) {
+      alert('Por favor, selecione um profissional antes de escolher o horário.');
+      return;
+    }
+
+    const previousButton = document.querySelector('.slot-selected');
+    if (previousButton) {
+      previousButton.classList.remove('slot-selected','bg-blue-500','border-blue-600','text-white');
+      previousButton.classList.add('bg-green-100','hover:bg-green-200','border-green-300','text-green-800');
+    }
+
+    button.classList.remove('bg-green-100','hover:bg-green-200','border-green-300','text-green-800');
+    button.classList.add('slot-selected','bg-blue-500','border-blue-600','text-white');
+
+    const dateObj = new Date(datetime);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    const timeString = timeSlot.split(' - ')[0];
+
+    const dateInput = document.querySelector('[data-agenda-scheduler-target="dateSelect"]');
+    const timeInput = document.querySelector('[data-agenda-scheduler-target="timeSelect"]');
+    const datetimeSection = document.querySelector('[data-agenda-scheduler-target="datetimeSection"]');
+    const previewSection = document.querySelector('[data-agenda-scheduler-target="previewSection"]');
+    const submitButton = document.querySelector('[data-agenda-scheduler-target="submitButton"]');
+    const scheduledDateTimeTarget = document.querySelector('[data-agenda-scheduler-target="scheduledDateTime"]');
+
+    if (dateInput) dateInput.value = dateString;
+    if (timeInput) timeInput.value = timeString;
+    if (datetimeSection) datetimeSection.classList.remove('hidden');
+    if (scheduledDateTimeTarget) {
+      const formattedDate = new Date(dateString).toLocaleDateString('pt-BR');
+      scheduledDateTimeTarget.textContent = `${formattedDate} às ${timeString}`;
+    }
+    if (previewSection) previewSection.classList.remove('hidden');
+    if (submitButton) submitButton.disabled = false;
+  }
+</script>
 
 <div class="space-y-6">
   <!-- Informações do Beneficiário -->

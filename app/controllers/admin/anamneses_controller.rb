@@ -82,7 +82,7 @@ module Admin
         if @anamnesis.beneficiary.present?
           redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], notice: 'Anamnese atualizada com sucesso.'
         else
-          redirect_to admin_anamneses_today_path, notice: 'Anamnese atualizada com sucesso.'
+          redirect_to today_admin_anamneses_path, notice: 'Anamnese atualizada com sucesso.'
         end
       else
         render :edit, status: :unprocessable_entity
@@ -95,7 +95,7 @@ module Admin
       if @anamnesis.iniciar!(current_user)
         redirect_to edit_admin_anamnese_path(@anamnesis), notice: 'Atendimento iniciado! Preencha os dados da anamnese.'
       else
-        redirect_to admin_anamneses_today_path, alert: 'Não foi possível iniciar o atendimento.'
+        redirect_to today_admin_anamneses_path, alert: 'Não foi possível iniciar o atendimento.'
       end
     end
 
@@ -106,12 +106,10 @@ module Admin
         if @anamnesis.beneficiary.present?
           redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], notice: 'Anamnese concluída com sucesso!'
         else
-          redirect_to admin_anamneses_path, notice: 'Anamnese concluída com sucesso!'
+          redirect_to [:admin, @anamnesis], notice: 'Anamnese concluída com sucesso!'
         end
-      elsif @anamnesis.beneficiary.present?
-        redirect_to [:admin, @anamnesis.beneficiary, @anamnesis], alert: 'Não foi possível concluir a anamnese.'
       else
-        redirect_to admin_anamneses_path, alert: 'Não foi possível concluir a anamnese.'
+        render :edit, status: :unprocessable_entity
       end
     end
 
@@ -150,9 +148,9 @@ module Admin
       authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
 
       if @anamnesis.marcar_como_compareceu!(current_user)
-        redirect_to admin_anamneses_today_path, notice: 'Comparecimento registrado com sucesso!'
+        redirect_to today_admin_anamneses_path, notice: 'Comparecimento registrado com sucesso!'
       else
-        redirect_to admin_anamneses_today_path, alert: 'Não foi possível registrar o comparecimento.'
+        redirect_to today_admin_anamneses_path, alert: 'Não foi possível registrar o comparecimento.'
       end
     end
 
@@ -161,11 +159,11 @@ module Admin
 
       reason = params[:reason]
       if @anamnesis.marcar_como_nao_compareceu!(current_user, reason)
-        redirect_to admin_anamneses_today_path,
+        redirect_to today_admin_anamneses_path,
                     notice: 'Falta registrada. Escolha reagendar ou cancelar.',
                     flash: { show_reschedule_options: @anamnesis.id }
       else
-        redirect_to admin_anamneses_today_path, alert: 'Não foi possível registrar a falta.'
+        redirect_to today_admin_anamneses_path, alert: 'Não foi possível registrar a falta.'
       end
     end
 
@@ -174,14 +172,14 @@ module Admin
 
       reason = params[:reason]
       if reason.blank?
-        redirect_to admin_anamneses_today_path, alert: 'É necessário informar o motivo do cancelamento.'
+        redirect_to today_admin_anamneses_path, alert: 'É necessário informar o motivo do cancelamento.'
         return
       end
 
       if @anamnesis.cancelar!(current_user, reason)
-        redirect_to admin_anamneses_today_path, notice: 'Anamnese cancelada com sucesso!'
+        redirect_to today_admin_anamneses_path, notice: 'Anamnese cancelada com sucesso!'
       else
-        redirect_to admin_anamneses_today_path, alert: 'Não foi possível cancelar a anamnese.'
+        redirect_to today_admin_anamneses_path, alert: 'Não foi possível cancelar a anamnese.'
       end
     end
 
@@ -196,14 +194,14 @@ module Admin
 
       new_datetime = params[:new_datetime]
       if new_datetime.blank?
-        redirect_to admin_anamneses_today_path, alert: 'É necessário informar a nova data e hora.'
+        redirect_to today_admin_anamneses_path, alert: 'É necessário informar a nova data e hora.'
         return
       end
 
       if @anamnesis.reagendar!(current_user, new_datetime)
-        redirect_to admin_anamneses_today_path, notice: 'Anamnese reagendada com sucesso!'
+        redirect_to today_admin_anamneses_path, notice: 'Anamnese reagendada com sucesso!'
       else
-        redirect_to admin_anamneses_today_path, alert: 'Não foi possível reagendar a anamnese.'
+        redirect_to today_admin_anamneses_path, alert: 'Não foi possível reagendar a anamnese.'
       end
     end
 
@@ -364,9 +362,11 @@ module Admin
                     :attends_school, :school_name, :school_period,
                     :referral_reason, :injunction, :treatment_location, :referral_hours,
                     :diagnosis_completed, :responsible_doctor,
-                    :previous_treatment, :previous_treatments, :continue_external_treatment, :external_treatments,
-                    :beneficiary_id, :portal_intake_id,
+                    :previous_treatment, :continue_external_treatment,
+                    :beneficiary_id, :portal_intake_id, :professional_id,
                     { specialties: {},
+                      previous_treatments: [],
+                      external_treatments: [],
                       preferred_schedule: [],
                       unavailable_schedule: [] }]
       )

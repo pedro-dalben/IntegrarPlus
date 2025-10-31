@@ -22,6 +22,9 @@ application.register('document-upload', DocumentUploadController);
 import FlashController from './flash_controller';
 application.register('flash', FlashController);
 
+import ToggleFieldsController from './toggle_fields_controller';
+application.register('toggle-fields', ToggleFieldsController);
+
 import MaskController from './mask_controller';
 application.register('mask', MaskController);
 

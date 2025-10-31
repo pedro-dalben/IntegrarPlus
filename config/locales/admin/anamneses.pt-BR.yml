@@ -27,6 +27,9 @@ pt-BR:
         deleted: "Anamnese removida com sucesso."
         not_found: "Anamnese não encontrada."
         cannot_delete_with_documents: "Não é possível remover a anamnese pois existem documentos associados."
+      errors:
+        missing_beneficiary_data: "Para concluir, é necessário informar CPF (no formato 000.000.000-00) e data de nascimento. Conclua o cadastro do beneficiário ou ajuste os dados do encaminhamento."
+        beneficiary_creation_failed: "Não foi possível criar o beneficiário com os dados informados. Verifique as informações e tente novamente."
       buttons:
         new: "Nova Anamnese"
         edit: "Editar Anamnese"
@@ -97,4 +100,3 @@ pt-BR:
         superior_incompleto: "Ensino Superior Incompleto"
         superior_completo: "Ensino Superior Completo"
         pos_graduacao: "Pós-graduação"
-
