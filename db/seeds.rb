@@ -7,6 +7,7 @@
 # Carregar seeds específicos
 load(Rails.root.join('db/seeds/permissionamento_setup.rb'))
 load(Rails.root.join('db/seeds/groups_setup.rb'))
+load(Rails.root.join('db/seeds/beneficiary_tabs_permissions.rb'))
 
 # Tipos de contratação padrão
 contract_types = [

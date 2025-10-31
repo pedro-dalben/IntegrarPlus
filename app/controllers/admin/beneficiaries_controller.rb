@@ -75,7 +75,7 @@ module Admin
       if @beneficiary.update(beneficiary_params)
         redirect_to admin_beneficiary_path(@beneficiary), notice: 'Beneficiário atualizado com sucesso.'
       else
-        render :edit, status: :unprocessable_entity
+        redirect_to admin_beneficiary_path(@beneficiary), alert: 'Erro ao atualizar beneficiário.'
       end
     end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_29_180000) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -275,6 +275,56 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_180000) do
     t.index ["portal_intake_id"], name: "index_beneficiaries_on_portal_intake_id"
     t.index ["status"], name: "index_beneficiaries_on_status"
     t.index ["updated_by_professional_id"], name: "index_beneficiaries_on_updated_by_professional_id"
+  end
+
+  create_table "beneficiary_chat_message_reads", force: :cascade do |t|
+    t.bigint "beneficiary_chat_message_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "read_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beneficiary_chat_message_id", "user_id"], name: "index_bcm_reads_on_message_and_user", unique: true
+    t.index ["beneficiary_chat_message_id"], name: "idx_on_beneficiary_chat_message_id_33d0f29442"
+    t.index ["read_at"], name: "index_beneficiary_chat_message_reads_on_read_at"
+    t.index ["user_id"], name: "index_beneficiary_chat_message_reads_on_user_id"
+  end
+
+  create_table "beneficiary_chat_messages", force: :cascade do |t|
+    t.bigint "beneficiary_id", null: false
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "chat_group", default: "professionals_only", null: false
+    t.index ["beneficiary_id", "chat_group", "created_at"], name: "idx_on_beneficiary_id_chat_group_created_at_db9ed02f8e"
+    t.index ["beneficiary_id", "created_at"], name: "idx_on_beneficiary_id_created_at_80b2cd8f42"
+    t.index ["beneficiary_id"], name: "index_beneficiary_chat_messages_on_beneficiary_id"
+    t.index ["user_id"], name: "index_beneficiary_chat_messages_on_user_id"
+  end
+
+  create_table "beneficiary_professionals", force: :cascade do |t|
+    t.bigint "beneficiary_id", null: false
+    t.bigint "professional_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beneficiary_id", "professional_id"], name: "index_beneficiary_professionals_unique", unique: true
+    t.index ["beneficiary_id"], name: "index_beneficiary_professionals_on_beneficiary_id"
+    t.index ["professional_id"], name: "index_beneficiary_professionals_on_professional_id"
+  end
+
+  create_table "beneficiary_tickets", force: :cascade do |t|
+    t.bigint "beneficiary_id", null: false
+    t.bigint "assigned_professional_id"
+    t.bigint "created_by_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_professional_id"], name: "index_beneficiary_tickets_on_assigned_professional_id"
+    t.index ["beneficiary_id", "status"], name: "index_beneficiary_tickets_on_beneficiary_id_and_status"
+    t.index ["beneficiary_id"], name: "index_beneficiary_tickets_on_beneficiary_id"
+    t.index ["created_by_id"], name: "index_beneficiary_tickets_on_created_by_id"
   end
 
   create_table "contract_types", force: :cascade do |t|
@@ -873,6 +923,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_29_180000) do
   add_foreign_key "beneficiaries", "portal_intakes"
   add_foreign_key "beneficiaries", "users", column: "created_by_professional_id"
   add_foreign_key "beneficiaries", "users", column: "updated_by_professional_id"
+  add_foreign_key "beneficiary_chat_message_reads", "beneficiary_chat_messages"
+  add_foreign_key "beneficiary_chat_message_reads", "users"
+  add_foreign_key "beneficiary_chat_messages", "beneficiaries"
+  add_foreign_key "beneficiary_chat_messages", "users"
+  add_foreign_key "beneficiary_professionals", "beneficiaries"
+  add_foreign_key "beneficiary_professionals", "professionals"
+  add_foreign_key "beneficiary_tickets", "beneficiaries"
+  add_foreign_key "beneficiary_tickets", "professionals", column: "assigned_professional_id"
+  add_foreign_key "beneficiary_tickets", "users", column: "created_by_id"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"

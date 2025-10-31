@@ -72,12 +72,12 @@ if admin_professional.present?
     </mxfile>
   XML
 
-  flow_chart = FlowChart.find_or_create_by!(
+  flow_chart = FlowChart.find_or_create_by(
     title: 'Processo de Atendimento Padrão',
     created_by: admin_professional
   ) do |fc|
     fc.description = 'Fluxograma exemplo mostrando o processo padrão de atendimento de solicitações'
-    fc.status = :published
+    fc.status = :draft
     fc.updated_by = admin_professional
   end
 
@@ -89,7 +89,7 @@ if admin_professional.present?
       created_by: admin_professional
     )
 
-    flow_chart.update!(current_version: version)
+    flow_chart.update!(current_version: version, status: :published)
     Rails.logger.debug '✅ Fluxograma de exemplo criado com sucesso'
   else
     Rails.logger.debug '✅ Fluxograma de exemplo já existe'
