@@ -4,6 +4,8 @@ class Anamnesis < ApplicationRecord
   include MeiliSearch::Rails unless Rails.env.test?
   include EducationOptions
 
+  has_paper_trail
+
   # Relacionamentos
   belongs_to :beneficiary, optional: true
   belongs_to :professional, class_name: 'User'
