@@ -1,0 +1,43 @@
+<div class="space-y-4">
+  <div>
+    <h4 class="text-sm font-semibold text-gray-800 dark:text-white">Profissionais Relacionados</h4>
+    <div class="mt-2 space-y-2">
+      <% if beneficiary.respond_to?(:beneficiary_professionals) && beneficiary.beneficiary_professionals.any? %>
+        <% beneficiary.beneficiary_professionals.includes(:professional => :user).each do |relation| %>
+          <div class="flex items-center justify-between rounded-md border border-gray-200 dark:border-gray-700 px-3 py-2">
+            <div class="text-sm text-gray-800 dark:text-gray-200">
+              <%= relation.professional.user.full_name %>
+            </div>
+            <% if current_user.permit?('beneficiary.tabs.professionals.edit') %>
+              <%= button_to 'Remover', admin_beneficiary_beneficiary_professional_path(beneficiary, relation), method: :delete,
+                    class: 'shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-medium text-red-600 ring-1 ring-red-200 transition hover:bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:ring-red-900/40' %>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Nenhum profissional relacionado.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <% if current_user.permit?('beneficiary.tabs.professionals.edit') %>
+    <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
+      <h4 class="text-sm font-semibold text-gray-800 dark:text-white">Adicionar Profissional</h4>
+      <%= form_with url: admin_beneficiary_beneficiary_professionals_path(beneficiary), method: :post, local: true do |f| %>
+        <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="md:col-span-2">
+            <select name="professional_id" class="dark:bg-dark-900 shadow-theme-xs h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+              <option value="">Selecione um profissional...</option>
+              <% Professional.includes(:user).to_a.sort_by { |pro| pro.user&.full_name.to_s.downcase }.each do |pro| %>
+                <option value="<%= pro.id %>"><%= pro.user.full_name %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="flex items-center">
+            <%= f.submit 'Relacionar', class: 'bg-brand-500 shadow-theme-xs hover:bg-brand-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition w-full' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

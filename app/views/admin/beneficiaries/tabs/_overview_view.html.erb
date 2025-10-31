@@ -1,0 +1,283 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 space-y-6">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações Pessoais</h2>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome Completo</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.name %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Data de Nascimento</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.birth_date.strftime("%d/%m/%Y") %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Idade</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.age %> anos</p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono"><%= beneficiary.cpf %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Código Integrar</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono text-lg font-semibold"><%= beneficiary.integrar_code %></p>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Status</label>
+            <span class="<%= beneficiary.status_badge_class %>">
+              <%= beneficiary.status_label %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if beneficiary.phone.present? || beneficiary.secondary_phone.present? || beneficiary.email.present? || beneficiary.secondary_email.present? || beneficiary.whatsapp_number.present? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações de Contato</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <% if beneficiary.phone.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.formatted_phone %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.secondary_phone.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone Secundário</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.secondary_phone %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.email.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">E-mail</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.email %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.secondary_email.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">E-mail Secundário</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.secondary_email %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.whatsapp_number.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">WhatsApp</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.whatsapp_number %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if beneficiary.address.present? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Endereço</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Endereço Completo</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.full_address %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if beneficiary.responsible_name.present? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Responsável</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome do Responsável</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.responsible_name %></p>
+            </div>
+            <% if beneficiary.relationship.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Parentesco</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.relationship %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.responsible_phone.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Telefone do Responsável</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.formatted_responsible_phone %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.responsible_cpf.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">CPF do Responsável</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 font-mono"><%= beneficiary.responsible_cpf %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.responsible_profession.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Profissão do Responsável</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.responsible_profession %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.family_income.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Renda Familiar</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">R$ <%= number_with_precision(beneficiary.family_income, precision: 2, delimiter: '.') %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if beneficiary.attends_school? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados Escolares</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Frequenta Escola</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">Sim</p>
+            </div>
+            <% if beneficiary.school_name.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Nome da Escola</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.school_name %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.school_period.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Período</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.school_period.humanize %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if beneficiary.health_plan.present? || beneficiary.health_card_number.present? || beneficiary.allergies.present? || beneficiary.continuous_medications.present? || beneficiary.special_conditions.present? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados de Saúde</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <% if beneficiary.health_plan.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Plano de Saúde</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.health_plan %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.health_card_number.present? %>
+              <div>
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Número da Carteirinha</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.health_card_number %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.allergies.present? %>
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Alergias</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.allergies %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.continuous_medications.present? %>
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Medicamentos de Uso Contínuo</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.continuous_medications %></p>
+              </div>
+            <% end %>
+            <% if beneficiary.special_conditions.present? %>
+              <div class="md:col-span-2">
+                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Condições Especiais</label>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"><%= beneficiary.special_conditions %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="space-y-6">
+    <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">Informações</h2>
+      </div>
+      <div class="p-4 sm:p-6">
+        <div class="space-y-4">
+          <div>
+            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Criado em</label>
+            <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+              <%= beneficiary.created_at.strftime("%d/%m/%Y às %H:%M") %>
+            </p>
+          </div>
+          <% if beneficiary.updated_at != beneficiary.created_at %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Atualizado em</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                <%= beneficiary.updated_at.strftime("%d/%m/%Y às %H:%M") %>
+              </p>
+            </div>
+          <% end %>
+          <% if beneficiary.treatment_start_date.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Início do Atendimento</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                <%= beneficiary.treatment_start_date.strftime("%d/%m/%Y") %>
+              </p>
+            </div>
+          <% end %>
+          <% if beneficiary.treatment_end_date.present? %>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Fim do Atendimento</label>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                <%= beneficiary.treatment_end_date.strftime("%d/%m/%Y") %>
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <% if beneficiary.anamneses.any? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Anamnese</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <% anamnesis = beneficiary.anamneses.order(created_at: :asc).first %>
+          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-800 dark:text-white">
+                  <%= anamnesis.performed_at.strftime("%d/%m/%Y") %>
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <%= anamnesis.professional_name %>
+                </p>
+              </div>
+              <span class="<%= anamnesis.status_badge_class %> text-xs">
+                <%= anamnesis.status_label %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="rounded-2xl border border-amber-200 bg-amber-50 dark:border-amber-900/40 dark:bg-amber-900/20">
+  <div class="px-6 py-4 border-b border-amber-200 dark:border-amber-900/40">
+    <h2 class="text-sm font-semibold text-amber-900 dark:text-amber-200">Pendências do cadastro</h2>
+  </div>
+  <div class="p-4 sm:p-6">
+    <ul class="space-y-2 text-sm">
+      <% missing = [] %>
+      <% missing << 'Anamnese não criada' unless @beneficiary.anamneses.any? %>
+      <% missing << 'Responsável não informado' if @beneficiary.responsible_name.blank? %>
+      <% missing << 'CPF do beneficiário ausente' if @beneficiary.cpf.blank? %>
+      <% if @beneficiary.attends_school? && @beneficiary.school_name.blank? %>
+        <% missing << 'Nome da escola não informado' %>
+      <% end %>
+      <% if @beneficiary.professionals.none? %>
+        <% missing << 'Nenhum profissional relacionado' %>
+      <% end %>
+
+      <% if missing.any? %>
+        <% missing.each do |item| %>
+          <li class="flex items-start gap-2 text-amber-900 dark:text-amber-200">
+            <span>•</span>
+            <span><%= item %></span>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="text-emerald-700 dark:text-emerald-300">Nenhuma pendência encontrada.</li>
+      <% end %>
+    </ul>
+  </div>
+</div>
