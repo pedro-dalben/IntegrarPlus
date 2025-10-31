@@ -84,3 +84,15 @@ application.register('drawio', DrawioController);
 
 import SchoolSearchController from './school_search_controller';
 application.register('school-search', SchoolSearchController);
+
+import TabsController from './tabs_controller';
+application.register('tabs', TabsController);
+
+import EditModeController from './edit_mode_controller';
+application.register('edit-mode', EditModeController);
+
+import ChatFormController from './chat_form_controller';
+application.register('chat-form', ChatFormController);
+
+import ChatGroupSelectorController from './chat_group_selector_controller';
+application.register('chat-group-selector', ChatGroupSelectorController);

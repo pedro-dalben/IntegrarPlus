@@ -1,0 +1,8 @@
+<%
+  chat_group = @message.chat_group
+%>
+<%= turbo_stream.replace "chat_message_content_#{@beneficiary.id}" do %>
+  <div id="chat_message_content_<%= @beneficiary.id %>">
+    <%= render 'admin/beneficiaries/tabs/chat_input', beneficiary: @beneficiary, message: nil, chat_group: chat_group %>
+  </div>
+<% end %>

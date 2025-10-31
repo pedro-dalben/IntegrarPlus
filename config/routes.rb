@@ -98,6 +98,16 @@ Rails.application.routes.draw do
         get :search
       end
       resources :anamneses, except: [:index]
+      resources :beneficiary_professionals, only: %i[create destroy]
+      resources :chat_messages, only: [:create], controller: 'beneficiary_chat_messages' do
+        member do
+          post :mark_as_read
+        end
+        collection do
+          post :mark_all_as_read
+        end
+      end
+      resources :tickets, only: %i[create update destroy], controller: 'beneficiary_tickets'
     end
 
     resources :anamneses, only: %i[index show edit update] do
