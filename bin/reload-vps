@@ -18,6 +18,10 @@ source bin/setup-db
 
 bundle install
 
+# Executar seeds pendentes
+echo "🌱 Executando seeds pendentes..."
+bundle exec rails seeds:execute_pending || echo "⚠️  Nenhum seed pendente ou erro ao executar"
+
 # Executar migrations
 echo "🗄️  Executando migrations..."
 bundle exec rails db:migrate

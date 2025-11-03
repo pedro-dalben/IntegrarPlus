@@ -6,92 +6,74 @@
       is_related_professional = beneficiary.professionals.exists?(id: current_user.professional.id) rescue false
     end
 
-    # Chat "Geral" pode ser acessado por:
-    # - Admins (sempre)
-    # - Secretárias (sempre)
-    # - Profissionais relacionados ao beneficiário (sempre)
-    # - Qualquer um com permissão específica
     can_access_general = current_user.admin? || is_secretary || is_related_professional || (current_user.respond_to?(:permit?) && current_user.permit?('beneficiary.tabs.secretary_access'))
 
-    # Profissionais relacionados veem "Geral" por padrão, outros veem "Profissionais"
     default_group = (is_related_professional && can_access_general) ? 'general' : 'professionals_only'
     selected_group = params[:chat_group].presence || default_group
-    selected_group = 'professionals_only' unless BeneficiaryChatMessage.chat_groups.key?(selected_group)
+    selected_group = 'professionals_only' unless %w[professionals_only general].include?(selected_group)
 
-    messages_scope = beneficiary.beneficiary_chat_messages.for_group(selected_group).includes(:user, :readers).order(created_at: :asc).limit(200)
-    unread_messages = messages_scope.unread_by(current_user).order(created_at: :asc)
-    first_unread_id = unread_messages.first&.id
+    conversation_professionals = ChatV2::UpsertConversation.call(
+      service: 'beneficiaries',
+      context_type: 'Beneficiary',
+      context_id: beneficiary.id,
+      scope: 'professionals_only',
+      conversation_type: :group
+    )
+
+    conversation_general = can_access_general ? ChatV2::UpsertConversation.call(
+      service: 'beneficiaries',
+      context_type: 'Beneficiary',
+      context_id: beneficiary.id,
+      scope: 'general',
+      conversation_type: :group
+    ) : nil
+
+    current_conversation = selected_group == 'general' ? conversation_general : conversation_professionals
   %>
-  <%= turbo_stream_from "beneficiary_chat_#{beneficiary.id}_professionals_only" %>
-  <%= turbo_stream_from "beneficiary_chat_#{beneficiary.id}_general" if can_access_general %>
-  <div class="flex h-[600px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" data-controller="chat-form" data-current-user-id="<%= current_user.id %>" data-beneficiary-id="<%= beneficiary.id %>" data-first-unread-id="<%= first_unread_id %>" data-selected-group="<%= selected_group %>">
-    <div class="sticky flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800 xl:px-6">
-      <div class="flex items-center gap-3">
-        <div class="relative h-12 w-12 rounded-full bg-brand-500 flex items-center justify-center">
-          <span class="text-white font-semibold text-lg"><%= beneficiary.name.first.upcase %></span>
-        </div>
-        <div>
-          <h5 class="text-sm font-medium text-gray-800 dark:text-white/90"><%= beneficiary.name %></h5>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Chat do beneficiário</p>
-        </div>
-      </div>
-      <div class="flex gap-2" data-controller="chat-group-selector">
-        <button type="button"
-                data-action="click->chat-group-selector#switchGroup"
-                data-group="professionals_only"
-                data-chat-group-selector-target="button"
-                class="px-3 py-1.5 text-xs font-medium rounded-lg transition <%= selected_group == 'professionals_only' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' %>">
-          Profissionais
-        </button>
-        <button type="button"
-                data-action="click->chat-group-selector#switchGroup"
-                data-group="general"
-                data-chat-group-selector-target="button"
-                <%= 'disabled' unless can_access_general %>
-                class="px-3 py-1.5 text-xs font-medium rounded-lg transition <%= selected_group == 'general' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' %> <%= 'opacity-50 cursor-not-allowed' unless can_access_general %>"
-                title="<%= 'Acesso permitido para profissionais relacionados ao beneficiário, secretárias e administradores' unless can_access_general %>">
-          Geral
-        </button>
-      </div>
-    </div>
 
-    <div class="custom-scrollbar flex-1 space-y-6 overflow-auto p-5 xl:space-y-8 xl:p-6" data-chat-form-target="messagesContainer">
-      <div id="beneficiary_chat_messages_<%= beneficiary.id %>_professionals_only" class="flex flex-col items-start gap-4 <%= 'hidden' unless selected_group == 'professionals_only' %>" data-group="professionals_only" style="<%= 'display: none;' unless selected_group == 'professionals_only' %>">
-        <% professionals_messages = beneficiary.beneficiary_chat_messages.for_group('professionals_only').includes(:user, :readers).order(created_at: :asc).limit(200) %>
-        <% if professionals_messages.any? %>
-          <% professionals_messages.each do |message| %>
-            <%= render 'admin/beneficiaries/tabs/chat_message', message: message, current_user: current_user %>
-          <% end %>
-        <% else %>
-          <div class="flex items-center justify-center h-full w-full">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Nenhuma mensagem ainda. Inicie a conversa!</p>
+  <% if current_conversation %>
+    <div class="flex h-[600px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="sticky flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800 xl:px-6">
+        <div class="flex items-center gap-3">
+          <div class="relative h-12 w-12 rounded-full bg-brand-500 flex items-center justify-center">
+            <span class="text-white font-semibold text-lg"><%= beneficiary.name.first.upcase %></span>
           </div>
-        <% end %>
-      </div>
-      <% if can_access_general %>
-        <div id="beneficiary_chat_messages_<%= beneficiary.id %>_general" class="flex flex-col items-start gap-4 <%= 'hidden' unless selected_group == 'general' %>" data-group="general" style="<%= 'display: none;' unless selected_group == 'general' %>">
-          <% general_messages = beneficiary.beneficiary_chat_messages.for_group('general').includes(:user, :readers).order(created_at: :asc).limit(200) %>
-          <% if general_messages.any? %>
-            <% general_messages.each do |message| %>
-              <%= render 'admin/beneficiaries/tabs/chat_message', message: message, current_user: current_user %>
-            <% end %>
-          <% else %>
-            <div class="flex items-center justify-center h-full w-full">
-              <p class="text-sm text-gray-500 dark:text-gray-400">Nenhuma mensagem ainda. Inicie a conversa!</p>
-            </div>
+          <div>
+            <h5 class="text-sm font-medium text-gray-800 dark:text-white/90"><%= beneficiary.name %></h5>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Chat do beneficiário</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <a href="<%= admin_beneficiary_path(beneficiary, tab: 'chat', chat_group: 'professionals_only') %>"
+             class="px-3 py-1.5 text-xs font-medium rounded-lg transition <%= selected_group == 'professionals_only' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' %>">
+            Profissionais
+          </a>
+          <% if can_access_general && conversation_general %>
+            <a href="<%= admin_beneficiary_path(beneficiary, tab: 'chat', chat_group: 'general') %>"
+               class="px-3 py-1.5 text-xs font-medium rounded-lg transition <%= selected_group == 'general' ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' %>">
+              Geral
+            </a>
           <% end %>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-hidden">
+        <%= render ChatV2::MessageListComponent.new(
+              conversation: current_conversation,
+              current_user: current_user
+            ) %>
+      </div>
+
+      <% if current_user.admin? || current_user.permit?('beneficiary.tabs.chat.edit') %>
+        <div class="border-t border-gray-200 dark:border-gray-800">
+          <%= render ChatV2::ComposerComponent.new(
+                conversation: current_conversation,
+                current_user: current_user
+              ) %>
         </div>
       <% end %>
     </div>
-
-    <% if current_user.admin? || current_user.permit?('beneficiary.tabs.chat.edit') %>
-      <div class="sticky bottom-0 border-t border-gray-200 p-3 dark:border-gray-800">
-        <div id="chat_message_content_<%= beneficiary.id %>">
-          <%= render 'admin/beneficiaries/tabs/chat_input', beneficiary: beneficiary, message: nil, chat_group: selected_group %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+  <% end %>
 <% else %>
   <p class="text-sm text-gray-500 dark:text-gray-400">Você não tem permissão para visualizar o chat.</p>
 <% end %>

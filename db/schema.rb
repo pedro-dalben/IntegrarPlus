@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_31_183411) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -296,9 +296,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "chat_group", default: "professionals_only", null: false
+    t.index ["beneficiary_id", "chat_group", "created_at"], name: "idx_bcm_beneficiary_group_created_desc", order: { created_at: :desc }
     t.index ["beneficiary_id", "chat_group", "created_at"], name: "idx_on_beneficiary_id_chat_group_created_at_db9ed02f8e"
     t.index ["beneficiary_id", "created_at"], name: "idx_on_beneficiary_id_created_at_80b2cd8f42"
     t.index ["beneficiary_id"], name: "index_beneficiary_chat_messages_on_beneficiary_id"
+    t.index ["user_id", "created_at"], name: "idx_bcm_sender_created_desc", order: { created_at: :desc }
     t.index ["user_id"], name: "index_beneficiary_chat_messages_on_user_id"
   end
 
@@ -327,6 +329,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
     t.index ["created_by_id"], name: "index_beneficiary_tickets_on_created_by_id"
   end
 
+  create_table "chat_messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "message_number", null: false
+    t.string "sender_type", null: false
+    t.bigint "sender_id", null: false
+    t.integer "content_type", default: 0, null: false
+    t.text "body", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "edited_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "dedupe_key"
+    t.index ["conversation_id", "created_at"], name: "idx_chat_messages_conversation_created_desc", order: { created_at: :desc }, where: "(deleted_at IS NULL)"
+    t.index ["conversation_id", "message_number"], name: "idx_chat_messages_conversation_number_unique", unique: true
+    t.index ["conversation_id"], name: "index_chat_messages_on_conversation_id"
+    t.index ["dedupe_key"], name: "idx_chat_messages_dedupe_key_unique", unique: true, where: "(dedupe_key IS NOT NULL)"
+    t.index ["sender_id", "created_at"], name: "idx_chat_messages_sender_created_desc", order: { created_at: :desc }
+    t.check_constraint "content_type = ANY (ARRAY[0, 1, 2, 3, 4])", name: "check_content_type"
+  end
+
   create_table "contract_types", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "requires_company", default: false, null: false
@@ -336,6 +359,54 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
     t.datetime "updated_at", null: false
     t.boolean "active"
     t.index ["name"], name: "index_contract_types_on_name", unique: true
+  end
+
+  create_table "conversation_participations", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.string "participant_type", null: false
+    t.bigint "participant_id", null: false
+    t.integer "role", default: 0, null: false
+    t.bigint "last_read_message_number", default: 0, null: false
+    t.integer "unread_count", default: 0, null: false
+    t.boolean "notifications_enabled", default: true, null: false
+    t.jsonb "notification_preferences", default: {}, null: false
+    t.datetime "muted_until"
+    t.datetime "joined_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "left_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id", "participant_id"], name: "idx_participations_conversation_participant_read"
+    t.index ["conversation_id", "participant_type", "participant_id"], name: "idx_participations_conversation_participant_unique", unique: true, where: "(left_at IS NULL)"
+    t.index ["conversation_id"], name: "index_conversation_participations_on_conversation_id"
+    t.check_constraint "role = ANY (ARRAY[0, 1, 2, 3])", name: "check_role"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.string "service", null: false
+    t.string "context_type", null: false
+    t.bigint "context_id", null: false
+    t.bigint "scope_id"
+    t.string "scope"
+    t.integer "conversation_type", default: 0, null: false
+    t.bigint "next_message_number", default: 1, null: false
+    t.bigint "messages_count", default: 0, null: false
+    t.bigint "last_message_id"
+    t.datetime "last_message_at"
+    t.integer "status", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["context_type", "context_id", "status", "last_message_at"], name: "idx_conversations_context_status_last_message", order: { last_message_at: :desc }
+    t.index ["context_type", "context_id"], name: "index_conversations_on_context_type_and_context_id"
+    t.index ["identifier"], name: "index_conversations_on_identifier", unique: true
+    t.index ["last_message_at"], name: "index_conversations_on_last_message_at"
+    t.index ["metadata"], name: "index_conversations_on_metadata", using: :gin
+    t.index ["scope"], name: "index_conversations_on_scope"
+    t.index ["scope_id"], name: "index_conversations_on_scope_id"
+    t.index ["service", "updated_at"], name: "index_conversations_on_service_and_updated_at"
+    t.index ["service"], name: "index_conversations_on_service"
   end
 
   create_table "document_permissions", force: :cascade do |t|
@@ -932,6 +1003,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_171536) do
   add_foreign_key "beneficiary_tickets", "beneficiaries"
   add_foreign_key "beneficiary_tickets", "professionals", column: "assigned_professional_id"
   add_foreign_key "beneficiary_tickets", "users", column: "created_by_id"
+  add_foreign_key "chat_messages", "conversations"
+  add_foreign_key "conversation_participations", "conversations"
   add_foreign_key "document_permissions", "documents"
   add_foreign_key "document_permissions", "groups"
   add_foreign_key "document_permissions", "professionals"

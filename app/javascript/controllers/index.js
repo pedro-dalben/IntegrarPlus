@@ -55,6 +55,9 @@ application.register('header', HeaderController);
 import MobileMenuController from './mobile_menu_controller';
 application.register('mobile-menu', MobileMenuController);
 
+import NestedFormController from './nested_form_controller';
+application.register('nested-form', NestedFormController);
+
 import NotificationController from './notification_controller';
 application.register('notification', NotificationController);
 
@@ -64,8 +67,8 @@ application.register('professional-selector', ProfessionalSelectorController);
 import ScheduleConfigurationController from './schedule_configuration_controller';
 application.register('schedule-configuration', ScheduleConfigurationController);
 
+import ToggleController from './toggle_controller';
+application.register('toggle', ToggleController);
+
 import UnifiedCalendarController from './unified_calendar_controller';
 application.register('unified-calendar', UnifiedCalendarController);
-
-import NestedFormController from './nested_form_controller';
-application.register('nested-form', NestedFormController);

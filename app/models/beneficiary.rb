@@ -10,7 +10,6 @@ class Beneficiary < ApplicationRecord
   has_many :anamneses, class_name: 'Anamnesis', dependent: :destroy
   has_many :beneficiary_professionals, dependent: :destroy
   has_many :professionals, through: :beneficiary_professionals
-  has_many :beneficiary_chat_messages, dependent: :destroy
   has_many :beneficiary_tickets, dependent: :destroy
 
   # Enums

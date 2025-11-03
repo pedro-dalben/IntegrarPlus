@@ -1,0 +1,13 @@
+<div class="flex h-full flex-col" data-controller="chat--conversation">
+  <%= render ChatV2::MessageListComponent.new(
+        conversation: conversation,
+        current_user: current_user
+      ) %>
+
+  <%= render ChatV2::TypingIndicatorComponent.new(conversation: conversation) %>
+
+  <%= render ChatV2::ComposerComponent.new(
+        conversation: conversation,
+        current_user: current_user
+      ) %>
+</div>

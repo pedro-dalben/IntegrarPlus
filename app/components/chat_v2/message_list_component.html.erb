@@ -1,0 +1,14 @@
+<div id="<%= dom_id %>"
+     data-controller="chat--infinite-list"
+     data-chat--infinite-list-stream-name-value="<%= stream_name %>"
+     data-chat--infinite-list-current-user-id-value="<%= @current_user.id %>"
+     class="flex-1 overflow-y-auto space-y-2 px-3 py-2 custom-scrollbar">
+  <% messages.each do |message| %>
+    <%= render ChatV2::MessageComponent.new(
+          message: message,
+          current_user: @current_user
+        ) %>
+  <% end %>
+</div>
+
+<%= helpers.turbo_stream_from stream_name %>
