@@ -26,6 +26,14 @@ module Admin
       user.is_a?(User) && user.permit?('portal_intakes.schedule_anamnesis')
     end
 
+    def agenda_view?
+      schedule_anamnesis?
+    end
+
+    def check_slot_availability?
+      schedule_anamnesis?
+    end
+
     def cancel_anamnesis?
       user.is_a?(User) && user.permit?('portal_intakes.schedule_anamnesis')
     end

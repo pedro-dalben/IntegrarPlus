@@ -3,7 +3,8 @@
 module Admin
   class PortalIntakesController < BaseController
     before_action :set_portal_intake,
-                  only: %i[show update schedule_anamnesis reschedule_anamnesis cancel_anamnesis agenda_view]
+                  only: %i[show update schedule_anamnesis reschedule_anamnesis cancel_anamnesis agenda_view
+                           check_slot_availability]
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: Admin::PortalIntakePolicy::Scope)
@@ -115,19 +116,18 @@ module Admin
           end
 
           agenda = Agenda.find(agenda_id)
-          professional_user = User.find(professional_id)
-          professional = professional_user.professional
+          professional, professional_user = resolve_professional(professional_id)
 
-          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
-          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
-          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
-
-          if professional.nil?
-            Rails.logger.error { "❌ Professional é nil para User ID: #{professional_id}" }
+          if professional.nil? || professional_user.nil?
+            Rails.logger.error { "❌ Profissional inválido para ID: #{professional_id}" }
             flash.now[:alert] = 'Profissional não encontrado.'
             render :schedule_anamnesis
             return
           end
+
+          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
+          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
+          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
 
           # Verificar se o horário está disponível usando o service
           scheduling_service = AppointmentSchedulingService.new(professional, agenda)
@@ -250,19 +250,18 @@ module Admin
 
           scheduled_datetime = Time.zone.parse("#{scheduled_date} #{scheduled_time}")
           agenda = Agenda.find(agenda_id)
-          professional_user = User.find(professional_id)
-          professional = professional_user.professional
+          professional, professional_user = resolve_professional(professional_id)
 
-          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
-          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
-          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
-
-          if professional.nil?
-            Rails.logger.error { "❌ Professional é nil para User ID: #{professional_id}" }
+          if professional.nil? || professional_user.nil?
+            Rails.logger.error { "❌ Profissional inválido para ID: #{professional_id}" }
             flash.now[:alert] = 'Profissional não encontrado.'
             render :reschedule_anamnesis
             return
           end
+
+          Rails.logger.debug { "👤 User: #{professional_user.inspect}" }
+          Rails.logger.debug { "👤 Professional: #{professional.inspect}" }
+          Rails.logger.debug { "👤 Agenda: #{agenda.name}" }
 
           # Verificar se o horário está disponível usando o service
           scheduling_service = AppointmentSchedulingService.new(professional, agenda)
@@ -362,23 +361,107 @@ module Admin
       # Buscar profissional selecionado (se houver)
       @selected_professional = nil
       if params[:professional_id].present?
-        professional_user = User.find(params[:professional_id])
-        @selected_professional = professional_user.professional
+        professional, professional_user = resolve_professional(params[:professional_id])
+        @selected_professional = professional
+        @selected_professional_user = professional_user
       end
 
-      # Buscar agendamentos existentes para esta agenda e profissional
-      @existing_appointments = get_existing_appointments(@agenda, @selected_professional)
+      # Determinar semana a ser exibida
+      if params[:week_start].present?
+        begin
+          @week_start = Date.parse(params[:week_start])
+        rescue ArgumentError
+          @week_start = Date.current.beginning_of_week
+        end
+      else
+        @week_start = Date.current.beginning_of_week
+      end
+
+      @week_end = @week_start.end_of_week
+
+      # Buscar agendamentos existentes para esta agenda e profissional na semana selecionada
+      @existing_appointments = get_existing_appointments(@agenda, @selected_professional, @week_start)
+    end
+
+    def check_slot_availability
+      authorize @portal_intake, policy_class: Admin::PortalIntakePolicy
+
+      agenda_id = params[:agenda_id]
+      professional_id = params[:professional_id]
+      scheduled_datetime = params[:scheduled_datetime]
+
+      if agenda_id.present? && scheduled_datetime.present?
+        begin
+          datetime = Time.zone.parse(scheduled_datetime)
+          agenda = Agenda.find(agenda_id)
+
+          professional = nil
+          if professional_id.present? && professional_id != 'all'
+            professional, _professional_user = resolve_professional(professional_id)
+
+            if professional.nil?
+              render json: {
+                available: false,
+                error: 'Profissional não encontrado'
+              }, status: :not_found
+              return
+            end
+          end
+
+          professional ||= agenda.professionals.first
+
+          scheduling_service = AppointmentSchedulingService.new(professional, agenda)
+          availability_check = scheduling_service.check_availability(datetime, agenda.slot_duration_minutes)
+
+          render json: {
+            available: availability_check[:available],
+            conflicts: availability_check[:conflicts]&.map do |conflict|
+              {
+                type: conflict[:type],
+                message: conflict[:type] == 'event' ? "Conflito com evento '#{conflict[:object].title}'" : 'Conflito com agendamento existente'
+              }
+            end || []
+          }
+        rescue StandardError => e
+          render json: {
+            available: false,
+            error: e.message
+          }, status: :unprocessable_entity
+        end
+      else
+        render json: {
+          available: false,
+          error: 'Parâmetros inválidos'
+        }, status: :bad_request
+      end
     end
 
     private
 
     def set_portal_intake
-      @portal_intake = PortalIntake.find(params[:id])
+      @portal_intake = PortalIntake.includes(:journey_events).find(params[:id])
     end
 
-    def get_existing_appointments(agenda, professional = nil)
+    def resolve_professional(identifier)
+      return [nil, nil] if identifier.blank? || identifier == 'all'
+
+      professional = Professional.find_by(id: identifier)
+      professional_user = professional&.user
+
+      if professional.nil?
+        professional_user = User.find_by(id: identifier)
+        professional = professional_user&.professional
+      end
+
+      [professional, professional_user]
+    end
+
+    def get_existing_appointments(agenda, professional = nil, week_start = nil)
+      week_start ||= Date.current.beginning_of_week
+      week_range = week_start.all_week
+
       query = MedicalAppointment.where(agenda: agenda)
-                                .where(scheduled_at: Date.current.all_week)
+                                .where(scheduled_at: week_range)
                                 .includes(:professional, :patient)
 
       # professional é um objeto Professional, não User
@@ -387,27 +470,84 @@ module Admin
       query
     end
 
-    helper_method :generate_time_slots, :is_slot_available?, :is_working_hour?, :is_past_slot?
+    helper_method :generate_time_slots, :is_slot_available?, :is_working_hour?, :is_past_slot?, :is_slot_buffered?
 
     def is_past_slot?(datetime)
       datetime < Time.current
     end
 
-    def generate_time_slots
-      # Gerar slots baseado na configuração da agenda
-      slots = []
-      start_time = 8 # 08:00
-      end_time = 17 # 17:00
-      duration = @agenda&.slot_duration_minutes || 50
-      buffer = @agenda&.buffer_minutes || 10
+    def is_slot_buffered?(datetime, professional = nil)
+      return false if @agenda.blank? || @agenda.buffer_minutes.zero?
 
-      current_time = start_time * 60 # Converter para minutos
-      end_time_minutes = end_time * 60
+      professional_record = if professional.present?
+                              professional.is_a?(User) ? professional.professional : professional
+                            end
+
+      slot_start = datetime
+      slot_end = datetime + 30.minutes
+
+      query = MedicalAppointment.where(agenda: @agenda)
+                                .where.not(status: %w[cancelled no_show])
+
+      query = query.where(professional: professional_record) if professional_record.present?
+
+      query.any? do |appointment|
+        appointment_end = appointment.scheduled_at + appointment.duration_minutes.minutes
+        buffer_end = appointment_end + @agenda.buffer_minutes.minutes
+
+        slot_start >= appointment_end && slot_start < buffer_end
+      end
+    end
+
+    def generate_time_slots
+      slots = []
+      slot_interval = 30
+
+      if @agenda.present? && @agenda.working_hours.present? && @agenda.working_hours['weekdays'].present?
+        all_times = []
+
+        @agenda.working_hours['weekdays'].each do |day_config|
+          next unless day_config['periods'].present?
+
+          day_config['periods'].each do |period|
+            start_str = period['start'] || period['start_time']
+            end_str = period['end'] || period['end_time']
+
+            next unless start_str.present? && end_str.present?
+
+            begin
+              start_time = Time.zone.parse(start_str)
+              end_time = Time.zone.parse(end_str)
+
+              start_minutes = (start_time.hour * 60) + start_time.min
+              end_minutes = (end_time.hour * 60) + end_time.min
+
+              all_times << start_minutes
+              all_times << end_minutes
+            rescue ArgumentError
+              next
+            end
+          end
+        end
+
+        if all_times.any?
+          start_time_minutes = all_times.min
+          end_time_minutes = all_times.max
+        else
+          start_time_minutes = 8 * 60
+          end_time_minutes = 17 * 60
+        end
+      else
+        start_time_minutes = 8 * 60
+        end_time_minutes = 17 * 60
+      end
+
+      current_time = start_time_minutes
 
       while current_time < end_time_minutes
         start_hour = current_time / 60
         start_min = current_time % 60
-        end_time_slot = current_time + duration
+        end_time_slot = current_time + slot_interval
 
         end_hour = end_time_slot / 60
         end_min = end_time_slot % 60
@@ -419,32 +559,50 @@ module Admin
                                                                                                        2, '0'
                                                                                                      )}"
 
-        current_time += duration + buffer
+        current_time += slot_interval
       end
 
-      slots
+      slots.uniq
     end
 
     def is_slot_available?(datetime, professional = nil)
       return false if is_past_slot?(datetime)
-
-      query = MedicalAppointment.where(scheduled_at: datetime)
-                                .where.not(status: %w[cancelled no_show])
-
-      query = query.where(professional: professional) if professional.present?
 
       if @agenda.present?
         duration_minutes = @agenda.slot_duration_minutes
         start_time = datetime
         end_time = datetime + duration_minutes.minutes
 
-        conflict_query = MedicalAppointment.where(scheduled_at: start_time...end_time)
-                                           .where.not(status: %w[cancelled no_show])
+        professional_record = if professional.present?
+                                professional.is_a?(User) ? professional.professional : professional
+                              end
 
-        conflict_query = conflict_query.where(professional: professional) if professional.present?
+        if professional_record.present?
+          existing_appointments = MedicalAppointment.where(professional: professional_record)
+                                                    .where(agenda: @agenda)
+                                                    .where('scheduled_at < ? AND scheduled_at + interval \'1 minute\' * duration_minutes > ?', end_time, start_time)
+                                                    .where.not(status: %w[cancelled no_show])
 
-        return !conflict_query.exists?
+          return false if existing_appointments.exists?
+
+          existing_events = Event.where(professional: professional_record)
+                                 .where('start_time < ? AND end_time > ?', end_time, start_time)
+                                 .active_events
+
+          return false if existing_events.exists?
+        else
+          query = MedicalAppointment.where(agenda: @agenda)
+                                    .where('scheduled_at < ? AND scheduled_at + interval \'1 minute\' * duration_minutes > ?', end_time, start_time)
+                                    .where.not(status: %w[cancelled no_show])
+
+          return !query.exists?
+        end
       end
+
+      query = MedicalAppointment.where(scheduled_at: datetime)
+                                .where.not(status: %w[cancelled no_show])
+
+      query = query.where(professional: professional) if professional.present?
 
       !query.exists?
     end

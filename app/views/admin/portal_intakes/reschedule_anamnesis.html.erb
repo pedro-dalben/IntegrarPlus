@@ -30,9 +30,14 @@
     if (!datetime || !timeSlot) return;
 
     const professionalSelect = document.querySelector('select[name="professional_id"]');
-    const professionalId = professionalSelect && professionalSelect.value;
-    if (!professionalId) {
-      alert('Por favor, selecione um profissional antes de escolher o horário.');
+    const professionalId = button.getAttribute('data-professional-id') || professionalSelect?.value;
+    const professionalName = button.getAttribute('data-professional-name');
+    if (!professionalId || professionalId === 'all') {
+      if (window.Alert) {
+        window.Alert.warning('Atenção', 'Selecione um profissional específico antes de escolher o horário.');
+      } else {
+        alert('Selecione um profissional específico antes de escolher o horário.');
+      }
       return;
     }
 
@@ -58,13 +63,18 @@
     const previewSection = document.querySelector('[data-agenda-scheduler-target="previewSection"]');
     const submitButton = document.querySelector('[data-agenda-scheduler-target="submitButton"]');
     const scheduledDateTimeTarget = document.querySelector('[data-agenda-scheduler-target="scheduledDateTime"]');
+    const professionalNameTarget = document.querySelector('[data-agenda-scheduler-target="professionalName"]');
 
     if (dateInput) dateInput.value = dateString;
     if (timeInput) timeInput.value = timeString;
     if (datetimeSection) datetimeSection.classList.remove('hidden');
+    if (professionalNameTarget && professionalName) {
+      professionalNameTarget.textContent = professionalName;
+    }
     if (scheduledDateTimeTarget) {
       const formattedDate = new Date(dateString).toLocaleDateString('pt-BR');
-      scheduledDateTimeTarget.textContent = `${formattedDate} às ${timeString}`;
+      const professionalText = professionalName ? ` (${professionalName})` : '';
+      scheduledDateTimeTarget.textContent = `${formattedDate} às ${timeString}${professionalText}`;
     }
     if (previewSection) previewSection.classList.remove('hidden');
     if (submitButton) submitButton.disabled = false;
@@ -138,7 +148,7 @@
         <%= form_with url: reschedule_anamnesis_admin_portal_intake_path(@portal_intake),
                       method: :patch, local: true,
                       data: {
-                        controller: "agenda-scheduler agenda-grid",
+                        controller: "agenda-scheduler",
                         turbo: false,
                         "agenda-scheduler-portal-intake-id-value": @portal_intake.id
                       },
@@ -225,12 +235,12 @@
           </div>
 
           <!-- Grade de Horários -->
-          <div id="agenda-grid-section" data-agenda-grid-target="gridSection" class="hidden">
+          <div id="agenda-grid-section" data-agenda-scheduler-target="gridSection" class="hidden">
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-700">
               <div class="flex items-center justify-between mb-4">
                 <h4 class="text-lg font-medium text-gray-900 dark:text-white">Grade de Horários</h4>
                 <button type="button"
-                        data-action="click->agenda-grid#hideGrid"
+                        data-action="click->agenda-scheduler#hideAgendaGrid"
                         class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

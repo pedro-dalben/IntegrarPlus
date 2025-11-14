@@ -86,6 +86,7 @@ Rails.application.routes.draw do
         patch :reschedule_anamnesis
         patch :cancel_anamnesis
         get :agenda_view
+        get :check_slot_availability
       end
     end
 
