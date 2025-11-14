@@ -540,7 +540,7 @@ DEPENDENCIES
   devise (~> 4.9)
   dotenv-rails
   factory_bot_rails
-  faraday (~> 2.14)
+  faraday (~> 2.13)
   foreman (~> 0.90.0)
   hotwire-spark
   httparty (~> 0.23.1)
