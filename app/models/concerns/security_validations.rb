@@ -6,11 +6,11 @@ module SecurityValidations
   included do
     # Validações de segurança
     validate :sanitize_text_fields
-    validate :validate_cpf_format_and_algorithm, if: :cpf_present?
-    validate :validate_birth_date_range, if: :data_nascimento_present?
-    validate :validate_phone_format, if: :telefone_responsavel_present?
-    validate :validate_cid_format, if: :cid_present?
-    validate :validate_crm_format, if: :medico_crm_present?
+    validate :validate_cpf_format_and_algorithm, if: :should_validate_cpf?
+    validate :validate_birth_date_range, if: :should_validate_birth_date?
+    validate :validate_phone_format, if: :should_validate_phone?
+    validate :validate_cid_format, if: :should_validate_cid?
+    validate :validate_crm_format, if: :should_validate_crm?
 
     # Sanitização automática antes da validação
     before_validation :sanitize_all_text_fields
@@ -187,6 +187,46 @@ module SecurityValidations
 
   def telefone_responsavel_present?
     respond_to?(:telefone_responsavel) && telefone_responsavel.present?
+  end
+
+  def should_validate_cpf?
+    return false unless cpf_present?
+    return true if new_record?
+    return true if respond_to?(:will_save_change_to_cpf?) && will_save_change_to_cpf?
+    return true if respond_to?(:cpf_changed?) && cpf_changed?
+    false
+  end
+
+  def should_validate_birth_date?
+    return false unless data_nascimento_present?
+    return true if new_record?
+    return true if respond_to?(:will_save_change_to_data_nascimento?) && will_save_change_to_data_nascimento?
+    return true if respond_to?(:data_nascimento_changed?) && data_nascimento_changed?
+    false
+  end
+
+  def should_validate_phone?
+    return false unless telefone_responsavel_present?
+    return true if new_record?
+    return true if respond_to?(:will_save_change_to_telefone_responsavel?) && will_save_change_to_telefone_responsavel?
+    return true if respond_to?(:telefone_responsavel_changed?) && telefone_responsavel_changed?
+    false
+  end
+
+  def should_validate_cid?
+    return false unless cid_present?
+    return true if new_record?
+    return true if respond_to?(:will_save_change_to_cid?) && will_save_change_to_cid?
+    return true if respond_to?(:cid_changed?) && cid_changed?
+    false
+  end
+
+  def should_validate_crm?
+    return false unless medico_crm_present?
+    return true if new_record?
+    return true if respond_to?(:will_save_change_to_medico_crm?) && will_save_change_to_medico_crm?
+    return true if respond_to?(:medico_crm_changed?) && medico_crm_changed?
+    false
   end
 
   # Validações específicas para PortalIntakeReferral
