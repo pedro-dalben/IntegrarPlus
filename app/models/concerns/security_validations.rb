@@ -194,6 +194,7 @@ module SecurityValidations
     return true if new_record?
     return true if respond_to?(:will_save_change_to_cpf?) && will_save_change_to_cpf?
     return true if respond_to?(:cpf_changed?) && cpf_changed?
+
     false
   end
 
@@ -202,6 +203,7 @@ module SecurityValidations
     return true if new_record?
     return true if respond_to?(:will_save_change_to_data_nascimento?) && will_save_change_to_data_nascimento?
     return true if respond_to?(:data_nascimento_changed?) && data_nascimento_changed?
+
     false
   end
 
@@ -210,6 +212,7 @@ module SecurityValidations
     return true if new_record?
     return true if respond_to?(:will_save_change_to_telefone_responsavel?) && will_save_change_to_telefone_responsavel?
     return true if respond_to?(:telefone_responsavel_changed?) && telefone_responsavel_changed?
+
     false
   end
 
@@ -218,6 +221,7 @@ module SecurityValidations
     return true if new_record?
     return true if respond_to?(:will_save_change_to_cid?) && will_save_change_to_cid?
     return true if respond_to?(:cid_changed?) && cid_changed?
+
     false
   end
 
@@ -226,6 +230,7 @@ module SecurityValidations
     return true if new_record?
     return true if respond_to?(:will_save_change_to_medico_crm?) && will_save_change_to_medico_crm?
     return true if respond_to?(:medico_crm_changed?) && medico_crm_changed?
+
     false
   end
 

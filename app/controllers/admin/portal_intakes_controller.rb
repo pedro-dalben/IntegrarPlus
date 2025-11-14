@@ -484,7 +484,7 @@ module Admin
                             end
 
       slot_start = datetime
-      slot_end = datetime + 30.minutes
+      30.minutes
 
       query = MedicalAppointment.where(agenda: @agenda)
                                 .where.not(status: %w[cancelled no_show])
@@ -507,7 +507,7 @@ module Admin
         all_times = []
 
         @agenda.working_hours['weekdays'].each do |day_config|
-          next unless day_config['periods'].present?
+          next if day_config['periods'].blank?
 
           day_config['periods'].each do |period|
             start_str = period['start'] || period['start_time']
