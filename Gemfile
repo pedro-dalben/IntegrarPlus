@@ -43,7 +43,7 @@ gem 'prawn'
 gem 'prawn-table'
 
 # Componentes de view
-gem "view_component", "~> 4.0"
+gem 'view_component', '~> 4.0'
 
 # Email styling
 gem 'premailer-rails'
