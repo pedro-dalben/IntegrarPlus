@@ -1,6 +1,7 @@
 import 'hotwire_spark';
 import '@hotwired/turbo-rails';
 import 'controllers';
+import './alert_helper';
 import 'tailwindcss/tailwind.css';
 
 // FullCalendar imports

@@ -1,4 +1,5 @@
 import '@hotwired/turbo-rails';
+import '../../javascript/alert_helper';
 import './controllers';
 
 // FullCalendar imports

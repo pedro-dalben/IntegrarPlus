@@ -2,73 +2,73 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from './application';
+import { application } from "./application"
 
-import AccordionController from './accordion_controller';
-application.register('accordion', AccordionController);
+import AccordionController from "./accordion_controller"
+application.register("accordion", AccordionController)
 
-import AgendaDashboardController from './agenda_dashboard_controller';
-application.register('agenda-dashboard', AgendaDashboardController);
+import AgendaDashboardController from "./agenda_dashboard_controller"
+application.register("agenda-dashboard", AgendaDashboardController)
 
-import AgendaGridController from './agenda_grid_controller';
-application.register('agenda-grid', AgendaGridController);
+import AgendaSchedulerController from "./agenda_scheduler_controller"
+application.register("agenda-scheduler", AgendaSchedulerController)
 
-import AgendaSchedulerController from './agenda_scheduler_controller';
-application.register('agenda-scheduler', AgendaSchedulerController);
+import Agendas__MetadataController from "./agendas/metadata_controller"
+application.register("agendas--metadata", Agendas__MetadataController)
 
-import Agendas__MetadataController from './agendas/metadata_controller';
-application.register('agendas--metadata', Agendas__MetadataController);
+import Agendas__ProfessionalsController from "./agendas/professionals_controller"
+application.register("agendas--professionals", Agendas__ProfessionalsController)
 
-import Agendas__ProfessionalsController from './agendas/professionals_controller';
-application.register('agendas--professionals', Agendas__ProfessionalsController);
+import Agendas__ReviewController from "./agendas/review_controller"
+application.register("agendas--review", Agendas__ReviewController)
 
-import Agendas__ReviewController from './agendas/review_controller';
-application.register('agendas--review', Agendas__ReviewController);
+import Agendas__WizardController from "./agendas/wizard_controller"
+application.register("agendas--wizard", Agendas__WizardController)
 
-import Agendas__WizardController from './agendas/wizard_controller';
-application.register('agendas--wizard', Agendas__WizardController);
+import Agendas__WorkingHoursController from "./agendas/working_hours_controller"
+application.register("agendas--working-hours", Agendas__WorkingHoursController)
 
-import Agendas__WorkingHoursController from './agendas/working_hours_controller';
-application.register('agendas--working-hours', Agendas__WorkingHoursController);
+import AlertController from "./alert_controller"
+application.register("alert", AlertController)
 
-import BasicCalendarController from './basic_calendar_controller';
-application.register('basic-calendar', BasicCalendarController);
+import BasicCalendarController from "./basic_calendar_controller"
+application.register("basic-calendar", BasicCalendarController)
 
-import CalendarViewsController from './calendar_views_controller';
-application.register('calendar-views', CalendarViewsController);
+import CalendarViewsController from "./calendar_views_controller"
+application.register("calendar-views", CalendarViewsController)
 
-import CarouselController from './carousel_controller';
-application.register('carousel', CarouselController);
+import CarouselController from "./carousel_controller"
+application.register("carousel", CarouselController)
 
-import CepController from './cep_controller';
-application.register('cep', CepController);
+import CepController from "./cep_controller"
+application.register("cep", CepController)
 
-import DropdownController from './dropdown_controller';
-application.register('dropdown', DropdownController);
+import DropdownController from "./dropdown_controller"
+application.register("dropdown", DropdownController)
 
-import FullCalendarController from './full_calendar_controller';
-application.register('full-calendar', FullCalendarController);
+import FullCalendarController from "./full_calendar_controller"
+application.register("full-calendar", FullCalendarController)
 
-import HeaderController from './header_controller';
-application.register('header', HeaderController);
+import HeaderController from "./header_controller"
+application.register("header", HeaderController)
 
-import MobileMenuController from './mobile_menu_controller';
-application.register('mobile-menu', MobileMenuController);
+import MobileMenuController from "./mobile_menu_controller"
+application.register("mobile-menu", MobileMenuController)
 
-import NestedFormController from './nested_form_controller';
-application.register('nested-form', NestedFormController);
+import NestedFormController from "./nested_form_controller"
+application.register("nested-form", NestedFormController)
 
-import NotificationController from './notification_controller';
-application.register('notification', NotificationController);
+import NotificationController from "./notification_controller"
+application.register("notification", NotificationController)
 
-import ProfessionalSelectorController from './professional_selector_controller';
-application.register('professional-selector', ProfessionalSelectorController);
+import ProfessionalSelectorController from "./professional_selector_controller"
+application.register("professional-selector", ProfessionalSelectorController)
 
-import ScheduleConfigurationController from './schedule_configuration_controller';
-application.register('schedule-configuration', ScheduleConfigurationController);
+import ScheduleConfigurationController from "./schedule_configuration_controller"
+application.register("schedule-configuration", ScheduleConfigurationController)
 
-import ToggleController from './toggle_controller';
-application.register('toggle', ToggleController);
+import ToggleController from "./toggle_controller"
+application.register("toggle", ToggleController)
 
-import UnifiedCalendarController from './unified_calendar_controller';
-application.register('unified-calendar', UnifiedCalendarController);
+import UnifiedCalendarController from "./unified_calendar_controller"
+application.register("unified-calendar", UnifiedCalendarController)

@@ -57,7 +57,7 @@
 
             <!-- Flash Messages -->
             <% if notice %>
-              <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500">
+              <div class="mb-6 bg-teal-50 border border-teal-200 rounded-md p-4 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500 notice" data-notice="<%= notice %>">
                 <div class="flex">
                   <div class="flex-shrink-0">
                     <svg class="size-4 text-teal-400 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -74,7 +74,7 @@
             <% end %>
 
             <% if alert %>
-              <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900">
+              <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4 dark:bg-red-800/10 dark:border-red-900 alert" data-alert="<%= alert %>">
                 <div class="flex">
                   <div class="flex-shrink-0">
                     <svg class="size-4 text-red-400 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">

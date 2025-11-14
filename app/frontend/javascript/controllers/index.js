@@ -4,6 +4,9 @@
 
 import { application } from './application';
 
+import AlertController from '../../../javascript/controllers/alert_controller';
+application.register('alert', AlertController);
+
 import AdvancedSearchController from './advanced_search_controller';
 application.register('advanced-search', AdvancedSearchController);
 
