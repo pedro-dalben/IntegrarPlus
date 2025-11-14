@@ -133,8 +133,21 @@ export default class extends Controller {
     // Implementar edição de evento
   }
 
-  deleteEvent(eventId) {
-    if (confirm('Tem certeza que deseja excluir este evento?')) {
+  async deleteEvent(eventId) {
+    const result = await (window.Alert ? 
+      window.Alert.confirm(
+        'Confirmar Exclusão',
+        'Tem certeza que deseja excluir este evento?',
+        {
+          confirmText: 'Excluir',
+          cancelText: 'Cancelar',
+          type: 'warning'
+        }
+      ) :
+      Promise.resolve({ isConfirmed: confirm('Tem certeza que deseja excluir este evento?') })
+    );
+    
+    if (result.isConfirmed) {
       // Implementar exclusão de evento
     }
   }

@@ -22,7 +22,11 @@ export default class extends Controller {
         const validation = this.validateWorkingHours();
         if (!validation.valid) {
           e.preventDefault();
-          alert(validation.message);
+          if (window.Alert) {
+            window.Alert.error('Erro de Validação', validation.message);
+          } else {
+            alert(validation.message);
+          }
         }
       };
       form.addEventListener('submit', this._submitHandler);
@@ -127,7 +131,11 @@ export default class extends Controller {
   copyToAllDays() {
     const sourceDay = this.element.querySelector('input[type="checkbox"]:checked');
     if (!sourceDay) {
-      alert('Selecione pelo menos um dia para copiar');
+      if (window.Alert) {
+        window.Alert.warning('Atenção', 'Selecione pelo menos um dia para copiar');
+      } else {
+        alert('Selecione pelo menos um dia para copiar');
+      }
       return;
     }
 
@@ -137,7 +145,11 @@ export default class extends Controller {
     );
 
     if (sourcePeriods.children.length === 0) {
-      alert('O dia selecionado não possui períodos para copiar');
+      if (window.Alert) {
+        window.Alert.warning('Atenção', 'O dia selecionado não possui períodos para copiar');
+      } else {
+        alert('O dia selecionado não possui períodos para copiar');
+      }
       return;
     }
 
@@ -230,7 +242,11 @@ export default class extends Controller {
       const turboStream = await response.text();
       Turbo.renderStreamMessage(turboStream);
     } catch (error) {
-      alert('Erro ao gerar preview. Tente novamente.');
+      if (window.Alert) {
+        window.Alert.error('Erro', 'Erro ao gerar preview. Tente novamente.');
+      } else {
+        alert('Erro ao gerar preview. Tente novamente.');
+      }
     } finally {
       this.hideLoading();
     }

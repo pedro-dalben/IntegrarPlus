@@ -63,12 +63,20 @@ export default class extends Controller {
 
     const extension = `.${file.name.split('.').pop().toLowerCase()}`;
     if (!allowedTypes.includes(extension)) {
-      alert('Tipo de arquivo não permitido. Use: PDF, DOCX, XLSX, JPG, PNG');
+      if (window.Alert) {
+        window.Alert.error('Tipo de Arquivo Inválido', 'Tipo de arquivo não permitido. Use: PDF, DOCX, XLSX, JPG, PNG');
+      } else {
+        alert('Tipo de arquivo não permitido. Use: PDF, DOCX, XLSX, JPG, PNG');
+      }
       return false;
     }
 
     if (file.size > maxSize) {
-      alert('Arquivo muito grande. Tamanho máximo: 50MB');
+      if (window.Alert) {
+        window.Alert.error('Arquivo Muito Grande', 'Arquivo muito grande. Tamanho máximo: 50MB');
+      } else {
+        alert('Arquivo muito grande. Tamanho máximo: 50MB');
+      }
       return false;
     }
 

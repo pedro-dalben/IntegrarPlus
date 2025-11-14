@@ -154,7 +154,11 @@ function copyToClipboard(elementId) {
     
   } catch (err) {
     console.error('Erro ao copiar: ', err);
-    alert('Erro ao copiar o link. Tente selecionar e copiar manualmente.');
+    if (window.Alert) {
+      window.Alert.error('Erro ao Copiar', 'Erro ao copiar o link. Tente selecionar e copiar manualmente.');
+    } else {
+      alert('Erro ao copiar o link. Tente selecionar e copiar manualmente.');
+    }
   }
 }
 </script>
