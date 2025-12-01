@@ -59,6 +59,13 @@ export default class extends Controller {
         };
         break;
 
+      case 'rg':
+        maskOptions = {
+          mask: '00.000.000-0',
+          lazy: false,
+        };
+        break;
+
       case 'email':
         // Para email, não aplicamos máscara, apenas validação nativa do HTML5
         return;

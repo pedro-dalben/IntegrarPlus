@@ -16,6 +16,9 @@ application.register('comments', CommentsController);
 import ContractFieldsController from './contract_fields_controller';
 application.register('contract-fields', ContractFieldsController);
 
+import ProfessionalContractFieldsController from './professional_contract_fields_controller';
+application.register('professional-contract-fields', ProfessionalContractFieldsController);
+
 import DependentSpecializationsController from './dependent_specializations_controller';
 application.register('dependent-specializations', DependentSpecializationsController);
 
