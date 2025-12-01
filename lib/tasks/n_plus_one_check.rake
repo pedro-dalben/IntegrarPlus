@@ -97,8 +97,10 @@ namespace :performance do
         end
 
         # Verificar se Bullet detectou problemas
+        Bullet.end_request
+
         if Bullet.notification?
-          puts ' ❌ N+1 detectado!'
+          puts ' ❌ Problema detectado!'
           n_plus_one_found = true
 
           if Bullet.warnings.any?
@@ -106,12 +108,24 @@ namespace :performance do
               puts "    ⚠️  #{warning}"
             end
           end
+
+          if Bullet.collected_notifications.respond_to?(:each)
+            Bullet.collected_notifications.each do |notification|
+              next unless notification.respond_to?(:base_class) && notification.respond_to?(:associations)
+
+              case notification.class.name
+              when /NPlusOneQuery/
+                puts "       💡 Adicione: .includes([#{notification.associations.map { |a| ":#{a}" }.join(', ')}])"
+              when /UnusedEagerLoading/
+                puts "       💡 Remova: .includes([#{notification.associations.map { |a| ":#{a}" }.join(', ')}])"
+              when /CounterCache/
+                puts '       💡 Considere adicionar counter cache'
+              end
+            end
+          end
         else
           puts ' ✅ OK'
         end
-
-        Bullet.end_request
-        Bullet.clear_notifications
       rescue StandardError => e
         puts " ⚠️  Erro: #{e.message}"
       end

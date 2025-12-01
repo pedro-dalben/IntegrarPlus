@@ -508,6 +508,4 @@ export default class AlertController extends Controller {
       ...options,
     });
   }
-
-
 }
