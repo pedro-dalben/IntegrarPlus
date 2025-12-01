@@ -1,6 +1,26 @@
 ---
 pt-BR:
   activerecord:
+    models:
+      professional_contract: "Contrato Profissional"
+    attributes:
+      professional_contract:
+        contract_type_enum: "Tipo de Contratação"
+        payment_type: "Forma de Pagamento"
+        nationality: "Nacionalidade"
+        professional_formation: "Formação Profissional"
+        rg: "RG"
+        cpf: "CPF"
+        council_registration_number: "Nº Registro do Conselho"
+        job_role_id: "Atribuição de Cargo"
+        monthly_value: "Valor Mensal"
+        hourly_value: "Valor da Hora"
+        overtime_hour_value: "Valor Hora Extra"
+        company_cnpj: "CNPJ da Empresa"
+        company_address: "Endereço da Empresa"
+        company_represented_by: "Representada por"
+        ccm: "CCM"
+        taxpayer_address: "Endereço do Contribuinte"
     errors:
       messages:
         record_invalid: 'A validação falhou: %{errors}'
