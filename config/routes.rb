@@ -22,6 +22,12 @@ Rails.application.routes.draw do
         patch :confirm
         patch :unconfirm
         patch :toggle_active
+        get :generate_contract_pdf
+        get :generate_anexo_pdf
+        get :generate_termo_pdf
+        get :download_contract_pdf
+        get :download_anexo_pdf
+        get :download_termo_pdf
       end
     end
 
