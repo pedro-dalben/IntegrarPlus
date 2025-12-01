@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_31_183411) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_18_174554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -610,6 +610,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_183411) do
     t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
+  create_table "job_roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description", null: false
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_job_roles_on_active"
+    t.index ["name"], name: "index_job_roles_on_name", unique: true
+  end
+
   create_table "journey_events", force: :cascade do |t|
     t.bigint "portal_intake_id", null: false
     t.string "event_type", null: false
@@ -778,6 +788,35 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_183411) do
     t.index ["agenda_id"], name: "index_professional_availabilities_on_agenda_id"
     t.index ["professional_id", "day_of_week"], name: "idx_on_professional_id_day_of_week_c89056fce6"
     t.index ["professional_id"], name: "index_professional_availabilities_on_professional_id"
+  end
+
+  create_table "professional_contracts", force: :cascade do |t|
+    t.bigint "professional_id", null: false
+    t.string "contract_type_enum"
+    t.string "nationality"
+    t.text "professional_formation"
+    t.string "rg"
+    t.string "cpf"
+    t.string "council_registration_number"
+    t.bigint "job_role_id"
+    t.string "payment_type"
+    t.decimal "monthly_value", precision: 10, scale: 2
+    t.decimal "hourly_value", precision: 10, scale: 2
+    t.decimal "overtime_hour_value", precision: 10, scale: 2, default: "17.0"
+    t.string "company_cnpj"
+    t.text "company_address"
+    t.string "company_represented_by"
+    t.string "ccm"
+    t.text "taxpayer_address"
+    t.string "contract_pdf_path"
+    t.string "anexo_pdf_path"
+    t.string "termo_pdf_path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contract_type_enum"], name: "index_professional_contracts_on_contract_type_enum"
+    t.index ["job_role_id"], name: "index_professional_contracts_on_job_role_id"
+    t.index ["payment_type"], name: "index_professional_contracts_on_payment_type"
+    t.index ["professional_id"], name: "index_professional_contracts_on_professional_id", unique: true
   end
 
   create_table "professional_groups", force: :cascade do |t|
@@ -1039,6 +1078,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_31_183411) do
   add_foreign_key "portal_intakes", "external_users", column: "operator_id"
   add_foreign_key "professional_availabilities", "agendas"
   add_foreign_key "professional_availabilities", "professionals"
+  add_foreign_key "professional_contracts", "job_roles"
+  add_foreign_key "professional_contracts", "professionals"
   add_foreign_key "professional_groups", "groups"
   add_foreign_key "professional_groups", "professionals"
   add_foreign_key "professional_specialities", "professionals"
