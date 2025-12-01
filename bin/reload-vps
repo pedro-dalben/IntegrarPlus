@@ -16,6 +16,7 @@ source ~/.rvm/scripts/rvm
 export RAILS_ENV=production
 source bin/setup-db
 
+bundle lock --add-platform aarch64-linux
 bundle install
 
 # Executar seeds pendentes

@@ -98,6 +98,8 @@ portal_intakes_data.each_with_index do |intake_data, index|
   next if portal_intake.persisted?
 
   portal_intake.assign_attributes(
+    nome: intake_data[:beneficiary_name],
+    beneficiary_name: intake_data[:beneficiary_name],
     plan_name: intake_data[:plan_name],
     status: intake_data[:status],
     requested_at: intake_data[:requested_at],
