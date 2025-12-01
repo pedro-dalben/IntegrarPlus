@@ -2,7 +2,9 @@
 
 module Admin
   class ProfessionalsController < BaseController
-    before_action :set_professional, only: %i[show edit update destroy create_user toggle_active]
+    before_action :set_professional, only: %i[show edit update destroy create_user toggle_active
+                                               generate_contract_pdf generate_anexo_pdf generate_termo_pdf
+                                               download_contract_pdf download_anexo_pdf download_termo_pdf]
 
     def index
       @professionals = params[:query].present? ? perform_search : perform_local_search
@@ -101,6 +103,129 @@ module Admin
       end
     end
 
+    def generate_contract_pdf
+      @professional.create_professional_contract unless @professional.professional_contract
+      contract = @professional.professional_contract
+
+      unless contract.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Contrato não encontrado. Preencha os dados contratuais primeiro.'
+        return
+      end
+
+      pdf_service = ContractPdfService.new
+      pdf_service.save_contract_pdf(contract)
+
+      redirect_to admin_professional_path(@professional),
+                  notice: 'Contrato gerado com sucesso!'
+    rescue StandardError => e
+      Rails.logger.error "Erro ao gerar contrato: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      redirect_to admin_professional_path(@professional),
+                  alert: "Erro ao gerar contrato: #{e.message}"
+    end
+
+    def generate_anexo_pdf
+      @professional.create_professional_contract unless @professional.professional_contract
+      contract = @professional.professional_contract
+
+      unless contract&.job_role.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Atribuição de cargo não selecionada. Selecione um cargo nos dados contratuais.'
+        return
+      end
+
+      pdf_service = ContractPdfService.new
+      pdf_service.save_anexo_pdf(contract)
+
+      redirect_to admin_professional_path(@professional),
+                  notice: 'Anexo I gerado com sucesso!'
+    rescue StandardError => e
+      Rails.logger.error "Erro ao gerar anexo: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      redirect_to admin_professional_path(@professional),
+                  alert: "Erro ao gerar anexo: #{e.message}"
+    end
+
+    def generate_termo_pdf
+      @professional.create_professional_contract unless @professional.professional_contract
+      contract = @professional.professional_contract
+
+      unless contract.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Contrato não encontrado. Preencha os dados contratuais primeiro.'
+        return
+      end
+
+      pdf_service = ContractPdfService.new
+      pdf_service.save_termo_pdf(contract)
+
+      redirect_to admin_professional_path(@professional),
+                  notice: 'Termo de Imagem gerado com sucesso!'
+    rescue StandardError => e
+      Rails.logger.error "Erro ao gerar termo: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      redirect_to admin_professional_path(@professional),
+                  alert: "Erro ao gerar termo: #{e.message}"
+    end
+
+    def download_contract_pdf
+      contract = @professional.professional_contract
+      unless contract&.contract_pdf_path.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Contrato ainda não foi gerado.'
+        return
+      end
+
+      file_path = Rails.root.join('storage', contract.contract_pdf_path)
+      unless File.exist?(file_path)
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Arquivo do contrato não encontrado.'
+        return
+      end
+
+      send_file file_path, filename: "contrato_#{@professional.full_name.parameterize}.pdf",
+                type: 'application/pdf', disposition: 'attachment'
+    end
+
+    def download_anexo_pdf
+      contract = @professional.professional_contract
+      unless contract&.anexo_pdf_path.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Anexo I ainda não foi gerado.'
+        return
+      end
+
+      file_path = Rails.root.join('storage', contract.anexo_pdf_path)
+      unless File.exist?(file_path)
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Arquivo do anexo não encontrado.'
+        return
+      end
+
+      send_file file_path, filename: "anexo_i_#{@professional.full_name.parameterize}.pdf",
+                type: 'application/pdf', disposition: 'attachment'
+    end
+
+    def download_termo_pdf
+      contract = @professional.professional_contract
+      unless contract&.termo_pdf_path.present?
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Termo de Imagem ainda não foi gerado.'
+        return
+      end
+
+      file_path = Rails.root.join('storage', contract.termo_pdf_path)
+      unless File.exist?(file_path)
+        redirect_to admin_professional_path(@professional),
+                    alert: 'Arquivo do termo não encontrado.'
+        return
+      end
+
+      send_file file_path, filename: "termo_imagem_#{@professional.full_name.parameterize}.pdf",
+                type: 'application/pdf', disposition: 'attachment'
+    end
+
     private
 
     def perform_search
@@ -190,6 +315,13 @@ module Admin
                            id zip_code street number complement
                            neighborhood city state latitude longitude _destroy
                          ],
+                         professional_contract_attributes: %i[
+                           id contract_type_enum nationality professional_formation
+                           rg cpf council_registration_number job_role_id
+                           payment_type monthly_value hourly_value overtime_hour_value
+                           company_cnpj company_address company_represented_by
+                           ccm taxpayer_address _destroy
+                         ],
                          group_ids: [],
                          speciality_ids: [],
                          specialization_ids: [] }]
@@ -203,6 +335,7 @@ module Admin
       @contract_types = ContractType.active.ordered
       @groups = Group.ordered
       @specialities = Speciality.active.ordered
+      @job_roles = JobRole.active.ordered
     end
 
     def has_future_appointments?

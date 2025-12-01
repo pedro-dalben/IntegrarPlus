@@ -199,6 +199,156 @@
       </div>
     </div>
 
+    <!-- Dados Contratuais -->
+    <% if @professional.professional_contract.present? %>
+      <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 class="text-lg font-medium text-gray-800 dark:text-white">Dados Contratuais</h2>
+        </div>
+        <div class="p-4 sm:p-6">
+          <% contract = @professional.professional_contract %>
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div>
+              <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Tipo de Contratação</span>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                <%= contract.contract_type_enum == 'pj' ? 'PJ' : 'Autônomo' %>
+              </p>
+            </div>
+
+            <div>
+              <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Forma de Pagamento</span>
+              <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                <%= contract.payment_type == 'fechado' ? 'Valor fechado mensal' : 'Por hora' %>
+              </p>
+            </div>
+
+            <% if contract.payment_type == 'fechado' && contract.monthly_value.present? %>
+              <div>
+                <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Valor Mensal</span>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                  R$ <%= number_with_precision(contract.monthly_value, precision: 2, delimiter: '.', separator: ',') %>
+                </p>
+              </div>
+            <% elsif contract.payment_type == 'por_hora' && contract.hourly_value.present? %>
+              <div>
+                <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Valor da Hora</span>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                  R$ <%= number_with_precision(contract.hourly_value, precision: 2, delimiter: '.', separator: ',') %>
+                </p>
+              </div>
+            <% end %>
+
+            <% if contract.job_role.present? %>
+              <div>
+                <span class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Atribuição de Cargo</span>
+                <p class="h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                  <%= contract.job_role.name %>
+                </p>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <h3 class="text-md font-medium text-gray-800 dark:text-white mb-4">Documentos</h3>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Contrato</span>
+                <% if contract.contract_pdf_path.present? %>
+                  <div class="flex gap-2">
+                    <%= link_to download_contract_pdf_admin_professional_path(@professional),
+                        class: "bg-blue-500 shadow-theme-xs hover:bg-blue-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition flex-1" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                      Baixar
+                    <% end %>
+                    <%= link_to generate_contract_pdf_admin_professional_path(@professional),
+                        class: "bg-green-500 shadow-theme-xs hover:bg-green-600 inline-flex items-center justify-center rounded-lg p-2 text-white transition",
+                        title: "Regenerar contrato com dados atualizados",
+                        data: { confirm: "Deseja regenerar o contrato com os dados atualizados?" } do %>
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      </svg>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <%= link_to generate_contract_pdf_admin_professional_path(@professional),
+                      class: "bg-gray-500 shadow-theme-xs hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Gerar Contrato
+                  <% end %>
+                <% end %>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Anexo I</span>
+                <% if contract.anexo_pdf_path.present? %>
+                  <div class="flex gap-2">
+                    <%= link_to download_anexo_pdf_admin_professional_path(@professional),
+                        class: "bg-blue-500 shadow-theme-xs hover:bg-blue-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition flex-1" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                      Baixar
+                    <% end %>
+                    <%= link_to generate_anexo_pdf_admin_professional_path(@professional),
+                        class: "bg-green-500 shadow-theme-xs hover:bg-green-600 inline-flex items-center justify-center rounded-lg p-2 text-white transition",
+                        title: "Regenerar Anexo I com dados atualizados",
+                        data: { confirm: "Deseja regenerar o Anexo I com os dados atualizados?" } do %>
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      </svg>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <%= link_to generate_anexo_pdf_admin_professional_path(@professional),
+                      class: "bg-gray-500 shadow-theme-xs hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Gerar Anexo I
+                  <% end %>
+                <% end %>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Termo de Imagem</span>
+                <% if contract.termo_pdf_path.present? %>
+                  <div class="flex gap-2">
+                    <%= link_to download_termo_pdf_admin_professional_path(@professional),
+                        class: "bg-blue-500 shadow-theme-xs hover:bg-blue-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition flex-1" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                      Baixar
+                    <% end %>
+                    <%= link_to generate_termo_pdf_admin_professional_path(@professional),
+                        class: "bg-green-500 shadow-theme-xs hover:bg-green-600 inline-flex items-center justify-center rounded-lg p-2 text-white transition",
+                        title: "Regenerar Termo de Imagem com dados atualizados",
+                        data: { confirm: "Deseja regenerar o Termo de Imagem com os dados atualizados?" } do %>
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      </svg>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <%= link_to generate_termo_pdf_admin_professional_path(@professional),
+                      class: "bg-gray-500 shadow-theme-xs hover:bg-gray-600 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition" do %>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Gerar Termo
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <!-- Ações -->
     <div class="flex flex-col gap-3 sm:flex-row sm:justify-between">
       <div class="flex gap-3">

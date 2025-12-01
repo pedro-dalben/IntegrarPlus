@@ -29,11 +29,13 @@ class Professional < ApplicationRecord
   has_many :professional_availabilities, dependent: :destroy
   has_many :availability_exceptions, dependent: :destroy
   has_many :medical_appointments, dependent: :destroy
+  has_one :professional_contract, dependent: :destroy
 
   # Nested attributes for form handling
   accepts_nested_attributes_for :groups, allow_destroy: true
   accepts_nested_attributes_for :specialities, allow_destroy: true
   accepts_nested_attributes_for :specializations, allow_destroy: true
+  accepts_nested_attributes_for :professional_contract
 
   validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }
   validates :cpf, presence: true, uniqueness: { case_sensitive: false }
