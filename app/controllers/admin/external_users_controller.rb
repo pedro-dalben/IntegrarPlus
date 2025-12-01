@@ -20,7 +20,7 @@ module Admin
 
     def show
       authorize @external_user, policy_class: Admin::ExternalUserPolicy
-      @portal_intakes = @external_user.portal_intakes.includes(:journey_events)
+      @portal_intakes = @external_user.portal_intakes
                                       .recent
                                       .limit(10)
     end

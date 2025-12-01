@@ -16,22 +16,22 @@ module Admin
     def agenda_data
       {
         # Todos os eventos (para o calendário completo)
-        all_events: Event.includes(:professional, :created_by)
+        all_events: Event.includes(:professional)
                          .where(start_time: 1.month.ago..)
                          .order(:start_time),
 
         # Eventos da semana atual
-        this_week_events: Event.includes(:professional, :created_by)
+        this_week_events: Event.includes(:professional)
                                .where(start_time: Date.current.all_week)
                                .order(:start_time),
 
         # Eventos de hoje
-        today_events: Event.includes(:professional, :created_by)
+        today_events: Event.includes(:professional)
                            .where(start_time: Date.current.all_day)
                            .order(:start_time),
 
         # Próximos eventos (próximas 24h)
-        next_24h_events: Event.includes(:professional, :created_by)
+        next_24h_events: Event.includes(:professional)
                               .where('start_time > ? AND start_time < ?', Time.current, 24.hours.from_now)
                               .order(:start_time),
 

@@ -8,7 +8,6 @@ module Admin
     def index
       @pagy, @events = pagy(
         current_user.professional.events
-                    .includes(:created_by)
                     .order(:start_time),
         items: 20
       )
@@ -103,7 +102,6 @@ module Admin
       end_date = params[:end]&.to_date || Date.current.end_of_month
       @events = current_user.professional.events
                             .where(start_time: start_date.beginning_of_day..end_date.end_of_day)
-                            .includes(:created_by)
 
       calendar_events = @events.map do |event|
         {
@@ -127,7 +125,7 @@ module Admin
     private
 
     def set_event
-      @event = current_user.professional.events.find(params[:id])
+      @event = current_user.professional.events.includes(:created_by).find(params[:id])
     end
 
     def ensure_owner_or_permission

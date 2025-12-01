@@ -26,7 +26,7 @@ module Admin
     private
 
     def load_events
-      events = Event.includes(:professional, :created_by, :medical_appointment)
+      events = Event.includes(:professional, :medical_appointment)
 
       events = events.where(professional: @professional) if @professional.present?
 

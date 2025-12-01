@@ -7,7 +7,6 @@ module Portal
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: PortalIntakePolicy::Scope)
-                        .includes(:journey_events)
                         .recent
 
       @portal_intakes = apply_filters(@portal_intakes)

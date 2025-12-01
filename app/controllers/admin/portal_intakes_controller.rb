@@ -8,7 +8,7 @@ module Admin
 
     def index
       @portal_intakes = policy_scope(PortalIntake, policy_scope_class: Admin::PortalIntakePolicy::Scope)
-                        .includes(:operator, :journey_events)
+                        .includes(:operator)
                         .recent
 
       @portal_intakes = apply_filters(@portal_intakes)
@@ -439,7 +439,7 @@ module Admin
     private
 
     def set_portal_intake
-      @portal_intake = PortalIntake.includes(:journey_events).find(params[:id])
+      @portal_intake = PortalIntake.find(params[:id])
     end
 
     def resolve_professional(identifier)
