@@ -66,6 +66,10 @@ module Admin
       user.permit?('anamneses.by_professional')
     end
 
+    def print_pdf?
+      user.permit?('anamneses.show') && can_view_anamnesis?
+    end
+
     def mark_attended?
       user.permit?('anamneses.mark_attended') && can_manage_attendance?
     end

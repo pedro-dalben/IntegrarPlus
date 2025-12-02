@@ -6,7 +6,6 @@ class Anamnesis < ApplicationRecord
 
   has_paper_trail
 
-  # Relacionamentos
   belongs_to :beneficiary, optional: true
   belongs_to :professional, class_name: 'User'
   belongs_to :portal_intake, optional: true
@@ -22,7 +21,23 @@ class Anamnesis < ApplicationRecord
     { key: 'psicologia',        label: 'Psicologia' }
   ].freeze
 
-  # Enums
+  BIRTH_TYPES = %w[normal cesarea forceps].freeze
+  BIRTH_LOCATION_TYPES = %w[domiciliar hospitalar].freeze
+  BIRTH_TERMS = %w[pre_termo termo pos_termo].freeze
+  ANESTHESIA_TYPES = %w[raquidiana epidural].freeze
+  BABY_POSITIONS = %w[cefalico pelvico_pe pelvico_nadega transverso].freeze
+
+  FAMILY_CONDITIONS = [
+    { key: 'di', label: 'DI - Deficiência Intelectual' },
+    { key: 'da', label: 'DA - Deficiência Auditiva' },
+    { key: 'df', label: 'DF - Deficiência Física' },
+    { key: 'has', label: 'HAS - Hipertensão Arterial Sistêmica' },
+    { key: 'dm', label: 'DM - Diabetes Mellitus' },
+    { key: 'epilepsia', label: 'Epilepsia' },
+    { key: 'alcoolismo', label: 'Alcoolismo' },
+    { key: 'outros', label: 'Outros' }
+  ].freeze
+
   enum :status, {
     pendente: 'pendente',
     em_andamento: 'em_andamento',
@@ -57,7 +72,6 @@ class Anamnesis < ApplicationRecord
     rescheduled: 'rescheduled'
   }
 
-  # Validações
   validates :performed_at, presence: true
   validates :status, presence: true
   validates :referral_reason, presence: true
@@ -65,14 +79,11 @@ class Anamnesis < ApplicationRecord
   validates :referral_hours, presence: true,
                              numericality: { in: 5..40, message: 'deve estar entre 5 e 40 horas' }
 
-  # Validações condicionais
   validates :school_name, presence: true, if: :attends_school?
   validates :school_period, presence: true, if: :attends_school?
 
-  # Callbacks
   before_validation :set_default_values
 
-  # Scopes
   scope :by_professional, ->(professional) { where(professional: professional) }
   scope :by_beneficiary, ->(beneficiary) { where(beneficiary: beneficiary) }
   scope :by_status, ->(status) { where(status: status) }
@@ -83,7 +94,6 @@ class Anamnesis < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :by_date, -> { order(performed_at: :desc) }
 
-  # MeiliSearch configuration
   unless Rails.env.test?
     meilisearch do
       searchable_attributes %i[beneficiary_name professional_name referral_reason]
@@ -104,7 +114,6 @@ class Anamnesis < ApplicationRecord
     end
   end
 
-  # Métodos de instância
   def beneficiary_name
     beneficiary&.name || portal_intake&.beneficiary_name || 'Beneficiário não informado'
   end
@@ -169,6 +178,47 @@ class Anamnesis < ApplicationRecord
     end
   end
 
+  def birth_type_label
+    return nil if birth_type.blank?
+
+    { 'normal' => 'Normal', 'cesarea' => 'Cesárea', 'forceps' => 'Fórceps' }[birth_type]
+  end
+
+  def birth_location_type_label
+    return nil if birth_location_type.blank?
+
+    { 'domiciliar' => 'Domiciliar', 'hospitalar' => 'Hospitalar' }[birth_location_type]
+  end
+
+  def birth_term_label
+    return nil if birth_term.blank?
+
+    { 'pre_termo' => 'Pré-termo', 'termo' => 'A termo', 'pos_termo' => 'Pós-termo' }[birth_term]
+  end
+
+  def anesthesia_type_label
+    return nil if anesthesia_type.blank?
+
+    { 'raquidiana' => 'Raquidiana', 'epidural' => 'Epidural' }[anesthesia_type]
+  end
+
+  def baby_position_label
+    return nil if baby_position.blank?
+
+    {
+      'cefalico' => 'Cefálico',
+      'pelvico_pe' => 'Pélvico – pé',
+      'pelvico_nadega' => 'Pélvico – nádega',
+      'transverso' => 'Transverso'
+    }[baby_position]
+  end
+
+  def school_period_label
+    return nil if school_period.blank?
+
+    { 'manha' => 'Manhã', 'tarde' => 'Tarde', 'integral' => 'Integral' }[school_period]
+  end
+
   def pode_ser_editada?
     pendente? || em_andamento?
   end
@@ -204,7 +254,6 @@ class Anamnesis < ApplicationRecord
         updated_by_professional: professional
       )
 
-      # Criar beneficiário se veio do portal
       create_beneficiary_from_portal_intake if portal_intake_id?
     end
   rescue StandardError
@@ -304,7 +353,22 @@ class Anamnesis < ApplicationRecord
     []
   end
 
-  # Métodos de classe
+  def family_composition_array
+    return [] if family_composition.blank?
+
+    family_composition.is_a?(Array) ? family_composition : JSON.parse(family_composition)
+  rescue JSON::ParserError
+    []
+  end
+
+  def family_conditions_array
+    return [] if family_conditions.blank?
+
+    family_conditions.is_a?(Array) ? family_conditions : JSON.parse(family_conditions)
+  rescue JSON::ParserError
+    []
+  end
+
   def self.by_professional_today(professional)
     by_professional(professional).today
   end
@@ -344,7 +408,6 @@ class Anamnesis < ApplicationRecord
   def create_beneficiary_from_portal_intake
     return unless portal_intake_id? && beneficiary.nil?
 
-    # Criar beneficiário a partir dos dados do portal intake
     beneficiary_data = {
       name: portal_intake.nome || portal_intake.beneficiary_name,
       birth_date: portal_intake.data_nascimento,
