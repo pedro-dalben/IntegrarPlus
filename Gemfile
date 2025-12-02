@@ -84,4 +84,4 @@ gem 'standardrb', '~> 1.0', group: :development
 
 gem 'bullet', group: :development
 
-gem 'pagy', '~> 9.4'
+gem 'pagy', '~> 43.0'
