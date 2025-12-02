@@ -2,7 +2,8 @@
 
 module Admin
   class AnamnesesController < BaseController
-    before_action :set_anamnesis, only: %i[show edit update start complete mark_attended mark_no_show cancel_anamnesis]
+    before_action :set_anamnesis,
+                  only: %i[show edit update start complete mark_attended mark_no_show cancel_anamnesis print_pdf]
     before_action :convert_date_params, only: %i[create update]
 
     def index
@@ -205,6 +206,18 @@ module Admin
       end
     end
 
+    def print_pdf
+      authorize @anamnesis, policy_class: Admin::AnamnesisPolicy
+
+      pdf = AnamnesisPdfService.new(@anamnesis).generate
+      filename = "anamnese_#{@anamnesis.beneficiary_name.parameterize}_#{@anamnesis.performed_at.strftime('%Y%m%d')}.pdf"
+
+      send_data pdf.render,
+                filename: filename,
+                type: 'application/pdf',
+                disposition: 'inline'
+    end
+
     private
 
     def set_anamnesis
@@ -234,10 +247,8 @@ module Admin
     def perform_local_search
       scope = Anamnesis.includes(:beneficiary, :professional, :portal_intake)
 
-      # Filtrar por profissional se não tiver permissão para ver todas
       scope = scope.by_professional(current_user.professional) unless current_user.permit?('anamneses.view_all')
 
-      # Por padrão, não mostrar anamneses concluídas a menos que seja especificado
       unless params[:include_concluidas] == 'true' || params[:status] == 'concluida'
         scope = scope.where.not(status: 'concluida')
       end
@@ -254,7 +265,6 @@ module Admin
       filters[:referral_reason] = params[:referral_reason] if params[:referral_reason].present?
       filters[:treatment_location] = params[:treatment_location] if params[:treatment_location].present?
 
-      # Aplicar filtro de período para busca
       if params[:period].present?
         case params[:period]
         when 'today'
@@ -270,12 +280,10 @@ module Admin
         end
       end
 
-      # Filtro por data personalizada
       if params[:start_date].present? && params[:end_date].present?
         filters[:performed_at] = "#{params[:start_date]}..#{params[:end_date]}"
       end
 
-      # Por padrão, não incluir concluídas na busca
       filters[:status] = %w[pendente em_andamento] unless params[:include_concluidas] == 'true'
 
       filters
@@ -313,23 +321,19 @@ module Admin
       scope = scope.by_professional(User.find(params[:professional_id])) if params[:professional_id].present?
       scope = scope.by_beneficiary(Beneficiary.find(params[:beneficiary_id])) if params[:beneficiary_id].present?
 
-      # Filtro por motivo de encaminhamento
       scope = scope.where(referral_reason: params[:referral_reason]) if params[:referral_reason].present?
 
-      # Filtro por local de tratamento
       scope = scope.where(treatment_location: params[:treatment_location]) if params[:treatment_location].present?
 
-      # Aplicar filtro de período
       scope = apply_period_filter(scope)
 
-      # Filtro por período personalizado (data inicial e final)
       if params[:start_date].present? && params[:end_date].present?
         begin
           start_date = Date.parse(params[:start_date])
           end_date = Date.parse(params[:end_date])
           scope = scope.by_date_range(start_date, end_date)
         rescue Date::Error
-          # Ignora filtro de data se inválido
+          Rails.logger.debug 'Data inválida nos parâmetros de filtro'
         end
       end
 
@@ -355,20 +359,76 @@ module Admin
 
     def anamnesis_params
       params.expect(
-        anamnesis: [:performed_at,
-                    :father_name, :father_birth_date, :father_education, :father_profession,
-                    :mother_name, :mother_birth_date, :mother_education, :mother_profession,
-                    :responsible_name, :responsible_birth_date, :responsible_education, :responsible_profession,
-                    :attends_school, :school_name, :school_period,
-                    :referral_reason, :injunction, :treatment_location, :referral_hours,
-                    :diagnosis_completed, :responsible_doctor,
-                    :previous_treatment, :continue_external_treatment,
-                    :beneficiary_id, :portal_intake_id, :professional_id,
-                    { specialties: {},
-                      previous_treatments: [],
-                      external_treatments: [],
-                      preferred_schedule: [],
-                      unavailable_schedule: [] }]
+        anamnesis: [
+          :performed_at, :start_time, :session_email,
+          :birthplace, :birth_state, :religion,
+          :father_name, :father_birth_date, :father_education, :father_profession, :father_cpf, :father_workplace,
+          :mother_name, :mother_birth_date, :mother_education, :mother_profession, :mother_cpf, :mother_workplace,
+          :responsible_name, :responsible_birth_date, :responsible_education, :responsible_profession,
+          :attends_school, :school_name, :school_period, :school_phone, :school_enrollment_age,
+          :has_support_teacher, :after_school_activities, :school_difficulties, :family_school_expectations,
+          :referral_reason, :injunction, :treatment_location, :referral_hours,
+          :diagnosis_completed, :responsible_doctor,
+          :previous_treatment, :continue_external_treatment,
+          :beneficiary_id, :portal_intake_id, :professional_id,
+          :main_complaint, :complaint_noticed_since,
+          :pregnancy_planned, :prenatal_care, :mother_age_at_birth,
+          :had_miscarriages, :miscarriages_count, :miscarriages_type,
+          :pregnancy_trauma, :pregnancy_illness, :pregnancy_illness_description,
+          :pregnancy_medication, :pregnancy_medication_description,
+          :pregnancy_drugs, :pregnancy_drugs_description,
+          :pregnancy_alcohol, :pregnancy_smoking, :cigarettes_per_day,
+          :birth_type, :birth_location_type, :birth_term,
+          :had_anesthesia, :anesthesia_type, :baby_position,
+          :cried_at_birth, :cord_around_neck, :cyanotic, :apgar_1min, :apgar_5min,
+          :mother_hospital_days, :baby_hospital_days,
+          :birth_weight, :birth_height,
+          :needed_incubator, :needed_icu, :icu_reason, :birth_complications,
+          :baby_health, :respiratory_problems, :general_behavior_baby,
+          :breastfed, :breastfed_until, :bottle_fed, :bottle_fed_until,
+          :feeding_contact, :daily_meals, :favorite_foods, :rejected_foods,
+          :frequent_vomiting, :meal_behavior, :fixed_meal_schedule,
+          :eats_alone, :chewing_difficulty, :drools, :drools_when, :feeding_notes,
+          :held_head, :held_head_age, :rolled_over, :rolled_bilateral, :rolled_notes,
+          :sat_unsupported, :sat_unsupported_age, :crawled, :crawled_age, :crawled_how,
+          :stood_age, :walked_age, :climbed_stairs, :climbed_stairs_age,
+          :squatted, :squatted_age, :used_walker, :used_walker_age,
+          :motor_coordination_problem, :motor_coordination_description, :object_manipulation_difficulty,
+          :bladder_control_day, :bladder_control_night, :bowel_control_day, :bowel_control_night,
+          :babbled, :babbled_age, :speech_started_age,
+          :understandable_speech, :understandable_since,
+          :speech_difficulties, :speech_difficulties_description,
+          :echolalia, :hearing_problems, :hearing_problems_description,
+          :responds_from_distance, :easily_startled,
+          :uses_gestures, :gestures_description, :uses_other_as_tool,
+          :words_in_context, :shares_interests,
+          :stopped_speaking, :stopped_speaking_when,
+          :understands_speech, :communicates_desires,
+          :reaction_not_understood, :family_reaction_communication,
+          :sleep_routine, :sleep_routine_description,
+          :individual_bed, :individual_bed_description,
+          :sleep_quality, :nocturnal_enuresis,
+          :preferred_play, :how_plays, :protective_reaction_play, :favorite_toys,
+          :watches_tv, :watches_tv_how, :favorite_programs, :watches_repeatedly,
+          :plays_with_others, :plays_with_others_how, :fights_with_peers,
+          :defends_from_aggression, :defense_method,
+          :reaction_prohibitions, :behavior_with_strangers,
+          :danger_awareness, :danger_awareness_description, :new_situations_reaction,
+          :obeys_orders, :shows_affection,
+          :aggressive_behavior, :aggressive_behavior_description, :family_crisis_reaction,
+          :previous_illnesses, :hospitalizations, :hospitalization_causes,
+          :has_epilepsy, :epilepsy_frequency, :current_medications,
+          :exams_done, :exams_to_do, :has_allergies, :allergies_description,
+          :psychiatric_hospitalization, :psychiatric_hospitalization_who,
+          :general_information,
+          { specialties: {},
+            previous_treatments: [],
+            external_treatments: [],
+            preferred_schedule: [],
+            unavailable_schedule: [],
+            family_composition: [],
+            family_conditions: [] }
+        ]
       )
     end
 

@@ -1,0 +1,55 @@
+<%= render 'form_section_header', title: 'III - Sobre o Encaminhamento/Procura' do %>
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <%= form.label :referral_reason, "Motivo do Encaminhamento *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+        <%= form.select :referral_reason,
+            options_for_select([
+              ['Selecione...', ''],
+              ['ABA', 'aba'],
+              ['Equipe Multi', 'equipe_multi'],
+              ['ABA + Equipe Multi', 'aba_equipe_multi']
+            ], anamnesis.referral_reason),
+            {},
+            { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true } %>
+      </div>
+
+      <div>
+        <%= form.label :treatment_location, "Local do Atendimento *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+        <%= form.select :treatment_location,
+            options_for_select([
+              ['Selecione...', ''],
+              ['Domiciliar', 'domiciliar'],
+              ['Clínica', 'clinica'],
+              ['Domiciliar + Clínica', 'domiciliar_clinica'],
+              ['Domiciliar + Escola', 'domiciliar_escola'],
+              ['Domiciliar + Clínica + Escola', 'domiciliar_clinica_escola']
+            ], anamnesis.treatment_location),
+            {},
+            { class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true } %>
+      </div>
+
+      <div>
+        <%= form.label :referral_hours, "Horas do Pacote (5-40) *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+        <%= form.number_field :referral_hours, min: 5, max: 40, required: true, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <%= form.label :injunction, class: "flex items-center gap-2" do %>
+        <%= form.check_box :injunction, class: "h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded" %>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Possui Liminar?</span>
+      <% end %>
+    </div>
+
+    <div>
+      <%= form.label :main_complaint, "Queixa principal", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+      <%= form.text_area :main_complaint, rows: 4, placeholder: "Descreva a queixa principal que motivou o encaminhamento...", class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+    </div>
+
+    <div>
+      <%= form.label :complaint_noticed_since, "Desde quando percebeu?", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+      <%= form.text_area :complaint_noticed_since, rows: 3, placeholder: "Há quanto tempo os sintomas/comportamentos foram notados?", class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
+    </div>
+  </div>
+<% end %>

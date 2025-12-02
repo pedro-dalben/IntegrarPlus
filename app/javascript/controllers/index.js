@@ -46,6 +46,9 @@ application.register("cep", CepController)
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 
+import FamilyCompositionController from "./family_composition_controller"
+application.register("family-composition", FamilyCompositionController)
+
 import FullCalendarController from "./full_calendar_controller"
 application.register("full-calendar", FullCalendarController)
 
@@ -69,6 +72,9 @@ application.register("schedule-configuration", ScheduleConfigurationController)
 
 import ToggleController from "./toggle_controller"
 application.register("toggle", ToggleController)
+
+import ToggleFieldsController from "./toggle_fields_controller"
+application.register("toggle-fields", ToggleFieldsController)
 
 import UnifiedCalendarController from "./unified_calendar_controller"
 application.register("unified-calendar", UnifiedCalendarController)

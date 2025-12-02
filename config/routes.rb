@@ -119,6 +119,7 @@ Rails.application.routes.draw do
         patch :cancel_anamnesis
         get :reschedule_form
         patch :reschedule
+        get :print_pdf
       end
       collection do
         get :today

@@ -1,0 +1,125 @@
+<%= render 'form_section_header', title: 'Composição Familiar' do %>
+  <div data-controller="family-composition">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nome</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Parentesco</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Idade</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sexo</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Escolaridade</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700" data-family-composition-target="tbody">
+          <% family_members = anamnesis.family_composition_array %>
+          <% if family_members.any? %>
+            <% family_members.each_with_index do |member, index| %>
+              <tr data-family-composition-target="row">
+                <td class="px-4 py-2">
+                  <input type="text" name="anamnesis[family_composition][][name]" value="<%= member['name'] %>"
+                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                </td>
+                <td class="px-4 py-2">
+                  <select name="anamnesis[family_composition][][relationship]"
+                          class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                    <option value="">Selecione</option>
+                    <option value="irmao" <%= 'selected' if member['relationship'] == 'irmao' %>>Irmão(ã)</option>
+                    <option value="avo" <%= 'selected' if member['relationship'] == 'avo' %>>Avô/Avó</option>
+                    <option value="tio" <%= 'selected' if member['relationship'] == 'tio' %>>Tio(a)</option>
+                    <option value="primo" <%= 'selected' if member['relationship'] == 'primo' %>>Primo(a)</option>
+                    <option value="padrasto" <%= 'selected' if member['relationship'] == 'padrasto' %>>Padrasto</option>
+                    <option value="madrasta" <%= 'selected' if member['relationship'] == 'madrasta' %>>Madrasta</option>
+                    <option value="outro" <%= 'selected' if member['relationship'] == 'outro' %>>Outro</option>
+                  </select>
+                </td>
+                <td class="px-4 py-2">
+                  <input type="number" name="anamnesis[family_composition][][age]" value="<%= member['age'] %>" min="0" max="120"
+                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-20 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                </td>
+                <td class="px-4 py-2">
+                  <select name="anamnesis[family_composition][][gender]"
+                          class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                    <option value="">Selecione</option>
+                    <option value="M" <%= 'selected' if member['gender'] == 'M' %>>Masculino</option>
+                    <option value="F" <%= 'selected' if member['gender'] == 'F' %>>Feminino</option>
+                  </select>
+                </td>
+                <td class="px-4 py-2">
+                  <input type="text" name="anamnesis[family_composition][][education]" value="<%= member['education'] %>"
+                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+                </td>
+                <td class="px-4 py-2">
+                  <button type="button" data-action="family-composition#removeRow"
+                          class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <template data-family-composition-target="template">
+      <tr data-family-composition-target="row">
+        <td class="px-4 py-2">
+          <input type="text" name="anamnesis[family_composition][][name]"
+                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+        </td>
+        <td class="px-4 py-2">
+          <select name="anamnesis[family_composition][][relationship]"
+                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+            <option value="">Selecione</option>
+            <option value="irmao">Irmão(ã)</option>
+            <option value="avo">Avô/Avó</option>
+            <option value="tio">Tio(a)</option>
+            <option value="primo">Primo(a)</option>
+            <option value="padrasto">Padrasto</option>
+            <option value="madrasta">Madrasta</option>
+            <option value="outro">Outro</option>
+          </select>
+        </td>
+        <td class="px-4 py-2">
+          <input type="number" name="anamnesis[family_composition][][age]" min="0" max="120"
+                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-20 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+        </td>
+        <td class="px-4 py-2">
+          <select name="anamnesis[family_composition][][gender]"
+                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+            <option value="">Selecione</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </td>
+        <td class="px-4 py-2">
+          <input type="text" name="anamnesis[family_composition][][education]"
+                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-10 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+        </td>
+        <td class="px-4 py-2">
+          <button type="button" data-action="family-composition#removeRow"
+                  class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </template>
+
+    <div class="mt-4">
+      <button type="button" data-action="family-composition#addRow"
+              class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Adicionar Membro
+      </button>
+    </div>
+  </div>
+<% end %>
+
