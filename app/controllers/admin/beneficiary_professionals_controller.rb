@@ -20,10 +20,12 @@ module Admin
       relation = @beneficiary.beneficiary_professionals.find_or_initialize_by(professional_id: professional_id)
       if relation.save
         redirect_to admin_beneficiary_path(@beneficiary, tab: 'professionals'),
-                    notice: 'Profissional relacionado com sucesso.'
+                    notice: 'Profissional relacionado com sucesso.',
+                    status: :see_other
       else
         redirect_to admin_beneficiary_path(@beneficiary, tab: 'professionals'),
-                    alert: 'Não foi possível relacionar o profissional.'
+                    alert: 'Não foi possível relacionar o profissional.',
+                    status: :see_other
       end
     end
 
@@ -37,10 +39,12 @@ module Admin
       relation = @beneficiary.beneficiary_professionals.find_by(id: params[:id])
       if relation&.destroy
         redirect_to admin_beneficiary_path(@beneficiary, tab: 'professionals'),
-                    notice: 'Profissional removido com sucesso.'
+                    notice: 'Profissional removido com sucesso.',
+                    status: :see_other
       else
         redirect_to admin_beneficiary_path(@beneficiary, tab: 'professionals'),
-                    alert: 'Não foi possível remover o profissional.'
+                    alert: 'Não foi possível remover o profissional.',
+                    status: :see_other
       end
     end
 

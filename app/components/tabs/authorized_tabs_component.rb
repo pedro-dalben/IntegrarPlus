@@ -22,6 +22,10 @@ module Tabs
       @initial_key
     end
 
+    def resource_path
+      helpers.polymorphic_path([:admin, @resource])
+    end
+
     private
 
     def tab_from_params

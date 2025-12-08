@@ -102,3 +102,6 @@ application.register('chat--composer', ChatComposerController);
 
 import ChatInfiniteListController from './chat/infinite_list_controller';
 application.register('chat--infinite-list', ChatInfiniteListController);
+
+import ProfessionalsFormController from './professionals_form_controller';
+application.register('professionals-form', ProfessionalsFormController);

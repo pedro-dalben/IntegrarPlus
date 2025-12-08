@@ -1,6 +1,10 @@
 <% tabs = visible_tabs %>
 <% if tabs.any? %>
-  <div data-controller="tabs">
+  <% tabs_id = "tabs-#{@resource.class.name.downcase}-#{@resource.id}" %>
+  <div id="<%= tabs_id %>" data-controller="tabs" data-turbo-cache="false"
+       data-tabs-fetch-url-value="<%= resource_path %>"
+       data-tabs-resource-id-value="<%= @resource.id %>"
+       data-tabs-resource-type-value="<%= @resource.class.name %>">
     <div class="border-b border-gray-200 px-6">
       <nav class="-mb-px flex gap-6" aria-label="Tabs">
         <% tabs.each do |tab| %>
@@ -17,9 +21,9 @@
       </nav>
     </div>
 
-    <div class="p-4 sm:p-6" data-tabs-target="panes">
+    <div class="p-4 sm:p-6" data-tabs-target="panes" data-turbo-cache="false">
       <% tabs.each do |tab| %>
-        <div data-key="<%= tab[:key] %>" style="<%= 'display:none;' unless tab[:key] == initial_active_key %>">
+        <div data-key="<%= tab[:key] %>" data-turbo-cache="false" style="<%= 'display:none;' unless tab[:key] == initial_active_key %>">
           <%= render partial: tab[:partial], locals: (tab[:locals] || {}) %>
         </div>
       <% end %>
