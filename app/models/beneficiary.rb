@@ -5,12 +5,16 @@ class Beneficiary < ApplicationRecord
 
   # Relacionamentos
   belongs_to :portal_intake, optional: true
+  belongs_to :external_user, optional: true
   belongs_to :created_by_professional, class_name: 'User', optional: true
   belongs_to :updated_by_professional, class_name: 'User', optional: true
   has_many :anamneses, class_name: 'Anamnesis', dependent: :destroy
   has_many :beneficiary_professionals, dependent: :destroy
   has_many :professionals, through: :beneficiary_professionals
   has_many :beneficiary_tickets, dependent: :destroy
+  has_many :beneficiary_referrals, dependent: :destroy
+
+  accepts_nested_attributes_for :beneficiary_referrals, allow_destroy: true, reject_if: :all_blank_referral
 
   # Enums
   enum :status, {
@@ -45,6 +49,7 @@ class Beneficiary < ApplicationRecord
                        allow_blank: true
 
   # Callbacks
+  before_validation :normalize_medical_record_number
   before_validation :generate_integrar_code, on: :create
   before_validation :format_cpf
   before_validation :format_zip_code
@@ -197,6 +202,10 @@ class Beneficiary < ApplicationRecord
 
   private
 
+  def normalize_medical_record_number
+    self.medical_record_number = nil if medical_record_number.present? && medical_record_number.strip.blank?
+  end
+
   def generate_integrar_code
     return if integrar_code.present?
 
@@ -225,5 +234,9 @@ class Beneficiary < ApplicationRecord
     return unless numbers.length == 8
 
     self.zip_code = numbers.gsub(/(\d{5})(\d{3})/, '\1-\2')
+  end
+
+  def all_blank_referral(attributes)
+    attributes['cid'].blank? && attributes['encaminhado_para'].blank? && attributes['medico'].blank? && attributes['medico_crm'].blank? && attributes['data_encaminhamento'].blank? && attributes['descricao'].blank?
   end
 end

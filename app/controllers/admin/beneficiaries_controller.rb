@@ -49,10 +49,12 @@ module Admin
 
     def new
       @beneficiary = Beneficiary.new
+      @operators = ExternalUser.active.order(:company_name)
       authorize @beneficiary, policy_class: Admin::BeneficiaryPolicy
     end
 
     def edit
+      @operators = ExternalUser.active.order(:company_name)
       authorize @beneficiary, policy_class: Admin::BeneficiaryPolicy
     end
 
@@ -182,14 +184,17 @@ module Admin
 
     def beneficiary_params
       params.expect(
-        beneficiary: %i[
-          name birth_date cpf phone secondary_phone email secondary_email whatsapp_number
-          address address_number address_complement neighborhood city state zip_code address_reference
-          responsible_name responsible_phone relationship responsible_cpf responsible_rg
-          responsible_profession family_income attends_school school_name school_period
-          health_plan health_card_number allergies continuous_medications special_conditions
-          medical_record_number photo status treatment_start_date treatment_end_date inactivation_reason
-          portal_intake_id
+        beneficiary: [
+          :name, :birth_date, :cpf, :phone, :secondary_phone, :email, :secondary_email, :whatsapp_number,
+          :address, :address_number, :address_complement, :neighborhood, :city, :state, :zip_code, :address_reference,
+          :responsible_name, :responsible_phone, :relationship, :responsible_cpf, :responsible_rg,
+          :responsible_profession, :family_income, :attends_school, :school_name, :school_period,
+          :health_plan, :health_card_number, :allergies, :continuous_medications, :special_conditions,
+          :medical_record_number, :photo, :status, :treatment_start_date, :treatment_end_date, :inactivation_reason,
+          :portal_intake_id, :external_user_id, :card_code, :plan_name, :tipo_convenio, :data_encaminhamento, :data_recebimento_email,
+          { beneficiary_referrals_attributes: %i[
+            id cid encaminhado_para medico medico_crm data_encaminhamento descricao _destroy
+          ] }
         ]
       )
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_08_132233) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -428,12 +428,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
     t.text "inactivation_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "card_code"
+    t.string "plan_name"
+    t.string "tipo_convenio"
+    t.date "data_encaminhamento"
+    t.date "data_recebimento_email"
+    t.bigint "external_user_id"
     t.index ["birth_date"], name: "index_beneficiaries_on_birth_date"
     t.index ["cpf"], name: "index_beneficiaries_on_cpf", unique: true
     t.index ["created_at"], name: "index_beneficiaries_on_created_at"
     t.index ["created_by_professional_id"], name: "index_beneficiaries_on_created_by_professional_id"
+    t.index ["data_encaminhamento"], name: "index_beneficiaries_on_data_encaminhamento"
+    t.index ["data_recebimento_email"], name: "index_beneficiaries_on_data_recebimento_email"
+    t.index ["external_user_id"], name: "index_beneficiaries_on_external_user_id"
     t.index ["integrar_code"], name: "index_beneficiaries_on_integrar_code", unique: true
-    t.index ["medical_record_number"], name: "index_beneficiaries_on_medical_record_number", unique: true
+    t.index ["medical_record_number"], name: "index_beneficiaries_on_medical_record_number", unique: true, where: "(medical_record_number IS NOT NULL)"
     t.index ["name"], name: "index_beneficiaries_on_name"
     t.index ["portal_intake_id"], name: "index_beneficiaries_on_portal_intake_id"
     t.index ["status"], name: "index_beneficiaries_on_status"
@@ -475,6 +484,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
     t.index ["beneficiary_id", "professional_id"], name: "index_beneficiary_professionals_unique", unique: true
     t.index ["beneficiary_id"], name: "index_beneficiary_professionals_on_beneficiary_id"
     t.index ["professional_id"], name: "index_beneficiary_professionals_on_professional_id"
+  end
+
+  create_table "beneficiary_referrals", force: :cascade do |t|
+    t.bigint "beneficiary_id", null: false
+    t.string "cid", limit: 20
+    t.string "encaminhado_para"
+    t.string "medico", limit: 100
+    t.string "medico_crm", limit: 20
+    t.date "data_encaminhamento"
+    t.text "descricao"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beneficiary_id"], name: "index_beneficiary_referrals_on_beneficiary_id"
+    t.index ["encaminhado_para"], name: "index_beneficiary_referrals_on_encaminhado_para"
   end
 
   create_table "beneficiary_tickets", force: :cascade do |t|
@@ -1191,6 +1214,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
   add_foreign_key "appointment_notes", "users", column: "created_by_id"
   add_foreign_key "availability_exceptions", "agendas"
   add_foreign_key "availability_exceptions", "professionals"
+  add_foreign_key "beneficiaries", "external_users"
   add_foreign_key "beneficiaries", "portal_intakes"
   add_foreign_key "beneficiaries", "users", column: "created_by_professional_id"
   add_foreign_key "beneficiaries", "users", column: "updated_by_professional_id"
@@ -1200,6 +1224,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
   add_foreign_key "beneficiary_chat_messages", "users"
   add_foreign_key "beneficiary_professionals", "beneficiaries"
   add_foreign_key "beneficiary_professionals", "professionals"
+  add_foreign_key "beneficiary_referrals", "beneficiaries"
   add_foreign_key "beneficiary_tickets", "beneficiaries"
   add_foreign_key "beneficiary_tickets", "professionals", column: "assigned_professional_id"
   add_foreign_key "beneficiary_tickets", "users", column: "created_by_id"

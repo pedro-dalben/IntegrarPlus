@@ -418,6 +418,12 @@ class Anamnesis < ApplicationRecord
       responsible_phone: portal_intake.telefone_responsavel,
       health_plan: portal_intake.plan_name,
       health_card_number: portal_intake.card_code,
+      card_code: portal_intake.card_code,
+      plan_name: portal_intake.plan_name,
+      tipo_convenio: portal_intake.tipo_convenio,
+      data_encaminhamento: portal_intake.data_encaminhamento,
+      data_recebimento_email: portal_intake.data_recebimento_email,
+      external_user_id: portal_intake.operator_id,
       status: 'ativo',
       treatment_start_date: Date.current,
       created_by_professional: professional,
@@ -425,6 +431,18 @@ class Anamnesis < ApplicationRecord
     }
 
     new_beneficiary = Beneficiary.create!(beneficiary_data)
+    
+    portal_intake.portal_intake_referrals.each do |referral|
+      new_beneficiary.beneficiary_referrals.create!(
+        cid: referral.cid,
+        encaminhado_para: referral.encaminhado_para,
+        medico: referral.medico,
+        medico_crm: referral.medico_crm,
+        data_encaminhamento: referral.data_encaminhamento,
+        descricao: referral.descricao
+      )
+    end
+    
     update!(beneficiary: new_beneficiary)
   end
 end
