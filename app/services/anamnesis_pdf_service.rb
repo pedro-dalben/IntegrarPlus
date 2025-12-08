@@ -445,3 +445,5 @@ class AnamnesisPdfService
 end
 
 
+
+

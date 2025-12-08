@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_01_184348) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -326,6 +326,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_184348) do
     t.boolean "psychiatric_hospitalization"
     t.string "psychiatric_hospitalization_who"
     t.text "general_information"
+    t.boolean "cord_around_neck"
+    t.boolean "cyanotic"
     t.index ["attendance_status"], name: "index_anamneses_on_attendance_status"
     t.index ["beneficiary_id", "status"], name: "index_anamneses_on_beneficiary_id_and_status"
     t.index ["beneficiary_id"], name: "index_anamneses_on_beneficiary_id"
