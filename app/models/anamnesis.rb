@@ -408,41 +408,48 @@ class Anamnesis < ApplicationRecord
   def create_beneficiary_from_portal_intake
     return unless portal_intake_id? && beneficiary.nil?
 
-    beneficiary_data = {
-      name: portal_intake.nome || portal_intake.beneficiary_name,
-      birth_date: portal_intake.data_nascimento,
-      cpf: portal_intake.cpf,
-      phone: portal_intake.telefone_responsavel,
-      address: portal_intake.endereco,
-      responsible_name: portal_intake.responsavel,
-      responsible_phone: portal_intake.telefone_responsavel,
-      health_plan: portal_intake.plan_name,
-      health_card_number: portal_intake.card_code,
-      card_code: portal_intake.card_code,
-      plan_name: portal_intake.plan_name,
-      tipo_convenio: portal_intake.tipo_convenio,
-      data_encaminhamento: portal_intake.data_encaminhamento,
-      data_recebimento_email: portal_intake.data_recebimento_email,
-      external_user_id: portal_intake.operator_id,
-      status: 'ativo',
-      treatment_start_date: Date.current,
-      created_by_professional: professional,
-      portal_intake: portal_intake
-    }
-
-    new_beneficiary = Beneficiary.create!(beneficiary_data)
-    
-    portal_intake.portal_intake_referrals.each do |referral|
-      new_beneficiary.beneficiary_referrals.create!(
-        cid: referral.cid,
-        encaminhado_para: referral.encaminhado_para,
-        medico: referral.medico,
-        medico_crm: referral.medico_crm,
-        data_encaminhamento: referral.data_encaminhamento,
-        descricao: referral.descricao
+    ActiveRecord::Base.transaction do
+      beneficiary = Beneficiary.new(
+        name: portal_intake.nome || portal_intake.beneficiary_name,
+        birth_date: portal_intake.data_nascimento,
+        cpf: portal_intake.cpf,
+        phone: portal_intake.telefone_responsavel,
+        address: portal_intake.endereco,
+        responsible_name: portal_intake.responsavel,
+        responsible_phone: portal_intake.telefone_responsavel,
+        health_plan: portal_intake.plan_name,
+        card_code: portal_intake.card_code,
+        plan_name: portal_intake.plan_name,
+        tipo_convenio: portal_intake.tipo_convenio,
+        data_encaminhamento: portal_intake.data_encaminhamento,
+        data_recebimento_email: portal_intake.data_recebimento_email,
+        external_user_id: portal_intake.operator_id,
+        status: 'ativo',
+        treatment_start_date: Date.current,
+        created_by_professional: professional,
+        portal_intake: portal_intake
       )
+
+      portal_intake.portal_intake_referrals.each do |referral|
+        next if referral.cid.blank? && referral.encaminhado_para.blank? &&
+                referral.medico.blank? && referral.medico_crm.blank? &&
+                referral.data_encaminhamento.blank? && referral.descricao.blank?
+
+        beneficiary.beneficiary_referrals.build(
+          cid: referral.cid,
+          encaminhado_para: referral.encaminhado_para,
+          medico: referral.medico,
+          medico_crm: referral.medico_crm,
+          data_encaminhamento: referral.data_encaminhamento,
+          descricao: referral.descricao
+        )
+      end
+
+      beneficiary.save!
+      update!(beneficiary: beneficiary)
     end
-    
-    update!(beneficiary: new_beneficiary)
+  rescue ActiveRecord::RecordInvalid => e
+    errors.add(:base, "Falha ao criar beneficiário: #{e.record.errors.full_messages.to_sentence}")
+    false
   end
 end

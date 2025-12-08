@@ -19,7 +19,15 @@
         <% missing.each do |item| %>
           <li class="flex items-start gap-2 text-amber-900 dark:text-amber-200">
             <span>•</span>
-            <span><%= item %></span>
+            <span>
+              <% if item == 'Anamnese não criada' && current_user.permit?('anamneses.create') %>
+                <%= link_to item, new_admin_beneficiary_anamnese_path(@beneficiary), class: "text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 underline" %>
+              <% elsif item == 'Nenhum profissional relacionado' && current_user.permit?('beneficiary.tabs.professionals.edit') %>
+                <%= link_to item, admin_beneficiary_path(@beneficiary, tab: 'professionals'), class: "text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 underline" %>
+              <% else %>
+                <%= item %>
+              <% end %>
+            </span>
           </li>
         <% end %>
       <% else %>

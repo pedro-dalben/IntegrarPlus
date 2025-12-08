@@ -21,6 +21,12 @@ pt-BR:
         company_represented_by: "Representada por"
         ccm: "CCM"
         taxpayer_address: "Endereço do Contribuinte"
+      beneficiary:
+        name: "Nome"
+        birth_date: "Data de Nascimento"
+        cpf: "CPF"
+        zip_code: "CEP"
+        integrar_code: "Código Integrar"
     errors:
       messages:
         record_invalid: 'A validação falhou: %{errors}'

@@ -4,15 +4,18 @@
   <!-- Card Principal -->
   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
     <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-800">
-      <h2 class="text-lg font-medium text-gray-800 dark:text-white">
-        <%= beneficiary.new_record? ? "Novo Beneficiário" : "Editar Beneficiário" %>
-      </h2>
+      <div class="flex items-start justify-between gap-3">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-white">
+          <%= beneficiary.new_record? ? "Novo Beneficiário" : "Editar Beneficiário" %>
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Campos com * são obrigatórios</p>
+      </div>
     </div>
 
     <div class="p-4 sm:p-6 space-y-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <%= form.label :name, "Nome Completo", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+          <%= form.label :name, "Nome Completo *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <div class="relative">
             <%= form.text_field :name, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :name)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :name)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
             <%= render_field_error_icon if field_has_error?(beneficiary, :name) %>
@@ -21,7 +24,7 @@
         </div>
 
         <div>
-          <%= form.label :birth_date, "Data de Nascimento", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+          <%= form.label :birth_date, "Data de Nascimento *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <div class="relative">
             <%= form.date_field :birth_date, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :birth_date)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :birth_date)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true %>
             <%= render_field_error_icon if field_has_error?(beneficiary, :birth_date) %>
@@ -30,7 +33,7 @@
         </div>
 
         <div>
-          <%= form.label :cpf, "CPF", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+          <%= form.label :cpf, "CPF *", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <div class="relative" data-controller="mask" data-mask-type-value="cpf">
             <%= form.text_field :cpf, class: "dark:bg-dark-900 shadow-theme-xs #{field_error_class(beneficiary, :cpf)} h-11 w-full rounded-lg border bg-transparent px-4 #{'pr-10' if field_has_error?(beneficiary, :cpf)} py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", required: true, placeholder: "000.000.000-00", data: { mask_target: "input" } %>
             <%= render_field_error_icon if field_has_error?(beneficiary, :cpf) %>
@@ -38,10 +41,17 @@
           <%= render_field_error_message(beneficiary, :cpf) %>
         </div>
 
-        <div>
-          <%= form.label :integrar_code, "Código Integrar", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :integrar_code, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30", readonly: true, placeholder: "Será gerado automaticamente" %>
-        </div>
+        <% unless beneficiary.new_record? %>
+          <div>
+            <%= form.label :integrar_code, "Código Integrar", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
+            <p class="h-11 w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-600 dark:border-gray-700 dark:bg-gray-900 dark:text-white/70">
+              <%= beneficiary.integrar_code %>
+            </p>
+            <%= form.hidden_field :integrar_code %>
+          </div>
+        <% else %>
+          <%= form.hidden_field :integrar_code %>
+        <% end %>
       </div>
     </div>
   </div>
@@ -301,11 +311,6 @@
         <div>
           <%= form.label :data_recebimento_email, "Data de Recebimento do E-mail", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
           <%= form.date_field :data_recebimento_email, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
-        </div>
-
-        <div>
-          <%= form.label :health_card_number, "Número da Carteirinha (Legado)", class: "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400" %>
-          <%= form.text_field :health_card_number, class: "dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" %>
         </div>
 
         <div class="md:col-span-2">
