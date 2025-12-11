@@ -10,3 +10,6 @@ Rails.application.config.assets.version = '1.0'
 
 # Add vendor assets to the asset load path
 Rails.application.config.assets.paths << Rails.root.join('vendor/tailadmin-pro/images')
+
+# Ensure favicons and app icons are precompiled
+Rails.application.config.assets.precompile += %w[favicon.ico icon.png]
